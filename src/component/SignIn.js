@@ -58,7 +58,6 @@ const useStyles = makeStyles(theme => ({
 }));
 
 export default function SignIn(props) {
-  console.log(props);
   const classes = useStyles();
   const [userName, setUserName] = useState("");
   const [password, setPassword] = useState("");

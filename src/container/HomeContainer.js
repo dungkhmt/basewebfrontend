@@ -1,9 +1,13 @@
 import { connect } from "react-redux";
-import { processed, waitProcess } from "../action";
+import { getMenu } from "../action";
 import Home from "../component/Home";
 
-const mapStateToProps = state => ({});
+const mapStateToProps = state => ({
+  menu: state.menu.menu
+});
 
-const mapDispatchToProps = dispatch => ({});
+const mapDispatchToProps = dispatch => ({
+  getMenu: () => dispatch(getMenu())
+});
 
 export default connect(mapStateToProps, mapDispatchToProps)(Home);
