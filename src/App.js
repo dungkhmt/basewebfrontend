@@ -1,27 +1,13 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
-import { BrowserRouter as Router, Route } from "react-router-dom";
-import SignIn from "./component/SignIn";
-import PrivateRoute from "./common/PrivateRoute";
-import SigninContainer from "./container/SigninContainer";
-import HomeContainer from "./container/HomeContainer";
+import { BrowserRouter as Router } from "react-router-dom";
+import Routes from "./Routes";
 
 class App extends Component {
   render() {
     return (
       <Router>
-        <div>
-          <PrivateRoute
-            component={HomeContainer}
-            isAuthenticated={this.props.isAuthenticated}
-            exact
-            path={process.env.PUBLIC_URL + "/"}
-          />
-          <Route
-            path={process.env.PUBLIC_URL + "/login"}
-            render={props => <SigninContainer {...props} />}
-          />
-        </div>
+        <Routes isAuthenticated={this.props.isAuthenticated} />
       </Router>
     );
   }

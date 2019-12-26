@@ -1,7 +1,6 @@
-import React, { Component } from "react";
-import { Route } from "react-router-dom";
+import React from "react";
 import { Redirect } from "react-router";
-import HomeContainer from "../container/HomeContainer";
+import { Route } from "react-router-dom";
 function PrivateRoute({ component: Component, isAuthenticated, ...rest }) {
   return (
     <Route
