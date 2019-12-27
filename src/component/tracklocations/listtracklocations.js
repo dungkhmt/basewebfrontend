@@ -57,7 +57,7 @@ function ListTrackLocations(props) {
                 setData([]);
             }
           );
-      });
+      },[]);
     return (
       
       <TableContainer component={Paper}>
