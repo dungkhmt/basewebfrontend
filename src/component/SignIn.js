@@ -21,9 +21,11 @@ function Copyright() {
   return (
     <Typography variant="body2" color="textSecondary" align="center">
       {"Copyright © "}
-      <Link color="inherit" href="https://dailyoptvn.com/">
-        Daily Opt
+      
+      <Link color="inherit" href="">
+        D 
       </Link>{" "}
+      
       {new Date().getFullYear()}
       {"."}
     </Typography>
@@ -59,8 +61,8 @@ const useStyles = makeStyles(theme => ({
 
 export default function SignIn(props) {
   const classes = useStyles();
-  const [userName, setUserName] = useState("");
-  const [password, setPassword] = useState("");
+  const [userName, setUserName] = useState("");// new State (var) userName 
+  const [password, setPassword] = useState("");// new State (var) password
 
   const handleUserNameChange = event => {
     setUserName(event.target.value);

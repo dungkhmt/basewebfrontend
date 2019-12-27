@@ -91,12 +91,13 @@ export default function Layout(props) {
   const handleDrawerClose = props.handleDrawerClose;
   const theme = useTheme();
   const classes = useStyles();
-  const [openCollapse, setOpenCollapse] = React.useState([false, false, false]);
+  const [openCollapse, setOpenCollapse] = React.useState([false, false, false,false]); // thiet lap 4 menu TO
   const handleListClick = i => {
     let tmp = [...openCollapse];
     tmp[i] = tmp[i] ? false : true;
     setOpenCollapse(tmp);
   };
+
   return (
     <Drawer
       variant="permanent"
@@ -122,6 +123,41 @@ export default function Layout(props) {
       </div>
       <Divider />
       <List>
+      <div>
+            <ListItem button onClick={() => handleListClick(0)}>
+              <ListItemIcon>
+                <InboxIcon />
+              </ListItemIcon>
+              <ListItemText primary="Quan ly toa do" />
+              {openCollapse[0] ? <ExpandLess /> : <ExpandMore />}
+            </ListItem>
+            <Collapse in={openCollapse[0]} timeout="auto" unmountOnExit>
+              <List component="div" disablePadding>
+                <ListItem button className={classes.nested}>
+                    <ListItemIcon>
+                      <StarBorder />
+                    </ListItemIcon>
+                    <ListItemText primary="Tạo mới" />
+                  </ListItem>
+                
+               
+                  <ListItem 
+                    button 
+                    className={classes.nested}
+                    component={Link}  // props 
+                    to={process.env.PUBLIC_URL + "/tracklocations/list"} // props
+                  >
+                    <ListItemIcon>
+
+                      <StarBorder />
+                    </ListItemIcon>
+                    <ListItemText primary="Danh sách" />
+                  </ListItem>
+                
+              </List>
+            </Collapse>
+          </div>
+
         {props.menu.has("MENU_USER") ? (
           <div>
             <ListItem button onClick={() => handleListClick(0)}>
@@ -210,7 +246,7 @@ export default function Layout(props) {
         )}
         {props.menu.has("MENU_INVOICE") ? (
           <div>
-            <ListItem button onClick={() => handleListClick(2)}>
+            <ListItem button onClick={() => handleListClick(2)}> 
               <ListItemIcon>
                 <InboxIcon />
               </ListItemIcon>

@@ -6,8 +6,10 @@ import { Home, PrivateRouteWithLayout } from "./component";
 import OrderCreate from "./component/order/OrderCreate";
 import SignInContainer from "./container/SignInContainer";
 import { Route } from "react-router-dom";
+import ListTrackLocations from "./component/tracklocations/listtracklocations";
 
-function Routes(props) {
+function Routes(props) {// props nay tu parent transfer vao
+  // console.log(props)
   return (
     <Switch>
       <PrivateRouteWithLayout
@@ -18,13 +20,24 @@ function Routes(props) {
         path="/"
       />
       <PrivateRouteWithLayout
-        component={OrderCreate}
-        layout={Layout}
-        isAuthenticated={props.isAuthenticated}
-        exact
-        path="/order/create"
+        component={OrderCreate}  //props
+        layout={Layout}          //props
+        isAuthenticated={props.isAuthenticated} // props
+        //exact                                   // props
+        path="/order/create"                    // props
       />
-      <Route component={SignInContainer} path="/login" />
+
+      <PrivateRouteWithLayout
+        component={ListTrackLocations}  //props
+        layout={Layout}          //props
+        isAuthenticated={props.isAuthenticated} // props
+        //exact                                   // props
+        path="/tracklocations/list"                    // props
+      />
+      <Route 
+        component={SignInContainer} // props
+        path="/login"               // props
+      />
       <Redirect to="/not-found" />
     </Switch>
   );
