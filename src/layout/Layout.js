@@ -91,7 +91,7 @@ function Layout(props) {
     setOpen(false);
   };
   useEffect(() => {
-    if (props.menu.size === 0) props.getMenu();
+    if (props.isMenuGot === false) props.getMenu();
   });
 
   return (
@@ -133,7 +133,8 @@ function Layout(props) {
   );
 }
 const mapStateToProps = state => ({
-  menu: state.menu.menu
+  menu: state.menu.menu,
+  isMenuGot: state.menu.isMenuGot
 });
 
 const mapDispatchToProps = dispatch => ({

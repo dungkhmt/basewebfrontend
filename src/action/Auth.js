@@ -7,7 +7,7 @@ export const LOGIN_FAILURE = "LOGIN_FAILURE";
 
 export const login = (username, password) => {
   return dispatch => {
-    dispatch(requesting());
+    dispatch(requesting()); // create a action
 
     const headers = new Headers();
 

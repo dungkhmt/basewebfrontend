@@ -6,8 +6,7 @@ import TableContainer from '@material-ui/core/TableContainer';
 import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 import Paper from '@material-ui/core/Paper';
-import { connect } from "react-redux";
-
+import {connect} from "react-redux";
 import { makeStyles } from '@material-ui/core/styles';
 import { API_URL } from "../../config/config";
 
@@ -39,6 +38,8 @@ function ListTrackLocations(props) {
     //{"trackLocationId":"db04cf36-8de5-46d9-9e95-e53913eee34a","partyId":"287db6a8-2783-11ea-b1c9-54bf64436441","location":"10.11,103.83","timePoint":"2019-12-26T04:45:50.770+0000"},
     //{"trackLocationId":"a2401982-6c84-4708-b867-cb8d292b8516","partyId":"287db6a8-2783-11ea-b1c9-54bf64436441","location":"10.11,103.83","timePoint":"2019-12-26T04:45:50.770+0000"}];
     useEffect(() => {
+      console.log("listtracklocations , useEffect");
+        console.log(props.isUpdate);
         const headers = new Headers();
 
         //headers.append("Accept", "application/json");
@@ -57,7 +58,7 @@ function ListTrackLocations(props) {
                 setData([]);
             }
           );
-      },[]);
+      },[props.isUpdate]);
     return (
       
       <TableContainer component={Paper}>
@@ -82,9 +83,7 @@ function ListTrackLocations(props) {
           ))}
         </TableBody>
       </Table>
-      <h1>ABC</h1>
-      <h2>DEF</h2>
-      <h3>XYZ</h3>
+      
     </TableContainer>
 
         

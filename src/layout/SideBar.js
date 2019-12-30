@@ -86,7 +86,7 @@ const useStyles = makeStyles(theme => ({
     paddingLeft: theme.spacing(4)
   }
 }));
-export default function Layout(props) {
+export default function SideBar(props) {
   const open = props.open;
   const handleDrawerClose = props.handleDrawerClose;
   const theme = useTheme();
@@ -128,16 +128,21 @@ export default function Layout(props) {
               <ListItemIcon>
                 <InboxIcon />
               </ListItemIcon>
-              <ListItemText primary="Quan ly toa do" />
+              <ListItemText primary="Kiểm soát lộ trình" />
               {openCollapse[0] ? <ExpandLess /> : <ExpandMore />}
             </ListItem>
             <Collapse in={openCollapse[0]} timeout="auto" unmountOnExit>
               <List component="div" disablePadding>
-                <ListItem button className={classes.nested}>
+                <ListItem 
+                  button 
+                  className={classes.nested}
+                  component={Link}
+                  to={process.env.PUBLIC_URL + "/tracklocations/gismap"}
+                >
                     <ListItemIcon>
                       <StarBorder />
                     </ListItemIcon>
-                    <ListItemText primary="Tạo mới" />
+                    <ListItemText primary="Bản đồ" />
                   </ListItem>
                 
                
@@ -160,17 +165,22 @@ export default function Layout(props) {
 
         {props.menu.has("MENU_USER") ? (
           <div>
-            <ListItem button onClick={() => handleListClick(0)}>
+            <ListItem button onClick={() => handleListClick(1)}>
               <ListItemIcon>
                 <InboxIcon />
               </ListItemIcon>
               <ListItemText primary="Tài khoản" />
-              {openCollapse[0] ? <ExpandLess /> : <ExpandMore />}
+              {openCollapse[1] ? <ExpandLess /> : <ExpandMore />}
             </ListItem>
-            <Collapse in={openCollapse[0]} timeout="auto" unmountOnExit>
+            <Collapse in={openCollapse[1]} timeout="auto" unmountOnExit>
               <List component="div" disablePadding>
                 {props.menu.has("MENU_USER_CREATE") ? (
-                  <ListItem button className={classes.nested}>
+                  <ListItem
+                    button
+                    className={classes.nested}
+                    component={Link}
+                    to={process.env.PUBLIC_URL + "/userlogin/create"}
+                  >
                     <ListItemIcon>
                       <StarBorder />
                     </ListItemIcon>
@@ -180,12 +190,19 @@ export default function Layout(props) {
                   ""
                 )}
                 {props.menu.has("MENU_USER_LIST") ? (
-                  <ListItem button className={classes.nested}>
-                    <ListItemIcon>
-                      <StarBorder />
-                    </ListItemIcon>
-                    <ListItemText primary="Danh sách" />
-                  </ListItem>
+                  
+                    <ListItem
+                      button
+                      className={classes.nested}
+                      component={Link}
+                      to={process.env.PUBLIC_URL + "/userlogin/list"}
+                    >
+                      <ListItemIcon>
+                        <StarBorder />
+                      </ListItemIcon>
+                      <ListItemText primary="Danh sách" />
+                    </ListItem>
+                  
                 ) : (
                   ""
                 )}
@@ -197,14 +214,14 @@ export default function Layout(props) {
         )}
         {props.menu.has("MENU_ORDER") ? (
           <div>
-            <ListItem button onClick={() => handleListClick(1)}>
+            <ListItem button onClick={() => handleListClick(2)}>
               <ListItemIcon>
                 <InboxIcon />
               </ListItemIcon>
               <ListItemText primary="Đơn hàng" />
-              {openCollapse[1] ? <ExpandLess /> : <ExpandMore />}
+              {openCollapse[2] ? <ExpandLess /> : <ExpandMore />}
             </ListItem>
-            <Collapse in={openCollapse[1]} timeout="auto" unmountOnExit>
+            <Collapse in={openCollapse[2]} timeout="auto" unmountOnExit>
               <List component="div" disablePadding>
                 {props.menu.has("MENU_ORDER_CREATE") ? (
                   <ListItem
@@ -246,14 +263,14 @@ export default function Layout(props) {
         )}
         {props.menu.has("MENU_INVOICE") ? (
           <div>
-            <ListItem button onClick={() => handleListClick(2)}> 
+            <ListItem button onClick={() => handleListClick(3)}> 
               <ListItemIcon>
                 <InboxIcon />
               </ListItemIcon>
               <ListItemText primary="Hóa đơn" />
-              {openCollapse[2] ? <ExpandLess /> : <ExpandMore />}
+              {openCollapse[3] ? <ExpandLess /> : <ExpandMore />}
             </ListItem>
-            <Collapse in={openCollapse[2]} timeout="auto" unmountOnExit>
+            <Collapse in={openCollapse[3]} timeout="auto" unmountOnExit>
               <List component="div" disablePadding>
                 {props.menu.has("MENU_INVOICE_CREATE") ? (
                   <ListItem button className={classes.nested}>

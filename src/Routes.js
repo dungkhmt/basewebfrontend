@@ -7,6 +7,11 @@ import OrderCreate from "./component/order/OrderCreate";
 import SignInContainer from "./container/SignInContainer";
 import { Route } from "react-router-dom";
 import ListTrackLocations from "./component/tracklocations/listtracklocations";
+import GISMap from "./component/tracklocations/gismap";
+import UserLoginCreate from "./component/userlogin/UserLoginCreate";
+import ListUserLogins from "./component/userlogin/listuserlogins";
+
+import GMapContainer from "./container/gmapcontainer";
 
 function Routes(props) {// props nay tu parent transfer vao
   // console.log(props)
@@ -19,6 +24,24 @@ function Routes(props) {// props nay tu parent transfer vao
         exact
         path="/"
       />
+
+      <PrivateRouteWithLayout
+        component={UserLoginCreate}  //props
+        layout={Layout}          //props
+        isAuthenticated={props.isAuthenticated} // props
+        //isAuthenticated={true}
+        //exact                                   // props
+        path="/userlogin/create"                    // props
+      />
+      <PrivateRouteWithLayout
+        component={ListUserLogins}  //props
+        layout={Layout}          //props
+        isAuthenticated={props.isAuthenticated} // props
+        //isAuthenticated={true}
+        //exact                                   // props
+        path="/userlogin/list"                    // props
+      />
+
       <PrivateRouteWithLayout
         component={OrderCreate}  //props
         layout={Layout}          //props
@@ -34,6 +57,14 @@ function Routes(props) {// props nay tu parent transfer vao
         //exact                                   // props
         path="/tracklocations/list"                    // props
       />
+      <PrivateRouteWithLayout
+        component={GMapContainer}  //props
+        layout={Layout}          //props
+        isAuthenticated={props.isAuthenticated} // props
+        //exact                                   // props
+        path="/tracklocations/gismap"                    // props
+      />
+      
       <Route 
         component={SignInContainer} // props
         path="/login"               // props

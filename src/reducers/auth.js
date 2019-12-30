@@ -5,7 +5,7 @@ const auth = (
 ) => {
   switch (action.type) {
     case LOGIN_REQUESTING:
-      return Object.assign({}, state, { isRequesting: true });
+      return Object.assign({}, state, { isRequesting: true });// lay data object cu, tao object moi, assign data cho object moi
     case LOGIN_SUCCESS:
       return Object.assign({}, state, {
         token: action.token,

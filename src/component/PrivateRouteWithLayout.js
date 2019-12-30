@@ -1,8 +1,8 @@
 import React from "react";
 import { Route, Redirect } from "react-router-dom";
-import PrivateRoute from "../common/PrivateRoute";
+//import PrivateRoute from "../common/PrivateRoute";
 
-function RouteWithLayout({
+function PrivateRouteWithLayout({
   component: Component,
   layout: Layout,
   isAuthenticated,
@@ -26,4 +26,4 @@ function RouteWithLayout({
   );
 }
 
-export default RouteWithLayout;
+export default PrivateRouteWithLayout;

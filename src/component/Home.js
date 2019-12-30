@@ -24,5 +24,5 @@ import { Link, Route, Switch } from "react-router-dom";
 import SigninContainer from "../container/SignInContainer";
 
 export default function Home(props) {
-  return <div>Helllo</div>;
+  return <div>HOME</div>;
 }
