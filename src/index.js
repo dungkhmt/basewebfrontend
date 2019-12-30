@@ -11,15 +11,33 @@ import { composeWithDevTools } from "redux-devtools-extension";
 import { createLogger } from "redux-logger";
 const loggerMiddleware = createLogger();
 
+
+var startState={};
+console.log(localStorage.getItem('TOKEN'))
+if( localStorage.getItem('TOKEN')!==null){
+  startState = {
+    auth: {
+      token: localStorage.getItem('TOKEN'),
+      isAuthenticated: true
+  }};
+};
+
+
+
 const store = createStore(
   rootReducer,
+  startState,
   composeWithDevTools(
     applyMiddleware(
       thunkMiddleware, // lets us dispatch() functions
       loggerMiddleware // neat middleware that logs actions
     )
-  )
+  ),
 );
+
+store.subscribe(() =>{
+  localStorage.setItem('TOKEN', store.getState().auth.token);
+});
 
 ReactDOM.render(
   <Provider store={store}>
