@@ -1,9 +1,9 @@
 import React from "react";
-import GISMap from "../component/tracklocations/gismap";
+import Map from "../component/map";
 
 export default function GMapContainer(){
     return (
-        <GISMap
+        <Map
               id="myMap"
               height="95vh"
               options={{
