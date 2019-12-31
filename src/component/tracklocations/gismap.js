@@ -23,7 +23,7 @@ class GISMap extends Component {
         console.log("start load");
         var s = document.createElement("script");
         s.type = "text/javascript";
-        s.src = `https://maps.google.com/maps/api/js?key=AIzaSyDWbACfGeZnCaYNOMXDDqzxm4HsqSQLSJg`;
+        s.src = `https://maps.google.com/maps/api/js?key=`+ process.env.GOOGLE_MAP_API_KEY;
         //var x = document.getElementsByTagName("script")[0];
         //x.parentNode.insertBefore(s, x);
         // Below is important.
