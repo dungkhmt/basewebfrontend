@@ -13,7 +13,6 @@ const loggerMiddleware = createLogger();
 
 
 var startState={};
-console.log(localStorage.getItem('TOKEN'))
 if( localStorage.getItem('TOKEN')!==null){
   startState = {
     auth: {

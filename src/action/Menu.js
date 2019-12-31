@@ -1,4 +1,5 @@
 import { API_URL } from "../config/config";
+import { failed } from "./Auth";
 
 export const MENU_REQUESTING = "MENU_REQUESTING";
 export const MENU_REQUEST_SUCCESS = "MENU_REQUEST_SUCCESS";
@@ -22,6 +23,7 @@ export const getMenu = () => {
           dispatch(menuRequestSuccess(res));
         },
         error => {
+          dispatch(failed());
           dispatch(menuRequestFailed());
         }
       );

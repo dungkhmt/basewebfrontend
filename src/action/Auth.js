@@ -47,7 +47,8 @@ const requesting = () => {
     type: LOGIN_REQUESTING
   };
 };
-const failed = () => {
+
+export const failed = () => {
   return {
     type: LOGIN_FAILURE
   };
