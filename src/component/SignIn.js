@@ -13,7 +13,7 @@ import Typography from "@material-ui/core/Typography";
 import { makeStyles } from "@material-ui/core/styles";
 import Container from "@material-ui/core/Container";
 import { useDispatch } from "react-redux";
-import { login } from "../action";
+//import { login } from "../action";
 import { Redirect } from "react-router";
 import CircularProgress from "@material-ui/core/CircularProgress";
 
@@ -74,7 +74,7 @@ export default function SignIn(props) {
 
   const handleSubmit = e => {
     e.preventDefault();
-    props.login(userName, password);
+    props.requestLogin(userName, password);
   };
   if (props.isAuthenticated === true)
     return <Redirect to={{ pathname: "/", state: { from: props.location } }} />;

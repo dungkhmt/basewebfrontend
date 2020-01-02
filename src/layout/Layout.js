@@ -8,8 +8,9 @@ import MenuIcon from "@material-ui/icons/Menu";
 import clsx from "clsx";
 import React, { useEffect } from "react";
 import { connect } from "react-redux";
-import { getMenu } from "../action";
+import { getMenu,logout } from "../action";
 import SideBar from "./SideBar";
+import Button from "@material-ui/core/Button";
 
 const drawerWidth = 240;
 
@@ -74,7 +75,13 @@ const useStyles = makeStyles(theme => ({
   },
   nested: {
     paddingLeft: theme.spacing(4)
+  },
+
+  toolbarButtons: {
+    marginLeft: "auto",
+    marginRight: -12
   }
+
 }));
 
 function Layout(props) {
@@ -90,6 +97,10 @@ function Layout(props) {
   const handleDrawerClose = () => {
     setOpen(false);
   };
+  const handleLogout = e => {
+    props.processLogout();
+  }
+
   useEffect(() => {
     if (props.isMenuGot === false) props.getMenu();
   });
@@ -114,11 +125,16 @@ function Layout(props) {
             })}
           >
             <MenuIcon />
+            
           </IconButton>
           <Typography variant="h6" noWrap>
             Base Web
           </Typography>
+          <span className={classes.toolbarButtons}>
+          <Button onClick={handleLogout} align='right'>Logout</Button>
+          </span>            
         </Toolbar>
+       
       </AppBar>
       <SideBar
         open={open}
@@ -138,7 +154,8 @@ const mapStateToProps = state => ({
 });
 
 const mapDispatchToProps = dispatch => ({
-  getMenu: () => dispatch(getMenu())
+  getMenu: () => dispatch(getMenu()),
+  processLogout: () => dispatch(logout())
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(Layout);

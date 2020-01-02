@@ -1,5 +1,5 @@
 import React from "react";
-import { Redirect, Switch } from "react-router-dom";
+import { Redirect, Switch, useParams } from "react-router-dom";
 
 import { Layout } from "./layout";
 import { Home, PrivateRouteWithLayout } from "./component";
@@ -12,6 +12,9 @@ import UserLoginCreate from "./component/userlogin/UserLoginCreate";
 import ListUserLogins from "./component/userlogin/listuserlogins";
 
 import GMapContainer from "./container/gmapcontainer";
+import DetailUserLogin from "./component/userlogin/detailuserlogin";
+
+
 
 function Routes(props) {// props nay tu parent transfer vao
   // console.log(props)
@@ -42,6 +45,15 @@ function Routes(props) {// props nay tu parent transfer vao
         path="/userlogin/list"                    // props
       />
 
+      <PrivateRouteWithLayout
+        component={DetailUserLogin}  //props
+        layout={Layout}          //props
+        isAuthenticated={props.isAuthenticated} // props
+        //isAuthenticated={true}
+        //exact                                   // props
+        path="/userlogin/detail/:username"                    // props
+      />
+      
       <PrivateRouteWithLayout
         component={OrderCreate}  //props
         layout={Layout}          //props
