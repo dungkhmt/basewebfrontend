@@ -17,7 +17,13 @@ export const getMenu = () => {
       method: "GET",
       headers: headers
     })
-      .then(res => res.json())
+      .then(res => {
+        if(res.ok)
+        return res.json()
+        else{
+          dispatch(failed());
+        }
+      })
       .then(
         res => {
           dispatch(menuRequestSuccess(res));
