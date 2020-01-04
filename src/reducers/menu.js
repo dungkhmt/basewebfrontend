@@ -3,7 +3,10 @@ import {
   MENU_REQUEST_SUCCESS,
   MENU_REQUESTING
 } from "../action/Menu";
-const menu = (state = { menu: new Set(), isRequesting: false, isMenuGot: false }, action) => {
+const menu = (
+  state = { menu: new Set(), isRequesting: false, isMenuGot: false },
+  action
+) => {
   switch (action.type) {
     case MENU_REQUESTING:
       return Object.assign({}, state, { isRequesting: true });
@@ -15,7 +18,8 @@ const menu = (state = { menu: new Set(), isRequesting: false, isMenuGot: false }
       });
     case MENU_REQUEST_FAILURE:
       return Object.assign({}, state, {
-        isRequesting: false
+        isRequesting: false,
+        isMenuGot: false
       });
 
     default:

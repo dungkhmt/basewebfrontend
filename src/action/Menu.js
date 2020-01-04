@@ -18,10 +18,9 @@ export const getMenu = () => {
       headers: headers
     })
       .then(res => {
-        if(res.ok)
-        return res.json()
-        else{
-          dispatch(failed());
+        if (res.ok) return res.json();
+        else {
+          throw new Error(res.status);
         }
       })
       .then(
