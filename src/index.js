@@ -19,6 +19,12 @@ if( localStorage.getItem('TOKEN')!==null){
       token: localStorage.getItem('TOKEN'),
       isAuthenticated: true
   }};
+} else {
+  startState = {
+    auth: {
+      token: null,
+      isAuthenticated: false
+  }};
 };
 
 
