@@ -1,0 +1,13 @@
+Post location API:
+ curl --header "Content-Type: application/json" -v POST http://localhost:8080/post-location -u admin:baseweb@123 -d '{"lat":10.110,"lng":103.83,"timePoint": "2019-12-26T04:45:50.770+0000"}'
+ 
+--------
+Login:
+ 
+  curl -v GET http://localhost:8080/ -u admin:baseweb@123
+  
+-------
+Create UserLogin
+
+ curl --header "Content-Type: application/json" -v POST http://localhost:8080/create-userlogin -u admin:baseweb@123 -d '{"userName":"dungpq","password":"123"}'
+

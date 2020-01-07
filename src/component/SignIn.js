@@ -119,7 +119,19 @@ export default function SignIn(props) {
               control={<Checkbox value="remember" color="primary" />}
               label="Remember me"
             />
-            {props.isRequesting === false ? (
+            {props.isRequesting === true ? (
+              <Button
+              disabled={true}
+              type="submit"
+              fullWidth
+              variant="contained"
+              color="primary"
+              className={classes.submit}
+            >
+              <CircularProgress /> Sign In
+            </Button>
+              
+            ) : (
               <Button
                 type="submit"
                 fullWidth
@@ -128,17 +140,6 @@ export default function SignIn(props) {
                 className={classes.submit}
               >
                 Sign In
-              </Button>
-            ) : (
-              <Button
-                disabled={true}
-                type="submit"
-                fullWidth
-                variant="contained"
-                color="primary"
-                className={classes.submit}
-              >
-                <CircularProgress /> Sign In
               </Button>
             )}
             <Grid container>
