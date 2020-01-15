@@ -11,8 +11,12 @@ import { composeWithDevTools } from "redux-devtools-extension";
 import { createLogger } from "redux-logger";
 import {LOGOUT_SUCCESS} from "./action/Auth"
 const loggerMiddleware = createLogger();
-
-
+let middleware = [
+  thunkMiddleware // lets us dispatch() functions
+];
+if (process.env.NODE_ENV !== "production") {
+  middleware = [...middleware, loggerMiddleware]; // neat middleware that logs actions
+}
 var startState={};
 if( localStorage.getItem('TOKEN')!==null){
   startState = {
@@ -41,9 +45,7 @@ const store = createStore(
   rootReducer,
   startState,
   composeWithDevTools(
-    applyMiddleware(
-      thunkMiddleware, // lets us dispatch() functions
-      loggerMiddleware // neat middleware that logs actions
+    applyMiddleware(...middleware
     )
   ),
 );
