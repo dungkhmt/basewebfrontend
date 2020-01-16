@@ -8,10 +8,10 @@ import MenuIcon from "@material-ui/icons/Menu";
 import clsx from "clsx";
 import React, { useEffect } from "react";
 import { connect } from "react-redux";
-import { getMenu,logout } from "../action";
+import { getMenu, logout } from "../action";
 import SideBar from "./SideBar";
 import Button from "@material-ui/core/Button";
-
+import ExitToAppIcon from "@material-ui/icons/ExitToApp";
 const drawerWidth = 240;
 
 const useStyles = makeStyles(theme => ({
@@ -81,7 +81,6 @@ const useStyles = makeStyles(theme => ({
     marginLeft: "auto",
     marginRight: -12
   }
-
 }));
 
 function Layout(props) {
@@ -99,7 +98,7 @@ function Layout(props) {
   };
   const handleLogout = e => {
     props.processLogout();
-  }
+  };
 
   useEffect(() => {
     if (props.isMenuGot === false) props.getMenu();
@@ -125,16 +124,19 @@ function Layout(props) {
             })}
           >
             <MenuIcon />
-            
           </IconButton>
           <Typography variant="h6" noWrap>
             Base Web
           </Typography>
           <span className={classes.toolbarButtons}>
-          <Button onClick={handleLogout} align='right'>Logout</Button>
-          </span>            
+            <IconButton color="inherit">
+              <ExitToAppIcon
+                onClick={handleLogout}
+                align="right"
+              ></ExitToAppIcon>
+            </IconButton>
+          </span>
         </Toolbar>
-       
       </AppBar>
       <SideBar
         open={open}
