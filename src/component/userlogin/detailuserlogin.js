@@ -1,86 +1,108 @@
-import React,{ useEffect, useState } from "react";
-import { Redirect, Switch, useParams } from "react-router-dom";
-import { API_URL } from "../../config/config";
-import {connect} from "react-redux";
-import Select from '@material-ui/core/Select';
-import MenuItem from '@material-ui/core/MenuItem';
+import Card from "@material-ui/core/Card";
+import CardContent from "@material-ui/core/CardContent";
+import { makeStyles } from "@material-ui/core/styles";
+import TextField from "@material-ui/core/TextField";
+import Typography from "@material-ui/core/Typography";
+import React, { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { useParams } from "react-router-dom";
+import { authGet } from "../../api";
+const useStyles = makeStyles(theme => ({
+  root: {
+    padding: theme.spacing(4),
+    "& .MuiTextField-root": {
+      margin: theme.spacing(1),
+      width: 200
+    }
+  }
+}));
+function UserDetail(props) {
+  const { partyId } = useParams();
+  const token = useSelector(state => state.auth.token);
+  const dispatch = useDispatch();
+  const [data, setData] = useState({});
+  const classes = useStyles();
 
-function DetailUserLogin(props){
-    let { username } = useParams();
-    const [data,setData]= useState("");
-    const [securityGroups, setSecurityGroups] = useState([]);
-    const inputdata = {"userName":username};
-    //const securityGroups = [];
+  useEffect(() => {
+    authGet(dispatch, token, "/rest/userCombineEntities/" + partyId).then(
+      res => {
+        setData(res);
+      },
+      error => {
+        setData([]);
+      }
+    );
+  }, []);
 
-    /*
-    const securityGroups = [
-      { label: "Apple", value: 1 },
-      { label: "Facebook", value: 2 },
-      { label: "Netflix", value: 3 },
-      { label: "Tesla", value: 4 },
-      { label: "Amazon", value: 5 },
-      { label: "Alphabet", value: 6 },
-    ];
-    */
-
-    const headers = new Headers();
-    headers.append("Accept", "application/json");
-    headers.append("Content-Type","application/json");
-    headers.append("X-Auth-Token", props.token);
-    
-    
-    useEffect(() => {
-    fetch(`${API_URL}/get-detail-user-login`, {
-      method: "POST",
-      headers: headers,
-      body:JSON.stringify(inputdata)
-    })
-      .then(res => {
-        console.log("first then, res = ");
-        console.log(res);
-           setData(res);
-           //setSecurityGroups(res.allSecurityGroups);
-          return res.json()}
-        )
-      
-      .then(
-        res => {
-           console.log("second then");
-           console.log(res);
-           setData(res);
-           setSecurityGroups(res.allSecurityGroups);
-           //securityGroups = res.allSecurityGroups;
-           console.log(res.allSecurityGroups);
-        },
-        error => {
-            //setData([]);
-        }
-      );
-    },[]);
-
-      return (        
-        
-
-        <Select
-          labelId="demo-simple-select-helper-label"
-          id="demo-simple-select-helper"
-          
-          
-        >
-        {
-          securityGroups.map(row =>(
-            <MenuItem value={row.groupId}>{row.description}</MenuItem>
-          ))
-        }
-        </Select>
-
-      );
+  return (
+    <Card>
+      <CardContent>
+        <Typography variant="h5" component="h2">
+          Detail User {data.userLoginId}
+        </Typography>
+        <form className={classes.root} noValidate autoComplete="off">
+          <div>
+            <TextField
+              id="firstName"
+              label="First Name"
+              value={data.firstName}
+              variant="outlined"
+              InputProps={{
+                readOnly: true
+              }}
+              InputLabelProps={{
+                shrink: true
+              }}
+            />
+            <TextField
+              id="middleName"
+              label="Middle Name"
+              value={data.middleName}
+              InputLabelProps={{
+                shrink: true
+              }}
+              InputProps={{
+                readOnly: true
+              }}
+            />
+            <TextField
+              id="lastName"
+              label="LastName"
+              value={data.lastName}
+              InputLabelProps={{
+                shrink: true
+              }}
+              InputProps={{
+                readOnly: true
+              }}
+            />
+            <TextField
+              id="birthDate"
+              label="Birth Date"
+              value={data.birthDate}
+              InputLabelProps={{
+                shrink: true
+              }}
+              InputProps={{
+                readOnly: true
+              }}
+            />
+            <TextField
+              id="userLoginId"
+              label="UserName"
+              value={data.userLoginId}
+              InputLabelProps={{
+                shrink: true
+              }}
+              InputProps={{
+                readOnly: true
+              }}
+            />
+          </div>
+        </form>
+      </CardContent>
+    </Card>
+  );
 }
 
-const mapStateToProps = state => ({
-    token: state.auth.token
-  });
-  
-  const mapDispatchToProps = dispatch => ({});
-  
-  export default connect(mapStateToProps, mapDispatchToProps)(DetailUserLogin);
+export default UserDetail;

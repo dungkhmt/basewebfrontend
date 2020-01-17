@@ -8,8 +8,9 @@ import SignInContainer from "./container/SignInContainer";
 import { Route } from "react-router-dom";
 import ListTrackLocations from "./component/tracklocations/listtracklocations";
 import GISMap from "./component/tracklocations/gismap";
-import UserLoginCreate from "./component/userlogin/UserLoginCreate";
-import ListUserLogins from "./component/userlogin/listuserlogins";
+import UserCreate from "./component/userlogin/createuser";
+import UserList from "./component/userlogin/userlist";
+import error from "./component/common/error";
 
 import GMapContainer from "./container/gmapcontainer";
 import DetailUserLogin from "./component/userlogin/detailuserlogin";
@@ -29,7 +30,7 @@ function Routes(props) {// props nay tu parent transfer vao
       />
 
       <PrivateRouteWithLayout
-        component={UserLoginCreate}  //props
+        component={UserCreate}  //props
         layout={Layout}          //props
         isAuthenticated={props.isAuthenticated} // props
         //isAuthenticated={true}
@@ -37,7 +38,7 @@ function Routes(props) {// props nay tu parent transfer vao
         path="/userlogin/create"                    // props
       />
       <PrivateRouteWithLayout
-        component={ListUserLogins}  //props
+        component={UserList}  //props
         layout={Layout}          //props
         isAuthenticated={props.isAuthenticated} // props
         //isAuthenticated={true}
@@ -51,7 +52,7 @@ function Routes(props) {// props nay tu parent transfer vao
         isAuthenticated={props.isAuthenticated} // props
         //isAuthenticated={true}
         //exact                                   // props
-        path="/userlogin/detail/:username"                    // props
+        path="/userlogin/:partyId"                    // props
       />
       
       <PrivateRouteWithLayout
@@ -80,6 +81,10 @@ function Routes(props) {// props nay tu parent transfer vao
       <Route 
         component={SignInContainer} // props
         path="/login"               // props
+      />
+      <Route 
+        component={error} // props
+        path="/not-found"               // props
       />
       <Redirect to="/not-found" />
     </Switch>
