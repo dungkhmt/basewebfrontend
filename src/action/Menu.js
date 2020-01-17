@@ -1,5 +1,6 @@
 import { API_URL } from "../config/config";
 import { failed } from "./Auth";
+import api from "../api"
 
 export const MENU_REQUESTING = "MENU_REQUESTING";
 export const MENU_REQUEST_SUCCESS = "MENU_REQUEST_SUCCESS";
@@ -8,27 +9,14 @@ export const MENU_REQUEST_FAILURE = "MENU_REQUEST_FAILURE";
 export const getMenu = () => {
   return (dispatch, getState) => {
     dispatch(menuRequesting());
-    const headers = new Headers();
-
-    //headers.append("Accept", "application/json");
-
-    headers.append("X-Auth-Token", getState().auth.token);
-    fetch(`${API_URL}/menu`, {
-      method: "GET",
-      headers: headers
-    })
-      .then(res => {
-        if (res.ok) return res.json();
-        else {
-          throw new Error(res.status);
-        }
-      })
-      .then(
-        res => {
+   api.getMenu(dispatch,getState().auth.token).then(
+        res => 
+        {
+          console.log(res);
           dispatch(menuRequestSuccess(res));
         },
         error => {
-          dispatch(failed());
+          console.log(error);
           dispatch(menuRequestFailed());
         }
       );
