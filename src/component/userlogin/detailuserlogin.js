@@ -24,7 +24,7 @@ function UserDetail(props) {
   const classes = useStyles();
 
   useEffect(() => {
-    authGet(dispatch, token, "/rest/userCombineEntities/" + partyId).then(
+    authGet(dispatch, token, "/dPersons/" + partyId).then(
       res => {
         setData(res);
       },
@@ -45,7 +45,7 @@ function UserDetail(props) {
             <TextField
               id="firstName"
               label="First Name"
-              value={data.firstName}
+              value={data.person===undefined?"" :data.person.firstName}
               variant="outlined"
               InputProps={{
                 readOnly: true
@@ -57,7 +57,7 @@ function UserDetail(props) {
             <TextField
               id="middleName"
               label="Middle Name"
-              value={data.middleName}
+              value={data.person===undefined?"" :data.person.middleName}
               InputLabelProps={{
                 shrink: true
               }}
@@ -68,7 +68,7 @@ function UserDetail(props) {
             <TextField
               id="lastName"
               label="LastName"
-              value={data.lastName}
+              value={data.person===undefined?"" :data.person.lastName}
               InputLabelProps={{
                 shrink: true
               }}
@@ -79,7 +79,7 @@ function UserDetail(props) {
             <TextField
               id="birthDate"
               label="Birth Date"
-              value={data.birthDate}
+              value={data.person===undefined?"" :data.person.birthDate}
               InputLabelProps={{
                 shrink: true
               }}
@@ -90,7 +90,7 @@ function UserDetail(props) {
             <TextField
               id="userLoginId"
               label="UserName"
-              value={data.userLoginId}
+              value={data.userLogin===undefined?"" :data.userLogin.userLoginId}
               InputLabelProps={{
                 shrink: true
               }}

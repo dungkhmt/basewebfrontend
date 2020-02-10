@@ -6,6 +6,12 @@ import CardContent from "@material-ui/core/CardContent";
 import { makeStyles } from "@material-ui/core/styles";
 import TextField from "@material-ui/core/TextField";
 import Typography from "@material-ui/core/Typography";
+import InputLabel from "@material-ui/core/InputLabel";
+import MenuItem from "@material-ui/core/MenuItem";
+import FormHelperText from "@material-ui/core/FormHelperText";
+import FormControl from "@material-ui/core/FormControl";
+import Select from "@material-ui/core/Select";
+import Input from "@material-ui/core/Input";
 import {
   KeyboardDatePicker,
   MuiPickersUtilsProvider
@@ -22,17 +28,35 @@ const useStyles = makeStyles(theme => ({
       margin: theme.spacing(1),
       width: 200
     }
-  }
+  },
+  formControl: {
+    margin: theme.spacing(1),
+    minWidth: 120,
+    maxWidth: 300,
+  },
 }));
+const ITEM_HEIGHT = 48;
+const ITEM_PADDING_TOP = 8;
+const MenuProps = {
+  PaperProps: {
+    style: {
+      maxHeight: ITEM_HEIGHT * 4.5 + ITEM_PADDING_TOP,
+      width: 250
+    }
+  }
+};
 function UserCreate(props) {
   const token = useSelector(state => state.auth.token);
   const dispatch = useDispatch();
   const history = useHistory();
-  const [lastName, setLastName] = useState([]);
-  const [middleName, setMiddleName] = useState([]);
-  const [firstName, setFirstName] = useState([]);
-  const [userName, setUserName] = useState([]);
-  const [password, setPassword] = useState([]);
+  const [lastName, setLastName] = useState();
+  const [middleName, setMiddleName] = useState();
+  const [firstName, setFirstName] = useState();
+  const [userName, setUserName] = useState();
+  const [password, setPassword] = useState();
+  const [gender, setGender] = useState();
+  const [partyCode, setPartyCode] = useState();
+  const [roles, setRoles] = useState([]);
   const [birthDate, setBirthDate] = useState(new Date());
 
   const handleBirthDateChange = date => {
@@ -57,17 +81,42 @@ function UserCreate(props) {
   const handlePasswordChange = event => {
     setPassword(event.target.value);
   };
+  const handleGenderChange = event => {
+    setGender(event.target.value);
+  };
+  const handlePartyCodeChange = event => {
+    setPartyCode(event.target.value);
+  };
+
+  const handleChange = event => {
+    setRoles(event.target.value);
+  };
+
+  const handleRoleChange = event => {
+    // console.log(event.target);
+    // const { options } = event.target;
+    // const value = [];
+    // for (let i = 0, l = options.length; i < l; i += 1) {
+    //   if (options[i].selected) {
+    //     value.push(options[i].value);
+    //   }
+    // }
+    setRoles(event.target.value);
+  };
   const handleSubmit = () => {
     const data = {
-      userLoginId: userName,
+      userName: userName,
       password: password,
       lastName: lastName,
       middleName: middleName,
       firstName: firstName,
-      birthDate: birthDate
+      birthDate: birthDate,
+      gender: gender,
+      partyCode: partyCode,
+      roles: roles
     };
     setIsRequesting(true);
-    authPost(dispatch, token, "/rest/userCombineEntities/", data).then(
+    authPost(dispatch, token, "/user", data).then(
       res => {
         console.log(res);
         setIsRequesting(false);
@@ -89,6 +138,12 @@ function UserCreate(props) {
           <form className={classes.root} noValidate autoComplete="off">
             <div>
               <TextField
+                id="partyCode"
+                label="Party Code"
+                value={partyCode}
+                onChange={handlePartyCodeChange}
+              />
+              <TextField
                 id="firstName"
                 label="First Name"
                 value={firstName}
@@ -106,6 +161,21 @@ function UserCreate(props) {
                 value={lastName}
                 onChange={handleLastNameChange}
               />
+              <TextField
+                id="select-gender"
+                select
+                label="Select"
+                value={gender}
+                onChange={handleGenderChange}
+                helperText="Select your gender"
+              >
+                <MenuItem key="male" value="M">
+                  Male
+                </MenuItem>
+                <MenuItem key="female" value="F">
+                  Female
+                </MenuItem>
+              </TextField>
               <KeyboardDatePicker
                 disableToolbar
                 variant="inline"
@@ -132,6 +202,31 @@ function UserCreate(props) {
                 type="password"
                 onChange={handlePasswordChange}
               />
+              <FormControl className={classes.formControl}>
+                <InputLabel id="role-label">Role</InputLabel>
+                <Select
+                  labelId="role-label"
+                  id="demo-mutiple-name"
+                  multiple
+                  value={roles}
+                  onChange={handleRoleChange}
+                  input={<Input />}
+                  MenuProps={MenuProps}
+                >
+                  <MenuItem
+                    key="ROLE_SALE_MANAGER"
+                    value="ROLE_SALE_MANAGER"
+                  > ROLE_SALE_MANAGER</MenuItem>
+                  <MenuItem
+                    key="ROLE_ACCOUNTANT"
+                    value="ROLE_ACCOUNTANT"
+                  >ROLE_ACCOUNTANT</MenuItem>
+                  <MenuItem
+                    key="ROLE_FULL_ADMIN"
+                    value="ROLE_FULL_ADMIN"
+                  >ROLE_FULL_ADMIN</MenuItem>
+                </Select>
+              </FormControl>
             </div>
           </form>
         </CardContent>
