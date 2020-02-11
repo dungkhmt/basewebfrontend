@@ -43,7 +43,7 @@ class GISMap extends Component {
     }
   
     render() {
-      console.log(this.props);
+      console.log('render, props = ',this.props);
       return (
         // Important! Always set the container height explicitly
   

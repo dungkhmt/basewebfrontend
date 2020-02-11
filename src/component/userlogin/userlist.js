@@ -51,13 +51,13 @@ export default function UserList() {
           authGet(
             dispatch,
             token,
-            "/dPersons" + "?size=" + query.pageSize + "&page=" + query.page+sortParam+filterParam
+            "/users" + "?size=" + query.pageSize + "&page=" + query.page+sortParam+filterParam
           ).then(
             res => {
               resolve({
-                data: res._embedded.dPersons,
-                page: res.page.number,
-                totalCount: res.page.totalElements
+                data: res.content,
+                page: res.number,
+                totalCount: res.totalElements
               });
             },
             error => {
