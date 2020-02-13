@@ -43,9 +43,9 @@ export default function UserList() {
           if(query.filters.length>0){
               let filter=query.filters;
               filter.forEach(v=>{
-                filterParam=v.column.field+"="+v.value+"&"
+                filterParam=v.column.field+":"+v.value+","
               })
-              filterParam="&"+filterParam.substring(0,filterParam.length-1);
+              filterParam="&filtering="+filterParam.substring(0,filterParam.length-1);
           }
 
           authGet(
