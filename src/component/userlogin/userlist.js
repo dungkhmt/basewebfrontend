@@ -29,7 +29,7 @@ export default function UserList() {
       columns={columns}
       options={{
         filtering: true,
-        search: false
+        search: true
       }}
       data={query =>
         new Promise((resolve, reject) => {
