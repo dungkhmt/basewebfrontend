@@ -39,18 +39,18 @@ export default function UserList() {
             sortParam="&sort="+query.orderBy.field+','+query.orderDirection;
           }
           let filterParam="";
-          if(query.filters.length>0){
-              let filter=query.filters;
-              filter.forEach(v=>{
-                filterParam=v.column.field+":"+v.value+","
-              })
-              filterParam="&filtering="+filterParam.substring(0,filterParam.length-1);
-          }
-
+          //if(query.filters.length>0){
+          //    let filter=query.filters;
+          //    filter.forEach(v=>{
+          //      filterParam=v.column.field+":"+v.value+","
+          //    })
+          //    filterParam="&filtering="+filterParam.substring(0,filterParam.length-1);
+          //}
+          filterParam = "&search=" + query.search;
           authGet(
             dispatch,
             token,
-            "/users" + "?size=" + query.pageSize + "&page=" + query.page+sortParam+filterParam
+            "/users" + "?size=" + query.pageSize + "&page=" + query.page+sortParam+ filterParam
           ).then(
             res => {
               resolve({
