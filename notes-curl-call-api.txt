@@ -34,6 +34,10 @@ Get list products
  curl --header "Content-Type: application/json" -v POST http://localhost:8080/api/get-list-product -u admin:123 -d '{"statusId":null}'
 
 --------
+Get asigned delivery route 
+    curl --header "Content-Type: application/json" -v GET http://3.1.6.126/api/get-assigned-delivery-routes -u admin:123
+
+--------
 get list facility
  curl --header "Content-Type: application/json" -v POST http://localhost:8080/api/get-list-facility -u admin:123 -d '{"statusId":null}'
 

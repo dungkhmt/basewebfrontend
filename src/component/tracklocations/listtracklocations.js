@@ -53,6 +53,7 @@ function ListTrackLocations(props) {
           .then(
             res => {
                 setData(res);
+                console.log(res);
             },
             error => {
                 setData([]);

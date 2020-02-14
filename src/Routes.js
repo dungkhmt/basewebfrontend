@@ -6,7 +6,8 @@ import { Home, PrivateRouteWithLayout } from "./component";
 import OrderCreate from "./component/order/OrderCreate";
 import SignInContainer from "./container/SignInContainer";
 import { Route } from "react-router-dom";
-import ListTrackLocations from "./component/tracklocations/listtracklocations";
+//import ListTrackLocations from "./component/tracklocations/listtracklocations";
+import TrackLocationList from "./component/tracklocations/tracklocationlist";
 import GISMap from "./component/tracklocations/gismap";
 import UserCreate from "./component/userlogin/createuser";
 import UserList from "./component/userlogin/userlist";
@@ -64,7 +65,8 @@ function Routes(props) {// props nay tu parent transfer vao
       />
 
       <PrivateRouteWithLayout
-        component={ListTrackLocations}  //props
+        //component={ListTrackLocations}  //props
+        component={TrackLocationList}
         layout={Layout}          //props
         isAuthenticated={props.isAuthenticated} // props
         //exact                                   // props

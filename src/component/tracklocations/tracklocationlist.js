@@ -6,26 +6,18 @@ import { authGet } from "../../api";
 
 import { useHistory } from "react-router-dom";
 
-export default function UserList() {
-  const dispatch = useDispatch();
-  const history = useHistory();
-  const token = useSelector(state => state.auth.token);
-  const columns = [
-    { title: "Full Name", field: "fullName" },
-    { title: "Status", field: "status", lookup: { 'PARTY_ENABLED': 'PARTY_ENABLED', 'PARTY_DISABLED': 'PARTY_DISABLED' }},
-    { title: "Type", field: "partyType"},
-    { title: "Created Date", field: "createdDate", type:'date' },
-    { title: "User Name", field: "userLoginId" },
-    { title: "Party Code", field: "partyCode" },
+export default function TrackLocationList(){
+    const dispatch = useDispatch();
+    const token = useSelector(state => state.auth.token);
+    const columns = [
+        {title: "partyId", field:"partyId"},
+        {title: "Location", field:"location"},
+        {title: "Time-Point", field:"timePoint"}
+    ];
 
-  ];
-  const rowClick = data => {
-    console.log(data);
-    history.push("/userlogin/" + data.partyId);
-  };
-  return (
-    <MaterialTable
-      title="List Users"
+    return (
+        <MaterialTable
+      title="Track Locations"
       columns={columns}
       options={{
         filtering: true,
@@ -50,7 +42,7 @@ export default function UserList() {
           authGet(
             dispatch,
             token,
-            "/users" + "?size=" + query.pageSize + "&page=" + query.page+sortParam+filterParam
+            "/tracklocations" + "?size=" + query.pageSize + "&page=" + query.page+sortParam+filterParam
           ).then(
             res => {
               resolve({
@@ -67,8 +59,8 @@ export default function UserList() {
       }
       icons={tableIcons}
       onRowClick={(event, rowData) => {
-        rowClick(rowData);
+        console.log("select ",rowData);
       }}
     />
-  );
+    );
 }
