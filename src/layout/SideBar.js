@@ -22,7 +22,7 @@ import clsx from "clsx";
 import React, { useEffect } from "react";
 import { Link, Route, Switch } from "react-router-dom";
 import SigninContainer from "../container/SignInContainer";
-const drawerWidth = 240;
+const drawerWidth = 340;
 const useStyles = makeStyles(theme => ({
   root: {
     display: "flex"
@@ -239,7 +239,7 @@ export default function SideBar(props) {
                   ""
                 )}
                 {props.menu.has("MENU_ORDER_LIST") ? (
-                  <Link to="/order/list">
+                  
                     <ListItem
                       button
                       className={classes.nested}
@@ -251,7 +251,7 @@ export default function SideBar(props) {
                       </ListItemIcon>
                       <ListItemText primary="Danh sách" />
                     </ListItem>
-                  </Link>
+                  
                 ) : (
                   ""
                 )}
@@ -298,6 +298,117 @@ export default function SideBar(props) {
         ) : (
           ""
         )}
+
+          <div>
+            <ListItem button onClick={() => handleListClick(4)}> 
+              <ListItemIcon>
+                <InboxIcon />
+              </ListItemIcon>
+              <ListItemText primary="Tuyến bán hàng" />
+              {openCollapse[4] ? <ExpandLess /> : <ExpandMore />}
+            </ListItem>
+            <Collapse in={openCollapse[4]} timeout="auto" unmountOnExit>
+              <List component="div" disablePadding>
+                  <ListItem button className={classes.nested}>
+                    <ListItemIcon>
+                      <StarBorder />
+                    </ListItemIcon>
+                    <ListItemText primary="Danh sách NVBH" />
+                  </ListItem>
+                  <ListItem button className={classes.nested}>
+                    <ListItemIcon>
+                      <StarBorder />
+                    </ListItemIcon>
+                    <ListItemText primary="Danh sách khách hàng" />
+                  </ListItem>
+                  
+                  <ListItem button className={classes.nested}>
+                    <ListItemIcon>
+                      <StarBorder />
+                    </ListItemIcon>
+                    <ListItemText primary="Kế hoạch tuyến" />
+                  </ListItem>
+                  <ListItem button className={classes.nested}>
+                    <ListItemIcon>
+                      <StarBorder />
+                    </ListItemIcon>
+                    <ListItemText primary="Cấu hình tuyến" />
+                  </ListItem>
+                  
+                  <ListItem button className={classes.nested}>
+                    <ListItemIcon>
+                      <StarBorder />
+                    </ListItemIcon>
+                    <ListItemText primary="Chi tiết tuyến" />
+                  </ListItem>
+                  
+                
+              </List>
+            </Collapse>
+          </div>
+
+
+          <div>
+            <ListItem button onClick={() => handleListClick(5)}> 
+              <ListItemIcon>
+                <InboxIcon />
+              </ListItemIcon>
+              <ListItemText primary="QL Vận chuyển" />
+              {openCollapse[5] ? <ExpandLess /> : <ExpandMore />}
+            </ListItem>
+            <Collapse in={openCollapse[5]} timeout="auto" unmountOnExit>
+              <List component="div" disablePadding>
+                  <ListItem button className={classes.nested}>
+                    <ListItemIcon>
+                      <StarBorder />
+                    </ListItemIcon>
+                    <ListItemText primary="DS Xe" />
+                  </ListItem>
+                  <ListItem button className={classes.nested}>
+                    <ListItemIcon>
+                      <StarBorder />
+                    </ListItemIcon>
+                    <ListItemText primary="DS khách hàng" />
+                  </ListItem>
+                  
+                  <ListItem button className={classes.nested}>
+                    <ListItemIcon>
+                      <StarBorder />
+                    </ListItemIcon>
+                    <ListItemText primary="Thời gian/quãng đường" />
+                  </ListItem>
+                  <ListItem button className={classes.nested}>
+                    <ListItemIcon>
+                      <StarBorder />
+                    </ListItemIcon>
+                    <ListItemText primary="DS đơn hàng vận chuyển" />
+                  </ListItem>
+                  
+                  <ListItem button className={classes.nested}>
+                    <ListItemIcon>
+                      <StarBorder />
+                    </ListItemIcon>
+                    <ListItemText primary="Tạo mới đợt giao hàng" />
+                  </ListItem>
+                  
+                  <ListItem button className={classes.nested}>
+                    <ListItemIcon>
+                      <StarBorder />
+                    </ListItemIcon>
+                    <ListItemText primary="DS đợt giao hàng" />
+                  </ListItem>
+                
+                  <ListItem button className={classes.nested}>
+                    <ListItemIcon>
+                      <StarBorder />
+                    </ListItemIcon>
+                    <ListItemText primary="Lập kế hoạch giao hàng" />
+                  </ListItem>
+
+              </List>
+            </Collapse>
+          </div>
+
       </List>
     </Drawer>
   );

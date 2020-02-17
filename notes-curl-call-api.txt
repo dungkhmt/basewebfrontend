@@ -26,6 +26,11 @@ Create Order (Tạo mới đơn hàng)
  curl --header "Content-Type: application/json" -v POST http://localhost:8080/api/create-order -u admin:123 -d '{"partyCustomerId":"8161d37e-4026-11ea-9be3-54bf64436441","salesChannelId":null,"salesmanId":"dungpq","facilityId":"FAHN00001","orderDate":"2020-02-02 10:30:03","orderItems":[{"productId":"20201260003","quantity":30,"unitPrice":1000000,"totalItemPrice":30000000},{"productId":"20201260005","quantity":70,"unitPrice":3000000,"totalItemPrice":210000000}]}'
  
 --------
+Create Shipments
+
+  curl --header "Content-Type: application/json" -v POST http://localhost:8080/api/create-shipment -u admin:123 -d '{"shipmentItems":[{"productId":"20201260001","quantity":10,"amountPallet":0.0},{"productId":"20201260002","quantity":100,"amountPallet":0.0},{"productId":"20201260003","quantity":200,"amountPallet":0.0}]}'
+  
+--------
 Get total revenue
  curl --header "Content-Type: application/json" -v POST http://localhost:8080/api/get-total-revenue -u admin:123 -d '{"fromDate":"","toDate":""}'
 --------
