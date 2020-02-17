@@ -4,7 +4,7 @@ import MaterialTable from "material-table";
 import { useSelector, useDispatch } from "react-redux";
 import { authGet } from "../../api";
 
-import { useHistory } from "react-router-dom";
+import { useHistory, Link } from "react-router-dom";
 
 export default function UserList() {
   const dispatch = useDispatch();
@@ -15,20 +15,16 @@ export default function UserList() {
     { title: "Status", field: "status", lookup: { 'PARTY_ENABLED': 'PARTY_ENABLED', 'PARTY_DISABLED': 'PARTY_DISABLED' }},
     { title: "Type", field: "partyType"},
     { title: "Created Date", field: "createdDate", type:'date' },
-    { title: "User Name", field: "userLoginId" },
+    { title: "User Name", field: "userLoginId",  render: rowData => <Link to={"/userlogin/"+rowData.partyId} >{rowData.userLoginId}</Link>},
     { title: "Party Code", field: "partyCode" },
 
   ];
-  const rowClick = data => {
-    console.log(data);
-    history.push("/userlogin/" + data.partyId);
-  };
   return (
     <MaterialTable
       title="List Users"
       columns={columns}
       options={{
-        filtering: true,
+        //filtering: true,
         search: true
       }}
       data={query =>
@@ -66,9 +62,7 @@ export default function UserList() {
         })
       }
       icons={tableIcons}
-      onRowClick={(event, rowData) => {
-        rowClick(rowData);
-      }}
+      
     />
   );
 }
