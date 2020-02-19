@@ -25,7 +25,9 @@
     "redux-react-session": "^2.6.1",
     "redux-thunk": "^2.3.0",
     "styled-components": "^4.3.2",
-    "xlsx": "^0.14.3"
+    "xlsx": "^0.14.3",
+    "@material-ui/pickers": "latest",
+    "@date-io/date-fns": "latest"
   },
   "scripts": {
     "start": "react-scripts start",
