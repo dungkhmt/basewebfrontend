@@ -1,15 +1,16 @@
-import React, {useState} from "react";
+import React, {useEffect, useState} from "react";
 import TextField from "@material-ui/core/TextField";
 import DateFnsUtils from "@date-io/date-fns";
 import {KeyboardDatePicker, MuiPickersUtilsProvider} from "@material-ui/pickers";
 import CardActions from "@material-ui/core/CardActions";
 import CardContent from "@material-ui/core/CardContent";
 import Card from "@material-ui/core/Card";
-import {authPost} from "../../api";
+import {authGet, authPost} from "../../api";
 import {useDispatch, useSelector} from "react-redux";
 import Button from "@material-ui/core/Button";
-import { makeStyles } from "@material-ui/core/styles";
+import {makeStyles} from "@material-ui/core/styles";
 import Typography from "@material-ui/core/Typography";
+import {toFormattedDateTime} from "../../utils/dateutils";
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -31,16 +32,24 @@ export default function DeliveryPlanCreate() {
   const token = useSelector(state => state.auth.token);
   const dispatch = useDispatch();
 
-  const [name, setName] = useState();
+  const [userName, setUserName] = useState();
+  const [name, setName] = useState('');
   const [date, setDate] = useState(new Date());
+
+  function getUserName() {
+    authGet(dispatch, token, '/').then(response => setUserName(response['user'])).catch(console.log)
+  }
+
+  useEffect(getUserName, []);
 
   const handleSubmit = () => {
     const deliveryPlanInfo = {
       description: name,
-      createdByUserLoginId: null, // TODO
-      deliveryDate: date
+      createdByUserLoginId: userName,
+      deliveryDate: toFormattedDateTime(date)
     };
-    authPost(dispatch, token, '/delivery-plan/create', deliveryPlanInfo).then(
+    console.log(deliveryPlanInfo);
+    authPost(dispatch, token, '/create-delivery-plan', deliveryPlanInfo).then(
       response => {
         console.log(response);
       },
@@ -61,20 +70,18 @@ export default function DeliveryPlanCreate() {
             <TextField id="delivery-plan-name"
                        label="Tên đợt giao hàng"
                        type="search"
-                       value={name}
-                       onChange={setName}/>
-            <KeyboardDatePicker
-              disableToolbar
-              variant="inline"
-              format="yyyy-MM-dd"
-              margin="normal"
-              id="delivery-plan-date-picker-inline"
-              label="Lựa chọn thời gian thực hiện"
-              value={date}
-              onChange={setDate}
-              KeyboardButtonProps={{
-                "aria-label": "Thay đổi thời gian"
-              }}
+                       onChange={event => setName(event.target.value)}/>
+            <KeyboardDatePicker disableToolbar
+                                variant="inline"
+                                format="yyyy-MM-dd"
+                                margin="normal"
+                                id="delivery-plan-date-picker-inline"
+                                label="Lựa chọn thời gian thực hiện"
+                                value={date}
+                                onChange={setDate}
+                                KeyboardButtonProps={{
+                                  "aria-label": "Thay đổi thời gian"
+                                }}
             />
           </form>
         </CardContent>

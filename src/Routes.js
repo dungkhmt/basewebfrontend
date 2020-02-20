@@ -14,6 +14,7 @@ import error from "./component/common/error";
 import GMapContainer from "./container/gmapcontainer";
 import DetailUserLogin from "./component/userlogin/detailuserlogin";
 import DeliveryPlanCreate from "./component/deliveryplan/DeliveryPlanCreate";
+import DeliveryPlanList from "./component/deliveryplan/DeliveryPlanList";
 
 
 function Routes(props) {// props nay tu parent transfer vao
@@ -85,6 +86,14 @@ function Routes(props) {// props nay tu parent transfer vao
         //isAuthenticated={true}
         //exact                                   // props
         path="/delivery-plan/create"                    // props
+      />
+      <PrivateRouteWithLayout
+        component={DeliveryPlanList}  //props
+        layout={Layout}          //props
+        isAuthenticated={props.isAuthenticated} // props
+        //isAuthenticated={true}
+        //exact                                   // props
+        path="/delivery-plan/list"                    // props
       />
 
       <Route
