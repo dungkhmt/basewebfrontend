@@ -13,12 +13,9 @@ import error from "./component/common/error";
 
 import GMapContainer from "./container/gmapcontainer";
 import DetailUserLogin from "./component/userlogin/detailuserlogin";
-<<<<<<< dc6dbef0431f3b9b720ef5f9f7e724326f19bb2e
 import DeliveryPlanCreate from "./component/deliveryplan/DeliveryPlanCreate";
-=======
 import EditUser from "./component/userlogin/edituserlogin";
 
->>>>>>> update edit user
 
 
 function Routes(props) {// props nay tu parent transfer vao
