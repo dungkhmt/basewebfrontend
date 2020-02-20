@@ -15,6 +15,8 @@ import GMapContainer from "./container/gmapcontainer";
 import DetailUserLogin from "./component/userlogin/detailuserlogin";
 import DeliveryPlanCreate from "./component/deliveryplan/DeliveryPlanCreate";
 import DeliveryPlanList from "./component/deliveryplan/DeliveryPlanList";
+import EditUser from "./component/userlogin/edituserlogin";
+
 
 
 function Routes(props) {// props nay tu parent transfer vao
@@ -46,6 +48,14 @@ function Routes(props) {// props nay tu parent transfer vao
         path="/userlogin/list"                    // props
       />
 
+      <PrivateRouteWithLayout
+        component={EditUser}  //props
+        layout={Layout}          //props
+        isAuthenticated={props.isAuthenticated} // props
+        //isAuthenticated={true}
+        //exact                                   // props
+        path="/userlogin/:partyId/edit"                    // props
+      />
       <PrivateRouteWithLayout
         component={DetailUserLogin}  //props
         layout={Layout}          //props

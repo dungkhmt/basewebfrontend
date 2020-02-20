@@ -1,29 +1,29 @@
-import DateFnsUtils from "@date-io/date-fns";
-import Button from "@material-ui/core/Button";
+import {
+  Button,
+  CardActions,
+  CircularProgress,
+  FormControl,
+  InputLabel,
+  Select,
+  Input,
+  MenuItem
+} from "@material-ui/core";
 import Card from "@material-ui/core/Card";
-import CardActions from "@material-ui/core/CardActions";
 import CardContent from "@material-ui/core/CardContent";
 import { makeStyles } from "@material-ui/core/styles";
 import TextField from "@material-ui/core/TextField";
 import Typography from "@material-ui/core/Typography";
-import InputLabel from "@material-ui/core/InputLabel";
-import MenuItem from "@material-ui/core/MenuItem";
-import FormHelperText from "@material-ui/core/FormHelperText";
-import FormControl from "@material-ui/core/FormControl";
-import Select from "@material-ui/core/Select";
-import Input from "@material-ui/core/Input";
-
-import { failed } from "../../action/Auth";
+import React, { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { useParams, useHistory } from "react-router-dom";
+import { failed } from "../../action";
+import { authGet, authPut } from "../../api";
 import {
   KeyboardDatePicker,
   MuiPickersUtilsProvider
 } from "@material-ui/pickers";
-import React, { useState } from "react";
-import { useHistory } from "react-router-dom";
-import { authPost } from "../../api";
 
-import { useDispatch, useSelector } from "react-redux";
-import { CircularProgress } from "@material-ui/core";
+import DateFnsUtils from "@date-io/date-fns";
 const useStyles = makeStyles(theme => ({
   root: {
     padding: theme.spacing(4),
@@ -48,10 +48,12 @@ const MenuProps = {
     }
   }
 };
-function UserCreate(props) {
+function EditUser(props) {
+  const history = useHistory();
+  const { partyId } = useParams();
   const token = useSelector(state => state.auth.token);
   const dispatch = useDispatch();
-  const history = useHistory();
+  const classes = useStyles();
   const [lastName, setLastName] = useState();
   const [middleName, setMiddleName] = useState();
   const [firstName, setFirstName] = useState();
@@ -66,11 +68,7 @@ function UserCreate(props) {
   };
   const [isRequesting, setIsRequesting] = useState(false);
 
-  const classes = useStyles();
-
-  const handleUserNameChange = event => {
-    setUserName(event.target.value);
-  };
+  
   const handleLastNameChange = event => {
     setLastName(event.target.value);
   };
@@ -90,45 +88,30 @@ function UserCreate(props) {
     setPartyCode(event.target.value);
   };
 
-  const handleChange = event => {
-    setRoles(event.target.value);
-  };
+  
 
   const handleRoleChange = event => {
-    // console.log(event.target);
-    // const { options } = event.target;
-    // const value = [];
-    // for (let i = 0, l = options.length; i < l; i += 1) {
-    //   if (options[i].selected) {
-    //     value.push(options[i].value);
-    //   }
-    // }
+    
     setRoles(event.target.value);
   };
   const handleSubmit = () => {
     const data = {
-      userName: userName,
-      password: password,
       lastName: lastName,
       middleName: middleName,
       firstName: firstName,
       birthDate: birthDate,
-      gender: gender,
       partyCode: partyCode,
       roles: roles
     };
     setIsRequesting(true);
-    authPost(dispatch, token, "/user", data)
+    authPut(dispatch, token, "/user/" + partyId, data)
       .then(
         res => {
-          console.log(res);
           setIsRequesting(false);
           if (res.status === 401) {
             dispatch(failed());
             throw Error("Unauthorized");
-          } else if (res.status === 409) {
-            alert("User exits!!");
-          } else if (res.status === 201) {
+          } else if (res.status === 200) {
             return res.json();
           }
         },
@@ -140,13 +123,27 @@ function UserCreate(props) {
         history.push("/userlogin/" + res);
       });
   };
+  useEffect(() => {
+    authGet(dispatch, token, "/users/" + partyId).then(
+      res => {
+        setFirstName(res.firstName);
+        setMiddleName(res.middleName);
+        setLastName(res.lastName);
+        setBirthDate(res.birthDate);
+        setPartyCode(res.partyCode);
+        setUserName(res.userLoginId);
+        setRoles(res.roles);
+      },
+      error => {}
+    );
+  }, []);
 
   return (
     <MuiPickersUtilsProvider utils={DateFnsUtils}>
       <Card>
         <CardContent>
-          <Typography variant="h5" component="h2">
-            Create User
+          <Typography variant="h5" component="h2" align="left">
+            Edit User {userName}
           </Typography>
           <form className={classes.root} noValidate autoComplete="off">
             <div>
@@ -154,41 +151,40 @@ function UserCreate(props) {
                 id="partyCode"
                 label="Party Code"
                 value={partyCode}
+                variant="outlined"
                 onChange={handlePartyCodeChange}
+                InputLabelProps={{
+                  shrink: true
+                }}
               />
               <TextField
                 id="firstName"
                 label="First Name"
                 value={firstName}
+                variant="outlined"
                 onChange={handleFirstNameChange}
+                InputLabelProps={{
+                  shrink: true
+                }}
               />
               <TextField
                 id="middleName"
                 label="Middle Name"
                 value={middleName}
                 onChange={handleMiddleNameChange}
+                InputLabelProps={{
+                  shrink: true
+                }}
               />
               <TextField
                 id="lastName"
                 label="LastName"
                 value={lastName}
                 onChange={handleLastNameChange}
+                InputLabelProps={{
+                  shrink: true
+                }}
               />
-              <TextField
-                id="select-gender"
-                select
-                label="Select"
-                value={gender}
-                onChange={handleGenderChange}
-                helperText="Select your gender"
-              >
-                <MenuItem key="male" value="M">
-                  Male
-                </MenuItem>
-                <MenuItem key="female" value="F">
-                  Female
-                </MenuItem>
-              </TextField>
               <KeyboardDatePicker
                 disableToolbar
                 variant="inline"
@@ -201,19 +197,6 @@ function UserCreate(props) {
                 KeyboardButtonProps={{
                   "aria-label": "change date"
                 }}
-              />
-              <TextField
-                id="userName"
-                label="UserName"
-                value={userName}
-                onChange={handleUserNameChange}
-              />
-              <TextField
-                id="password"
-                label="Password"
-                value={password}
-                type="password"
-                onChange={handlePasswordChange}
               />
               <FormControl className={classes.formControl}>
                 <InputLabel id="role-label">Role</InputLabel>
@@ -256,4 +239,4 @@ function UserCreate(props) {
   );
 }
 
-export default UserCreate;
+export default EditUser;

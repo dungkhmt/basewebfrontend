@@ -1,4 +1,11 @@
-import { Button, Dialog, DialogActions, DialogTitle, IconButton } from "@material-ui/core";
+import {
+  Button,
+  Dialog,
+  DialogActions,
+  DialogTitle,
+  IconButton,
+  CircularProgress
+} from "@material-ui/core";
 import Card from "@material-ui/core/Card";
 import CardContent from "@material-ui/core/CardContent";
 import { makeStyles } from "@material-ui/core/styles";
@@ -8,8 +15,8 @@ import DeleteIcon from "@material-ui/icons/Delete";
 import EditIcon from "@material-ui/icons/Edit";
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { useParams } from "react-router-dom";
-import { authGet } from "../../api";
+import { useParams, useHistory } from "react-router-dom";
+import { authGet, authDelete } from "../../api";
 const useStyles = makeStyles(theme => ({
   root: {
     padding: theme.spacing(4),
@@ -20,6 +27,7 @@ const useStyles = makeStyles(theme => ({
   }
 }));
 function UserDetail(props) {
+  const history = useHistory();
   const { partyId } = useParams();
   const token = useSelector(state => state.auth.token);
   const dispatch = useDispatch();
@@ -28,6 +36,7 @@ function UserDetail(props) {
   const [canDelete, setCanDelete] = useState(false);
   const classes = useStyles();
   const [openPopup, setOpenPopup] = useState(false);
+  const [isWaiting, setIsWaiting] = useState(false);
 
   useEffect(() => {
     authGet(dispatch, token, "/users/" + partyId).then(
@@ -45,6 +54,21 @@ function UserDetail(props) {
   }, []);
   const handlePopup = value => {
     setOpenPopup(value);
+  };
+
+  const deleteUser = value => {
+    setIsWaiting(true);
+    authDelete(dispatch, token, "/users/" + partyId).then(
+      res => {
+        if(res===true){
+        setOpenPopup(false);
+        history.push("/userlogin/list");
+        }
+      },
+      error => {
+        setData([]);
+      }
+    );
   };
   return (
     <div>
@@ -65,12 +89,18 @@ function UserDetail(props) {
         <DialogActions>
           <Button
             variant="contained"
-            onClick={() => handlePopup(false)}
+            disabled={isWaiting}
+            onClick={() => deleteUser()}
             color="secondary"
           >
-            Yes
+            {isWaiting ? <CircularProgress color="secondary"/> : "Yes"  }
           </Button>
-          <Button onClick={() => handlePopup(false)} color="action" autoFocus>
+          <Button
+            disabled={isWaiting}
+            onClick={() => handlePopup(false)}
+            color="action"
+            autoFocus
+          >
             No
           </Button>
         </DialogActions>
@@ -94,8 +124,8 @@ function UserDetail(props) {
             {canEdit ? (
               <IconButton
                 style={{ float: "right" }}
-                onClick={() => handlePopup(true)}
-                aria-label="Delete"
+                onClick={() => history.push("/userlogin/" + partyId + "/edit")}
+                aria-label="Edit"
                 component="span"
               >
                 <EditIcon color="action"></EditIcon>
