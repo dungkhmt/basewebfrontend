@@ -12,6 +12,8 @@ import FormHelperText from "@material-ui/core/FormHelperText";
 import FormControl from "@material-ui/core/FormControl";
 import Select from "@material-ui/core/Select";
 import Input from "@material-ui/core/Input";
+
+import { failed } from "../../action/Auth";
 import {
   KeyboardDatePicker,
   MuiPickersUtilsProvider
@@ -21,6 +23,7 @@ import { useHistory } from "react-router-dom";
 import { authPost } from "../../api";
 
 import { useDispatch, useSelector } from "react-redux";
+import { CircularProgress } from "@material-ui/core";
 const useStyles = makeStyles(theme => ({
   root: {
     padding: theme.spacing(4),
@@ -32,8 +35,8 @@ const useStyles = makeStyles(theme => ({
   formControl: {
     margin: theme.spacing(1),
     minWidth: 120,
-    maxWidth: 300,
-  },
+    maxWidth: 300
+  }
 }));
 const ITEM_HEIGHT = 48;
 const ITEM_PADDING_TOP = 8;
@@ -58,7 +61,6 @@ function UserCreate(props) {
   const [partyCode, setPartyCode] = useState();
   const [roles, setRoles] = useState([]);
   const [birthDate, setBirthDate] = useState(new Date());
-
   const handleBirthDateChange = date => {
     setBirthDate(date);
   };
@@ -116,16 +118,27 @@ function UserCreate(props) {
       roles: roles
     };
     setIsRequesting(true);
-    authPost(dispatch, token, "/user", data).then(
-      res => {
-        console.log(res);
-        setIsRequesting(false);
-        //history.push("/tracklocations/list");
-      },
-      error => {
-        console.log(error);
-      }
-    );
+    authPost(dispatch, token, "/user", data)
+      .then(
+        res => {
+          console.log(res);
+          setIsRequesting(false);
+          if (res.status === 401) {
+            dispatch(failed());
+            throw Error("Unauthorized");
+          } else if (res.status === 409) {
+            alert("User exits!!");
+          } else if (res.status === 201) {
+            return res.json();
+          }
+        },
+        error => {
+          console.log(error);
+        }
+      )
+      .then(res => {
+        history.push("/userlogin/" + res);
+      });
   };
 
   return (
@@ -213,26 +226,29 @@ function UserCreate(props) {
                   input={<Input />}
                   MenuProps={MenuProps}
                 >
-                  <MenuItem
-                    key="ROLE_SALE_MANAGER"
-                    value="ROLE_SALE_MANAGER"
-                  > ROLE_SALE_MANAGER</MenuItem>
-                  <MenuItem
-                    key="ROLE_ACCOUNTANT"
-                    value="ROLE_ACCOUNTANT"
-                  >ROLE_ACCOUNTANT</MenuItem>
-                  <MenuItem
-                    key="ROLE_FULL_ADMIN"
-                    value="ROLE_FULL_ADMIN"
-                  >ROLE_FULL_ADMIN</MenuItem>
+                  <MenuItem key="ROLE_SALE_MANAGER" value="ROLE_SALE_MANAGER">
+                    {" "}
+                    ROLE_SALE_MANAGER
+                  </MenuItem>
+                  <MenuItem key="ROLE_ACCOUNTANT" value="ROLE_ACCOUNTANT">
+                    ROLE_ACCOUNTANT
+                  </MenuItem>
+                  <MenuItem key="ROLE_FULL_ADMIN" value="ROLE_FULL_ADMIN">
+                    ROLE_FULL_ADMIN
+                  </MenuItem>
                 </Select>
               </FormControl>
             </div>
           </form>
         </CardContent>
         <CardActions>
-          <Button variant="contained" color="primary" onClick={handleSubmit}>
-            Save
+          <Button
+            disabled={isRequesting}
+            variant="contained"
+            color="primary"
+            onClick={handleSubmit}
+          >
+            {isRequesting ? <CircularProgress /> : "Save"}
           </Button>
         </CardActions>
       </Card>
