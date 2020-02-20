@@ -30,7 +30,26 @@ export const authGet = (dispatch, token, url) => {
     }
   );
 };
-
+export const authDelete = (dispatch, token, url) => {
+  return fetch(API_URL + url, {
+    method: "DELETE",
+    headers: {
+      "content-type": "application/json",
+      "X-Auth-Token": token
+    }
+  }).then(
+    res => {
+      if (!res.ok) {
+        dispatch(failed());
+        throw Error("Unauthorized");
+      }
+      return true; 
+    },
+    error => {
+      console.log(error);
+    }
+  );
+};
 export default {
   getMenu: (dispatch, token) => {
     return authGet(dispatch, token, "/menu");
