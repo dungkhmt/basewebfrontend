@@ -224,7 +224,7 @@ export default function SideBar(props) {
                     button
                     className={classes.nested}
                     component={Link}
-                    to={process.env.PUBLIC_URL + "/order/create"}
+                    to={process.env.PUBLIC_URL + "/shipment/create"}
                   >
                     <ListItemIcon>
                       <StarBorder/>
@@ -240,7 +240,7 @@ export default function SideBar(props) {
                     button
                     className={classes.nested}
                     component={Link}
-                    to={process.env.PUBLIC_URL + "/order/list"}
+                    to={process.env.PUBLIC_URL + "/shipment/list"}
                   >
                     <ListItemIcon>
                       <StarBorder/>
@@ -373,7 +373,12 @@ export default function SideBar(props) {
                 </ListItemIcon>
                 <ListItemText primary="Thời gian/quãng đường"/>
               </ListItem>
-              <ListItem button className={classes.nested}>
+              <ListItem
+                button
+                className={classes.nested}
+                component={Link}
+                to={process.env.PUBLIC_URL + "/shipment"}
+              >
                 <ListItemIcon>
                   <StarBorder/>
                 </ListItemIcon>

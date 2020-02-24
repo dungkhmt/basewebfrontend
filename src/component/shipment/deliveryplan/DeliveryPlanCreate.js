@@ -5,12 +5,14 @@ import {KeyboardDatePicker, MuiPickersUtilsProvider} from "@material-ui/pickers"
 import CardActions from "@material-ui/core/CardActions";
 import CardContent from "@material-ui/core/CardContent";
 import Card from "@material-ui/core/Card";
-import {authGet, authPost} from "../../api";
+import {authGet, authPost} from "../../../api";
 import {useDispatch, useSelector} from "react-redux";
 import Button from "@material-ui/core/Button";
 import {makeStyles} from "@material-ui/core/styles";
 import Typography from "@material-ui/core/Typography";
-import {toFormattedDateTime} from "../../utils/dateutils";
+import {toFormattedDateTime} from "../../../utils/dateutils";
+import {useHistory} from "react-router-dom";
+
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -31,6 +33,8 @@ export default function DeliveryPlanCreate() {
 
   const token = useSelector(state => state.auth.token);
   const dispatch = useDispatch();
+  const history = useHistory();
+
 
   const [userName, setUserName] = useState();
   const [name, setName] = useState('');
@@ -52,6 +56,7 @@ export default function DeliveryPlanCreate() {
     authPost(dispatch, token, '/create-delivery-plan', deliveryPlanInfo).then(
       response => {
         console.log(response);
+        history.push(process.env.PUBLIC_URL + "/delivery-plan/list")
       },
       error => console.log(error)
     )

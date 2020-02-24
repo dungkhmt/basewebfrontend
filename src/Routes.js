@@ -13,10 +13,11 @@ import error from "./component/common/error";
 
 import GMapContainer from "./container/gmapcontainer";
 import DetailUserLogin from "./component/userlogin/detailuserlogin";
-import DeliveryPlanCreate from "./component/deliveryplan/DeliveryPlanCreate";
-import DeliveryPlanList from "./component/deliveryplan/DeliveryPlanList";
+import DeliveryPlanCreate from "./component/shipment/deliveryplan/DeliveryPlanCreate";
+import DeliveryPlanList from "./component/shipment/deliveryplan/DeliveryPlanList";
 import EditUser from "./component/userlogin/edituserlogin";
-
+import DeliveryTripList from "./component/shipment/deliveryplan/deliverytrip/DeliveryTripList";
+import ShipmentList from "./component/shipment/shipment/ShipmentList";
 
 
 function Routes(props) {// props nay tu parent transfer vao
@@ -104,6 +105,24 @@ function Routes(props) {// props nay tu parent transfer vao
         //isAuthenticated={true}
         //exact                                   // props
         path="/delivery-plan/list"                    // props
+      />
+
+      <PrivateRouteWithLayout
+        component={DeliveryTripList}  //props
+        layout={Layout}          //props
+        isAuthenticated={props.isAuthenticated} // props
+        //isAuthenticated={true}
+        //exact                                   // props
+        path="/delivery-trip"                    // props
+      />
+
+      <PrivateRouteWithLayout
+        component={ShipmentList}  //props
+        layout={Layout}          //props
+        isAuthenticated={props.isAuthenticated} // props
+        //isAuthenticated={true}
+        exact                                   // props
+        path="/shipment"                    // props
       />
 
       <Route

@@ -1,22 +1,25 @@
-import React from "react";
-import MaterialTable from "material-table";
-import {authGet} from "../../api";
-import {tableIcons} from "../../utils/iconutil";
 import {useDispatch, useSelector} from "react-redux";
+import MaterialTable from "material-table";
+import {authGet} from "../../../api";
+import {tableIcons} from "../../../utils/iconutil";
+import React, {useState} from "react";
+import Upload from "../../../utils/Upload";
 
-export default function DeliveryPlanList() {
+export default function ShipmentList() {
 
   const dispatch = useDispatch();
   const token = useSelector(state => state.auth.token);
   const columns = [
-    {title: "Description", field: "description"},
-    {title: "Created By", field: "createdByUserLoginId"},
-    {title: "Created Date", field: "deliveryDate", type: 'date'},
+    {title: "Shipment Id", field: "shipmentId"},
+    {title: "Shipment Type Id", field: "shipmentTypeId"},
+    {title: "Number Shipment Items", field: "numberShipmentItems"},
   ];
+
+  const [uploadOpen, setUploadOpen] = useState(false);
 
   return <div>
     <MaterialTable
-      title="Danh sách đợt giao hàng"
+      title="Danh sách đơn hàng vận chuyển"
       columns={columns}
       options={{
         search: false
@@ -31,7 +34,7 @@ export default function DeliveryPlanList() {
           authGet(
             dispatch,
             token,
-            "/delivery-plan" + "?size=" + query.pageSize + "&page=" + query.page + sortParam
+            "/shipment" + "?size=" + query.pageSize + "&page=" + query.page + sortParam
           ).then(
             response => {
               resolve({
@@ -48,6 +51,13 @@ export default function DeliveryPlanList() {
       }
       icons={tableIcons}
 
+    />
+    <Upload
+      url={'shipment/upload'}
+      token={token}
+      dispatch={dispatch}
+      buttonTitle={'Tải lên đơn hàng'}
+      handleSaveCallback={() => setUploadOpen(false)}
     />
   </div>
 }
