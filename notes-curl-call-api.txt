@@ -19,6 +19,15 @@ Import InventoryItem (Nhập hàng về kho)
 
  curl --header "Content-Type: application/json" -v POST http://localhost:8080/api/import-inventory-items -u admin:123 -d '{"inventoryItems":[{"productId":"20201260003","facilityId":"FAHN00001","lotId":"LOT20200201","uomId":"WT_box","quantityOnHandTotal":1000},{"productId":"20201260005","facilityId":"FAHN00001","lotId":"LOT20200201","uomId":"WT_package","quantityOnHandTotal":2000}]}'
 
+ 
+ curl --header "Content-Type: application/json" -v POST http://localhost:8080/api/import-inventory-items -u admin:123 -d '{"inventoryItems":[{"productId":"20201260003","facilityId":"FAHCM00002","lotId":"LOT20200201","uomId":"WT_box","quantityOnHandTotal":1000},{"productId":"20201260005","facilityId":"FAHCM00002","lotId":"LOT20200201","uomId":"WT_package","quantityOnHandTotal":2000},
+{"productId":"20201260001","facilityId":"FAHCM00002","lotId":"LOT20200201","uomId":"WT_package","quantityOnHandTotal":2000},
+{"productId":"20201260004","facilityId":"FAHCM00002","lotId":"LOT20200201","uomId":"WT_package","quantityOnHandTotal":1500}]}'
+
+--------
+Export Inventory Items
+
+ curl --header "Content-Type: application/json" -v POST http://localhost:8080/api/export-inventory-items -u admin:123 -d '{"inventoryItems":[{"productId":"20201260005","facilityId":"FAHCM00002","quantity":30},{"productId":"20201260005","facilityId":"FAHN00001","quantity":30}]}' 
 --------
 Create Order (Tạo mới đơn hàng)
 
@@ -31,13 +40,51 @@ Create Shipments
   curl --header "Content-Type: application/json" -v POST http://localhost:8080/api/create-shipment -u admin:123 -d '{"shipmentItems":[{"productId":"20201260001","quantity":10,"amountPallet":0.0},{"productId":"20201260002","quantity":100,"amountPallet":0.0},{"productId":"20201260003","quantity":200,"amountPallet":0.0}]}'
   
 --------
+Create Customer
+  curl --header "Content-Type: application/json; charset=utf-8" -v POST http://localhost:8080/api/create-customer -u admin:123 -d '{"customerName":"VinMart Phạm Ngọc Thạch","address":"Pham Ngoc Thach, Hanoi","latitude":"21.006619","longitude":"105.832038"}'
+  
+  curl --header "Content-Type: application/json; charset=utf-8" -v POST http://3.1.6.126/api/create-customer -u admin:123 -d '{"customerName":"VinMart Phạm Ngọc Thạch","address":"Pham Ngoc Thach, Hanoi","latitude":"21.006619","longitude":"105.832038"}'
+--------
+
+Get list customers
+	curl --header "Content-Type: application/json; charset=utf-8" -v POST http://localhost:8080/api/customers -u admin:123
+	
+--------
+Get list of customer of a salesman
+	curl --header "Content-Type: application/json; charset=utf-8" -v POST http://localhost:8080/api/get-customers-of-userlogin -u dungpq:123 
+		
+--------
+Assign customer to a salesman
+	curl --header "Content-Type: application/json; charset=utf-8" -v POST http://localhost:8080/api/assign-customer-2-salesman -u dungpq:123 -d '{"partyCustomerId":"5ae20c48-4d6c-11ea-967e-54bf64436441","partySalesmanId":"847254bb-c0f1-4696-b11f-682976965eed"}'
+			
+--------
+Create Delivery Plan
+
+	curl --header "Content-Type: application/json; charset=utf-8" -v POST http://localhost:8080/api/create-delivery-plan -u admin:123 -d '{"deliveryDate":"2020-02-18 10:30:00","createdByUserLoginId":"dungpq","description":null}'
+
+--------
+Create Delivery Trip
+
+	curl --header "Content-Type: application/json; charset=utf-8" -v POST http://localhost:8080/api/create-delivery-trip -u admin:123 -d '{"deliveryPlanId":"c15e0579-4829-428d-8ad7-80d601884a44","executeDate":"2020-02-18 08:00:00","vehicleId":null, "driverId":null}'
+
+--------
+Create Delivery Trip Detail
+  
+  curl --header "Content-Type: application/json; charset=utf-8" -v POST http://localhost:8080/api/create-delivery-trip-detail -u admin:123 -d '{"deliveryTripId":"22bfc94d-836e-44b8-9212-a68fda585cc1","shipmentId":"2086cccf-c76e-4b29-9704-06dda3294bdd","shipmentItemSeqId":"000001","deliveryQuantity":10}'
+  
+--------
 Get total revenue
  curl --header "Content-Type: application/json" -v POST http://localhost:8080/api/get-total-revenue -u admin:123 -d '{"fromDate":"","toDate":""}'
 --------
 Get list products
 
  curl --header "Content-Type: application/json" -v POST http://localhost:8080/api/get-list-product -u admin:123 -d '{"statusId":null}'
+--------
 
+Create Product
+	curl --header "Content-Type: application/json" -v POST http://localhost:8080/api/get-create-product -u admin:123 -d '{"productId":"20201260008","productName":"Bột canh","uomId":"WT_package"}'
+
+	
 --------
 Get asigned delivery route 
     curl --header "Content-Type: application/json" -v GET http://3.1.6.126/api/get-assigned-delivery-routes -u admin:123
