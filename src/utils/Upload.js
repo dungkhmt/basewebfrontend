@@ -77,7 +77,6 @@ export default function Upload(props) {
     fields = {
       method: 'POST',
       headers: {
-        "content-type": "application/json",
         "X-Auth-Token": token
       },
       body: file
