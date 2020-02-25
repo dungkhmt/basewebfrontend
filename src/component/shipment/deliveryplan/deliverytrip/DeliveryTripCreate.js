@@ -1,4 +1,4 @@
-import React, {useState} from "react";
+import React, {useEffect, useState} from "react";
 import TextField from "@material-ui/core/TextField";
 import DateFnsUtils from "@date-io/date-fns";
 import {KeyboardDatePicker, MuiPickersUtilsProvider} from "@material-ui/pickers";
@@ -39,6 +39,7 @@ export default function DeliveryTripCreate() {
   const history = useHistory();
 
 
+  const [deliveryPlanId, setDeliveryPlanId] = useState(null);
   const [date, setDate] = useState(new Date());
   const [vehicleList, setVehicleList] = useState([]); // TODO: init
   const [vehicleSelected, setVehicleSelected] = useState(null);
@@ -51,6 +52,7 @@ export default function DeliveryTripCreate() {
 
   const handleSubmit = () => {
     const deliveryTripInfo = {
+      deliveryPlanId,
       executeDate: toFormattedDateTime(date),
       vehicleId: vehicleSelected
     };
@@ -67,6 +69,14 @@ export default function DeliveryTripCreate() {
 
   const classes = useStyles();
 
+  function getDeliveryPlanId() {
+    let url = window.location.href;
+    let deliveryPlanId = url.substring(url.lastIndexOf('/') + 1);
+    setDeliveryPlanId(deliveryPlanId);
+  }
+
+  useEffect(getDeliveryPlanId, []);
+
   return <div>
     <MuiPickersUtilsProvider utils={DateFnsUtils}>
       <Card>
@@ -76,8 +86,13 @@ export default function DeliveryTripCreate() {
           </Typography>
           <form className={classes.root} noValidate autoComplete="off">
             <TextField id="delivery-trip-name"
-                       label="Tên chuyến giao hàng"
+                       label="Tên kế hoạch giao hàng"
+                       value={deliveryPlanId}
                        type="disable"
+            />
+            <TextField id="delivery-trip-name"
+                       label="Tên chuyến giao hàng"
+                       type="search"
             />
             <KeyboardDatePicker disableToolbar
                                 variant="inline"

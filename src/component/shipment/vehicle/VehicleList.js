@@ -53,7 +53,8 @@ export default function VehicleList() {
       token={token}
       dispatch={dispatch}
       buttonTitle={'Tải lên danh sách xe'}
-      handleSaveCallback={null}
+      handleSaveCallback={() => {
+      }}
     />
   </div>
 }

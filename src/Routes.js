@@ -141,8 +141,8 @@ function Routes(props) {// props nay tu parent transfer vao
           layout={Layout}          //props
           isAuthenticated={props.isAuthenticated} // props
           //isAuthenticated={true}
-          exact                                   // props
-          path="/create-delivery-trip"                    // props
+          // exact                                   // props
+          path="/create-delivery-trip/"                    // props
         />
 
       <Route

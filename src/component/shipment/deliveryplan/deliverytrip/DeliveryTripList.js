@@ -64,7 +64,7 @@ export default function DeliveryTripList() {
       icons={tableIcons}
     >
     </MaterialTable>
-    <Link to={'/create-delivery-trip'}>
+    <Link to={'/create-delivery-trip/' + deliveryPlanId}>
       <Button color={'primary'} variant={'contained'} startIcon={<CloudUploadIcon/>}> Thêm mới </Button> <p/>
     </Link>
     <Button color={'primary'} variant={'contained'}> Danh sách xe </Button>

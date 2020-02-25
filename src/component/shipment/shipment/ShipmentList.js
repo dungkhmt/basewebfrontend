@@ -2,7 +2,7 @@ import {useDispatch, useSelector} from "react-redux";
 import MaterialTable from "material-table";
 import {authGet} from "../../../api";
 import {tableIcons} from "../../../utils/iconutil";
-import React, {useState} from "react";
+import React from "react";
 import Upload from "../../../utils/Upload";
 
 export default function ShipmentList() {
@@ -55,7 +55,8 @@ export default function ShipmentList() {
       token={token}
       dispatch={dispatch}
       buttonTitle={'Tải lên đơn hàng'}
-      handleSaveCallback={null}
+      handleSaveCallback={() => {
+      }}
     />
   </div>
 }
