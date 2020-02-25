@@ -26,7 +26,10 @@ export default function Upload(props) {
     Promise.all([uploadFile(url, data)]).then(([response]) => {
       setWaiting(false);
       handleSaveCallback();
-    }).catch(error => console.log(error));
+    }).catch(error => {
+      console.log(error);
+      alert('Upload thất bại: ' + error);
+    });
   }
 
   function handleClose() {
