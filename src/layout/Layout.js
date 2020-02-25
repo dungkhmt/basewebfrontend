@@ -12,7 +12,7 @@ import { getMenu, logout } from "../action";
 import SideBar from "./SideBar";
 import Button from "@material-ui/core/Button";
 import ExitToAppIcon from "@material-ui/icons/ExitToApp";
-const drawerWidth = 240;
+const drawerWidth = 340;
 
 const useStyles = makeStyles(theme => ({
   root: {

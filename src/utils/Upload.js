@@ -40,7 +40,7 @@ export default function Upload(props) {
   return (
     <div>
       {waiting ? <CircularProgress color={'secondary'}/> :
-        <Button variant="contained" component="span" onClick={handleOpen}>Tải lên đơn hàng</Button>}
+        <Button variant="contained" component="span" onClick={handleOpen}>{buttonTitle}</Button>}
 
       <Dialog
         fullWidth={true}

@@ -354,7 +354,12 @@ export default function SideBar(props) {
           </ListItem>
           <Collapse in={openCollapse[5]} timeout="auto" unmountOnExit>
             <List component="div" disablePadding>
-              <ListItem button className={classes.nested}>
+              <ListItem
+                button
+                className={classes.nested}
+                component={Link}
+                to={process.env.PUBLIC_URL + "/vehicle"}
+              >
                 <ListItemIcon>
                   <StarBorder/>
                 </ListItemIcon>

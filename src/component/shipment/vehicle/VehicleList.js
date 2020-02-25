@@ -2,22 +2,20 @@ import {useDispatch, useSelector} from "react-redux";
 import MaterialTable from "material-table";
 import {authGet} from "../../../api";
 import {tableIcons} from "../../../utils/iconutil";
-import React, {useState} from "react";
+import React from "react";
 import Upload from "../../../utils/Upload";
 
-export default function ShipmentList() {
+export default function VehicleList() {
 
   const dispatch = useDispatch();
   const token = useSelector(state => state.auth.token);
   const columns = [
-    {title: "Shipment Id", field: "shipmentId"},
-    {title: "Shipment Type Id", field: "shipmentTypeId"},
-    {title: "Number Shipment Items", field: "numberShipmentItems"},
+    {title: "Vehicle Id", field: "vehicleId"},
   ];
 
   return <div>
     <MaterialTable
-      title="Danh sách đơn hàng vận chuyển"
+      title="Danh sách xe vận chuyển"
       columns={columns}
       options={{
         search: false
@@ -32,7 +30,7 @@ export default function ShipmentList() {
           authGet(
             dispatch,
             token,
-            "/shipment" + "?size=" + query.pageSize + "&page=" + query.page + sortParam
+            "/vehicle" + "?size=" + query.pageSize + "&page=" + query.page + sortParam
           ).then(
             response => {
               resolve({
@@ -51,10 +49,10 @@ export default function ShipmentList() {
 
     />
     <Upload
-      url={'shipment/upload'}
+      url={'vehicle/upload'}
       token={token}
       dispatch={dispatch}
-      buttonTitle={'Tải lên đơn hàng'}
+      buttonTitle={'Tải lên danh sách xe'}
       handleSaveCallback={null}
     />
   </div>

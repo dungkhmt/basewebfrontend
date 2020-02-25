@@ -8,6 +8,7 @@ import SaveIcon from '@material-ui/icons/Save';
 import CloudUploadIcon from '@material-ui/icons/CloudUpload';
 import DeleteIcon from '@material-ui/icons/Delete';
 import {tableIcons} from "../../../../utils/iconutil";
+import {Link} from "react-router-dom";
 
 export default function DeliveryTripList() {
   const dispatch = useDispatch();
@@ -63,7 +64,9 @@ export default function DeliveryTripList() {
       icons={tableIcons}
     >
     </MaterialTable>
-    <Button color={'primary'} variant={'contained'} startIcon={<CloudUploadIcon/>}> Thêm mới </Button> <p/>
+    <Link to={'/create-delivery-trip'}>
+      <Button color={'primary'} variant={'contained'} startIcon={<CloudUploadIcon/>}> Thêm mới </Button> <p/>
+    </Link>
     <Button color={'primary'} variant={'contained'}> Danh sách xe </Button>
     <Button color={'primary'} variant={'contained'}> Danh sách đơn hàng </Button> <p/>
     <Button color={'default'} variant={'contained'} startIcon={<SaveIcon/>}> Xuất excel </Button>

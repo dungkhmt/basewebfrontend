@@ -27,7 +27,8 @@
     "styled-components": "^4.3.2",
     "xlsx": "^0.14.3",
     "@material-ui/pickers": "latest",
-    "@date-io/date-fns": "latest"
+    "@date-io/date-fns": "latest",
+    "react-router": "latest"
   },
   "scripts": {
     "start": "react-scripts start",
