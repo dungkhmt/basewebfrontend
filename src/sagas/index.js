@@ -1,24 +1,15 @@
-import { takeLatest, takeEvery, delay, put, call } from "redux-saga/effects";
-import { INC_ASYNC, increment, API_REQUEST, apiResponse } from "../actions";
+import { takeEvery, put, call } from "redux-saga/effects";
+import { LOGIN } from "../actions";
+import { apiLogin } from "./api";
 
-function* increaseAsyncSaga() {
-  yield delay(1000);
-  yield put(increment());
-}
-
-const apiCall = url => fetch(url).then(res => res.json());
-
-function* apiRequestSaga(action) {
-  const json = yield call(
-    apiCall,
-    `https://jsonplaceholder.typicode.com/todos/${action.id}`
-  );
-  yield put(apiResponse(json));
+function* loginSaga(action) {
+  const response = yield call(apiLogin, action.username, action.password);
+  console.log(response);
+  console.log(response.headers.get("X-Auth-Token"));
 }
 
 function* rootSaga() {
-  yield takeLatest(INC_ASYNC, increaseAsyncSaga);
-  yield takeEvery(API_REQUEST, apiRequestSaga);
+  yield takeEvery(LOGIN, loginSaga);
 }
 
 export default rootSaga;
