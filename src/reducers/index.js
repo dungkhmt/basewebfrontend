@@ -5,7 +5,6 @@ import {
   INCREMENT,
   API_RESPONSE
 } from "../actions";
-import _ from "lodash";
 import { combineReducers } from "redux";
 
 const initialState = {

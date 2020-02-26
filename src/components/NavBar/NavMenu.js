@@ -10,7 +10,7 @@ import {
 
 import { NavLink, useRouteMatch } from "react-router-dom";
 
-import KeyboardArrowRightIcon from "@material-ui/icons/KeyboardArrowRight";
+import { StarBorder } from "@material-ui/icons";
 
 const NavMenu = ({ classes, icon, url, text, subItems }) => {
   const match = useRouteMatch({
@@ -40,7 +40,7 @@ const NavMenu = ({ classes, icon, url, text, subItems }) => {
               activeClassName={classes.linkActive}
             >
               <ListItemIcon>
-                <KeyboardArrowRightIcon />
+                <StarBorder />
               </ListItemIcon>
               <ListItemText primary={item.text} />
             </ListItem>

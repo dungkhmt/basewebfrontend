@@ -2,12 +2,17 @@ import React from "react";
 import MainLayout from "./components/MainLayout";
 import { BrowserRouter, Route, Redirect, Switch } from "react-router-dom";
 import Login from "./components/Login";
+import SignIn from "./components/SignIn";
 
 const App = () => (
   <BrowserRouter>
     <Switch>
       <Route path="/login">
         <Login />
+      </Route>
+
+      <Route path="/signin">
+        <SignIn />
       </Route>
 
       <Route exact path="/">
