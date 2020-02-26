@@ -16,7 +16,7 @@ export default function DeliveryPlanList() {
     {
       title: "Note",
       field: "note",
-      render: rowData => <Link to={'/delivery-trip/' + rowData['deliveryPlanId']}>Detail</Link>
+      render: rowData => <Link to={'/delivery-plan/' + rowData['deliveryPlanId']}>Detail</Link>
     },
   ];
 

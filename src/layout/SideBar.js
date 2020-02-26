@@ -405,7 +405,7 @@ export default function SideBar(props) {
               <ListItem button
                         className={classes.nested}
                         component={Link}
-                        to={process.env.PUBLIC_URL + "/delivery-plan/list"}>
+                        to={process.env.PUBLIC_URL + "/delivery-plan-list"}>
                 <ListItemIcon>
                   <StarBorder/>
                 </ListItemIcon>

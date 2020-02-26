@@ -5,7 +5,7 @@ import {KeyboardDatePicker, MuiPickersUtilsProvider} from "@material-ui/pickers"
 import CardActions from "@material-ui/core/CardActions";
 import CardContent from "@material-ui/core/CardContent";
 import Card from "@material-ui/core/Card";
-import {authPost} from "../../../../api";
+import {authGet, authPost} from "../../../../api";
 import {useDispatch, useSelector} from "react-redux";
 import Button from "@material-ui/core/Button";
 import {makeStyles} from "@material-ui/core/styles";
@@ -48,7 +48,11 @@ export default function DeliveryTripCreate() {
     setVehicleSelected(event.target.value);
   }
 
-  // const browserHistory = require('react-router/lib/BrowserHistory').default;
+  function getVehicleList() {
+    authGet(dispatch, token, '/vehicle/all').then(response => {
+      setVehicleList(response);
+    }).catch(console.log);
+  }
 
   const handleSubmit = () => {
     const deliveryTripInfo = {
@@ -61,7 +65,7 @@ export default function DeliveryTripCreate() {
       response => {
         console.log(response);
         // browserHistory.goBack();
-        history.push(process.env.PUBLIC_URL + "/delivery-plan/list")
+        history.push(process.env.PUBLIC_URL + "/delivery-plan/" + deliveryPlanId)
       },
       error => console.log(error)
     )
@@ -75,7 +79,10 @@ export default function DeliveryTripCreate() {
     setDeliveryPlanId(deliveryPlanId);
   }
 
-  useEffect(getDeliveryPlanId, []);
+  useEffect(() => {
+    getDeliveryPlanId();
+    getVehicleList();
+  }, []);
 
   return <div>
     <MuiPickersUtilsProvider utils={DateFnsUtils}>
@@ -90,10 +97,10 @@ export default function DeliveryTripCreate() {
                        value={deliveryPlanId}
                        type="disable"
             />
-            <TextField id="delivery-trip-name"
-                       label="Tên chuyến giao hàng"
-                       type="search"
-            />
+            {/*<TextField id="delivery-trip-name"*/}
+            {/*           label="Tên chuyến giao hàng"*/}
+            {/*           type="search"*/}
+            {/*/>*/}
             <KeyboardDatePicker disableToolbar
                                 variant="inline"
                                 format="yyyy-MM-dd"
