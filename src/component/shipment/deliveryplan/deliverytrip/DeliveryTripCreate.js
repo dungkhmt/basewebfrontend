@@ -41,7 +41,7 @@ export default function DeliveryTripCreate() {
 
   const [deliveryPlanId, setDeliveryPlanId] = useState(null);
   const [date, setDate] = useState(new Date());
-  const [vehicleList, setVehicleList] = useState([]); // TODO: init
+  const [vehicleList, setVehicleList] = useState([]);
   const [vehicleSelected, setVehicleSelected] = useState(null);
 
   function handleVehicleSelectedChange(event) {
@@ -115,7 +115,6 @@ export default function DeliveryTripCreate() {
             />
             <InputLabel>Chọn xe</InputLabel>
             <Select
-              id="demo-simple-select"
               value={vehicleSelected}
               onChange={handleVehicleSelectedChange}
             >

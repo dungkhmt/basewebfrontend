@@ -96,7 +96,9 @@ export default function DeliveryTripList() {
       <Button color={'primary'} variant={'contained'} startIcon={<CloudUploadIcon/>}> Thêm mới </Button> <p/>
     </Link>
     <Button color={'primary'} variant={'contained'}> Danh sách xe </Button>
-    <Button color={'primary'} variant={'contained'}> Danh sách đơn hàng </Button> <p/>
+    <Link to={'/shipment-item-delivery-plan/' + deliveryPlanId}>
+      <Button color={'primary'} variant={'contained'}> Danh sách đơn hàng </Button> <p/>
+    </Link>
     <Button color={'default'} variant={'contained'} startIcon={<SaveIcon/>}> Xuất excel </Button>
     <Button color={'default'} variant={'contained'}> Tự động xếp chuyến còn lại </Button> <p/>
     <Button color={'secondary'} variant={'contained'} startIcon={<DeleteIcon/>}> Hủy chuyến </Button> <p/>

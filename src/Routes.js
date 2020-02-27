@@ -21,7 +21,10 @@ import ShipmentList from "./component/shipment/shipment/ShipmentList";
 import VehicleList from "./component/shipment/vehicle/VehicleList";
 import DeliveryTripCreate from "./component/shipment/deliveryplan/deliverytrip/DeliveryTripCreate";
 import DeliveryTripDetailList
-    from "./component/shipment/deliveryplan/deliverytrip/deliverytripdetail/DeliveryTripDetailList";
+  from "./component/shipment/deliveryplan/deliverytrip/deliverytripdetail/DeliveryTripDetailList";
+import DeliveryTripDetailCreate
+  from "./component/shipment/deliveryplan/deliverytrip/deliverytripdetail/DeliveryTripDetailCreate";
+import ShipmentItemList from "./component/shipment/deliveryplan/shipmentitem/ShipmentItemList";
 
 
 function Routes(props) {// props nay tu parent transfer vao
@@ -120,14 +123,31 @@ function Routes(props) {// props nay tu parent transfer vao
         path="/delivery-plan/"                    // props
       />
 
-        <PrivateRouteWithLayout
-          component={DeliveryTripDetailList}  //props
-          layout={Layout}          //props
-          isAuthenticated={props.isAuthenticated} // props
-          //isAuthenticated={true}
-          //exact                                   // props
-          path="/delivery-trip/"                    // props
-        />
+      <PrivateRouteWithLayout
+        component={DeliveryTripDetailList}  //props
+        layout={Layout}          //props
+        isAuthenticated={props.isAuthenticated} // props
+        //isAuthenticated={true}
+        //exact                                   // props
+        path="/delivery-trip/"                    // props
+      />
+
+      <PrivateRouteWithLayout
+        component={DeliveryTripDetailCreate}  //props
+        layout={Layout}          //props
+        isAuthenticated={props.isAuthenticated} // props
+        //isAuthenticated={true}
+        //exact                                   // props
+        path="/create-delivery-trip-detail/"                    // props
+      />
+      <PrivateRouteWithLayout
+        component={ShipmentItemList}  //props
+        layout={Layout}          //props
+        isAuthenticated={props.isAuthenticated} // props
+        //isAuthenticated={true}
+        //exact                                   // props
+        path="/shipment-item-delivery-plan/"                    // props
+      />
 
       <PrivateRouteWithLayout
         component={ShipmentList}  //props
@@ -147,14 +167,14 @@ function Routes(props) {// props nay tu parent transfer vao
         path="/vehicle"                    // props
       />
 
-        <PrivateRouteWithLayout
-          component={DeliveryTripCreate}  //props
-          layout={Layout}          //props
-          isAuthenticated={props.isAuthenticated} // props
-          //isAuthenticated={true}
-          // exact                                   // props
-          path="/create-delivery-trip/"                    // props
-        />
+      <PrivateRouteWithLayout
+        component={DeliveryTripCreate}  //props
+        layout={Layout}          //props
+        isAuthenticated={props.isAuthenticated} // props
+        //isAuthenticated={true}
+        // exact                                   // props
+        path="/create-delivery-trip/"                    // props
+      />
 
       <Route
         component={SignInContainer} // props
