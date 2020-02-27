@@ -82,8 +82,14 @@ Get list products
 --------
 
 Create Product
-	curl --header "Content-Type: application/json" -v POST http://localhost:8080/api/get-create-product -u admin:123 -d '{"productId":"20201260008","productName":"Bột canh","uomId":"WT_package"}'
+	curl --header "Content-Type: application/json" -v POST http://localhost:8080/api/get-create-product -u admin:123 -d '{"productId":"20201260009","productName":"Bột canh","uomId":"WT_package"}'
 
+--------
+Set product price
+	curl --header "Content-Type: application/json" -v POST http://localhost:8080/api/set-product-price -u admin:123 -d '{"productId":"20201260008","price":15000,"taxInPrice":"N","currencyUomId":"CUR_vnd"}'
+--------
+Get product price
+	curl --header "Content-Type: application/json" -v POST http://localhost:8080/api/get-product-price -u admin:123 -d '{"productId":"20201260008"}'
 	
 --------
 Get asigned delivery route 
@@ -103,3 +109,27 @@ Create UserLogin
 
  curl --header "Content-Type: application/json" -v POST http://localhost:8080/api/create-userlogin -u admin:123 -d '{"userName":"dungpq","password":"123"}'
 
+-------
+
+create salesroute planning period
+
+	curl --header "Content-Type: application/json" -v POST http://localhost:8080/api/create-sales-route-planning-period -u admin:123 -d '{"fromDate":"2020-01-01","toDate":"2020-02-28","description":"Sales Route Q1"}' 
+
+-------
+create salesroute config
+
+	curl --header "Content-Type: application/json" -v POST http://localhost:8080/api/create-sales-route-config -u admin:123 -d '{"days":"2,5","repeatWeek":1}'
+	
+	curl --header "Content-Type: application/json" -v POST http://localhost:8080/api/create-sales-route-config -u admin:123 -d '{"days":"3,6","repeatWeek":1}'
+	
+	curl --header "Content-Type: application/json" -v POST http://localhost:8080/api/create-sales-route-config -u admin:123 -d '{"days":"4,7","repeatWeek":1}'
+	
+	curl --header "Content-Type: application/json" -v POST http://localhost:8080/api/create-sales-route-config -u admin:123 -d '{"days":"5","repeatWeek":2}'
+	
+-------
+create salesroute config customer
+
+	curl --header "Content-Type: application/json" -v POST http://localhost:8080/api/create-sales-route-config-customer -u admin:123 -d '{"salesRouteConfigId":"ef4d38e2-fe57-4c0e-9242-298f78ca005a","partyCustomerId":"5ae20c48-4d6c-11ea-967e-54bf64436441","partySalesmanId":"847254bb-c0f1-4696-b11f-682976965eed","startExecuteDate":"2020-01-01"}'
+	
+	
+-------
