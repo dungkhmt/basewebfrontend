@@ -56,7 +56,7 @@ export default function DeliveryPlanCreate() {
     authPost(dispatch, token, '/create-delivery-plan', deliveryPlanInfo).then(
       response => {
         console.log(response);
-        history.push(process.env.PUBLIC_URL + "/delivery-plan/list")
+        history.push(process.env.PUBLIC_URL + "/delivery-plan-list")
       },
       error => console.log(error)
     )

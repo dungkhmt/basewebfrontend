@@ -21,7 +21,11 @@ export default function DeliveryTripList() {
     {title: "Total Weight", field: "totalWeight"},
     {title: "Vehicle Id", field: "vehicleId"},
     {title: "Max Vehicle Capacity", field: "maxVehicleCapacity"},
-    {title: "Note", field: "note"},
+    {
+      title: "Note",
+      field: "note",
+      render: rowData => <Link to={'/delivery-trip/' + rowData['deliveryTripId']}>Detail</Link>
+    },
   ];
 
   const [deliveryPlanId, setDeliveryPlanId] = useState('');
@@ -60,7 +64,31 @@ export default function DeliveryTripList() {
           </div>
         )
       }}
-      // data={}
+      data={query =>
+        new Promise((resolve) => {
+          console.log(query);
+          let sortParam = "";
+          if (query.orderBy !== undefined) {
+            sortParam = "&sort=" + query.orderBy.field + ',' + query.orderDirection;
+          }
+          authGet(
+            dispatch,
+            token,
+            "/delivery-trip" + "?size=" + query.pageSize + "&page=" + query.page + sortParam
+          ).then(
+            response => {
+              resolve({
+                data: response.content,
+                page: response.number,
+                totalCount: response.totalElements
+              });
+            },
+            error => {
+              console.log("error");
+            }
+          );
+        })
+      }
       icons={tableIcons}
     >
     </MaterialTable>
