@@ -5,14 +5,17 @@ import {tableIcons} from "../../../utils/iconutil";
 import React from "react";
 import Upload from "../../../utils/Upload";
 
-export default function ShipmentList() {
+export default function ShipmentItemList() {
 
   const dispatch = useDispatch();
   const token = useSelector(state => state.auth.token);
   const columns = [
-    {title: "Shipment Id", field: "shipmentId"},
-    {title: "Shipment Type Id", field: "shipmentTypeId"},
-    {title: "Number Shipment Items", field: "numberShipmentItems"},
+    {title: "Shipment Item Id", field: "shipmentItemId"},
+    {title: "Quantity", field: "quantity"},
+    {title: "Pallet", field: "pallet"},
+    {title: "Product Id", field: "productId"},
+    {title: "Customer Code", field: "customerCode"},
+    {title: "Location Code", field: "locationCode"},
   ];
 
   return <div>
@@ -32,7 +35,7 @@ export default function ShipmentList() {
           authGet(
             dispatch,
             token,
-            "/shipment" + "?size=" + query.pageSize + "&page=" + query.page + sortParam
+            "/shipment-item" + "?size=" + query.pageSize + "&page=" + query.page + sortParam
           ).then(
             response => {
               resolve({

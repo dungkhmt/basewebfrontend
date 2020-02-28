@@ -7,7 +7,7 @@ import {tableIcons} from "../../../../utils/iconutil";
 import CloudUploadIcon from "@material-ui/icons/CloudUpload";
 import {useHistory} from "react-router-dom";
 
-export default function ShipmentItemList() {
+export default function ShipmentItemListDeliveryPlan() {
   const dispatch = useDispatch();
   const token = useSelector(state => state.auth.token);
   const history = useHistory();
