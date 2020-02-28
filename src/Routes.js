@@ -26,6 +26,7 @@ import DeliveryTripDetailCreate
   from "./component/shipment/deliveryplan/deliverytrip/deliverytripdetail/DeliveryTripDetailCreate";
 import ShipmentItemListDeliveryPlan from "./component/shipment/deliveryplan/shipmentitem/ShipmentItemListDeliveryPlan";
 import VehicleListDeliveryPlan from "./component/shipment/deliveryplan/vehicle/VehicleListDeliveryPlan";
+import ShipmentItemCreate from "./component/shipment/shipment/ShipmentItemCreate";
 
 
 function Routes(props) {// props nay tu parent transfer vao
@@ -166,6 +167,15 @@ function Routes(props) {// props nay tu parent transfer vao
         //isAuthenticated={true}
         exact                                   // props
         path="/vehicle"                    // props
+      />
+
+      <PrivateRouteWithLayout
+        component={ShipmentItemCreate}  //props
+        layout={Layout}          //props
+        isAuthenticated={props.isAuthenticated} // props
+        //isAuthenticated={true}
+        exact                                   // props
+        path="/create-shipment-item"                    // props
       />
 
       <PrivateRouteWithLayout
