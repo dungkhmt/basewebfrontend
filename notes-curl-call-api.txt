@@ -32,8 +32,15 @@ Export Inventory Items
 Create Order (Tạo mới đơn hàng)
 
 
- curl --header "Content-Type: application/json" -v POST http://localhost:8080/api/create-order -u admin:123 -d '{"partyCustomerId":"8161d37e-4026-11ea-9be3-54bf64436441","salesChannelId":null,"salesmanId":"dungpq","facilityId":"FAHN00001","orderDate":"2020-02-02 10:30:03","orderItems":[{"productId":"20201260003","quantity":30,"unitPrice":1000000,"totalItemPrice":30000000},{"productId":"20201260005","quantity":70,"unitPrice":3000000,"totalItemPrice":210000000}]}'
+ curl --header "Content-Type: application/json" -v POST http://localhost:8080/api/create-order-distributor-to-retailoutlet -u admin:123 -d '{"fromVendorId":null,"toCustomerId":"8161d37e-4026-11ea-9be3-54bf64436441","salesChannelId":null,"salesmanId":"dungpq","facilityId":null,"orderDate":null,"shipToAddress":"1 Dai co Viet, Hanoi, Vietnam","orderItems":[{"productId":"20201260008","quantity":30},{"productId":"20201260005","quantity":70}]}'
  
+ 
+ curl --header "Content-Type: application/json" -v POST http://3.1.6.126/api/create-order-distributor-to-retailoutlet -u admin:123 -d '{"fromVendorId":null,"toCustomerId":"8161d37e-4026-11ea-9be3-54bf64436441","salesChannelId":null,"salesmanId":"dungpq","facilityId":null,"orderDate":null,"shipToAddress":"1 Dai co Viet, Hanoi, Vietnam","orderItems":[{"productId":"20201260008","quantity":30},{"productId":"20201260003","quantity":60}]}'
+ 
+--------
+get list orders
+	curl --header "Content-Type: application/json" -v GET http://3.1.6.126/api/orders?size=5&page=0 -u admin:123
+	
 --------
 Create Shipments
 
@@ -79,6 +86,8 @@ Get total revenue
 Get list products
 
  curl --header "Content-Type: application/json" -v POST http://localhost:8080/api/get-list-product -u admin:123 -d '{"statusId":null}'
+ 
+ curl --header "Content-Type: application/json" -v POST http://3.1.6.126/api/get-list-product -u admin:123 -d '{"statusId":null}'
 --------
 
 Create Product
@@ -131,5 +140,21 @@ create salesroute config customer
 
 	curl --header "Content-Type: application/json" -v POST http://localhost:8080/api/create-sales-route-config-customer -u admin:123 -d '{"salesRouteConfigId":"ef4d38e2-fe57-4c0e-9242-298f78ca005a","partyCustomerId":"5ae20c48-4d6c-11ea-967e-54bf64436441","partySalesmanId":"847254bb-c0f1-4696-b11f-682976965eed","startExecuteDate":"2020-01-01"}'
 	
+	curl --header "Content-Type: application/json" -v POST http://3.1.6.126/api/create-sales-route-config-customer -u admin:123 -d '{"salesRouteConfigId":"92d5db5f-a41f-4bc5-ad54-50eeca5423b0","partyCustomerId":"5ae20c48-4d6c-11ea-967e-54bf64436441","partySalesmanId":"bb159eab-1200-483c-9684-8164f5570b5c","startExecuteDate":"2020-01-01"}'	
+-------
+generate sales route detail
+	curl --header "Content-Type: application/json" -v POST http://localhost:8080/api/generate-sales-route-detail -u admin:123 -d '{"partySalesmanId":"847254bb-c0f1-4696-b11f-682976965eed","salesRoutePlanningPeriodId":"30212f3a-b44b-45a7-b094-769746aac9dc"}'
 	
+	
+	curl --header "Content-Type: application/json" -v POST http://3.1.6.126/api/generate-sales-route-detail -u admin:123 -d '{"partySalesmanId":"bb159eab-1200-483c-9684-8164f5570b5c","salesRoutePlanningPeriodId":"4aee2a8a-c88d-4517-b1cd-a47cda20aa5f"}'
+	
+-------
+get customers visited of userlogin
+	curl --header "Content-Type: application/json" -v POST http://localhost:8080/api/get-customers-visited-date-of-userlogin -u dungpq:123 -d '{"date":"2020-01-13"}'
+	
+	curl --header "Content-Type: application/json" -v POST http://3.1.6.126/api/get-customers-visited-date-of-userlogin -u dungpq:123 -d '{"date":"2020-01-13"}'
+	
+-------
+get customers visited of salesman date
+	curl --header "Content-Type: application/json" -v POST http://localhost:8080/api/get-customers-visited-salesman-date -u dungpq:123 -d '{"partySalesmanId":"847254bb-c0f1-4696-b11f-682976965eed","date":"2020-01-13"}'
 -------

@@ -87,6 +87,15 @@ function Routes(props) {// props nay tu parent transfer vao
         layout={Layout}          //props
         isAuthenticated={props.isAuthenticated} // props
         //exact                                   // props
+        path="/orders/list"                    // props
+      />
+
+      <PrivateRouteWithLayout
+        //component={ListTrackLocations}  //props
+        component={TrackLocationList}
+        layout={Layout}          //props
+        isAuthenticated={props.isAuthenticated} // props
+        //exact                                   // props
         path="/tracklocations/list"                    // props
       />
       <PrivateRouteWithLayout
