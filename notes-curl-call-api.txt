@@ -39,7 +39,7 @@ Create Order (Tạo mới đơn hàng)
  
 --------
 get list orders
-	curl --header "Content-Type: application/json" -v GET http://3.1.6.126/api/orders?size=5&page=0 -u admin:123
+	curl --header "Content-Type: application/json" -v GET http://localhost:8080/api/orders?size=5&page=0 -u admin:123
 	
 --------
 Create Shipments

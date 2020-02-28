@@ -224,7 +224,7 @@ export default function SideBar(props) {
                     button
                     className={classes.nested}
                     component={Link}
-                    to={process.env.PUBLIC_URL + "/shipment/create"}
+                    to={process.env.PUBLIC_URL + "/orders/create"}
                   >
                     <ListItemIcon>
                       <StarBorder/>

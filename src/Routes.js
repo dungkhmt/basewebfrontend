@@ -7,6 +7,8 @@ import OrderCreate from "./component/order/OrderCreate";
 import SignInContainer from "./container/SignInContainer";
 //import ListTrackLocations from "./component/tracklocations/listtracklocations";
 import TrackLocationList from "./component/tracklocations/tracklocationlist";
+import OrderList from "./component/order/listorders";
+import DetailOrder from "./component/order/detailorder";
 import UserCreate from "./component/userlogin/createuser";
 import UserList from "./component/userlogin/userlist";
 import error from "./component/common/error";
@@ -79,18 +81,24 @@ function Routes(props) {// props nay tu parent transfer vao
         layout={Layout}          //props
         isAuthenticated={props.isAuthenticated} // props
         //exact                                   // props
-        path="/order/create"                    // props
+        path="/orders/create"                    // props
       />
 
       <PrivateRouteWithLayout
-        //component={ListTrackLocations}  //props
-        component={TrackLocationList}
+        component={OrderList}
         layout={Layout}          //props
         isAuthenticated={props.isAuthenticated} // props
         //exact                                   // props
         path="/orders/list"                    // props
       />
-
+      <PrivateRouteWithLayout
+        component={DetailOrder}  //props
+        layout={Layout}          //props
+        isAuthenticated={props.isAuthenticated} // props
+        //isAuthenticated={true}
+        //exact                                   // props
+        path="/orders/:orderId"                    // props
+      />
       <PrivateRouteWithLayout
         //component={ListTrackLocations}  //props
         component={TrackLocationList}
