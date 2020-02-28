@@ -7,6 +7,7 @@ import DialogTitle from "@material-ui/core/DialogTitle";
 import Grid from "@material-ui/core/Grid";
 import CircularProgress from "@material-ui/core/CircularProgress";
 import {API_URL} from "../config/config";
+import CloudUploadIcon from "@material-ui/icons/CloudUpload";
 
 export default function Upload(props) {
 
@@ -43,7 +44,8 @@ export default function Upload(props) {
   return (
     <div>
       {waiting ? <CircularProgress color={'secondary'}/> :
-        <Button variant="contained" component="span" onClick={handleOpen}>{buttonTitle}</Button>}
+        <Button color={'primary'} variant={'contained'} startIcon={<CloudUploadIcon/>}
+                onClick={handleOpen}>{buttonTitle}</Button>}
 
       <Dialog
         fullWidth={true}

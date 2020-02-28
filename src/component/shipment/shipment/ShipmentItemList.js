@@ -4,6 +4,9 @@ import {authGet} from "../../../api";
 import {tableIcons} from "../../../utils/iconutil";
 import React from "react";
 import Upload from "../../../utils/Upload";
+import Button from "@material-ui/core/Button";
+import AddBoxIcon from '@material-ui/icons/AddBox';
+import {Link} from "react-router-dom";
 
 export default function ShipmentItemList() {
 
@@ -53,6 +56,9 @@ export default function ShipmentItemList() {
       icons={tableIcons}
 
     />
+    <Link to={'/create-shipment-item'}>
+      <Button color={'primary'} variant={'contained'} startIcon={<AddBoxIcon/>}> Thêm mới </Button>
+    </Link>
     <Upload
       url={'shipment/upload'}
       token={token}
