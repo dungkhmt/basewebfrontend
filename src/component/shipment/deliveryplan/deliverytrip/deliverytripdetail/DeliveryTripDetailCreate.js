@@ -98,7 +98,7 @@ export default function DeliveryTripDetailCreate() {
       <Card>
         <CardContent>
           <Typography variant="h5" component="h2">
-            Tạo mới chuyến giao hàng
+            Tạo mới chi tiết chuyến giao hàng
           </Typography>
           <Toolbar>
             <div>
