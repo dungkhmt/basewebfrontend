@@ -12,7 +12,7 @@ import FormHelperText from "@material-ui/core/FormHelperText";
 import FormControl from "@material-ui/core/FormControl";
 import Select from "@material-ui/core/Select";
 import Input from "@material-ui/core/Input";
-
+import MaterialTable from "material-table";
 import { failed } from "../../action/Auth";
 import {
   KeyboardDatePicker,
@@ -225,6 +225,17 @@ function UserCreate(props) {
             Thêm SP   
             </Button>
             </CardActions>
+
+            <MaterialTable
+             title="Danh sách sản phẩm"
+          columns={[
+            { title: 'Tên SP', field: 'name' },
+            { title: 'Số lượng', field: 'surname' }
+            
+          ]}
+          data={[{ name: 'Mehmet', surname: 'Baran'}]}
+         
+            />
             </Card>
             </div>
           </form>
