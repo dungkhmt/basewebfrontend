@@ -56,14 +56,23 @@ Create Customer
 Get list customers
 	curl --header "Content-Type: application/json; charset=utf-8" -v POST http://localhost:8080/api/customers -u admin:123
 	
+	curl --header "Content-Type: application/json; charset=utf-8" -v POST http://3.1.6.126/api/customers -u admin:123
+	
 --------
 Get list of customer of a salesman
 	curl --header "Content-Type: application/json; charset=utf-8" -v POST http://localhost:8080/api/get-customers-of-userlogin -u dungpq:123 
+	
+	curl --header "Content-Type: application/json; charset=utf-8" -v POST http://3.1.6.126/api/get-customers-of-userlogin -u dungpq:123 
+--------
+get list of distributor of userlogin
+	curl --header "Content-Type: application/json; charset=utf-8" -v POST http://3.1.6.126/api/get-distributors-of-userlogin -u dungpq:123 
 		
 --------
 Assign customer to a salesman
 	curl --header "Content-Type: application/json; charset=utf-8" -v POST http://localhost:8080/api/assign-customer-2-salesman -u dungpq:123 -d '{"partyCustomerId":"5ae20c48-4d6c-11ea-967e-54bf64436441","partySalesmanId":"847254bb-c0f1-4696-b11f-682976965eed"}'
 			
+			
+	curl --header "Content-Type: application/json; charset=utf-8" -v POST http://3.1.6.126/api/assign-customer-2-salesman -u dungpq:123 -d '{"partyCustomerId":"5ae20c48-4d6c-11ea-967e-54bf64436441","partySalesmanId":"bb159eab-1200-483c-9684-8164f5570b5c"}'		
 --------
 Create Delivery Plan
 
