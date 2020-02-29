@@ -87,7 +87,7 @@ function UserCreate(props) {
  
   
   const handleCancel = () => {
-    alert('Hủy');
+    //alert('Hủy');
   }
   const handleAddProduct = () => {
     //alert('Thêm Sản Phẩm');
