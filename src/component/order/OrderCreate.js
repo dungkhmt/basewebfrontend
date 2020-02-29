@@ -58,7 +58,9 @@ function UserCreate(props) {
   const [customer, setCustomer] = useState();
   const [product, setProduct] = useState();
   const [quantity, setQuantity] = useState();
-  
+  const [salesmans, setSalesmans] = useState([]);
+  const [distributor, setDistributor] = useState();
+  const [distributors, setDistributors] = useState([]);
   const [products, setProducts] = useState([]);
   const [orderDate, setOrderDate] = useState(new Date());
   const [orderItems, setOrderItems] = useState([]);
@@ -124,6 +126,56 @@ function UserCreate(props) {
       });
   }, []);
   
+  useEffect(() => {
+    authPost(dispatch, token, "/get-distributors-of-userlogin",{"statusId":null} )
+      .then(
+        res => {
+          console.log(res);
+          setIsRequesting(false);
+          if (res.status === 401) {
+            dispatch(failed());
+            throw Error("Unauthorized");
+          
+          } else if (res.status === 200) {
+            return res.json();
+          }
+        },
+        error => {
+          console.log(error);
+        }
+      )
+      .then(res => {
+        console.log('got distributors',res);
+        setDistributors(res);
+        console.log(distributors); 
+      });
+  }, []);
+  
+  useEffect(() => {
+    authPost(dispatch, token, "/get-list-salesmans",{"statusId":null} )
+      .then(
+        res => {
+          console.log(res);
+          setIsRequesting(false);
+          if (res.status === 401) {
+            dispatch(failed());
+            throw Error("Unauthorized");
+          
+          } else if (res.status === 200) {
+            return res.json();
+          }
+        },
+        error => {
+          console.log(error);
+        }
+      )
+      .then(res => {
+        console.log('got distributors',res);
+        setSalesmans(res);
+        console.log(salesmans); 
+      });
+  }, []);
+
   const handleSubmit = () => {
     const data = {
       orderDate: orderDate,
@@ -177,14 +229,16 @@ function UserCreate(props) {
                 onChange={handleCustomerChange}
                 helperText="Select customer"
               >
-                <MenuItem key="8161d37e-4026-11ea-9be3-54bf64436441" value="8161d37e-4026-11ea-9be3-54bf64436441">
-                Nhà phân phối Sóc Sơn
-                </MenuItem>
-                <MenuItem key="875704ac-4026-11ea-9be4-54bf64436441" value="875704ac-4026-11ea-9be4-54bf64436441">
-                Nhà phân phối Đông Anh
-                </MenuItem>
+                 {distributors.map(distributor => (
+                      <MenuItem
+                        key={distributor.partyId}
+                        value={distributor.partyId}
+                      >
+                        {distributor.customerName}
+                      </MenuItem>
+                    ))}
               </TextField>
-             
+
               <TextField
                 id="select-salesman"
                 select
@@ -193,12 +247,14 @@ function UserCreate(props) {
                 onChange={handleSalesmanChange}
                 helperText="Select salesman"
               >
-                <MenuItem key="dungpq" value="dungpq">
-                  PQ Dũng
-                </MenuItem>
-                <MenuItem key="ninhpham" value="ninhpham">
-                  PPT Ninh
-                </MenuItem>
+                {salesmans.map(sm => (
+                      <MenuItem
+                        key={sm.partyId}
+                        value={sm.partyId}
+                      >
+                        {sm.person.lastName + ' ' + sm.person.middleName + ' ' + sm.person.firstName}
+                      </MenuItem>
+                    ))}
               </TextField>
 
 

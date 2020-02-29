@@ -65,8 +65,11 @@ Get list of customer of a salesman
 	curl --header "Content-Type: application/json; charset=utf-8" -v POST http://3.1.6.126/api/get-customers-of-userlogin -u dungpq:123 
 --------
 get list of distributor of userlogin
-	curl --header "Content-Type: application/json; charset=utf-8" -v POST http://3.1.6.126/api/get-distributors-of-userlogin -u dungpq:123 
+	curl --header "Content-Type: application/json; charset=utf-8" -v POST http://3.1.6.126/api/get-distributors-of-userlogin -u dungpq:123 -d '{"statusId":null}'
+
 		
+	curl --header "Content-Type: application/json; charset=utf-8" -v POST http://localhost:8080/api/get-distributors-of-userlogin -u dungpq:123 	-d '{"statusId":null}'
+
 --------
 Assign customer to a salesman
 	curl --header "Content-Type: application/json; charset=utf-8" -v POST http://localhost:8080/api/assign-customer-2-salesman -u dungpq:123 -d '{"partyCustomerId":"5ae20c48-4d6c-11ea-967e-54bf64436441","partySalesmanId":"847254bb-c0f1-4696-b11f-682976965eed"}'
@@ -127,6 +130,11 @@ Create UserLogin
 
  curl --header "Content-Type: application/json" -v POST http://localhost:8080/api/create-userlogin -u admin:123 -d '{"userName":"dungpq","password":"123"}'
 
+-------
+Salesman
+	Get list salesman
+	
+		curl --header "Content-Type: application/json" -v POST http://localhost:8080/api/get-list-salesmans -u admin:123 -d '{"statusId":null}'
 -------
 
 create salesroute planning period
