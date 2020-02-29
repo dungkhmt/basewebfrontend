@@ -14,11 +14,13 @@ import Select from "@material-ui/core/Select";
 import Input from "@material-ui/core/Input";
 import MaterialTable from "material-table";
 import { failed } from "../../action/Auth";
+import { authGet } from "../../api";
+import React, { useEffect, useState } from "react";
 import {
   KeyboardDatePicker,
   MuiPickersUtilsProvider
 } from "@material-ui/pickers";
-import React, { useState } from "react";
+
 import { useHistory } from "react-router-dom";
 import { authPost } from "../../api";
 
@@ -59,7 +61,7 @@ function UserCreate(props) {
   
   const [products, setProducts] = useState([]);
   const [orderDate, setOrderDate] = useState(new Date());
-  
+  const [orderItems, setOrderItems] = useState([]);
   const [isRequesting, setIsRequesting] = useState(false);
 
   const classes = useStyles();
@@ -89,15 +91,45 @@ function UserCreate(props) {
     //alert('Thêm Sản Phẩm');
     // add (product, quantity) to products
     //setProducts(products.push({productId:product, quantity:quantity}));
-    products.push({productId:product, quantity:quantity});
-    console.log(products);
+    //products.push({productId:product, quantity:quantity});
+    //console.log(products);
+    let newArray=[...orderItems];
+    newArray.push({"productId":product, "quantity":quantity});
+    setOrderItems(newArray);
   }
+
+  const inputProd = {"statusId":null};
+  useEffect(() => {
+    authPost(dispatch, token, "/get-list-product",inputProd )
+      .then(
+        res => {
+          console.log(res);
+          setIsRequesting(false);
+          if (res.status === 401) {
+            dispatch(failed());
+            throw Error("Unauthorized");
+          
+          } else if (res.status === 200) {
+            return res.json();
+          }
+        },
+        error => {
+          console.log(error);
+        }
+      )
+      .then(res => {
+        console.log('got products',res);
+        setProducts(res.products);
+        console.log(products); 
+      });
+  }, []);
+  
   const handleSubmit = () => {
     const data = {
       orderDate: orderDate,
       salesmanId: salesman,
       toCustomerId: customer,
-      orderItems: products
+      orderItems: orderItems
     };
     console.log("submit order, data = ",data);
 
@@ -124,6 +156,8 @@ function UserCreate(props) {
         history.push("/orders/list");
       });
   };
+
+  
 
   return (
     <MuiPickersUtilsProvider utils={DateFnsUtils}>
@@ -194,17 +228,16 @@ function UserCreate(props) {
                 onChange={handleProductChange}
                 helperText="Select product"
               >
-                <MenuItem key="20201260001" value="20201260001">
-                Nước mắm chinsu
-                </MenuItem>
-                <MenuItem key="20201260002" value="20201260002">
-                Tương ớt chinsu
-                </MenuItem>
-                <MenuItem key="20201260003" value="20201260003">
-                Sữa tươi
-                </MenuItem><MenuItem key="20201260004" value="20201260004">
-                Mỳ koreno
-                </MenuItem>
+               
+                
+                {products.map(product => (
+                      <MenuItem
+                        key={product.productId}
+                        value={product.productId}
+                      >
+                        {product.productName}
+                      </MenuItem>
+                    ))}
 
             </TextField>
 
@@ -229,11 +262,11 @@ function UserCreate(props) {
             <MaterialTable
              title="Danh sách sản phẩm"
           columns={[
-            { title: 'Tên SP', field: 'name' },
-            { title: 'Số lượng', field: 'surname' }
+            { title: 'Tên SP', field: 'productId' },
+            { title: 'Số lượng', field: 'quantity' }
             
           ]}
-          data={[{ name: 'Mehmet', surname: 'Baran'}]}
+          data={orderItems}
          
             />
             </Card>
