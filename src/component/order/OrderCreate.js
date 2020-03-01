@@ -249,10 +249,10 @@ function UserCreate(props) {
               >
                 {salesmans.map(sm => (
                       <MenuItem
-                        key={sm.partyId}
-                        value={sm.partyId}
+                        key={sm.userLoginId}
+                        value={sm.userLoginId}
                       >
-                        {sm.person.lastName + ' ' + sm.person.middleName + ' ' + sm.person.firstName}
+                        {sm.partySalesman.person.lastName + ' ' + sm.partySalesman.person.middleName + ' ' + sm.partySalesman.person.firstName}
                       </MenuItem>
                     ))}
               </TextField>
