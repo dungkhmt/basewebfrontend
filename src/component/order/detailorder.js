@@ -19,7 +19,7 @@ import {
   import { authGet, authDelete } from "../../api";
   import MaterialTable from "material-table";
   import { tableIcons } from "../../utils/iconutil";
-
+  import Toolbar from "@material-ui/core/Toolbar";
   const useStyles = makeStyles(theme => ({
     root: {
       padding: theme.spacing(4),
@@ -36,17 +36,20 @@ import {
     const dispatch = useDispatch();
     const [data, setData] = useState({});
     const [orderItems, setOrderItems] = useState([]);  
+    const [order, setOrder] = useState({});
     const columns = [
-        {title: "Product", field:"product.productName"},
+        {title: "Product", field:"productName"},
         {title: "QTY", field:"quantity"},
-        {title: "Uom", field:"product.uom.description"}
+        {title: "Uom", field:"uom"},
+        {title: "Unit Price", field:"uniPrice"}
     ];
 
     useEffect(() => {
       authGet(dispatch, token, "/orders/" + orderId).then(
         res => {
           setData(res);
-          console.log(res);
+          setOrder(res);
+          console.log('order detail = ',order);
           setOrderItems(res.orderItems);
           console.log('order-items = ',orderItems);      
           console.log(res.orderItems);    
@@ -61,21 +64,39 @@ import {
     
     return (
       <div>
-        
-        <MaterialTable
-        title="OrderItems"
-        columns={columns}
-        options={{
-          filtering: true,
-          search: false
-        }}
-        data={orderItems}
-        icons={tableIcons}
-        onRowClick={(event, rowData) => {
-          console.log("select ",rowData);
-        }}
-      />
+         <Card>
+          <CardContent>
+          <Toolbar>
+            <div>
+              <div>
+                <div style={{padding: '0px 30px'}}>
+                  <b>OrderId: </b> {order.orderId} <p/>
+                  <b>Customer: </b> {order === null ? '' : order['customerName']} <p/>
+                  <b>Vendor: </b> {order === null ? '' : order['vendorName']} <p/>
+                  <b>Salesman: </b> {order === null ? '' : order['salesmanName']} <p/>
+                  <b>Date: </b> {order === null ? '' : order['orderDate']} <p/>
+                  <b>Total: </b> {order === null ? '' : order['total']}<p/>
+                  
+                </div>
+              </div>
+            </div>
+          </Toolbar>
 
+            <MaterialTable
+          title="OrderItems"
+          columns={columns}
+          options={{
+            filtering: true,
+            search: false
+          }}
+          data={orderItems}
+          icons={tableIcons}
+          onRowClick={(event, rowData) => {
+            console.log("select ",rowData);
+          }}
+            />
+          </CardContent>
+        </Card>
       </div>
     );
   }

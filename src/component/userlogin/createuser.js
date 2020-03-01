@@ -236,6 +236,10 @@ function UserCreate(props) {
                   <MenuItem key="ROLE_FULL_ADMIN" value="ROLE_FULL_ADMIN">
                     ROLE_FULL_ADMIN
                   </MenuItem>
+                  <MenuItem key="ROLE_TMS_MANAGER" value="ROLE_TMS_MANAGER">
+                    ROLE_TMS_MANAGER
+                  </MenuItem>
+                  
                 </Select>
               </FormControl>
             </div>

@@ -19,7 +19,10 @@ function OrderList(props){
     const columns = [
         {title: "orderId", field:"orderId",  render: rowData => <Link to={"/orders/"+rowData.orderId} >{rowData.orderId}</Link>},
         {title: "order date", field:"orderDate"},
-        {title: "Total", field:"gradTotal"}
+        {title: "salesman", field:"salesmanName"},
+        {title: "customer", field:"customerName"},
+        {title: "vendor", field:"vendorName"},
+        {title: "Total", field:"total"}
     ];
 
     const handleSubmit = () => {
