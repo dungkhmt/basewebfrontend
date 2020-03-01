@@ -1,13 +1,13 @@
-import React, {useEffect, useState} from "react";
+import React, {useState} from "react";
 import {useDispatch, useSelector} from "react-redux";
 import MaterialTable from "material-table";
 import {authGet, authPost} from "../../../../api";
 import Button from "@material-ui/core/Button";
 import {tableIcons} from "../../../../utils/iconutil";
 import CloudUploadIcon from "@material-ui/icons/CloudUpload";
-import {useHistory} from "react-router-dom";
+import {useHistory, useParams} from "react-router-dom";
 
-export default function ShipmentItemListDeliveryPlan() {
+export default function ShipmentItemDeliveryPlanAdd() {
   const dispatch = useDispatch();
   const token = useSelector(state => state.auth.token);
   const history = useHistory();
@@ -20,42 +20,30 @@ export default function ShipmentItemListDeliveryPlan() {
     {title: "Product Id", field: "productId"},
     {title: "Customer Code", field: "customerCode"},
     {title: "Location Code", field: "locationCode"},
-    // {
-    //   title: "Note",
-    //   field: "note",
-    //   render: rowData => <Link to={'/delivery-trip/' + rowData['deliveryTripId']}>Detail</Link>
-    // },
   ];
 
-  const [deliveryPlanId, setDeliveryPlanId] = useState('');
-  // const [deliveryPlan, setDeliveryPlan] = useState(null);
-  const [rowSelected, setRowSelected] = useState([]);
+  const {deliveryPlanId} = useParams();
 
-  const getDeliveryPlanInfo = () => {
-    let url = window.location.href;
-    let deliveryPlanId = url.substring(url.lastIndexOf('/') + 1);
-    setDeliveryPlanId(deliveryPlanId);
-    // authGet(dispatch, token, '/delivery-plan/' + deliveryPlanId).then(response => setDeliveryPlan({
-    //   deliveryPlanId,
-    //   deliveryPlanDate: toFormattedDateTime(response['deliveryDate']),
-    //   description: response['description'],
-    //   createdByUserLoginId: response['createdByUserLoginId']
-    // }))
-  };
+  const [pageNumber, setPageNumber] = useState(0);
+  const [rowSelectedMap,] = useState({});
 
-  useEffect(() => getDeliveryPlanInfo(), []);
+  function handleSelectRow(rows) {
+    rowSelectedMap[pageNumber] = new Set(rows.map(row => row['shipmentItemId']));
+    // console.log(rows);
+    // console.log(rowSelectedMap);
+  }
 
   function handleSubmit() {
     let shipmentItemDeliveryPlan = {
       deliveryPlanId,
-      shipmentItemIds: rowSelected.map(value => value['shipmentItemId'])
+      shipmentItemIds: Object.values(rowSelectedMap).flatMap(value => [...value])
     };
     authPost(dispatch, token, '/create-shipment-item-delivery-plan', shipmentItemDeliveryPlan).then(response => {
         if (response.ok) {
-          alert('Upload successful');
-          history.push(process.env.PUBLIC_URL + "/delivery-plan/" + deliveryPlanId)
+          alert('Update successful ' + shipmentItemDeliveryPlan['shipmentItemIds'].length + ' items');
+          history.push(process.env.PUBLIC_URL + '/shipment-item-delivery-plan/' + deliveryPlanId + '/list');
         } else {
-          alert('Upload failed: ' + response.error);
+          alert('Update failed: ' + response.error);
         }
       }
     ).catch(console.log);
@@ -66,20 +54,6 @@ export default function ShipmentItemListDeliveryPlan() {
       title={'Chọn đơn hàng'}
       columns={columns}
       options={{search: false, selection: true}}
-      // components={{
-      //   Toolbar: props => (
-      //     <div>
-      //       <MTableToolbar {...props} />
-      //       <div>
-      //         <div style={{padding: '0px 30px'}}>
-      //           <b>Mã đợt giao hàng: </b> {deliveryPlanId} <p/>
-      //           <b>Ngày tạo: </b> {deliveryPlan === null ? '' : deliveryPlan['deliveryPlanDate']} <p/>
-      //           <b>Mô tả: </b> {deliveryPlan === null ? '' : deliveryPlan['description']}
-      //         </div>
-      //       </div>
-      //     </div>
-      //   )
-      // }}
       data={query =>
         new Promise((resolve) => {
           console.log(query);
@@ -90,11 +64,14 @@ export default function ShipmentItemListDeliveryPlan() {
           authGet(
             dispatch,
             token,
-            "/shipment-item" + "?size=" + query.pageSize + "&page=" + query.page + sortParam
+            "/shipment-item-not-in/" + deliveryPlanId + "?size=" + query.pageSize + "&page=" + query.page + sortParam
           ).then(
             response => {
+              setPageNumber(response.number);
               resolve({
-                data: response.content,
+                data: response.content.map(row => rowSelectedMap[response.number] &&
+                rowSelectedMap[response.number].has(row['shipmentItemId'])
+                  ? {...row, tableData: {checked: true}} : row),
                 page: response.number,
                 totalCount: response.totalElements
               });
@@ -106,7 +83,7 @@ export default function ShipmentItemListDeliveryPlan() {
         })
       }
       icons={tableIcons}
-      onSelectionChange={rows => setRowSelected(rows)}
+      onSelectionChange={rows => handleSelectRow(rows)}
     >
     </MaterialTable>
     <Button

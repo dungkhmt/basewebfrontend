@@ -8,7 +8,7 @@ import SaveIcon from '@material-ui/icons/Save';
 import CloudUploadIcon from '@material-ui/icons/CloudUpload';
 import DeleteIcon from '@material-ui/icons/Delete';
 import {tableIcons} from "../../../../utils/iconutil";
-import {Link} from "react-router-dom";
+import {Link, useParams} from "react-router-dom";
 
 export default function DeliveryTripList() {
   const dispatch = useDispatch();
@@ -28,13 +28,11 @@ export default function DeliveryTripList() {
     },
   ];
 
-  const [deliveryPlanId, setDeliveryPlanId] = useState('');
+  const {deliveryPlanId} = useParams();
+
   const [deliveryPlan, setDeliveryPlan] = useState(null);
 
   const getDeliveryPlanInfo = () => {
-    let url = window.location.href;
-    let deliveryPlanId = url.substring(url.lastIndexOf('/') + 1);
-    setDeliveryPlanId(deliveryPlanId);
     authGet(dispatch, token, '/delivery-plan/' + deliveryPlanId).then(response => setDeliveryPlan({
       deliveryPlanId,
       deliveryPlanDate: toFormattedDateTime(response['deliveryDate']),
@@ -95,10 +93,10 @@ export default function DeliveryTripList() {
     <Link to={'/create-delivery-trip/' + deliveryPlanId}>
       <Button color={'primary'} variant={'contained'} startIcon={<CloudUploadIcon/>}> Thêm mới </Button> <p/>
     </Link>
-    <Link to={'/vehicle-delivery-plan/' + deliveryPlanId}>
+    <Link to={'/vehicle-delivery-plan/' + deliveryPlanId + '/list'}>
       <Button color={'primary'} variant={'contained'}> Danh sách xe </Button>
     </Link>
-    <Link to={'/shipment-item-delivery-plan/' + deliveryPlanId}>
+    <Link to={'/shipment-item-delivery-plan/' + deliveryPlanId + '/list'}>
       <Button color={'primary'} variant={'contained'}> Danh sách đơn hàng </Button> <p/>
     </Link>
     <Button color={'default'} variant={'contained'} startIcon={<SaveIcon/>}> Xuất excel </Button>

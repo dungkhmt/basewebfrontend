@@ -11,7 +11,7 @@ import Button from "@material-ui/core/Button";
 import {makeStyles} from "@material-ui/core/styles";
 import Typography from "@material-ui/core/Typography";
 import {toFormattedDateTime} from "../../../../utils/dateutils";
-import {useHistory} from "react-router-dom";
+import {useHistory, useParams} from "react-router-dom";
 import Select from "@material-ui/core/Select";
 import MenuItem from "@material-ui/core/MenuItem";
 import InputLabel from "@material-ui/core/InputLabel";
@@ -38,8 +38,7 @@ export default function DeliveryTripCreate() {
   const dispatch = useDispatch();
   const history = useHistory();
 
-
-  const [deliveryPlanId, setDeliveryPlanId] = useState(null);
+  const {deliveryPlanId} = useParams();
   const [date, setDate] = useState(new Date());
   const [vehicleList, setVehicleList] = useState([]);
   const [vehicleSelected, setVehicleSelected] = useState(null);
@@ -49,7 +48,7 @@ export default function DeliveryTripCreate() {
   }
 
   function getVehicleList() {
-    authGet(dispatch, token, '/vehicle/all').then(response => {
+    authGet(dispatch, token, '/all-vehicle').then(response => {
       setVehicleList(response);
     }).catch(console.log);
   }
@@ -73,14 +72,7 @@ export default function DeliveryTripCreate() {
 
   const classes = useStyles();
 
-  function getDeliveryPlanId() {
-    let url = window.location.href;
-    let deliveryPlanId = url.substring(url.lastIndexOf('/') + 1);
-    setDeliveryPlanId(deliveryPlanId);
-  }
-
   useEffect(() => {
-    getDeliveryPlanId();
     getVehicleList();
   }, []);
 

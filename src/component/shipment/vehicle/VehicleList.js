@@ -49,7 +49,7 @@ export default function VehicleList() {
 
     />
     <Upload
-      url={'vehicle/upload'}
+      url={'upload-vehicle'}
       token={token}
       dispatch={dispatch}
       buttonTitle={'Tải lên danh sách xe'}

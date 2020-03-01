@@ -6,7 +6,7 @@ import Button from "@material-ui/core/Button";
 import CloudUploadIcon from '@material-ui/icons/CloudUpload';
 import DeleteIcon from '@material-ui/icons/Delete';
 import {tableIcons} from "../../../../../utils/iconutil";
-import {Link} from "react-router-dom";
+import {Link, useParams} from "react-router-dom";
 
 // each shipment item
 export default function DeliveryTripDetailList() {
@@ -26,13 +26,11 @@ export default function DeliveryTripDetailList() {
     },
   ];
 
-  const [deliveryTripId, setDeliveryTripId] = useState('');
+  const {deliveryTripId} = useParams();
+
   const [deliveryTrip, setDeliveryTrip] = useState(null);
 
   const getDeliveryTripInfo = () => {
-    let url = window.location.href;
-    let deliveryTripId = url.substring(url.lastIndexOf('/') + 1);
-    setDeliveryTripId(deliveryTripId);
     authGet(dispatch, token, '/delivery-trip/' + deliveryTripId).then(response => {
       console.log('::getDeliveryTripInfo: ', deliveryTripId);
       console.log(response);

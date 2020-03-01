@@ -9,7 +9,7 @@ import {useDispatch, useSelector} from "react-redux";
 import Button from "@material-ui/core/Button";
 import {makeStyles} from "@material-ui/core/styles";
 import Typography from "@material-ui/core/Typography";
-import {useHistory} from "react-router-dom";
+import {useHistory, useParams} from "react-router-dom";
 import Select from "@material-ui/core/Select";
 import MenuItem from "@material-ui/core/MenuItem";
 import InputLabel from "@material-ui/core/InputLabel";
@@ -66,15 +66,11 @@ export default function DeliveryTripDetailCreate() {
 
   const classes = useStyles();
 
-  const [deliveryTripId, setDeliveryTripId] = useState('');
+  const {deliveryTripId} = useParams();
+
   const [deliveryTrip, setDeliveryTrip] = useState(null);
 
   const getDeliveryTripInfo = () => {
-    let url = window.location.href;
-    let deliveryTripId = url.substring(url.lastIndexOf('/') + 1);
-    setDeliveryTripId(deliveryTripId);
-
-
     authGet(dispatch, token, '/delivery-trip/' + deliveryTripId).then(response => {
       console.log('::getDeliveryTripInfo: ', deliveryTripId);
       console.log(response);
@@ -86,7 +82,7 @@ export default function DeliveryTripDetailCreate() {
         vehicleTypeId: response['externalVehicleType'] == null ? null : response['externalVehicleType']['vehicleTypeId']
       });
       authGet(dispatch, token, '/shipment-item/' + response['deliveryPlan']['deliveryPlanId']).then(response => {
-        setShipmentItemList(response);
+        setShipmentItemList(response.map(shipmentItem => shipmentItem['shipmentItemId']));
       }).catch(console.log);
     })
   };
