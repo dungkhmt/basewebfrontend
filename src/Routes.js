@@ -159,7 +159,7 @@ function Routes(props) {// props nay tu parent transfer vao
         isAuthenticated={props.isAuthenticated} // props
         //isAuthenticated={true}
         //exact                                   // props
-        path="/create-delivery-trip-detail/:deliveryPlanId"                    // props
+        path="/create-delivery-trip-detail/:deliveryTripId"                    // props
       />
 
       <PrivateRouteWithLayout
