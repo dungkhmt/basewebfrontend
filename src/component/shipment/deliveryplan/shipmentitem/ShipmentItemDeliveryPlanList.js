@@ -1,4 +1,4 @@
-import React, {useState} from "react";
+import React from "react";
 import {useDispatch, useSelector} from "react-redux";
 import MaterialTable from "material-table";
 import {authGet, authPost} from "../../../../api";
@@ -23,7 +23,8 @@ export default function ShipmentItemDeliveryPlanList() {
     {
       title: "Action",
       field: "action",
-      render: rowData => <Button variant={"contained"} onClick={() => handleDelete(rowData['shipmentItemId'])}>Xóa</Button>
+      render: rowData => <Button variant={"contained"}
+                                 onClick={() => handleDelete(rowData['shipmentItemId'])}>Xóa</Button>
     }
   ];
 
@@ -56,7 +57,7 @@ export default function ShipmentItemDeliveryPlanList() {
           authGet(
             dispatch,
             token,
-            "/shipment-item/" + deliveryPlanId + "?size=" + query.pageSize + "&page=" + query.page + sortParam
+            "/shipment-item/" + deliveryPlanId + '/page' + "?size=" + query.pageSize + "&page=" + query.page + sortParam
           ).then(
             response => {
               resolve({

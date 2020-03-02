@@ -81,7 +81,7 @@ export default function DeliveryTripDetailCreate() {
         executeDate: response['executeDate'],
         vehicleTypeId: response['externalVehicleType'] == null ? null : response['externalVehicleType']['vehicleTypeId']
       });
-      authGet(dispatch, token, '/shipment-item/' + response['deliveryPlan']['deliveryPlanId']).then(response => {
+      authGet(dispatch, token, '/shipment-item/' + response['deliveryPlan']['deliveryPlanId'] + '/all').then(response => {
         setShipmentItemList(response.map(shipmentItem => shipmentItem['shipmentItemId']));
       }).catch(console.log);
     })

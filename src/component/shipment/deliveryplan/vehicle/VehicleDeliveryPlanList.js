@@ -14,6 +14,9 @@ export default function VehicleDeliveryPlanList() {
 
   const columns = [
     {title: "Vehicle Id", field: "vehicleId"},
+    {title: "Capacity", field: "capacity"},
+    {title: "Pallet", field: "pallet"},
+    {title: "Description", field: "description"},
     {
       title: "Action",
       field: "action",
