@@ -295,6 +295,7 @@ export default function SideBar(props) {
           ""
         )}
 
+        {props.menu.has("MENU_SALES_ROUTE") ? (  
         <div>
           <ListItem button onClick={() => handleListClick(4)}>
             <ListItemIcon>
@@ -342,8 +343,11 @@ export default function SideBar(props) {
             </List>
           </Collapse>
         </div>
+        ) : (
+            ""
+        )}
 
-
+        {props.menu.has("MENU_TMS") ? (  
         <div>
           <ListItem button onClick={() => handleListClick(5)}>
             <ListItemIcon>
@@ -422,6 +426,9 @@ export default function SideBar(props) {
             </List>
           </Collapse>
         </div>
+      ) : (
+        ""
+      )}
 
       </List>
     </Drawer>
