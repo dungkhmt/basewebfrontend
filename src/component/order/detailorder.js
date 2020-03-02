@@ -38,10 +38,10 @@ import {
     const [orderItems, setOrderItems] = useState([]);  
     const [order, setOrder] = useState({});
     const columns = [
-        {title: "Product", field:"productName"},
-        {title: "QTY", field:"quantity"},
+        {title: "Tên sản phẩm", field:"productName"},
+        {title: "Số lượng", field:"quantity"},
         {title: "Uom", field:"uom"},
-        {title: "Unit Price", field:"uniPrice"}
+        {title: "Giá đơn vị", field:"uniPrice"}
     ];
 
     useEffect(() => {

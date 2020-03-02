@@ -10,9 +10,9 @@ export default function DeliveryPlanList() {
   const dispatch = useDispatch();
   const token = useSelector(state => state.auth.token);
   const columns = [
-    {title: "Description", field: "description"},
-    {title: "Created By", field: "createdByUserLoginId"},
-    {title: "Created Date", field: "deliveryDate", type: 'date'},
+    {title: "Mô tả", field: "description"},
+    {title: "Tài khoản tạo", field: "createdByUserLoginId"},
+    {title: "Ngày tạo", field: "deliveryDate", type: 'date'},
     {
       title: "Note",
       field: "note",

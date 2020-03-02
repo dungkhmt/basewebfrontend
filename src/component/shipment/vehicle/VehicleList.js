@@ -10,10 +10,10 @@ export default function VehicleList() {
   const dispatch = useDispatch();
   const token = useSelector(state => state.auth.token);
   const columns = [
-    {title: "Vehicle Id", field: "vehicleId"},
-    {title: "Capacity", field: "capacity"},
-    {title: "Pallet", field: "pallet"},
-    {title: "Description", field: "description"},
+    {title: "Mã xe", field: "vehicleId"},
+    {title: "Tải trọng", field: "capacity"},
+    {title: "Số pallet", field: "pallet"},
+    {title: "Mô tả", field: "description"},
   ];
 
   return <div>

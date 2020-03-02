@@ -13,13 +13,12 @@ export default function ShipmentItemDeliveryPlanAdd() {
   const history = useHistory();
 
   const columns = [
-    {title: "Shipment Item Id", field: "shipmentItemId"},
-    {title: "Shipment Id", field: "shipmentId"},
-    {title: "Quantity", field: "quantity"},
-    {title: "Pallet", field: "pallet"},
-    {title: "Product Id", field: "productId"},
-    {title: "Customer Code", field: "customerCode"},
-    {title: "Location Code", field: "locationCode"},
+    {title: "Mã đơn hàng", field: "shipmentItemId"},
+    {title: "Số lượng", field: "quantity"},
+    {title: "Số pallet", field: "pallet"},
+    {title: "Mã sản phẩm", field: "productId"},
+    {title: "Mã khách hàng", field: "customerCode"},
+    {title: "Mã địa chỉ", field: "locationCode"},
   ];
 
   const {deliveryPlanId} = useParams();

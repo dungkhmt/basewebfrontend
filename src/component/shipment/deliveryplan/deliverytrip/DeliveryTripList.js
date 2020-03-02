@@ -4,23 +4,24 @@ import MaterialTable, {MTableToolbar} from "material-table";
 import {authGet} from "../../../../api";
 import {toFormattedDateTime} from "../../../../utils/dateutils";
 import Button from "@material-ui/core/Button";
-import SaveIcon from '@material-ui/icons/Save';
-import CloudUploadIcon from '@material-ui/icons/CloudUpload';
 import DeleteIcon from '@material-ui/icons/Delete';
 import {tableIcons} from "../../../../utils/iconutil";
 import {Link, useParams} from "react-router-dom";
+import ListIcon from '@material-ui/icons/List';
+import TableChartIcon from '@material-ui/icons/TableChart';
+import AddIcon from '@material-ui/icons/Add';
 
 export default function DeliveryTripList() {
   const dispatch = useDispatch();
   const token = useSelector(state => state.auth.token);
   const columns = [
-    {title: "Sequence Id", field: "deliveryPlanSolutionSeqId"},
-    {title: "Delivery Trip Id", field: "deliveryTripId"},
-    {title: "Execute Date", field: "executeDate", type: 'date'},
-    {title: "Total Distance", field: "totalDistance"},
-    {title: "Total Weight", field: "totalWeight"},
-    {title: "Vehicle Id", field: "vehicleId"},
-    {title: "Max Vehicle Capacity", field: "maxVehicleCapacity"},
+    {title: "Thứ tự lời giải", field: "deliveryPlanSolutionSeqId"},
+    {title: "Mã chuyến giao", field: "deliveryTripId"},
+    {title: "Ngày thực hiện", field: "executeDate", type: 'date'},
+    {title: "Tổng khoảng cách", field: "totalDistance"},
+    {title: "Tổng khối lượng", field: "totalWeight"},
+    {title: "Mã xe", field: "vehicleId"},
+    {title: "Tải trọng tối đa của xe", field: "maxVehicleCapacity"},
     {
       title: "Note",
       field: "note",
@@ -91,15 +92,15 @@ export default function DeliveryTripList() {
     >
     </MaterialTable>
     <Link to={'/create-delivery-trip/' + deliveryPlanId}>
-      <Button color={'primary'} variant={'contained'} startIcon={<CloudUploadIcon/>}> Thêm mới </Button> <p/>
+      <Button color={'primary'} variant={'contained'} startIcon={<AddIcon/>}> Thêm mới </Button> <p/>
     </Link>
     <Link to={'/vehicle-delivery-plan/' + deliveryPlanId + '/list'}>
-      <Button color={'primary'} variant={'contained'}> Danh sách xe </Button>
+      <Button color={'primary'} variant={'contained'} startIcon={<ListIcon/>}> Danh sách xe </Button>
     </Link>
     <Link to={'/shipment-item-delivery-plan/' + deliveryPlanId + '/list'}>
-      <Button color={'primary'} variant={'contained'}> Danh sách đơn hàng </Button> <p/>
+      <Button color={'primary'} variant={'contained'} startIcon={<ListIcon/>}> Danh sách đơn hàng </Button> <p/>
     </Link>
-    <Button color={'default'} variant={'contained'} startIcon={<SaveIcon/>}> Xuất excel </Button>
+    <Button color={'default'} variant={'contained'} startIcon={<TableChartIcon/>}> Xuất excel </Button>
     <Button color={'default'} variant={'contained'}> Tự động xếp chuyến còn lại </Button> <p/>
     <Button color={'secondary'} variant={'contained'} startIcon={<DeleteIcon/>}> Hủy chuyến </Button> <p/>
   </div>

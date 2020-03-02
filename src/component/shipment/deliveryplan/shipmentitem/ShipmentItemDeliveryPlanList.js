@@ -5,26 +5,26 @@ import {authGet, authPost} from "../../../../api";
 import Button from "@material-ui/core/Button";
 import {tableIcons} from "../../../../utils/iconutil";
 import {Link, useHistory, useParams} from "react-router-dom";
-import AddBoxIcon from "@material-ui/icons/AddBox";
+import AddIcon from "@material-ui/icons/Add";
+import DeleteIcon from '@material-ui/icons/Delete';
 
 export default function ShipmentItemDeliveryPlanList() {
   const dispatch = useDispatch();
   const token = useSelector(state => state.auth.token);
   const history = useHistory();
-
   const columns = [
-    {title: "Shipment Item Id", field: "shipmentItemId"},
-    {title: "Shipment Id", field: "shipmentId"},
-    {title: "Quantity", field: "quantity"},
-    {title: "Pallet", field: "pallet"},
-    {title: "Product Id", field: "productId"},
-    {title: "Customer Code", field: "customerCode"},
-    {title: "Location Code", field: "locationCode"},
+    {title: "Mã đơn hàng", field: "shipmentItemId"},
+    {title: "Số lượng", field: "quantity"},
+    {title: "Số pallet", field: "pallet"},
+    {title: "Mã sản phẩm", field: "productId"},
+    {title: "Mã khách hàng", field: "customerCode"},
+    {title: "Mã địa chỉ", field: "locationCode"},
     {
-      title: "Action",
+      title: "Hành động",
       field: "action",
       render: rowData => <Button variant={"contained"}
-                                 onClick={() => handleDelete(rowData['shipmentItemId'])}>Xóa</Button>
+                                 onClick={() => handleDelete(rowData['shipmentItemId'])}
+                                 startIcon={<DeleteIcon/>}>Xóa</Button>
     }
   ];
 
@@ -76,7 +76,7 @@ export default function ShipmentItemDeliveryPlanList() {
     >
     </MaterialTable>
     <Link to={'/shipment-item-delivery-plan/' + deliveryPlanId + '/add'}>
-      <Button color={'primary'} variant={'contained'} startIcon={<AddBoxIcon/>}>Thêm mới</Button>
+      <Button color={'primary'} variant={'contained'} startIcon={<AddIcon/>}>Thêm mới</Button>
     </Link>
   </div>;
 }

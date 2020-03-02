@@ -5,22 +5,24 @@ import {authGet, authPost} from "../../../../api";
 import Button from "@material-ui/core/Button";
 import {tableIcons} from "../../../../utils/iconutil";
 import {Link, useHistory, useParams} from "react-router-dom";
-import AddBoxIcon from "@material-ui/icons/AddBox";
+import DeleteIcon from '@material-ui/icons/Delete';
+import AddIcon from "@material-ui/icons/Add";
 
 export default function VehicleDeliveryPlanList() {
   const dispatch = useDispatch();
   const token = useSelector(state => state.auth.token);
   const history = useHistory();
-
   const columns = [
-    {title: "Vehicle Id", field: "vehicleId"},
-    {title: "Capacity", field: "capacity"},
-    {title: "Pallet", field: "pallet"},
-    {title: "Description", field: "description"},
+    {title: "Mã xe", field: "vehicleId"},
+    {title: "Tải trọng", field: "capacity"},
+    {title: "Số pallet", field: "pallet"},
+    {title: "Mô tả", field: "description"},
     {
-      title: "Action",
+      title: "Hành động",
       field: "action",
-      render: rowData => <Button variant={'contained'} onClick={() => handleDelete(rowData['vehicleId'])}>Xóa</Button>
+      render: rowData => <Button variant={'contained'}
+                                 onClick={() => handleDelete(rowData['vehicleId'])}
+                                 startIcon={<DeleteIcon/>}>Xóa</Button>
     }
   ];
 
@@ -72,7 +74,7 @@ export default function VehicleDeliveryPlanList() {
     >
     </MaterialTable>
     <Link to={'/vehicle-delivery-plan/' + deliveryPlanId + '/add'}>
-      <Button color={'primary'} variant={'contained'} startIcon={<AddBoxIcon/>}> Thêm mới</Button>
+      <Button color={'primary'} variant={'contained'} startIcon={<AddIcon/>}> Thêm mới</Button>
     </Link>
   </div>;
 }
