@@ -18,7 +18,7 @@ function OrderList(props){
     const [isRequesting, setIsRequesting] = useState(false);
     const columns = [
         {title: "orderId", field:"orderId",  render: rowData => <Link to={"/orders/"+rowData.orderId} >{rowData.orderId}</Link>},
-        {title: "order date", field:"orderDate"},
+        {title: "order date", field:"orderDate", defaultSort:"desc",type:"datetime"},
         {title: "salesman", field:"salesmanName"},
         {title: "customer", field:"customerName"},
         {title: "vendor", field:"vendorName"},
