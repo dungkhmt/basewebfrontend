@@ -164,6 +164,13 @@ generate sales route detail
 	
 	
 	curl --header "Content-Type: application/json" -v POST http://3.1.6.126/api/generate-sales-route-detail -u admin:123 -d '{"partySalesmanId":"bb159eab-1200-483c-9684-8164f5570b5c","salesRoutePlanningPeriodId":"4aee2a8a-c88d-4517-b1cd-a47cda20aa5f"}'
+-------
+
+Salesman CheckIn at customer	
+	curl --header "Content-Type: application/json" -v POST http://localhost:8080/api/salesman-checkin-customer -u admin:123 -d '{"partyCustomerId":"42226977-4e40-45a1-9e16-3f87f3602596","latitude":21.43243,"longitude":105.5345}'
+	
+Salesman CheckOut at customer	
+	curl --header "Content-Type: application/json" -v POST http://localhost:8080/api/salesman-checkout-customer -u admin:123 -d '{"partyCustomerId":"42226977-4e40-45a1-9e16-3f87f3602596","latitude":21.43243,"longitude":105.5345}'
 	
 -------
 get customers visited of userlogin

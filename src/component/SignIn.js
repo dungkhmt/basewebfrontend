@@ -83,10 +83,11 @@ export default function SignIn(props) {
       <Container component="main" maxWidth="xs">
         <CssBaseline />
         <div className={classes.paper}>
+         
           <img
-            alt="Hust"
-            className={classes.avatar}
-            src={process.env.PUBLIC_URL + "/soict-logo.png"}
+            //alt="Hust"
+            //className={classes.avatar}
+            //src={process.env.PUBLIC_URL + "/soict-logo.png"}
           />
           <Typography component="h1" variant="h5">
             Sign in
