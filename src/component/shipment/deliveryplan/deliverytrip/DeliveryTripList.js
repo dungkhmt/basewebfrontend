@@ -73,7 +73,7 @@ export default function DeliveryTripList() {
           authGet(
             dispatch,
             token,
-            "/delivery-trip" + "?size=" + query.pageSize + "&page=" + query.page + sortParam
+            "/delivery-trip/" + deliveryPlanId + "?size=" + query.pageSize + "&page=" + query.page + sortParam
           ).then(
             response => {
               resolve({

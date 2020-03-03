@@ -9,13 +9,13 @@ import {useDispatch, useSelector} from "react-redux";
 import Button from "@material-ui/core/Button";
 import {makeStyles} from "@material-ui/core/styles";
 import Typography from "@material-ui/core/Typography";
-import {useHistory, useParams} from "react-router-dom";
-import Select from "@material-ui/core/Select";
-import MenuItem from "@material-ui/core/MenuItem";
-import InputLabel from "@material-ui/core/InputLabel";
+import {useHistory} from "react-router-dom";
 import Toolbar from "@material-ui/core/Toolbar";
 import TextField from "@material-ui/core/TextField";
 import CloudUploadIcon from "@material-ui/icons/CloudUpload";
+import {tableIcons} from "../../../../../utils/iconutil";
+import MaterialTable from "material-table";
+import {useParams} from "react-router";
 
 
 const useStyles = makeStyles(theme => ({
@@ -33,45 +33,87 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
+function orElse(a, b) {
+  return a ? a : b;
+}
+
 export default function DeliveryTripDetailCreate() {
 
   const token = useSelector(state => state.auth.token);
   const dispatch = useDispatch();
   const history = useHistory();
 
-  const [shipmentItemList, setShipmentItemList] = useState([]);
+  const [selectedQuantity,] = useState({});
+  const [, rerender] = useState([]);
+
+  const columns = [
+    {title: "Mã đơn hàng", field: "shipmentItemId"},
+    {title: "Tên sản phẩm", field: "productName"},
+    {title: "Số lượng sẵn có", field: "quantity"},
+    {title: "Số pallet", field: "pallet"},
+    {title: "Địa chỉ", field: "address"},
+    {
+      title: "Chọn số lượng",
+      field: "quantitySelection",
+      render: rowData => <TextField
+        id="quantity"
+        label="Số lượng"
+        type="number"
+        className={classes.textField}
+        InputLabelProps={{
+          shrink: true,
+        }}
+        margin="normal"
+        inputProps={{min: "0", max: "" + rowData['quantity'], step: "1"}}
+        value={orElse(selectedQuantity[rowData['shipmentItemId']], 0)}
+        onChange={event => {
+          selectedQuantity[rowData['shipmentItemId']] = event.target.value;
+          rerender([]);
+        }}
+      />,
+    }
+  ];
+
+  // const [shipmentItemList, setShipmentItemList] = useState([]);
   const [shipmentItemSelected, setShipmentItemSelected] = useState(null);
-  const [quantity, setQuantity] = useState(0);
+
+  // const [quantity, setQuantity] = useState(0);
 
   function handleShipmentItemSelectedChange(event) {
     setShipmentItemSelected(event.target.value);
   }
 
   const handleSubmit = () => {
-    const deliveryTripInfo = {
-      deliveryTripId,
-      shipmentItemId: shipmentItemSelected,
-      deliveryQuantity: quantity
-    };
-    console.log(deliveryTripInfo);
-    authPost(dispatch, token, '/create-delivery-trip-detail', deliveryTripInfo).then(
-      response => {
-        console.log(response);
-        // browserHistory.goBack();
-        history.push(process.env.PUBLIC_URL + "/delivery-trip/" + deliveryTripId)
-      },
-      error => console.log(error)
-    )
+    // const deliveryTripInfo = {
+    //   deliveryTripId,
+    //   shipmentItemId: shipmentItemSelected,
+    //   deliveryQuantity: quantity
+    // };
+    // console.log(deliveryTripInfo);
+    // authPost(dispatch, token, '/create-delivery-trip-detail', deliveryTripInfo).then(
+    //   response => {
+    //     console.log(response);
+    //     // browserHistory.goBack();
+    //     history.push(process.env.PUBLIC_URL + "/delivery-trip/" + deliveryTripId)
+    //   },
+    //   error => console.log(error)
+    // )
   };
 
   const classes = useStyles();
 
   const {deliveryTripId} = useParams();
 
+  const [deliveryPlanId, setDeliveryPlanId] = useState();
+
   const [deliveryTrip, setDeliveryTrip] = useState(null);
 
-  const getDeliveryTripInfo = () => {
-    authGet(dispatch, token, '/delivery-trip/' + deliveryTripId).then(response => {
+  const [selectedShipmentItem, setSelectedShipmentItem] = useState([]);
+
+  const [tripCapacityInfo, setTripCapacityInfo] = useState({});
+
+  const getDeliveryTripBasicInfo = () => {
+    authGet(dispatch, token, '/delivery-trip/' + deliveryTripId + '/basic-info').then(response => {
       console.log('::getDeliveryTripInfo: ', deliveryTripId);
       console.log(response);
       setDeliveryTrip({
@@ -81,13 +123,22 @@ export default function DeliveryTripDetailCreate() {
         executeDate: response['executeDate'],
         vehicleTypeId: response['externalVehicleType'] == null ? null : response['externalVehicleType']['vehicleTypeId']
       });
-      authGet(dispatch, token, '/shipment-item/' + response['deliveryPlan']['deliveryPlanId'] + '/all').then(response => {
-        setShipmentItemList(response.map(shipmentItem => shipmentItem['shipmentItemId']));
-      }).catch(console.log);
+      // authGet(dispatch, token, '/shipment-item/' + response['deliveryPlan']['deliveryPlanId'] + '/all').then(response => {
+      //   setShipmentItemList(response.map(shipmentItem => shipmentItem['shipmentItemId']));
+      // }).catch(console.log);
     })
   };
 
-  useEffect(() => getDeliveryTripInfo(), []);
+  function getDeliveryTripCapacityInfo() {
+    let body = selectedShipmentItem.map(row => ({
+      shipmentItemId: row['shipmentItemId'], quantity: orElse(selectedQuantity[row['shipmentItemId']], 0)
+    }));
+    authPost(dispatch, token, '/delivery-trip/' + deliveryTripId + '/capacity-info', body).then(response => {
+      setTripCapacityInfo(response);
+    }).catch(console.log);
+  }
+
+  useEffect(() => getDeliveryTripBasicInfo(), []);
 
   return <div>
     <MuiPickersUtilsProvider utils={DateFnsUtils}>
@@ -100,7 +151,7 @@ export default function DeliveryTripDetailCreate() {
             <div>
               <div>
                 <div style={{padding: '0px 30px'}}>
-                  <b>Mã đợt chuyến hàng: </b> {deliveryTripId} <p/>
+                  <b>Mã chuyến hàng: </b> {deliveryTripId} <p/>
                   <b>Mã đợt giao hàng: </b> {deliveryTrip === null ? '' : deliveryTrip['deliveryPlanId']} <p/>
                   <b>Ngày tạo: </b> {deliveryTrip === null ? '' : deliveryTrip['executeDate']} <p/>
                   <b>Xe: </b> {deliveryTrip === null ? '' : deliveryTrip['vehicleId']}<p/>
@@ -109,23 +160,52 @@ export default function DeliveryTripDetailCreate() {
               </div>
             </div>
           </Toolbar>
-          <form className={classes.root} noValidate autoComplete="off">
-            <InputLabel>Chọn đơn hàng</InputLabel>
-            <Select
-              value={shipmentItemSelected}
-              onChange={handleShipmentItemSelectedChange}
-            >
-              {
-                shipmentItemList.map(shipmentItem => <MenuItem value={shipmentItem}>{shipmentItem}</MenuItem>)
-              }
-            </Select><p/>
-            <TextField
-              label="Số lượng"
-              type="number"
-              value={quantity}
-              onChange={event => setQuantity(event.target.value)}
-            />
-          </form>
+          {/*<form className={classes.root} noValidate autoComplete="off">*/}
+          {/*  <InputLabel>Chọn đơn hàng</InputLabel>*/}
+          {/*  <Select*/}
+          {/*    value={shipmentItemSelected}*/}
+          {/*    onChange={handleShipmentItemSelectedChange}*/}
+          {/*  >*/}
+          {/*    {*/}
+          {/*      shipmentItemList.map(shipmentItem => <MenuItem value={shipmentItem}>{shipmentItem}</MenuItem>)*/}
+          {/*    }*/}
+          {/*  </Select><p/>*/}
+          {/*  <TextField*/}
+          {/*    label="Số lượng"*/}
+          {/*    type="number"*/}
+          {/*    value={quantity}*/}
+          {/*    onChange={event => setQuantity(event.target.value)}*/}
+          {/*  />*/}
+          {/*</form>*/}
+
+          <MaterialTable
+            title={'Chọn đơn hàng vào chuyến'}
+            columns={columns}
+            options={{search: false, selection: true}}
+            data={query =>
+              new Promise((resolve) => {
+                console.log(query);
+                authGet(
+                  dispatch,
+                  token,
+                  "/shipment-item/" + deliveryPlanId + '/all'
+                ).then(
+                  response => {
+                    resolve({
+                      data: response,
+                      // page: response.number,
+                      // totalCount: response.totalElements
+                    });
+                  },
+                  error => {
+                    console.log("error");
+                  }
+                );
+              })
+            }
+            icons={tableIcons}
+          >
+          </MaterialTable>
         </CardContent>
         <CardActions>
           <Button color={'primary'} variant={'contained'} startIcon={<CloudUploadIcon/>} onClick={handleSubmit}>
@@ -134,5 +214,7 @@ export default function DeliveryTripDetailCreate() {
         </CardActions>
       </Card>
     </MuiPickersUtilsProvider>
+
+
   </div>
 }

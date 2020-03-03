@@ -7,11 +7,24 @@ import DeleteIcon from '@material-ui/icons/Delete';
 import {tableIcons} from "../../../../../utils/iconutil";
 import {Link, useParams} from "react-router-dom";
 import AddIcon from "@material-ui/icons/Add";
+import Grid from "@material-ui/core/Grid";
 
 // each shipment item
 export default function DeliveryTripDetailList() {
   const dispatch = useDispatch();
   const token = useSelector(state => state.auth.token);
+
+  function handleDelete(deliveryTripDetailId) {
+    authGet(dispatch, token, '/delete-delivery-trip-detail/' + deliveryTripDetailId).then(response => {
+      if (response) {
+        alert("Deleted " + deliveryTripDetailId);
+        window.location.reload();
+      } else {
+        alert("Delete failed");
+      }
+    }).catch(console.log);
+  }
+
   const columns = [
     {title: "Mã chi tiết chuyến giao hàng", field: "deliveryTripDetailId"},
     {title: "Mã chuyến giao hàng", field: "deliveryTripId"},
@@ -22,7 +35,9 @@ export default function DeliveryTripDetailList() {
     {
       title: "Note",
       field: "note",
-      render: rowData => <Link to={'/delivery-trip-detail/' + rowData['deliveryTripId']}>Detail</Link>
+      render: rowData => <Button variant={'contained'}
+                                 onClick={() => handleDelete(rowData['deliveryTripDetailId'])}
+                                 startIcon={<DeleteIcon/>}>Xóa</Button>
     },
   ];
 
@@ -31,7 +46,7 @@ export default function DeliveryTripDetailList() {
   const [deliveryTrip, setDeliveryTrip] = useState(null);
 
   const getDeliveryTripInfo = () => {
-    authGet(dispatch, token, '/delivery-trip/' + deliveryTripId).then(response => {
+    authGet(dispatch, token, '/delivery-trip/' + deliveryTripId + '/basic-info').then(response => {
       console.log('::getDeliveryTripInfo: ', deliveryTripId);
       console.log(response);
       setDeliveryTrip({
@@ -55,15 +70,23 @@ export default function DeliveryTripDetailList() {
         Toolbar: props => (
           <div>
             <MTableToolbar {...props} />
-            <div>
-              <div style={{padding: '0px 30px'}}>
-                <b>Mã đợt chuyến hàng: </b> {deliveryTripId} <p/>
+            <Grid container spacing={3}>
+              <Grid item xs={9} style={{textAlign: 'left', padding: '0px 30px 20px 30px'}}>
+                <b>Mã chuyến hàng: </b> {deliveryTripId} <p/>
                 <b>Mã đợt giao hàng: </b> {deliveryTrip === null ? '' : deliveryTrip['deliveryPlanId']} <p/>
                 <b>Ngày tạo: </b> {deliveryTrip === null ? '' : deliveryTrip['executeDate']} <p/>
                 <b>Xe: </b> {deliveryTrip === null ? '' : deliveryTrip['vehicleId']}<p/>
                 <b>Loại xe: </b> {deliveryTrip === null ? '' : deliveryTrip['vehicleTypeId']}
-              </div>
-            </div>
+              </Grid>
+              <Grid item xs={3}
+                    style={{verticalAlign: 'text-bottom', textAlign: 'right', padding: '100px 50px 10px 30px'}}>
+                <Link to={'/create-delivery-trip-detail/' + deliveryTripId}>
+                  <Button color={'primary'} variant={'contained'} startIcon={<AddIcon/>}> Thêm mới </Button> <p/>
+                </Link>
+                {/*<Button color={'secondary'} variant={'contained'} startIcon={<DeleteIcon/>}> Hủy chi tiết*/}
+                {/*  chuyến </Button>*/}
+              </Grid>
+            </Grid>
           </div>
         )
       }}
@@ -77,7 +100,7 @@ export default function DeliveryTripDetailList() {
           authGet(
             dispatch,
             token,
-            "/delivery-trip-detail" + "?size=" + query.pageSize + "&page=" + query.page + sortParam
+            "/delivery-trip-detail/" + deliveryTripId + "?size=" + query.pageSize + "&page=" + query.page + sortParam
           ).then(
             response => {
               resolve({
@@ -95,9 +118,6 @@ export default function DeliveryTripDetailList() {
       icons={tableIcons}
     >
     </MaterialTable>
-    <Link to={'/create-delivery-trip-detail/' + deliveryTripId}>
-      <Button color={'primary'} variant={'contained'} startIcon={<AddIcon/>}> Thêm mới </Button> <p/>
-    </Link>
-    <Button color={'secondary'} variant={'contained'} startIcon={<DeleteIcon/>}> Hủy chi tiết chuyến </Button> <p/>
+
   </div>
 }
