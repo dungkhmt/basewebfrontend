@@ -16,6 +16,7 @@ import CloudUploadIcon from "@material-ui/icons/CloudUpload";
 import {tableIcons} from "../../../../../utils/iconutil";
 import MaterialTable from "material-table";
 import {useParams} from "react-router";
+import Grid from "@material-ui/core/Grid";
 
 
 const useStyles = makeStyles(theme => ({
@@ -57,7 +58,7 @@ export default function DeliveryTripDetailCreate() {
       field: "quantitySelection",
       render: rowData => <TextField
         id="quantity"
-        label="Số lượng"
+        // label="Số lượng"
         type="number"
         className={classes.textField}
         InputLabelProps={{
@@ -112,6 +113,18 @@ export default function DeliveryTripDetailCreate() {
 
   const [tripCapacityInfo, setTripCapacityInfo] = useState({});
 
+  const [dataTable, setDataTable] = useState();
+
+  function getDataTable() {
+    authGet(
+      dispatch,
+      token,
+      "/shipment-item/" + deliveryTripId + '/all'
+    ).then(
+      response => setDataTable(response)
+    );
+  }
+
   const getDeliveryTripBasicInfo = () => {
     authGet(dispatch, token, '/delivery-trip/' + deliveryTripId + '/basic-info').then(response => {
       console.log('::getDeliveryTripInfo: ', deliveryTripId);
@@ -123,6 +136,7 @@ export default function DeliveryTripDetailCreate() {
         executeDate: response['executeDate'],
         vehicleTypeId: response['externalVehicleType'] == null ? null : response['externalVehicleType']['vehicleTypeId']
       });
+      setDeliveryPlanId(response['deliveryPlan']['deliveryPlanId']);
       // authGet(dispatch, token, '/shipment-item/' + response['deliveryPlan']['deliveryPlanId'] + '/all').then(response => {
       //   setShipmentItemList(response.map(shipmentItem => shipmentItem['shipmentItemId']));
       // }).catch(console.log);
@@ -138,7 +152,11 @@ export default function DeliveryTripDetailCreate() {
     }).catch(console.log);
   }
 
-  useEffect(() => getDeliveryTripBasicInfo(), []);
+  useEffect(() => {
+    getDeliveryTripBasicInfo();
+    getDataTable();
+    getDeliveryTripCapacityInfo();
+  }, []);
 
   return <div>
     <MuiPickersUtilsProvider utils={DateFnsUtils}>
@@ -148,17 +166,26 @@ export default function DeliveryTripDetailCreate() {
             Tạo mới chi tiết chuyến giao hàng
           </Typography>
           <Toolbar>
-            <div>
-              <div>
-                <div style={{padding: '0px 30px'}}>
+            <Grid container spacing={3}>
+              <Grid item xs={7} style={{textAlign: 'left', padding: '30px 30px 20px 10px'}}>
+                <div>
                   <b>Mã chuyến hàng: </b> {deliveryTripId} <p/>
                   <b>Mã đợt giao hàng: </b> {deliveryTrip === null ? '' : deliveryTrip['deliveryPlanId']} <p/>
                   <b>Ngày tạo: </b> {deliveryTrip === null ? '' : deliveryTrip['executeDate']} <p/>
                   <b>Xe: </b> {deliveryTrip === null ? '' : deliveryTrip['vehicleId']}<p/>
                   <b>Loại xe: </b> {deliveryTrip === null ? '' : deliveryTrip['vehicleTypeId']}
                 </div>
-              </div>
-            </div>
+              </Grid>
+
+              <Grid item xs={5}
+                    style={{verticalAlign: 'text-bottom', textAlign: 'left', padding: '30px 30px 20px 30px'}}>
+                <div>
+                  <b>Tổng khoảng cách: </b> {tripCapacityInfo == null ? 0 : tripCapacityInfo['totalDistance']} <p/>
+                  <b>Tổng khối lượng: </b> {tripCapacityInfo == null ? 0 : tripCapacityInfo['totalWeight']} <p/>
+                  <b>Tổng số pallet: </b> {tripCapacityInfo == null ? 0 : tripCapacityInfo['totalPallet']} <p/>
+                </div>
+              </Grid>
+            </Grid>
           </Toolbar>
           {/*<form className={classes.root} noValidate autoComplete="off">*/}
           {/*  <InputLabel>Chọn đơn hàng</InputLabel>*/}
@@ -182,27 +209,7 @@ export default function DeliveryTripDetailCreate() {
             title={'Chọn đơn hàng vào chuyến'}
             columns={columns}
             options={{search: false, selection: true}}
-            data={query =>
-              new Promise((resolve) => {
-                console.log(query);
-                authGet(
-                  dispatch,
-                  token,
-                  "/shipment-item/" + deliveryPlanId + '/all'
-                ).then(
-                  response => {
-                    resolve({
-                      data: response,
-                      // page: response.number,
-                      // totalCount: response.totalElements
-                    });
-                  },
-                  error => {
-                    console.log("error");
-                  }
-                );
-              })
-            }
+            data={dataTable}
             icons={tableIcons}
           >
           </MaterialTable>
