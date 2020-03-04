@@ -257,6 +257,7 @@ export default function SideBar(props) {
         ) : (
           ""
         )}
+
         {props.menu.has("MENU_INVOICE") ? (
           <div>
             <ListItem button onClick={() => handleListClick(3)}>
@@ -429,6 +430,191 @@ export default function SideBar(props) {
       ) : (
         ""
       )}
+
+
+      {props.menu.has("MENU_INVOICE") ? (
+          <div>
+            <ListItem button onClick={() => handleListClick(6)}>
+              <ListItemIcon>
+                <InboxIcon/>
+              </ListItemIcon>
+              <ListItemText primary="QL sản phẩm"/>
+              {openCollapse[6] ? <ExpandLess/> : <ExpandMore/>}
+            </ListItem>
+            <Collapse in={openCollapse[6]} timeout="auto" unmountOnExit>
+              <List component="div" disablePadding>
+                  <ListItem button className={classes.nested}>
+                    <ListItemIcon>
+                      <StarBorder/>
+                    </ListItemIcon>
+                    <ListItemText primary="Tạo mới sản phẩm"/>
+                  </ListItem>
+                  <ListItem button className={classes.nested}>
+                    <ListItemIcon>
+                      <StarBorder/>
+                    </ListItemIcon>
+                    <ListItemText primary="Danh sách SP"/>
+                  </ListItem>
+                
+              </List>
+            </Collapse>
+          </div>
+        ) : (
+          ""
+        )}
+      {props.menu.has("MENU_INVOICE") ? (
+          <div>
+            <ListItem button onClick={() => handleListClick(7)}>
+              <ListItemIcon>
+                <InboxIcon/>
+              </ListItemIcon>
+              <ListItemText primary="QL Khách hàng"/>
+              {openCollapse[7] ? <ExpandLess/> : <ExpandMore/>}
+            </ListItem>
+            <Collapse in={openCollapse[7]} timeout="auto" unmountOnExit>
+              <List component="div" disablePadding>
+                  <ListItem button className={classes.nested}>
+                    <ListItemIcon>
+                      <StarBorder/>
+                    </ListItemIcon>
+                    <ListItemText primary="Tạo mới KH"/>
+                  </ListItem>
+                  <ListItem button className={classes.nested}>
+                    <ListItemIcon>
+                      <StarBorder/>
+                    </ListItemIcon>
+                    <ListItemText primary="Danh sách KH"/>
+                  </ListItem>                
+              </List>
+            </Collapse>
+          </div>
+        ) : (
+          ""
+        )}
+
+        {props.menu.has("MENU_INVOICE") ? (
+          <div>
+            <ListItem button onClick={() => handleListClick(8)}>
+              <ListItemIcon>
+                <InboxIcon/>
+              </ListItemIcon>
+              <ListItemText primary="QL đại lí bán lẻ"/>
+              {openCollapse[8] ? <ExpandLess/> : <ExpandMore/>}
+            </ListItem>
+            <Collapse in={openCollapse[8]} timeout="auto" unmountOnExit>
+              <List component="div" disablePadding>
+                  <ListItem button className={classes.nested}>
+                    <ListItemIcon>
+                      <StarBorder/>
+                    </ListItemIcon>
+                    <ListItemText primary="Tạo mới ĐLBL"/>
+                  </ListItem>
+                  <ListItem button className={classes.nested}>
+                    <ListItemIcon>
+                      <StarBorder/>
+                    </ListItemIcon>
+                    <ListItemText primary="Danh sách ĐLBL"/>
+                  </ListItem>
+                
+              </List>
+            </Collapse>
+          </div>
+        ) : (
+          ""
+        )}
+
+        {props.menu.has("MENU_INVOICE") ? (
+          <div>
+            <ListItem button onClick={() => handleListClick(9)}>
+              <ListItemIcon>
+                <InboxIcon/>
+              </ListItemIcon>
+              <ListItemText primary="QL nhân viên bán hàng"/>
+              {openCollapse[9] ? <ExpandLess/> : <ExpandMore/>}
+            </ListItem>
+            <Collapse in={openCollapse[9]} timeout="auto" unmountOnExit>
+              <List component="div" disablePadding>
+                  <ListItem button className={classes.nested}>
+                    <ListItemIcon>
+                      <StarBorder/>
+                    </ListItemIcon>
+                    <ListItemText primary="Tạo mới NVBH"/>
+                  </ListItem>
+                  <ListItem button className={classes.nested}>
+                    <ListItemIcon>
+                      <StarBorder/>
+                    </ListItemIcon>
+                    <ListItemText primary="Danh sách NVBH"/>
+                  </ListItem>
+                
+              </List>
+            </Collapse>
+          </div>
+        ) : (
+          ""
+        )}
+
+        {props.menu.has("MENU_INVOICE") ? (
+          <div>
+            <ListItem button onClick={() => handleListClick(10)}>
+              <ListItemIcon>
+                <InboxIcon/>
+              </ListItemIcon>
+              <ListItemText primary="QL Nhà Phân Phối"/>
+              {openCollapse[10] ? <ExpandLess/> : <ExpandMore/>}
+            </ListItem>
+            <Collapse in={openCollapse[10]} timeout="auto" unmountOnExit>
+              <List component="div" disablePadding>
+                  <ListItem button className={classes.nested}>
+                    <ListItemIcon>
+                      <StarBorder/>
+                    </ListItemIcon>
+                    <ListItemText primary="Tạo mới NPP"/>
+                  </ListItem>
+                  <ListItem button className={classes.nested}>
+                    <ListItemIcon>
+                      <StarBorder/>
+                    </ListItemIcon>
+                    <ListItemText primary="Danh sách NPP"/>
+                  </ListItem>
+                
+              </List>
+            </Collapse>
+          </div>
+        ) : (
+          ""
+        )}
+
+        {props.menu.has("MENU_INVOICE") ? (
+          <div>
+            <ListItem button onClick={() => handleListClick(11)}>
+              <ListItemIcon>
+                <InboxIcon/>
+              </ListItemIcon>
+              <ListItemText primary="QL giá sản phẩm"/>
+              {openCollapse[11] ? <ExpandLess/> : <ExpandMore/>}
+            </ListItem>
+            <Collapse in={openCollapse[11]} timeout="auto" unmountOnExit>
+              <List component="div" disablePadding>
+                  <ListItem button className={classes.nested}>
+                    <ListItemIcon>
+                      <StarBorder/>
+                    </ListItemIcon>
+                    <ListItemText primary="Thiết lập giá sản phẩm"/>
+                  </ListItem>
+                  <ListItem button className={classes.nested}>
+                    <ListItemIcon>
+                      <StarBorder/>
+                    </ListItemIcon>
+                    <ListItemText primary="Danh sách SP"/>
+                  </ListItem>
+                
+              </List>
+            </Collapse>
+          </div>
+        ) : (
+          ""
+        )}
 
       </List>
     </Drawer>

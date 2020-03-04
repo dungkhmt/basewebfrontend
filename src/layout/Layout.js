@@ -126,7 +126,7 @@ function Layout(props) {
             <MenuIcon />
           </IconButton>
           <Typography variant="h6" noWrap>
-            Base Web
+            Quản lý chuỗi cung ứng
           </Typography>
           <span className={classes.toolbarButtons}>
             <IconButton color="inherit">
