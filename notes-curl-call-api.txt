@@ -77,6 +77,13 @@ Assign customer to a salesman
 			
 	curl --header "Content-Type: application/json; charset=utf-8" -v POST http://3.1.6.126/api/assign-customer-2-salesman -u dungpq:123 -d '{"partyCustomerId":"5ae20c48-4d6c-11ea-967e-54bf64436441","partySalesmanId":"bb159eab-1200-483c-9684-8164f5570b5c"}'		
 --------
+Create Driver
+	curl --header "Content-Type: application/json; charset=utf-8" -v POST http://localhost:8080/api/create-driver -u dungpq:123 -d '{"userName":"datnguyen","password":"123","lastName":"Nguyen","middleName":"Tuan","firstName":"Dat","birthDate":"2020-03-04T02:44:49.262Z","gender":"M","partyCode":"datnguyen","roles":["ROLE_FULL_ADMIN"]}'
+	
+--------
+Get all drivers
+	curl --header "Content-Type: application/json; charset=utf-8" -v POST http://localhost:8080/api/get-all-drivers -u dungpq:123 -d '{}'
+--------
 Create Delivery Plan
 
 	curl --header "Content-Type: application/json; charset=utf-8" -v POST http://localhost:8080/api/create-delivery-plan -u admin:123 -d '{"deliveryDate":"2020-02-18 10:30:00","createdByUserLoginId":"dungpq","description":null}'
@@ -169,8 +176,12 @@ generate sales route detail
 Salesman CheckIn at customer	
 	curl --header "Content-Type: application/json" -v POST http://localhost:8080/api/salesman-checkin-customer -u admin:123 -d '{"partyCustomerId":"42226977-4e40-45a1-9e16-3f87f3602596","latitude":21.43243,"longitude":105.5345}'
 	
+	curl --header "Content-Type: application/json" -v POST http://3.1.6.126/api/salesman-checkin-customer -u admin:123 -d '{"partyCustomerId":"06555383-2f1f-47f9-a536-eda1069cd1bb","latitude":21.43243,"longitude":105.5345}'
+	
 Salesman CheckOut at customer	
 	curl --header "Content-Type: application/json" -v POST http://localhost:8080/api/salesman-checkout-customer -u admin:123 -d '{"partyCustomerId":"42226977-4e40-45a1-9e16-3f87f3602596","latitude":21.43243,"longitude":105.5345}'
+	
+	curl --header "Content-Type: application/json" -v POST http://3.1.6.126/api/salesman-checkout-customer -u admin:123 -d '{"partyCustomerId":"06555383-2f1f-47f9-a536-eda1069cd1bb","latitude":21.43243,"longitude":105.5345}'
 	
 -------
 get customers visited of userlogin
