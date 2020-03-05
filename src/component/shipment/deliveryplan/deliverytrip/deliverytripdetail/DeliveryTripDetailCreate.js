@@ -48,6 +48,8 @@ export default function DeliveryTripDetailCreate() {
   const [selectedRows, setSelectedRows] = useState([]);
   const [, rerender] = useState([]);
 
+  const [selectedShipmentItemIdSet, setSelectedShipmentItemIdSet] = useState(new Set());
+
   const columns = [
     {title: "Mã đơn hàng", field: "shipmentItemId"},
     {title: "Tên sản phẩm", field: "productName"},
@@ -66,7 +68,11 @@ export default function DeliveryTripDetailCreate() {
           shrink: true,
         }}
         margin="normal"
-        inputProps={{min: "0", max: "" + rowData['quantity'], step: "1"}}
+        inputProps={selectedShipmentItemIdSet.has(rowData['shipmentItemId']) ? {
+          min: "0",
+          max: "" + rowData['quantity'],
+          step: "1"
+        } : {readOnly: true}}
         value={orElse(selectedQuantity[rowData['shipmentItemId']], 0)}
         onChange={event => {
           selectedQuantity[rowData['shipmentItemId']] = event.target.value;
@@ -152,6 +158,7 @@ export default function DeliveryTripDetailCreate() {
     }, {});
     setSelectedQuantity(selectedQuantity);
     setSelectedRows(selectedRows);
+    setSelectedShipmentItemIdSet(new Set(Object.keys(selectedQuantity)));
     getDeliveryTripCapacityInfo(selectedRows, selectedQuantity);
   }
 
