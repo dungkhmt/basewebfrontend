@@ -340,6 +340,16 @@ export default function SideBar(props) {
                 <ListItemText primary="Chi tiết tuyến"/>
               </ListItem>
 
+              <ListItem button className={classes.nested}
+              
+                component={Link}
+                to={process.env.PUBLIC_URL + "/salesroutes/salesman-checkin-routes"}
+              >
+                <ListItemIcon>
+                  <StarBorder/>
+                </ListItemIcon>
+                <ListItemText primary="Lịch sử check-in tuyến"/>
+              </ListItem>
 
             </List>
           </Collapse>
@@ -347,6 +357,45 @@ export default function SideBar(props) {
         ) : (
             ""
         )}
+
+        {props.menu.has("MENU_SALES_ROUTE") ? (  
+        <div>
+          <ListItem button onClick={() => handleListClick(4)}>
+            <ListItemIcon>
+              <InboxIcon/>
+            </ListItemIcon>
+            <ListItemText primary="QL Kho"/>
+            {openCollapse[4] ? <ExpandLess/> : <ExpandMore/>}
+          </ListItem>
+          <Collapse in={openCollapse[4]} timeout="auto" unmountOnExit>
+            <List component="div" disablePadding>
+              <ListItem button className={classes.nested}>
+                <ListItemIcon>
+                  <StarBorder/>
+                </ListItemIcon>
+                <ListItemText primary="Nhập kho"/>
+              </ListItem>
+              <ListItem button className={classes.nested}>
+                <ListItemIcon>
+                  <StarBorder/>
+                </ListItemIcon>
+                <ListItemText primary="Xuất kho"/>
+              </ListItem>
+
+              <ListItem button className={classes.nested}>
+                <ListItemIcon>
+                  <StarBorder/>
+                </ListItemIcon>
+                <ListItemText primary="QL tồn kho"/>
+              </ListItem>
+              
+            </List>
+          </Collapse>
+        </div>
+        ) : (
+            ""
+        )}
+       
 
         {props.menu.has("MENU_TMS") ? (  
         <div>
@@ -431,6 +480,99 @@ export default function SideBar(props) {
         ""
       )}
 
+
+{props.menu.has("MENU_TMS") ? (  
+        <div>
+          <ListItem button onClick={() => handleListClick(5)}>
+            <ListItemIcon>
+              <InboxIcon/>
+            </ListItemIcon>
+            <ListItemText primary="Quản lý chuyển phát bưu kiện"/>
+            {openCollapse[5] ? <ExpandLess/> : <ExpandMore/>}
+          </ListItem>
+          <Collapse in={openCollapse[5]} timeout="auto" unmountOnExit>
+            <List component="div" disablePadding>
+              <ListItem
+                button
+                className={classes.nested}
+                component={Link}
+                //to={process.env.PUBLIC_URL + "/vehicle"}
+              >
+                <ListItemIcon>
+                  <StarBorder/>
+                </ListItemIcon>
+                <ListItemText primary="DS phương tiện"/>
+              </ListItem>
+              <ListItem button className={classes.nested}>
+                <ListItemIcon>
+                  <StarBorder/>
+                </ListItemIcon>
+                <ListItemText primary="DS khách hàng"/>
+              </ListItem>
+
+              <ListItem button className={classes.nested}>
+                <ListItemIcon>
+                  <StarBorder/>
+                </ListItemIcon>
+                <ListItemText primary="Thời gian/quãng đường"/>
+              </ListItem>
+              <ListItem
+                button
+                className={classes.nested}
+                component={Link}
+                //to={process.env.PUBLIC_URL + "/shipment"}
+              >
+                <ListItemIcon>
+                  <StarBorder/>
+                </ListItemIcon>
+                <ListItemText primary="DS đơn hàng chuyển phát"/>
+              </ListItem>
+
+              <ListItem
+                button
+                className={classes.nested}
+                component={Link}
+                //to={process.env.PUBLIC_URL + "/delivery-plan/create"}
+              >
+                <ListItemIcon>
+                  <StarBorder/>
+                </ListItemIcon>
+                <ListItemText primary="Tạo mới đợt chuyển phát"/>
+              </ListItem>
+
+              <ListItem button
+                        className={classes.nested}
+                        component={Link}
+                        //to={process.env.PUBLIC_URL + "/delivery-plan-list"}
+                >
+                <ListItemIcon>
+                  <StarBorder/>
+                </ListItemIcon>
+                <ListItemText primary="DS đợt chuyển phát"/>
+              </ListItem>
+
+              <ListItem button className={classes.nested}>
+                <ListItemIcon>
+                  <StarBorder/>
+                </ListItemIcon>
+                <ListItemText primary="Lập kế hoạch thu gom bưu kiện"/>
+              </ListItem>
+
+
+              <ListItem button className={classes.nested}>
+                <ListItemIcon>
+                  <StarBorder/>
+                </ListItemIcon>
+                <ListItemText primary="Lập kế hoạch phát bưu kiện"/>
+              </ListItem>
+              
+
+            </List>
+          </Collapse>
+        </div>
+      ) : (
+        ""
+      )}
 
       {props.menu.has("MENU_INVOICE") ? (
           <div>

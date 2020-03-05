@@ -31,6 +31,7 @@ import VehicleDeliveryPlanList from "./component/shipment/deliveryplan/vehicle/V
 import ShipmentItemCreate from "./component/shipment/shipment/ShipmentItemCreate";
 import VehicleDeliveryPlanAdd from "./component/shipment/deliveryplan/vehicle/VehicleDeliveryPlanAdd";
 import ShipmentItemDeliveryPlanAdd from "./component/shipment/deliveryplan/shipmentitem/ShipmentItemDeliveryPlanAdd";
+import SalesmanCheckinRoutesHistory from "./component/salesroutes/salesmancheckinrouteshistory";
 import ColumnChartTest from "./utils/ColumnChartTest";
 import DeliveryTripChart from "./component/shipment/deliveryplan/deliverytrip/DeliveryTripChart";
 
@@ -234,6 +235,14 @@ function Routes(props) {// props nay tu parent transfer vao
         //isAuthenticated={true}
         // exact                                   // props
         path="/create-delivery-trip/:deliveryPlanId"                    // props
+      />
+      <PrivateRouteWithLayout
+        component={SalesmanCheckinRoutesHistory}  //props
+        layout={Layout}          //props
+        isAuthenticated={props.isAuthenticated} // props
+        //isAuthenticated={true}
+        // exact                                   // props
+        path="/salesroutes/salesman-checkin-routes"                    // props
       />
 
       <PrivateRouteWithLayout
