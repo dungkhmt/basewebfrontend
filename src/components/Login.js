@@ -10,11 +10,18 @@ import {
   Checkbox,
   Button,
   Grid,
-  Link
+  Link,
+  CircularProgress
 } from "@material-ui/core";
 import { LockOutlined } from "@material-ui/icons";
 import { loginAction } from "../actions";
 import { connect } from "react-redux";
+import { Redirect } from "react-router-dom";
+import {
+  STATE_FAILED,
+  STATE_IN_PROGRESS,
+  STATE_LOGGED_IN
+} from "../reducers/auth";
 
 const useStyles = makeStyles(theme => ({
   paper: {
@@ -31,7 +38,7 @@ const useStyles = makeStyles(theme => ({
   }
 }));
 
-const Login = ({ onLogin }) => {
+const Login = ({ state, onLogin }) => {
   const classes = useStyles();
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
@@ -48,7 +55,8 @@ const Login = ({ onLogin }) => {
         <Avatar className={classes.avatar}>
           <LockOutlined />
         </Avatar>
-        <Typography variant="h5">Sign In</Typography>
+        <Typography variant="h5">Login</Typography>
+        {state === STATE_FAILED ? <h4>Account or Password not correct</h4> : ""}
         <form onSubmit={onSubmit}>
           <TextField
             variant="outlined"
@@ -82,6 +90,7 @@ const Login = ({ onLogin }) => {
           >
             Sign In
           </Button>
+          {state === STATE_IN_PROGRESS ? <CircularProgress /> : ""}
           <Grid container>
             <Grid item xs>
               <Link href="#" variant="body2">
@@ -100,10 +109,23 @@ const Login = ({ onLogin }) => {
   );
 };
 
-const mapState = () => ({});
+const RedirectLogin = ({ state, onLogin, previousUrl }) => (
+  <React.Fragment>
+    {state === STATE_LOGGED_IN ? (
+      <Redirect to={previousUrl} />
+    ) : (
+      <Login state={state} onLogin={onLogin} />
+    )}
+  </React.Fragment>
+);
+
+const mapState = state => ({
+  state: state.auth.state,
+  previousUrl: state.auth.previousUrl
+});
 
 const mapDispatch = dispatch => ({
   onLogin: (username, password) => dispatch(loginAction(username, password))
 });
 
-export default connect(mapState, mapDispatch)(Login);
+export default connect(mapState, mapDispatch)(RedirectLogin);

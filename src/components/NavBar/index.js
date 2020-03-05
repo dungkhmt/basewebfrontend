@@ -12,6 +12,10 @@ import {
 import { ChevronLeft, ChevronRight } from "@material-ui/icons";
 import SupervisorAccountIcon from "@material-ui/icons/SupervisorAccount";
 import ShoppingCartIcon from "@material-ui/icons/ShoppingCart";
+import VerifiedUserIcon from "@material-ui/icons/VerifiedUser";
+import LocalMallIcon from "@material-ui/icons/LocalMall";
+import StoreIcon from "@material-ui/icons/Store";
+import ImportExportIcon from "@material-ui/icons/ImportExport";
 
 import NavMenu from "./NavMenu";
 
@@ -72,16 +76,36 @@ const NavBar = ({ open, handleNavBarClose }) => {
         <NavMenu
           classes={classes}
           icon={<SupervisorAccountIcon />}
-          text="Admin"
-          url="admin"
+          text="Account"
+          url="account"
           subItems={[
             {
-              text: "Create User",
-              url: "create-user"
+              text: "Party",
+              url: "party",
+              permission: "VIEW_EDIT_PARTY"
             },
             {
-              text: "View Users",
-              url: "view-users"
+              text: "User Login",
+              url: "user-login",
+              permission: "VIEW_EDIT_USER_LOGIN"
+            }
+          ]}
+        />
+        <NavMenu
+          classes={classes}
+          icon={<VerifiedUserIcon />}
+          text="Security"
+          url="security"
+          subItems={[
+            {
+              text: "User Login to Group",
+              url: "group",
+              permission: "VIEW_EDIT_SECURITY_GROUP"
+            },
+            {
+              text: "Group to Permission",
+              url: "permission",
+              permission: "VIEW_EDIT_SECURITY_PERMISSION"
             }
           ]}
         />
@@ -93,12 +117,56 @@ const NavBar = ({ open, handleNavBarClose }) => {
           url="order"
           subItems={[
             {
-              text: "Create Order",
-              url: "create-order"
+              text: "View & Edit",
+              url: "view-edit",
+              permission: "VIEW_EDIT_ORDER"
+            }
+          ]}
+        />
+
+        <NavMenu
+          classes={classes}
+          icon={<LocalMallIcon />}
+          text="Product"
+          url="product"
+          subItems={[
+            {
+              text: "View & Edit",
+              url: "view-edit",
+              permission: "VIEW_EDIT_PRODUCT"
+            }
+          ]}
+        />
+
+        <NavMenu
+          classes={classes}
+          icon={<StoreIcon />}
+          text="Facility"
+          url="facility"
+          subItems={[
+            {
+              text: "View & Edit",
+              url: "view-edit",
+              permission: "VIEW_EDIT_FACILITY"
+            }
+          ]}
+        />
+
+        <NavMenu
+          classes={classes}
+          icon={<ImportExportIcon />}
+          text="Import & Export"
+          url="import-export"
+          subItems={[
+            {
+              text: "Import",
+              url: "import",
+              permission: "IMPORT"
             },
             {
-              text: "View Orders",
-              url: "view-orders"
+              text: "Export",
+              url: "export",
+              permission: "EXPORT"
             }
           ]}
         />

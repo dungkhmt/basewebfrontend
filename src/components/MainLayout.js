@@ -7,6 +7,10 @@ import Toolbar from "@material-ui/core/Toolbar";
 import Typography from "@material-ui/core/Typography";
 import IconButton from "@material-ui/core/IconButton";
 import MenuIcon from "@material-ui/icons/Menu";
+import Button from "@material-ui/core/Button";
+import { Link } from "react-router-dom";
+import { logoutAction } from "../actions";
+import { connect } from "react-redux";
 
 import NavBar, { navBarWidth, drawerHeader } from "./NavBar";
 
@@ -53,7 +57,7 @@ const useStyles = makeStyles(theme => ({
   drawerHeader: drawerHeader(theme)
 }));
 
-const MainLayout = ({ children }) => {
+const MainLayout = ({ children, onClickLogout }) => {
   const classes = useStyles();
   const [open, setOpen] = useState(true);
 
@@ -64,8 +68,6 @@ const MainLayout = ({ children }) => {
   const handleNavBarClose = () => {
     setOpen(false);
   };
-
-  console.log("MainLayout");
 
   return (
     <div className={classes.root}>
@@ -89,6 +91,13 @@ const MainLayout = ({ children }) => {
           <Typography variant="h6" noWrap>
             DMS
           </Typography>
+
+          <Link to="/login">
+            <Typography variant="h4" noWrap>
+              Login
+            </Typography>
+          </Link>
+          <Button onClick={onClickLogout}>Logout</Button>
         </Toolbar>
       </AppBar>
 
@@ -106,4 +115,10 @@ const MainLayout = ({ children }) => {
   );
 };
 
-export default MainLayout;
+const mapState = () => ({});
+
+const mapDispatch = dispatch => ({
+  onClickLogout: () => dispatch(logoutAction())
+});
+
+export default connect(mapState, mapDispatch)(MainLayout);
