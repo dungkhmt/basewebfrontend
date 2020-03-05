@@ -23,16 +23,15 @@ import ShipmentItemList from "./component/shipment/shipment/ShipmentItemList";
 import VehicleList from "./component/shipment/vehicle/VehicleList";
 import DeliveryTripCreate from "./component/shipment/deliveryplan/deliverytrip/DeliveryTripCreate";
 import DeliveryTripDetailList
-    from "./component/shipment/deliveryplan/deliverytrip/deliverytripdetail/DeliveryTripDetailList";
+  from "./component/shipment/deliveryplan/deliverytrip/deliverytripdetail/DeliveryTripDetailList";
 import DeliveryTripDetailCreate
-    from "./component/shipment/deliveryplan/deliverytrip/deliverytripdetail/DeliveryTripDetailCreate";
+  from "./component/shipment/deliveryplan/deliverytrip/deliverytripdetail/DeliveryTripDetailCreate";
 import ShipmentItemDeliveryPlanList from "./component/shipment/deliveryplan/shipmentitem/ShipmentItemDeliveryPlanList";
 import VehicleDeliveryPlanList from "./component/shipment/deliveryplan/vehicle/VehicleDeliveryPlanList";
 import ShipmentItemCreate from "./component/shipment/shipment/ShipmentItemCreate";
 import VehicleDeliveryPlanAdd from "./component/shipment/deliveryplan/vehicle/VehicleDeliveryPlanAdd";
 import ShipmentItemDeliveryPlanAdd from "./component/shipment/deliveryplan/shipmentitem/ShipmentItemDeliveryPlanAdd";
 import SalesmanCheckinRoutesHistory from "./component/salesroutes/salesmancheckinrouteshistory";
-import ColumnChartTest from "./utils/ColumnChartTest";
 import DeliveryTripChart from "./component/shipment/deliveryplan/deliverytrip/DeliveryTripChart";
 
 
@@ -243,15 +242,6 @@ function Routes(props) {// props nay tu parent transfer vao
         //isAuthenticated={true}
         // exact                                   // props
         path="/salesroutes/salesman-checkin-routes"                    // props
-      />
-
-      <PrivateRouteWithLayout
-        component={ColumnChartTest}  //props
-        layout={Layout}          //props
-        isAuthenticated={props.isAuthenticated} // props
-        //isAuthenticated={true}
-        // exact                                   // props
-        path="/chart-test"                    // props
       />
 
       <PrivateRouteWithLayout
