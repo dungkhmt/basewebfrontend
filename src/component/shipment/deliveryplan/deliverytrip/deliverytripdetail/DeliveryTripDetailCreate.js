@@ -88,7 +88,7 @@ export default function DeliveryTripDetailCreate() {
       deliveryQuantity: selectedQuantity[shipmentItem['shipmentItemId']]
     }));
     console.log(body);
-    authPost(dispatch, token, '/create-delivery-trip-detail/' + deliveryTripId, body).then(
+    authPost(dispatch, token, '/create-delivery-trip-detail/' + deliveryTripId, body).then(response => response.json()).then(
       response => {
         if (typeof response === 'number') {
           alert('Đã thêm vào chuyến cho ' + response + ' đơn hàng');

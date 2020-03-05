@@ -1,7 +1,7 @@
 import React, {useEffect, useState} from "react";
 import {useDispatch, useSelector} from "react-redux";
 import MaterialTable, {MTableToolbar} from "material-table";
-import {authGet} from "../../../../../api";
+import {authGet, authPost} from "../../../../../api";
 import Button from "@material-ui/core/Button";
 import DeleteIcon from '@material-ui/icons/Delete';
 import {tableIcons} from "../../../../../utils/iconutil";
@@ -59,7 +59,18 @@ export default function DeliveryTripDetailList() {
     })
   };
 
-  useEffect(() => getDeliveryTripInfo(), []);
+  const [tripCapacityInfo, setTripCapacityInfo] = useState({});
+
+  function getDeliveryTripCapacityInfo() {
+    authPost(dispatch, token, '/delivery-trip/' + deliveryTripId + '/capacity-info', []).then(response => response.json()).then(response => {
+      setTripCapacityInfo(response);
+    }).catch(console.log);
+  }
+
+  useEffect(() => {
+    getDeliveryTripInfo();
+    getDeliveryTripCapacityInfo();
+  }, []);
 
   return <div>
     <MaterialTable
@@ -79,7 +90,12 @@ export default function DeliveryTripDetailList() {
                 <b>Loại xe: </b> {deliveryTrip === null ? '' : deliveryTrip['vehicleTypeId']}
               </Grid>
               <Grid item xs={3}
-                    style={{verticalAlign: 'text-bottom', textAlign: 'right', padding: '100px 50px 10px 30px'}}>
+                    style={{verticalAlign: 'text-bottom', textAlign: 'right', padding: '0px 50px 10px 30px'}}>
+                <div style={{textAlign: 'left'}}>
+                  <b>Tổng khoảng cách: </b> {tripCapacityInfo == null ? 0 : tripCapacityInfo['totalDistance']} <p/>
+                  <b>Tổng khối lượng: </b> {tripCapacityInfo == null ? 0 : tripCapacityInfo['totalWeight']} <p/>
+                  <b>Tổng số pallet: </b> {tripCapacityInfo == null ? 0 : tripCapacityInfo['totalPallet']} <p/>
+                </div>
                 <Link to={'/create-delivery-trip-detail/' + deliveryTripId}>
                   <Button color={'primary'} variant={'contained'} startIcon={<AddIcon/>}> Thêm mới </Button> <p/>
                 </Link>

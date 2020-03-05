@@ -10,6 +10,7 @@ import {Link, useParams} from "react-router-dom";
 import ListIcon from '@material-ui/icons/List';
 import TableChartIcon from '@material-ui/icons/TableChart';
 import AddIcon from '@material-ui/icons/Add';
+import InsertChartIcon from '@material-ui/icons/InsertChart';
 
 export default function DeliveryTripList() {
   const dispatch = useDispatch();
@@ -73,7 +74,7 @@ export default function DeliveryTripList() {
           authGet(
             dispatch,
             token,
-            "/delivery-trip/" + deliveryPlanId + "?size=" + query.pageSize + "&page=" + query.page + sortParam
+            "/delivery-trip/" + deliveryPlanId + "/page?size=" + query.pageSize + "&page=" + query.page + sortParam
           ).then(
             response => {
               resolve({
@@ -100,7 +101,10 @@ export default function DeliveryTripList() {
     <Link to={'/shipment-item-delivery-plan/' + deliveryPlanId + '/list'}>
       <Button color={'primary'} variant={'contained'} startIcon={<ListIcon/>}> Danh sách đơn hàng </Button> <p/>
     </Link>
-    <Button color={'default'} variant={'contained'} startIcon={<TableChartIcon/>}> Xuất excel </Button>
+    <Button color={'default'} variant={'contained'} startIcon={<TableChartIcon/>}> Xuất excel </Button><p/>
+    <Link to={'/delivery-trip-chart/' + deliveryPlanId}>
+      <Button color={'default'} variant={'contained'} startIcon={<InsertChartIcon/>}> Biểu đồ các chuyến </Button><p/>
+    </Link>
     <Button color={'default'} variant={'contained'}> Tự động xếp chuyến còn lại </Button> <p/>
     <Button color={'secondary'} variant={'contained'} startIcon={<DeleteIcon/>}> Hủy chuyến </Button> <p/>
   </div>
