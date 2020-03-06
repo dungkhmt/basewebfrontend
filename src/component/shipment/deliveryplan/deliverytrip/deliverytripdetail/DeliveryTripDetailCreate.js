@@ -78,6 +78,7 @@ export default function DeliveryTripDetailCreate() {
         onChange={event => {
           selectedQuantity[rowData['shipmentItemId']] = event.target.value;
           rerender([]);
+          getDeliveryTripCapacityInfo(selectedRows, selectedQuantity);
         }}
       />,
     }
@@ -153,14 +154,19 @@ export default function DeliveryTripDetailCreate() {
   }, []);
 
   function handleSelectionChange(selectedRows) {
-    let selectedQuantity = selectedRows.reduce((map, row) => {
-      map[row['shipmentItemId']] = row['quantity'];
+    let unSelectedRowIds = new Set(Object.keys(selectedQuantity));
+    let localSelectedQuantity = selectedRows.reduce((map, row) => {
+      if (!map[row['shipmentItemId']]) {
+        map[row['shipmentItemId']] = row['quantity'];
+      }
+      unSelectedRowIds.delete(row['shipmentItemId']);
       return map;
-    }, {});
-    setSelectedQuantity(selectedQuantity);
+    }, selectedQuantity);
+    unSelectedRowIds.forEach(id => delete selectedQuantity[id]);
+    setSelectedQuantity(localSelectedQuantity);
     setSelectedRows(selectedRows);
-    setSelectedShipmentItemIdSet(new Set(Object.keys(selectedQuantity)));
-    getDeliveryTripCapacityInfo(selectedRows, selectedQuantity);
+    setSelectedShipmentItemIdSet(new Set(Object.keys(localSelectedQuantity)));
+    getDeliveryTripCapacityInfo(selectedRows, localSelectedQuantity);
   }
 
   return <div>
