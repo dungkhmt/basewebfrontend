@@ -10,14 +10,14 @@ export default function DeliveryPlanList() {
   const dispatch = useDispatch();
   const token = useSelector(state => state.auth.token);
   const columns = [
+    {
+      title: "Mã đợt giao hàng",
+      field: "deliveryPlanId",
+      render: rowData => <Link to={'/delivery-plan/' + rowData['deliveryPlanId']}>{rowData['deliveryPlanId']}</Link>
+    },
     {title: "Mô tả", field: "description"},
     {title: "Tài khoản tạo", field: "createdByUserLoginId"},
     {title: "Ngày tạo", field: "deliveryDate", type: 'date'},
-    {
-      title: "Note",
-      field: "note",
-      render: rowData => <Link to={'/delivery-plan/' + rowData['deliveryPlanId']}>Detail</Link>
-    },
   ];
 
   return <div>

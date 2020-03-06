@@ -9,7 +9,7 @@ import {useDispatch, useSelector} from "react-redux";
 import Button from "@material-ui/core/Button";
 import {makeStyles} from "@material-ui/core/styles";
 import Typography from "@material-ui/core/Typography";
-import {useHistory} from "react-router-dom";
+import {Link, useHistory} from "react-router-dom";
 import Toolbar from "@material-ui/core/Toolbar";
 import TextField from "@material-ui/core/TextField";
 import CloudUploadIcon from "@material-ui/icons/CloudUpload";
@@ -17,6 +17,7 @@ import {tableIcons} from "../../../../../utils/iconutil";
 import MaterialTable from "material-table";
 import {useParams} from "react-router";
 import Grid from "@material-ui/core/Grid";
+import ArrowBackIosIcon from "@material-ui/icons/ArrowBackIos";
 
 
 const useStyles = makeStyles(theme => ({
@@ -77,6 +78,7 @@ export default function DeliveryTripDetailCreate() {
         onChange={event => {
           selectedQuantity[rowData['shipmentItemId']] = event.target.value;
           rerender([]);
+          getDeliveryTripCapacityInfo(selectedRows, selectedQuantity);
         }}
       />,
     }
@@ -152,17 +154,28 @@ export default function DeliveryTripDetailCreate() {
   }, []);
 
   function handleSelectionChange(selectedRows) {
-    let selectedQuantity = selectedRows.reduce((map, row) => {
-      map[row['shipmentItemId']] = row['quantity'];
+    let unSelectedRowIds = new Set(Object.keys(selectedQuantity));
+    let localSelectedQuantity = selectedRows.reduce((map, row) => {
+      if (!map[row['shipmentItemId']]) {
+        map[row['shipmentItemId']] = row['quantity'];
+      }
+      unSelectedRowIds.delete(row['shipmentItemId']);
       return map;
-    }, {});
-    setSelectedQuantity(selectedQuantity);
+    }, selectedQuantity);
+    unSelectedRowIds.forEach(id => delete selectedQuantity[id]);
+    setSelectedQuantity(localSelectedQuantity);
     setSelectedRows(selectedRows);
-    setSelectedShipmentItemIdSet(new Set(Object.keys(selectedQuantity)));
-    getDeliveryTripCapacityInfo(selectedRows, selectedQuantity);
+    setSelectedShipmentItemIdSet(new Set(Object.keys(localSelectedQuantity)));
+    getDeliveryTripCapacityInfo(selectedRows, localSelectedQuantity);
   }
 
   return <div>
+    {
+      <Link to={'/delivery-trip/' + deliveryTripId}>
+        <Button variant={'outlined'} startIcon={<ArrowBackIosIcon/>}>
+          Back</Button>
+      </Link>
+    }
     <MuiPickersUtilsProvider utils={DateFnsUtils}>
       <Card>
         <CardContent>

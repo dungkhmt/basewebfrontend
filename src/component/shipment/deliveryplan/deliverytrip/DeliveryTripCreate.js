@@ -11,10 +11,11 @@ import Button from "@material-ui/core/Button";
 import {makeStyles} from "@material-ui/core/styles";
 import Typography from "@material-ui/core/Typography";
 import {toFormattedDateTime} from "../../../../utils/dateutils";
-import {useHistory, useParams} from "react-router-dom";
+import {Link, useHistory, useParams} from "react-router-dom";
 import Select from "@material-ui/core/Select";
 import MenuItem from "@material-ui/core/MenuItem";
 import InputLabel from "@material-ui/core/InputLabel";
+import ArrowBackIosIcon from "@material-ui/icons/ArrowBackIos";
 
 
 const useStyles = makeStyles(theme => ({
@@ -77,6 +78,13 @@ export default function DeliveryTripCreate() {
   }, []);
 
   return <div>
+    {
+      <Link to={'/delivery-plan/' + deliveryPlanId}>
+        <Button variant={'outlined'} startIcon={<ArrowBackIosIcon/>}>
+          Back</Button>
+      </Link>
+    }
+
     <MuiPickersUtilsProvider utils={DateFnsUtils}>
       <Card>
         <CardContent>
