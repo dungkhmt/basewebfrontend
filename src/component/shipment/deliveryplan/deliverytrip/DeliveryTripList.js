@@ -18,17 +18,15 @@ export default function DeliveryTripList() {
   const token = useSelector(state => state.auth.token);
   const columns = [
     {title: "Thứ tự lời giải", field: "deliveryPlanSolutionSeqId"},
-    {title: "Mã chuyến giao", field: "deliveryTripId"},
+    {
+      title: "Mã chuyến giao", field: "deliveryTripId",
+      render: rowData => <Link to={'/delivery-trip/' + rowData['deliveryTripId']}>{rowData['deliveryTripId']}</Link>
+    },
     {title: "Ngày thực hiện", field: "executeDate", type: 'date'},
     {title: "Tổng khoảng cách", field: "totalDistance"},
     {title: "Tổng khối lượng", field: "totalWeight"},
     {title: "Mã xe", field: "vehicleId"},
     {title: "Tải trọng tối đa của xe", field: "maxVehicleCapacity"},
-    {
-      title: "Note",
-      field: "note",
-      render: rowData => <Link to={'/delivery-trip/' + rowData['deliveryTripId']}>Detail</Link>
-    },
   ];
 
   const {deliveryPlanId} = useParams();
@@ -44,7 +42,16 @@ export default function DeliveryTripList() {
     }))
   };
 
-  useEffect(() => getDeliveryPlanInfo(), []);
+  const [dataTable, setDataTable] = useState([]);
+
+  function getDataTable() {
+    authGet(dispatch, token, '/delivery-trip/' + deliveryPlanId + '/all').then(response => setDataTable(response)).catch(console.log);
+  }
+
+  useEffect(() => {
+    getDeliveryPlanInfo();
+    getDataTable();
+  }, []);
 
   return <div>
     <Link to={'/delivery-plan-list'}>
@@ -70,31 +77,7 @@ export default function DeliveryTripList() {
           </div>
         )
       }}
-      data={query =>
-        new Promise((resolve) => {
-          console.log(query);
-          let sortParam = "";
-          if (query.orderBy !== undefined) {
-            sortParam = "&sort=" + query.orderBy.field + ',' + query.orderDirection;
-          }
-          authGet(
-            dispatch,
-            token,
-            "/delivery-trip/" + deliveryPlanId + "/page?size=" + query.pageSize + "&page=" + query.page + sortParam
-          ).then(
-            response => {
-              resolve({
-                data: response.content,
-                page: response.number,
-                totalCount: response.totalElements
-              });
-            },
-            error => {
-              console.log("error");
-            }
-          );
-        })
-      }
+      data={dataTable}
       icons={tableIcons}
     >
     </MaterialTable>

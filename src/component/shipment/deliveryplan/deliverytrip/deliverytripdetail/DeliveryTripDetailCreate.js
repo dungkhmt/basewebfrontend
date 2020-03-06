@@ -9,7 +9,7 @@ import {useDispatch, useSelector} from "react-redux";
 import Button from "@material-ui/core/Button";
 import {makeStyles} from "@material-ui/core/styles";
 import Typography from "@material-ui/core/Typography";
-import {useHistory} from "react-router-dom";
+import {Link, useHistory} from "react-router-dom";
 import Toolbar from "@material-ui/core/Toolbar";
 import TextField from "@material-ui/core/TextField";
 import CloudUploadIcon from "@material-ui/icons/CloudUpload";
@@ -17,6 +17,7 @@ import {tableIcons} from "../../../../../utils/iconutil";
 import MaterialTable from "material-table";
 import {useParams} from "react-router";
 import Grid from "@material-ui/core/Grid";
+import ArrowBackIosIcon from "@material-ui/icons/ArrowBackIos";
 
 
 const useStyles = makeStyles(theme => ({
@@ -163,6 +164,12 @@ export default function DeliveryTripDetailCreate() {
   }
 
   return <div>
+    {
+      <Link to={'/delivery-trip/' + deliveryTripId}>
+        <Button variant={'outlined'} startIcon={<ArrowBackIosIcon/>}>
+          Back</Button>
+      </Link>
+    }
     <MuiPickersUtilsProvider utils={DateFnsUtils}>
       <Card>
         <CardContent>

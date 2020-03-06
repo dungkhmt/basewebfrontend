@@ -1,9 +1,11 @@
 import React, {useEffect, useState} from "react";
 import {useDispatch, useSelector} from "react-redux";
-import {useParams} from "react-router-dom";
-import {Bar} from "react-chartjs-2";
+import {Link, useParams} from "react-router-dom";
+import {HorizontalBar} from "react-chartjs-2";
 import {authGet, authPost} from "../../../../api";
 import Grid from "@material-ui/core/Grid";
+import Button from "@material-ui/core/Button";
+import ArrowBackIosIcon from "@material-ui/icons/ArrowBackIos";
 
 export default function DeliveryTripChart() {
   const dispatch = useDispatch();
@@ -56,17 +58,23 @@ export default function DeliveryTripChart() {
   }, []);
 
   return <div>
+    {
+      <Link to={'/delivery-plan/' + deliveryPlanId}>
+        <Button variant={'outlined'} startIcon={<ArrowBackIosIcon/>}>
+          Back</Button>
+      </Link>
+    }
     <Grid container spacing={3}>
       <Grid item xs={6}>
-        <BarChart
+        <HorizontalBarChart
           data={weightRateData}
-          datasetLabel={'Biểu đồ tỉ lệ lấp đầy tải trọng xe các chuyến'}
+          datasetLabel={'Tỉ lệ lấp đầy tải trọng xe các chuyến'}
         />
       </Grid>
       <Grid item xs={6}>
-        <BarChart
+        <HorizontalBarChart
           data={distanceData}
-          datasetLabel={'Biểu đồ tổng quãng đường di chuyển các chuyến'}
+          datasetLabel={'Tổng quãng đường di chuyển các chuyến'}
         />
       </Grid>
     </Grid>
@@ -91,7 +99,7 @@ function convertHex(hex, opacity) {
   return 'rgba(' + r + ',' + g + ',' + b + ',' + opacity + ')';
 }
 
-function BarChart(props) {
+function HorizontalBarChart(props) {
   const {
     data = [{
       label: '',
@@ -132,7 +140,7 @@ function BarChart(props) {
 
   const options = {
     scales: {
-      yAxes: [{
+      xAxes: [{
         ticks: {
           beginAtZero: true
         }
@@ -142,7 +150,7 @@ function BarChart(props) {
 
   return (
     <div>
-      <Bar data={chartData} options={options}/>
+      <HorizontalBar data={chartData} options={options}/>
     </div>
   );
 }
