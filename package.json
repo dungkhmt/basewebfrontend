@@ -11,6 +11,7 @@
     "@mdi/react": "^1.1.1",
     "base-64": "^0.1.0",
     "canvasjs": "^1.8.3",
+    "chart.js": "^2.9.3",
     "cross-fetch": "^3.0.4",
     "google-map-react": "^1.1.4",
     "material-table": "^1.54.2",

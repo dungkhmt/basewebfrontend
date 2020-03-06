@@ -7,6 +7,7 @@ import {tableIcons} from "../../../../utils/iconutil";
 import {Link, useHistory, useParams} from "react-router-dom";
 import AddIcon from "@material-ui/icons/Add";
 import DeleteIcon from '@material-ui/icons/Delete';
+import ArrowBackIosIcon from "@material-ui/icons/ArrowBackIos";
 
 export default function ShipmentItemDeliveryPlanList() {
   const dispatch = useDispatch();
@@ -43,6 +44,12 @@ export default function ShipmentItemDeliveryPlanList() {
   }
 
   return <div>
+    {
+      <Link to={'/delivery-plan/' + deliveryPlanId}>
+        <Button variant={'outlined'} startIcon={<ArrowBackIosIcon/>}>
+          Back</Button>
+      </Link>
+    }
     <MaterialTable
       title={'Danh sách đơn hàng'}
       columns={columns}

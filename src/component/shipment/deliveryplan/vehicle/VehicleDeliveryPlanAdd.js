@@ -5,7 +5,8 @@ import {authGet, authPost} from "../../../../api";
 import Button from "@material-ui/core/Button";
 import {tableIcons} from "../../../../utils/iconutil";
 import CloudUploadIcon from "@material-ui/icons/CloudUpload";
-import {useHistory, useParams} from "react-router-dom";
+import {Link, useHistory, useParams} from "react-router-dom";
+import ArrowBackIosIcon from "@material-ui/icons/ArrowBackIos";
 
 export default function VehicleDeliveryPlanAdd() {
   const dispatch = useDispatch();
@@ -45,6 +46,13 @@ export default function VehicleDeliveryPlanAdd() {
   }
 
   return <div>
+    {
+      <Link to={'/vehicle-delivery-plan/' + deliveryPlanId + '/list'}>
+        <Button variant={'outlined'} startIcon={<ArrowBackIosIcon/>}>
+          Back</Button>
+      </Link>
+    }
+
     <MaterialTable
       title={'Chọn xe'}
       columns={columns}

@@ -8,6 +8,7 @@ import {tableIcons} from "../../../../../utils/iconutil";
 import {Link, useParams} from "react-router-dom";
 import AddIcon from "@material-ui/icons/Add";
 import Grid from "@material-ui/core/Grid";
+import ArrowBackIosIcon from "@material-ui/icons/ArrowBackIos";
 
 // each shipment item
 export default function DeliveryTripDetailList() {
@@ -73,6 +74,13 @@ export default function DeliveryTripDetailList() {
   }, []);
 
   return <div>
+    {
+      deliveryTrip ?
+        <Link to={'/delivery-plan/' + deliveryTrip['deliveryPlanId']}>
+          <Button variant={'outlined'} startIcon={<ArrowBackIosIcon/>}>
+            Back</Button>
+        </Link> : null
+    }
     <MaterialTable
       title={'Chi tiết chuyến giao hàng'}
       columns={columns}

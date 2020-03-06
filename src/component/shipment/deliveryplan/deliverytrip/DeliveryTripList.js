@@ -11,6 +11,7 @@ import ListIcon from '@material-ui/icons/List';
 import TableChartIcon from '@material-ui/icons/TableChart';
 import AddIcon from '@material-ui/icons/Add';
 import InsertChartIcon from '@material-ui/icons/InsertChart';
+import ArrowBackIosIcon from '@material-ui/icons/ArrowBackIos';
 
 export default function DeliveryTripList() {
   const dispatch = useDispatch();
@@ -46,6 +47,11 @@ export default function DeliveryTripList() {
   useEffect(() => getDeliveryPlanInfo(), []);
 
   return <div>
+    <Link to={'/delivery-plan-list'}>
+      <Button variant={'outlined'} startIcon={<ArrowBackIosIcon/>}>
+        Back</Button>
+    </Link>
+
     <MaterialTable
       title={'Chi tiết đợt giao hàng'}
       columns={columns}
@@ -103,7 +109,8 @@ export default function DeliveryTripList() {
     </Link>
     <Button color={'default'} variant={'contained'} startIcon={<TableChartIcon/>}> Xuất excel </Button><p/>
     <Link to={'/delivery-trip-chart/' + deliveryPlanId}>
-      <Button color={'default'} variant={'contained'} startIcon={<InsertChartIcon/>}> Biểu đồ các chuyến </Button><p/>
+      <Button color={'default'} variant={'contained'} startIcon={<InsertChartIcon/>}> Biểu đồ các chuyến </Button>
+      <p/>
     </Link>
     <Button color={'default'} variant={'contained'}> Tự động xếp chuyến còn lại </Button> <p/>
     <Button color={'secondary'} variant={'contained'} startIcon={<DeleteIcon/>}> Hủy chuyến </Button> <p/>
