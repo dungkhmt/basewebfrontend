@@ -25,6 +25,7 @@ export default function DeliveryTripList() {
     {title: "Ngày thực hiện", field: "executeDate", type: 'date'},
     {title: "Tổng khoảng cách", field: "totalDistance"},
     {title: "Tổng khối lượng", field: "totalWeight"},
+    {title: "Tổng số pallet", field: "totalPallet"},
     {title: "Mã xe", field: "vehicleId"},
     {title: "Tải trọng tối đa của xe", field: "maxVehicleCapacity"},
   ];

@@ -119,7 +119,9 @@ export default function DeliveryTripCreate() {
               onChange={handleVehicleSelectedChange}
             >
               {
-                vehicleList.map(vehicle => <MenuItem value={vehicle['vehicleId']}>{vehicle['vehicleId']}</MenuItem>)
+                vehicleList.map(vehicle => <MenuItem
+                  value={vehicle['vehicleId']}>{vehicle['vehicleId'] + ' (' + vehicle['capacity'] + ' kg)'}
+                </MenuItem>)
               }
             </Select>
           </form>

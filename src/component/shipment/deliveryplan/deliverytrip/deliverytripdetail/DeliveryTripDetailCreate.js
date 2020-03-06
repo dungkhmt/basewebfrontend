@@ -55,6 +55,7 @@ export default function DeliveryTripDetailCreate() {
     {title: "Mã đơn hàng", field: "shipmentItemId"},
     {title: "Tên sản phẩm", field: "productName"},
     {title: "Số lượng sẵn có", field: "quantity"},
+    {title: "Khối lượng 1 sản phẩm", field: "weight"},
     {title: "Số pallet", field: "pallet"},
     {title: "Địa chỉ", field: "address"},
     {

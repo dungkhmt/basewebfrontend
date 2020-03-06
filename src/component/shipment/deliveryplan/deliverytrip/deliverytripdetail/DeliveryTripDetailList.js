@@ -1,7 +1,7 @@
 import React, {useEffect, useState} from "react";
 import {useDispatch, useSelector} from "react-redux";
 import MaterialTable, {MTableToolbar} from "material-table";
-import {authGet, authPost} from "../../../../../api";
+import {authGet} from "../../../../../api";
 import Button from "@material-ui/core/Button";
 import DeleteIcon from '@material-ui/icons/Delete';
 import {tableIcons} from "../../../../../utils/iconutil";
@@ -29,12 +29,13 @@ export default function DeliveryTripDetailList() {
   const columns = [
     {title: "Mã chi tiết chuyến giao hàng", field: "deliveryTripDetailId"},
     {title: "Mã chuyến giao hàng", field: "deliveryTripId"},
-    {title: "Số lượng", field: "deliveryQuantity"},
     {title: "Mã khách hàng", field: "customerCode"},
+    {title: "Địa chỉ", field: "address"},
     {title: "Mã sản phẩm", field: "productId"},
     {title: "Tên sản phẩm", field: "productName"},
     {title: "Tổng số lượng sản phẩm trong đơn hàng", field: "shipmentQuantity"},
-    {title: "Số lượng sản phẩm trong chuyến", field: "deliveryQuantity"},
+    {title: "Số lượng sản phẩm đã chọn", field: "deliveryQuantity"},
+    {title: "Tổng khối lượng sản phẩm đã chọn", field: "weight"},
     {
       title: "Note",
       field: "note",
@@ -57,18 +58,21 @@ export default function DeliveryTripDetailList() {
         deliveryPlanId: response['deliveryPlan']['deliveryPlanId'],
         vehicleId: response['vehicle']['vehicleId'],
         executeDate: response['executeDate'],
-        vehicleTypeId: response['externalVehicleType'] == null ? null : response['externalVehicleType']['vehicleTypeId']
+        vehicleTypeId: response['externalVehicleType'] == null ? null : response['externalVehicleType']['vehicleTypeId'],
+        totalDistance: response['distance'],
+        totalWeight: response['totalWeight'],
+        totalPallet: response['totalPallet'],
       });
     })
   };
 
-  const [tripCapacityInfo, setTripCapacityInfo] = useState({});
+  // const [tripCapacityInfo, setTripCapacityInfo] = useState({});
 
-  function getDeliveryTripCapacityInfo() {
-    authPost(dispatch, token, '/delivery-trip/' + deliveryTripId + '/capacity-info', []).then(response => response.json()).then(response => {
-      setTripCapacityInfo(response);
-    }).catch(console.log);
-  }
+  // function getDeliveryTripCapacityInfo() {
+  //   authPost(dispatch, token, '/delivery-trip/' + deliveryTripId + '/capacity-info', []).then(response => response.json()).then(response => {
+  //     setTripCapacityInfo(response);
+  //   }).catch(console.log);
+  // }
 
   const [dataTable, setDataTable] = useState([]);
 
@@ -80,7 +84,7 @@ export default function DeliveryTripDetailList() {
 
   useEffect(() => {
     getDeliveryTripInfo();
-    getDeliveryTripCapacityInfo();
+    // getDeliveryTripCapacityInfo();
     getDataTable();
   }, []);
 
@@ -111,9 +115,9 @@ export default function DeliveryTripDetailList() {
               <Grid item xs={3}
                     style={{verticalAlign: 'text-bottom', textAlign: 'right', padding: '0px 50px 10px 30px'}}>
                 <div style={{textAlign: 'left'}}>
-                  <b>Tổng khoảng cách: </b> {tripCapacityInfo == null ? 0 : tripCapacityInfo['totalDistance']} <p/>
-                  <b>Tổng khối lượng: </b> {tripCapacityInfo == null ? 0 : tripCapacityInfo['totalWeight']} <p/>
-                  <b>Tổng số pallet: </b> {tripCapacityInfo == null ? 0 : tripCapacityInfo['totalPallet']} <p/>
+                  <b>Tổng khoảng cách: </b> {deliveryTrip == null ? 0 : deliveryTrip['totalDistance']} <p/>
+                  <b>Tổng khối lượng: </b> {deliveryTrip == null ? 0 : deliveryTrip['totalWeight']} <p/>
+                  <b>Tổng số pallet: </b> {deliveryTrip == null ? 0 : deliveryTrip['totalPallet']} <p/>
                 </div>
                 <Link to={'/create-delivery-trip-detail/' + deliveryTripId}>
                   <Button color={'primary'} variant={'contained'} startIcon={<AddIcon/>}> Thêm mới </Button> <p/>
