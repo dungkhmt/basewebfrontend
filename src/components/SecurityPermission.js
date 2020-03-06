@@ -3,15 +3,27 @@ import { connect } from "react-redux";
 import { createSelector } from "reselect";
 
 import { makeStyles } from "@material-ui/core/styles";
-import { Tabs, Tab, Typography, Box, Button } from "@material-ui/core";
+import {
+  Divider,
+  Fab,
+  Tabs,
+  Tab,
+  Typography,
+  Box,
+  Button,
+  List,
+  ListItem,
+  Checkbox
+} from "@material-ui/core";
 import {
   apiGet,
   apiPost,
+  openAddSecurityGroupDialog,
   GOT_ALL_GROUPS_AND_PERMISSIONS,
   SAVED_GROUP_PERMISSIONS
 } from "../actions";
-import { List, ListItem, Checkbox } from "@material-ui/core";
 import { setDifference } from "../util";
+import AddIcon from "@material-ui/icons/Add";
 
 const TabPanel = props => {
   const { children, value, index, ...other } = props;
@@ -46,6 +58,17 @@ const useStyles = makeStyles(theme => ({
   },
   tab: {
     fontWeight: "bold"
+  },
+  header: {
+    display: "flex",
+    alignItems: "center",
+    backgroundColor: theme.palette.background.paper
+  },
+  title: {
+    marginLeft: "50px"
+  },
+  add: {
+    marginLeft: "10px"
   }
 }));
 
@@ -61,9 +84,12 @@ const PermissionTab = ({
   const canNotSave =
     permissionIdSet.size === storePermissionIdSet.size &&
     [...permissionIdSet].every(value => storePermissionIdSet.has(value));
+  const createdAt = new Date(group.createdAt);
   return (
     <React.Fragment>
-      {group.createdAt}
+      {`Created at: ${createdAt.toLocaleTimeString(
+        "en-US"
+      )} ${createdAt.toLocaleDateString("vi")}`}
       <List>
         {securityPermissions.map(perm => (
           <ListItem key={perm.id}>
@@ -96,12 +122,14 @@ const PermissionTab = ({
     </React.Fragment>
   );
 };
+
 const SecurityPermission = ({
   securityGroups,
   securityPermissions,
   mapOfGroupIdToPermissionIdSet,
   getAllGroupsAndPermissions,
-  saveGroupPermissions
+  saveGroupPermissions,
+  openAddGroup
 }) => {
   const classes = useStyles();
 
@@ -149,38 +177,50 @@ const SecurityPermission = ({
   };
 
   return (
-    <div className={classes.root}>
-      <Tabs
-        orientation="vertical"
-        variant="scrollable"
-        value={value}
-        onChange={handleChange}
-        aria-label="Vertical tabs example"
-        className={classes.tabs}
-      >
+    <React.Fragment>
+      <Divider />
+      <div className={classes.header}>
+        <Fab className={classes.add} onClick={openAddGroup} color="secondary">
+          <AddIcon />
+        </Fab>
+        <Typography className={classes.title} variant="h5">
+          Assign Permissions to Security Groups
+        </Typography>
+      </div>
+      <Divider />
+      <div className={classes.root}>
+        <Tabs
+          orientation="vertical"
+          variant="scrollable"
+          value={value}
+          onChange={handleChange}
+          aria-label="Vertical tabs example"
+          className={classes.tabs}
+        >
+          {securityGroups.map((group, index) => (
+            <Tab
+              key={group.id}
+              className={classes.tab}
+              label={group.name}
+              {...toProps(index)}
+            />
+          ))}
+        </Tabs>
         {securityGroups.map((group, index) => (
-          <Tab
-            key={group.id}
-            className={classes.tab}
-            label={group.name}
-            {...toProps(index)}
-          />
+          <TabPanel key={group.id} value={value} index={index}>
+            <PermissionTab
+              group={group}
+              securityPermissions={securityPermissions}
+              permissionIdSet={mapPermissions[group.id] || new Set([])}
+              storePermissionIdSet={mapOfGroupIdToPermissionIdSet[group.id]}
+              onChange={permissionTabOnChange}
+              onCancel={onCancel}
+              onSave={onSave}
+            />
+          </TabPanel>
         ))}
-      </Tabs>
-      {securityGroups.map((group, index) => (
-        <TabPanel key={group.id} value={value} index={index}>
-          <PermissionTab
-            group={group}
-            securityPermissions={securityPermissions}
-            permissionIdSet={mapPermissions[group.id] || new Set([])}
-            storePermissionIdSet={mapOfGroupIdToPermissionIdSet[group.id]}
-            onChange={permissionTabOnChange}
-            onCancel={onCancel}
-            onSave={onSave}
-          />
-        </TabPanel>
-      ))}
-    </div>
+      </div>
+    </React.Fragment>
   );
 };
 
@@ -223,7 +263,8 @@ const mapDispatch = dispatch => ({
         },
         SAVED_GROUP_PERMISSIONS
       )
-    )
+    ),
+  openAddGroup: () => dispatch(openAddSecurityGroupDialog())
 });
 
 export default connect(mapState, mapDispatch)(SecurityPermission);

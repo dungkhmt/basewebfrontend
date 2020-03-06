@@ -41,10 +41,7 @@ const auth = (state = initialState, action) => {
       return { ...state, previousUrl: action.url };
 
     case LOGOUT:
-      return {
-        ...initialState,
-        previousUrl: state.previousUrl
-      };
+      return initialState;
 
     case LOGIN_STORAGE_CHANGED:
       return { ...initialState, ...action.auth };
