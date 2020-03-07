@@ -36,6 +36,7 @@ export default function DeliveryTripDetailList() {
     {title: "Mã chuyến giao hàng", field: "deliveryTripId"},
     {title: "Mã khách hàng", field: "customerCode"},
     {title: "Địa chỉ", field: "address"},
+    {title: "Tọa độ", field: "latLng", render: rowData => rowData['lat'] + ',' + rowData['lng']},
     {title: "Mã sản phẩm", field: "productId"},
     {title: "Tên sản phẩm", field: "productName"},
     {title: "Tổng số lượng sản phẩm trong đơn hàng", field: "shipmentQuantity"},

@@ -57,6 +57,7 @@ export default function DeliveryTripDetailCreate() {
     {title: "Số lượng sẵn có", field: "quantity"},
     {title: "Số pallet", field: "pallet"},
     {title: "Địa chỉ", field: "address"},
+    {title: "Tọa độ", field: "latLng"},
     {
       title: "Chọn số lượng",
       field: "quantitySelection",
