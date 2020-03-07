@@ -43,10 +43,8 @@ export default function DeliveryTripCreate() {
   const [date, setDate] = useState(new Date());
   const [vehicleList, setVehicleList] = useState([]);
   const [vehicleSelected, setVehicleSelected] = useState(null);
-
-  function handleVehicleSelectedChange(event) {
-    setVehicleSelected(event.target.value);
-  }
+  const [driverList, setDriverList] = useState([]);
+  const [driverSelected, setDriverSelected] = useState(null);
 
   function getVehicleList() {
     authGet(dispatch, token, '/all-vehicle').then(response => {
@@ -54,11 +52,19 @@ export default function DeliveryTripCreate() {
     }).catch(console.log);
   }
 
+  function getDriverList() {
+    authPost(dispatch, token, '/get-all-drivers', {}).then(r => r.json()).then(response => {
+      setDriverList(response);
+      console.log('driver: ' + response);
+    }).catch(console.log);
+  }
+
   const handleSubmit = () => {
     const deliveryTripInfo = {
       deliveryPlanId,
       executeDate: toFormattedDateTime(date),
-      vehicleId: vehicleSelected
+      vehicleId: vehicleSelected,
+      driverId: driverSelected
     };
     console.log(deliveryTripInfo);
     authPost(dispatch, token, '/create-delivery-trip', deliveryTripInfo).then(
@@ -75,6 +81,7 @@ export default function DeliveryTripCreate() {
 
   useEffect(() => {
     getVehicleList();
+    getDriverList();
   }, []);
 
   return <div>
@@ -112,16 +119,30 @@ export default function DeliveryTripCreate() {
                                 KeyboardButtonProps={{
                                   "aria-label": "Thay đổi thời gian"
                                 }}
-            />
+            /><p/>
             <InputLabel>Chọn xe</InputLabel>
             <Select
               value={vehicleSelected}
-              onChange={handleVehicleSelectedChange}
+              onChange={event => setVehicleSelected(event.target.value)}
             >
               {
                 vehicleList.map(vehicle => <MenuItem
                   value={vehicle['vehicleId']}>{vehicle['vehicleId'] + ' (' + vehicle['capacity'] + ' kg)'}
                 </MenuItem>)
+              }
+            </Select><p/>
+
+            <InputLabel>Chọn tài xế</InputLabel>
+            <Select
+              value={driverSelected}
+              onChange={event => setDriverSelected(event.target.value)}
+            >
+              {
+                driverList.map(driver =>
+                  <MenuItem value={driver['partyId']}>
+                    {driver['partyId'] + ' (' + driver['person']['firstName'] +
+                    driver['person']['middleName'] + driver['person']['lastName'] + ' )'}
+                  </MenuItem>)
               }
             </Select>
           </form>

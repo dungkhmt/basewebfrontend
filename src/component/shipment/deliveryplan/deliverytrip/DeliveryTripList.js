@@ -28,6 +28,7 @@ export default function DeliveryTripList() {
     {title: "Tổng số pallet", field: "totalPallet"},
     {title: "Mã xe", field: "vehicleId"},
     {title: "Tải trọng tối đa của xe", field: "maxVehicleCapacity"},
+    {title: "Mã tài xế", field: "driverId"},
   ];
 
   const {deliveryPlanId} = useParams();
