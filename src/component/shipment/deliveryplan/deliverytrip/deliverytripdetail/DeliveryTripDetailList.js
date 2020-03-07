@@ -105,14 +105,14 @@ export default function DeliveryTripDetailList() {
           <div>
             <MTableToolbar {...props} />
             <Grid container spacing={3}>
-              <Grid item xs={9} style={{textAlign: 'left', padding: '0px 30px 20px 30px'}}>
+              <Grid item xs={8} style={{textAlign: 'left', padding: '0px 30px 20px 30px'}}>
                 <b>Mã chuyến hàng: </b> {deliveryTripId} <p/>
                 <b>Mã đợt giao hàng: </b> {deliveryTrip === null ? '' : deliveryTrip['deliveryPlanId']} <p/>
                 <b>Ngày tạo: </b> {deliveryTrip === null ? '' : deliveryTrip['executeDate']} <p/>
                 <b>Xe: </b> {deliveryTrip === null ? '' : deliveryTrip['vehicleId']}<p/>
                 <b>Loại xe: </b> {deliveryTrip === null ? '' : deliveryTrip['vehicleTypeId']}
               </Grid>
-              <Grid item xs={3}
+              <Grid item xs={4}
                     style={{verticalAlign: 'text-bottom', textAlign: 'right', padding: '0px 50px 10px 30px'}}>
                 <div style={{textAlign: 'left'}}>
                   <b>Tổng khoảng cách: </b> {deliveryTrip == null ? 0 : deliveryTrip['totalDistance']} <p/>
@@ -120,8 +120,10 @@ export default function DeliveryTripDetailList() {
                   <b>Tổng số pallet: </b> {deliveryTrip == null ? 0 : deliveryTrip['totalPallet']} <p/>
                 </div>
                 <Link to={'/create-delivery-trip-detail/' + deliveryTripId}>
-                  <Button color={'primary'} variant={'contained'} startIcon={<AddIcon/>}> Thêm mới </Button> <p/>
+                  <Button color={'primary'} variant={'contained'} startIcon={<AddIcon/>}> Thêm mới </Button>
                 </Link>
+                <Button color={'primary'} variant={'contained'}> Hiển thị bản đồ </Button>
+                <Button color={'primary'} variant={'contained'}> Phê duyệt </Button> <p/>
                 {/*<Button color={'secondary'} variant={'contained'} startIcon={<DeleteIcon/>}> Hủy chi tiết*/}
                 {/*  chuyến </Button>*/}
               </Grid>
