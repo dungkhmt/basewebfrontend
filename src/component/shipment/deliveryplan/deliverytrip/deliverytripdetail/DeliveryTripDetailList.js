@@ -9,6 +9,10 @@ import {Link, useParams} from "react-router-dom";
 import AddIcon from "@material-ui/icons/Add";
 import Grid from "@material-ui/core/Grid";
 import ArrowBackIosIcon from "@material-ui/icons/ArrowBackIos";
+import Directions from "../../../../google/Directions";
+import Dialog from "@material-ui/core/Dialog";
+import DialogTitle from "@material-ui/core/DialogTitle";
+import DialogContent from "@material-ui/core/DialogContent";
 
 // each shipment item
 export default function DeliveryTripDetailList() {
@@ -27,6 +31,7 @@ export default function DeliveryTripDetailList() {
   }
 
   const columns = [
+    {title: "Thứ tự hành trình", field: "sequence"},
     {title: "Mã chi tiết chuyến giao hàng", field: "deliveryTripDetailId"},
     {title: "Mã chuyến giao hàng", field: "deliveryTripId"},
     {title: "Mã khách hàng", field: "customerCode"},
@@ -78,9 +83,12 @@ export default function DeliveryTripDetailList() {
 
   function getDataTable() {
     authGet(dispatch, token, "/delivery-trip-detail/" + deliveryTripId).then(response => {
+      console.log(response);
       setDataTable(response);
     }).catch(console.log);
   }
+
+  const [mapOpen, setMapOpen] = useState(false);
 
   useEffect(() => {
     getDeliveryTripInfo();
@@ -122,7 +130,12 @@ export default function DeliveryTripDetailList() {
                 <Link to={'/create-delivery-trip-detail/' + deliveryTripId}>
                   <Button color={'primary'} variant={'contained'} startIcon={<AddIcon/>}> Thêm mới </Button>
                 </Link>
-                <Button color={'primary'} variant={'contained'}> Hiển thị bản đồ </Button>
+                <Button color={'primary'} variant={'contained'} onClick={() => {
+                  setMapOpen(true);
+                  console.log(dataTable);
+                }}>
+                  Hiển thị bản đồ
+                </Button>
                 <Button color={'primary'} variant={'contained'}> Phê duyệt </Button> <p/>
                 {/*<Button color={'secondary'} variant={'contained'} startIcon={<DeleteIcon/>}> Hủy chi tiết*/}
                 {/*  chuyến </Button>*/}
@@ -135,6 +148,29 @@ export default function DeliveryTripDetailList() {
       icons={tableIcons}
     >
     </MaterialTable>
+
+    <Dialog
+      fullWidth={'lg'}
+      maxWidth={true}
+      open={mapOpen}
+      onClose={() => setMapOpen(false)}
+    >
+      <DialogTitle>Hành trình di chuyển của bưu tá</DialogTitle>
+      <DialogContent>
+        {
+          mapOpen && dataTable ?
+            <Directions
+              routes={[{
+                post: {
+                  lat: dataTable[0]['lat'], lng: dataTable[0]['lng']
+                },
+                items: dataTable.map(value => ({lat: value['lat'], lng: value['lng'], title: value['address']}))
+              }]}
+            />
+            : ''
+        }
+      </DialogContent>
+    </Dialog>
 
   </div>
 }
