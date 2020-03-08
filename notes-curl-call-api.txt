@@ -80,6 +80,9 @@ Assign customer to a salesman
 Create Driver
 	curl --header "Content-Type: application/json; charset=utf-8" -v POST http://localhost:8080/api/create-driver -u dungpq:123 -d '{"userName":"datnguyen","password":"123","lastName":"Nguyen","middleName":"Tuan","firstName":"Dat","birthDate":"2020-03-04T02:44:49.262Z","gender":"M","partyCode":"datnguyen","roles":["ROLE_FULL_ADMIN"]}'
 	
+	curl --header "Content-Type: application/json; charset=utf-8" -v POST http://3.1.6.126/api/create-driver -u dungpq:123 -d '{"userName":"trungbui","password":"123","lastName":"Bui","middleName":"Quoc","firstName":"Trung","birthDate":"2020-03-04T02:44:49.262Z","gender":"M","partyCode":"trungbui","roles":["ROLE_FULL_ADMIN"]}'
+	
+	
 --------
 Get all drivers
 	curl --header "Content-Type: application/json; charset=utf-8" -v POST http://localhost:8080/api/get-all-drivers -u dungpq:123 -d '{}'
@@ -121,7 +124,19 @@ Get product price
 	
 --------
 Get asigned delivery route 
-    curl --header "Content-Type: application/json" -v GET http://3.1.6.126/api/get-assigned-delivery-routes -u admin:123
+    curl --header "Content-Type: application/json" -v POST http://localhost:8080/api/get-assigned-delivery-routes -u admin:123 -d '{"driverUserLoginId":"datnguyen"}'
+
+	curl --header "Content-Type: application/json" -v POST http://3.1.6.126/api/get-assigned-delivery-routes -u admin:123 -d '{"driverUserLoginId":"trungbui"}'
+--------
+Statistic vehicle-distance
+	curl --header "Content-Type: application/json" -v POST http://localhost:8080/api/statistic-vehicle-distance -u admin:123 -d '{"fromDate":"","thruDate":""}'
+	
+--------
+Complete delivery shipment item
+	curl --header "Content-Type: application/json" -v POST http://localhost:8080/api/complete-shipment-items -u admin:123 -d '{"items":[{"deliveryTripDetailId":"05626fc1-ffd4-46e4-9c5f-d9786a45fa2d"},{"deliveryTripDetailId":"0c028a8a-8ffe-4ef7-b455-9b5f1bedb062"}]}'
+
+
+	curl --header "Content-Type: application/json" -v POST http://3.1.6.126/api/complete-shipment-items -u admin:123 -d '{"items":[{"deliveryTripDetailId":"02d4a648-7e3d-4d3e-9cef-72208151b298"},{"deliveryTripDetailId":"cfa711be-1830-4615-bfbe-677752ecee08"}]}'
 
 --------
 get list facility
