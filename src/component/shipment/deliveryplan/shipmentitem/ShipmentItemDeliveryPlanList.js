@@ -85,5 +85,8 @@ export default function ShipmentItemDeliveryPlanList() {
     <Link to={'/shipment-item-delivery-plan/' + deliveryPlanId + '/add'}>
       <Button color={'primary'} variant={'contained'} startIcon={<AddIcon/>}>Thêm mới</Button>
     </Link>
+    <p/>
+
+    <Button color={'primary'} variant={'contained'}>Xem trên bản đồ </Button>
   </div>;
 }

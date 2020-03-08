@@ -35,6 +35,7 @@ export default function DeliveryTripChart() {
         deliveryTripInfo[id]['totalDistance'] = deliveryTrip['totalDistance'];
         deliveryTripInfo[id]['capacity'] = deliveryTrip['maxVehicleCapacity'];
         deliveryTripInfo[id]['totalWeight'] = deliveryTrip['totalWeight'];
+        deliveryTripInfo[id]['vehicleId'] = deliveryTrip['vehicleId'];
       });
       initData();
     }).catch(console.log);
@@ -44,10 +45,10 @@ export default function DeliveryTripChart() {
     Object.keys(deliveryTripInfo).forEach(id => {
       let deliveryTrip = deliveryTripInfo[id];
       weightRateData.push({
-        label: id, value: deliveryTrip['totalWeight'] / deliveryTrip['capacity']
+        label: deliveryTrip['vehicleId'], value: deliveryTrip['totalWeight'] / deliveryTrip['capacity']
       });
       distanceData.push({
-        label: id, value: deliveryTrip['totalDistance']
+        label: deliveryTrip['vehicleId'], value: deliveryTrip['totalDistance']
       });
     });
     rerender([]);
