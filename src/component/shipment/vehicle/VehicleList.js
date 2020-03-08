@@ -33,7 +33,7 @@ export default function VehicleList() {
           authGet(
             dispatch,
             token,
-            "/vehicle" + "?size=" + query.pageSize + "&page=" + query.page + sortParam
+            "/vehicle/page" + "?size=" + query.pageSize + "&page=" + query.page + sortParam
           ).then(
             response => {
               resolve({

@@ -70,7 +70,7 @@ export default function ShipmentItemDeliveryPlanAdd() {
           authGet(
             dispatch,
             token,
-            "/shipment-item-not-in/" + deliveryPlanId + "?size=" + query.pageSize + "&page=" + query.page + sortParam
+            "/shipment-item-not-in-delivery-plan/" + deliveryPlanId + "?size=" + query.pageSize + "&page=" + query.page + sortParam
           ).then(
             response => {
               setPageNumber(response.number);

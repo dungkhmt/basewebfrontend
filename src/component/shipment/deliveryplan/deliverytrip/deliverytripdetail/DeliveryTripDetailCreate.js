@@ -123,7 +123,7 @@ export default function DeliveryTripDetailCreate() {
     authGet(
       dispatch,
       token,
-      "/shipment-item/" + deliveryTripId + '/all'
+      "/shipment-item-delivery-trip/" + deliveryTripId + '/all'
     ).then(
       response => setDataTable(response)
     );

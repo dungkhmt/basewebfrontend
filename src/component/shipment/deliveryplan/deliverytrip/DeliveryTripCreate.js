@@ -47,7 +47,7 @@ export default function DeliveryTripCreate() {
   const [driverSelected, setDriverSelected] = useState(null);
 
   function getVehicleList() {
-    authGet(dispatch, token, '/all-vehicle').then(response => {
+    authGet(dispatch, token, '/vehicle/' + deliveryPlanId + '/all').then(response => {
       setVehicleList(response);
     }).catch(console.log);
   }

@@ -62,7 +62,7 @@ export default function VehicleDeliveryPlanList() {
                        authGet(
                          dispatch,
                          token,
-                         "/vehicle/" + deliveryPlanId + "?size=" + query.pageSize + "&page=" + query.page + sortParam
+                         "/vehicle/" + deliveryPlanId + "/page?size=" + query.pageSize + "&page=" + query.page + sortParam
                        ).then(
                          response => {
                            resolve({

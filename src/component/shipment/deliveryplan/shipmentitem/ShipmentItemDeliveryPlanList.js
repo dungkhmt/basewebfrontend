@@ -1,4 +1,4 @@
-import React from "react";
+import React, {useEffect, useState} from "react";
 import {useDispatch, useSelector} from "react-redux";
 import MaterialTable from "material-table";
 import {authGet, authPost} from "../../../../api";
@@ -8,6 +8,10 @@ import {Link, useHistory, useParams} from "react-router-dom";
 import AddIcon from "@material-ui/icons/Add";
 import DeleteIcon from '@material-ui/icons/Delete';
 import ArrowBackIosIcon from "@material-ui/icons/ArrowBackIos";
+import DialogTitle from "@material-ui/core/DialogTitle";
+import DialogContent from "@material-ui/core/DialogContent";
+import Dialog from "@material-ui/core/Dialog";
+import Markers from "../../../google/Markers";
 
 export default function ShipmentItemDeliveryPlanList() {
   const dispatch = useDispatch();
@@ -30,6 +34,18 @@ export default function ShipmentItemDeliveryPlanList() {
   ];
 
   const {deliveryPlanId} = useParams();
+
+  const [mapOpen, setMapOpen] = useState(false);
+
+  const [dataTable, setDataTable] = useState([]);
+
+  function getDataTable() {
+    authGet(dispatch, token, '/shipment-item-delivery-plan/' + deliveryPlanId + '/all').then(response => {
+      setDataTable(response);
+    }).catch(console.log);
+  }
+
+  useEffect(() => getDataTable(), []);
 
   function handleDelete(shipmentItemId) {
     let body = {deliveryPlanId, shipmentItemId: shipmentItemId};
@@ -54,31 +70,7 @@ export default function ShipmentItemDeliveryPlanList() {
       title={'Danh sách đơn hàng'}
       columns={columns}
       options={{search: false}}
-      data={query =>
-        new Promise((resolve) => {
-          console.log(query);
-          let sortParam = "";
-          if (query.orderBy !== undefined) {
-            sortParam = "&sort=" + query.orderBy.field + ',' + query.orderDirection;
-          }
-          authGet(
-            dispatch,
-            token,
-            "/shipment-item/" + deliveryPlanId + '/page' + "?size=" + query.pageSize + "&page=" + query.page + sortParam
-          ).then(
-            response => {
-              resolve({
-                data: response.content,
-                page: response.number,
-                totalCount: response.totalElements
-              });
-            },
-            error => {
-              console.log("error");
-            }
-          );
-        })
-      }
+      data={dataTable}
       icons={tableIcons}
     >
     </MaterialTable>
@@ -87,6 +79,28 @@ export default function ShipmentItemDeliveryPlanList() {
     </Link>
     <p/>
 
-    <Button color={'primary'} variant={'contained'}>Xem trên bản đồ </Button>
+    <Button color={'primary'} variant={'contained'} onClick={() => setMapOpen(true)}>Xem trên bản đồ </Button>
+
+    <Dialog
+      fullWidth={'lg'}
+      maxWidth={true}
+      open={mapOpen}
+      onClose={() => setMapOpen(false)}
+    >
+      <DialogTitle>Vị trí các đơn hàng</DialogTitle>
+      <DialogContent>
+        {
+          mapOpen && dataTable ?
+            <Markers
+              items={dataTable.map(value => ({
+                lat: parseFloat(value['lat']),
+                lng: parseFloat(value['lng']),
+                infoWindow: value['address']
+              }))}
+            />
+            : ''
+        }
+      </DialogContent>
+    </Dialog>
   </div>;
 }
