@@ -72,6 +72,7 @@ export default function ShipmentItemDeliveryPlanList() {
                 page: response.number,
                 totalCount: response.totalElements
               });
+              console.log(response.content);
             },
             error => {
               console.log("error");
