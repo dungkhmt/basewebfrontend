@@ -7,6 +7,7 @@ import {tableIcons} from "../../../../utils/iconutil";
 import {Link, useHistory, useParams} from "react-router-dom";
 import DeleteIcon from '@material-ui/icons/Delete';
 import AddIcon from "@material-ui/icons/Add";
+import ArrowBackIosIcon from "@material-ui/icons/ArrowBackIos";
 
 export default function VehicleDeliveryPlanList() {
   const dispatch = useDispatch();
@@ -41,36 +42,42 @@ export default function VehicleDeliveryPlanList() {
   }
 
   return <div>
-    <MaterialTable
-      title={'Danh sách xe'}
-      columns={columns}
-      options={{search: false}}
-      data={query =>
-        new Promise((resolve) => {
-          console.log(query);
-          let sortParam = "";
-          if (query.orderBy !== undefined) {
-            sortParam = "&sort=" + query.orderBy.field + ',' + query.orderDirection;
-          }
-          authGet(
-            dispatch,
-            token,
-            "/vehicle/" + deliveryPlanId + "?size=" + query.pageSize + "&page=" + query.page + sortParam
-          ).then(
-            response => {
-              resolve({
-                data: response.content,
-                page: response.number,
-                totalCount: response.totalElements
-              });
-            },
-            error => {
-              console.log("error");
-            }
-          );
-        })
-      }
-      icons={tableIcons}
+    {
+      <Link to={'/delivery-plan/' + deliveryPlanId}>
+        <Button variant={'outlined'} startIcon={<ArrowBackIosIcon/>}>
+          Back</Button>
+      </Link>
+    }
+
+    <MaterialTable title={'Danh sách xe'}
+                   columns={columns}
+                   options={{search: false}}
+                   data={query =>
+                     new Promise((resolve) => {
+                       console.log(query);
+                       let sortParam = "";
+                       if (query.orderBy !== undefined) {
+                         sortParam = "&sort=" + query.orderBy.field + ',' + query.orderDirection;
+                       }
+                       authGet(
+                         dispatch,
+                         token,
+                         "/vehicle/" + deliveryPlanId + "/page?size=" + query.pageSize + "&page=" + query.page + sortParam
+                       ).then(
+                         response => {
+                           resolve({
+                             data: response.content,
+                             page: response.number,
+                             totalCount: response.totalElements
+                           });
+                         },
+                         error => {
+                           console.log("error");
+                         }
+                       );
+                     })
+                   }
+                   icons={tableIcons}
     >
     </MaterialTable>
     <Link to={'/vehicle-delivery-plan/' + deliveryPlanId + '/add'}>

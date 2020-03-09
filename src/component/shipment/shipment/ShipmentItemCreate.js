@@ -39,6 +39,7 @@ export default function ShipmentItemCreate() {
   const [pallet, setPallet] = useState(0);
   const [productId, setProductId] = useState(null);
   const [productName, setProductName] = useState(null);
+  const [weight, setWeight] = useState(null);
   const [uom, setUom] = useState(null);
   const [customerCode, setCustomerCode] = useState(null);
   const [customerName, setCustomerName] = useState(null);
@@ -47,7 +48,7 @@ export default function ShipmentItemCreate() {
 
   const handleSubmit = () => {
     const shipmentItemInfo = {
-      quantity, pallet, productId, productName, uom, customerCode, customerName, locationCode, address
+      quantity, pallet, productId, productName, weight, uom, customerCode, customerName, locationCode, address
     };
     console.log(shipmentItemInfo);
     authPost(dispatch, token, '/create-shipment-item', shipmentItemInfo).then(
@@ -83,6 +84,7 @@ export default function ShipmentItemCreate() {
             {textField("pallet", "Số lượng pallet", "number", setPallet)}
             {textField("productId", "Mã sản phẩm", "search", setProductId)}
             {textField("productName", "Tên sản phẩm", "search", setProductName)}
+            {textField("weight", "Khối lượng", "number", setWeight)}
             {textField("uom", "Uom", "search", setUom)}
             {textField("customerCode", "Mã khách hàng", "search", setCustomerCode)}
             {textField("customerName", "Tên khách hàng", "search", setCustomerName)}

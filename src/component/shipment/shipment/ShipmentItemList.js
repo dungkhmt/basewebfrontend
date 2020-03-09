@@ -2,11 +2,12 @@ import {useDispatch, useSelector} from "react-redux";
 import MaterialTable from "material-table";
 import {authGet} from "../../../api";
 import {tableIcons} from "../../../utils/iconutil";
-import React from "react";
+import React, {useState} from "react";
 import Upload from "../../../utils/Upload";
 import Button from "@material-ui/core/Button";
 import {Link} from "react-router-dom";
 import AddIcon from "@material-ui/icons/Add";
+import CircularProgress from "@material-ui/core/CircularProgress";
 
 export default function ShipmentItemList() {
 
@@ -20,6 +21,20 @@ export default function ShipmentItemList() {
     {title: "Mã khách hàng", field: "customerCode"},
     {title: "Mã địa chỉ", field: "locationCode"},
   ];
+
+  function handleCalcDistance() {
+    setCalcWaiting(true);
+    authGet(dispatch, token, '/calc-distance-travel-time').then(response => {
+      if (typeof response === 'number') {
+        alert('Tính toán xong ' + response + ' cặp khoảng cách!');
+        setCalcWaiting(false);
+      } else {
+        alert('Có lỗi...');
+      }
+    }).catch(console.log);
+  }
+
+  const [calcWaiting, setCalcWaiting] = useState(false);
 
   return <div>
     <MaterialTable
@@ -64,8 +79,10 @@ export default function ShipmentItemList() {
       token={token}
       dispatch={dispatch}
       buttonTitle={'Tải lên đơn hàng'}
-      handleSaveCallback={() => {
-      }}
+      handleSaveCallback={() => window.location.reload()}
     />
+    {calcWaiting ? <CircularProgress color={'secondary'}/> :
+      <Button color={'primary'} variant={'contained'} onClick={() => handleCalcDistance()}> Tính khoảng cách </Button>
+    }
   </div>
 }

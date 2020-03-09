@@ -33,9 +33,11 @@ import VehicleDeliveryPlanAdd from "./component/shipment/deliveryplan/vehicle/Ve
 import ShipmentItemDeliveryPlanAdd from "./component/shipment/deliveryplan/shipmentitem/ShipmentItemDeliveryPlanAdd";
 import ProductCreate from "./component/product/ProductCreate";
 import ProductList from "./component/product/ProductList";
+import SalesmanCheckinRoutesHistory from "./component/salesroutes/salesmancheckinrouteshistory";
+import DeliveryTripChart from "./component/shipment/deliveryplan/deliverytrip/DeliveryTripChart";
+
 
 function Routes(props) {// props nay tu parent transfer vao
-  // console.log(props)
   return (
     <Switch>
       <PrivateRouteWithLayout
@@ -233,6 +235,23 @@ function Routes(props) {// props nay tu parent transfer vao
         //isAuthenticated={true}
         // exact                                   // props
         path="/create-delivery-trip/:deliveryPlanId"                    // props
+      />
+      <PrivateRouteWithLayout
+        component={SalesmanCheckinRoutesHistory}  //props
+        layout={Layout}          //props
+        isAuthenticated={props.isAuthenticated} // props
+        //isAuthenticated={true}
+        // exact                                   // props
+        path="/salesroutes/salesman-checkin-routes"                    // props
+      />
+
+      <PrivateRouteWithLayout
+        component={DeliveryTripChart}  //props
+        layout={Layout}          //props
+        isAuthenticated={props.isAuthenticated} // props
+        //isAuthenticated={true}
+        // exact                                   // props
+        path="/delivery-trip-chart/:deliveryPlanId"                    // props
       />
 
 

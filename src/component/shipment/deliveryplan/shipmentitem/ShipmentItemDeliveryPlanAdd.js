@@ -5,7 +5,8 @@ import {authGet, authPost} from "../../../../api";
 import Button from "@material-ui/core/Button";
 import {tableIcons} from "../../../../utils/iconutil";
 import CloudUploadIcon from "@material-ui/icons/CloudUpload";
-import {useHistory, useParams} from "react-router-dom";
+import {Link, useHistory, useParams} from "react-router-dom";
+import ArrowBackIosIcon from "@material-ui/icons/ArrowBackIos";
 
 export default function ShipmentItemDeliveryPlanAdd() {
   const dispatch = useDispatch();
@@ -49,6 +50,12 @@ export default function ShipmentItemDeliveryPlanAdd() {
   }
 
   return <div>
+    {
+      <Link to={'shipment-item-delivery-plan/' + deliveryPlanId + '/list'}>
+        <Button variant={'outlined'} startIcon={<ArrowBackIosIcon/>}>
+          Back</Button>
+      </Link>
+    }
     <MaterialTable
       title={'Chọn đơn hàng'}
       columns={columns}
@@ -63,7 +70,7 @@ export default function ShipmentItemDeliveryPlanAdd() {
           authGet(
             dispatch,
             token,
-            "/shipment-item-not-in/" + deliveryPlanId + "?size=" + query.pageSize + "&page=" + query.page + sortParam
+            "/shipment-item-not-in-delivery-plan/" + deliveryPlanId + "?size=" + query.pageSize + "&page=" + query.page + sortParam
           ).then(
             response => {
               setPageNumber(response.number);

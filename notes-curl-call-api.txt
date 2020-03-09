@@ -77,6 +77,16 @@ Assign customer to a salesman
 			
 	curl --header "Content-Type: application/json; charset=utf-8" -v POST http://3.1.6.126/api/assign-customer-2-salesman -u dungpq:123 -d '{"partyCustomerId":"5ae20c48-4d6c-11ea-967e-54bf64436441","partySalesmanId":"bb159eab-1200-483c-9684-8164f5570b5c"}'		
 --------
+Create Driver
+	curl --header "Content-Type: application/json; charset=utf-8" -v POST http://localhost:8080/api/create-driver -u dungpq:123 -d '{"userName":"datnguyen","password":"123","lastName":"Nguyen","middleName":"Tuan","firstName":"Dat","birthDate":"2020-03-04T02:44:49.262Z","gender":"M","partyCode":"datnguyen","roles":["ROLE_FULL_ADMIN"]}'
+	
+	curl --header "Content-Type: application/json; charset=utf-8" -v POST http://3.1.6.126/api/create-driver -u dungpq:123 -d '{"userName":"trungbui","password":"123","lastName":"Bui","middleName":"Quoc","firstName":"Trung","birthDate":"2020-03-04T02:44:49.262Z","gender":"M","partyCode":"trungbui","roles":["ROLE_FULL_ADMIN"]}'
+	
+	
+--------
+Get all drivers
+	curl --header "Content-Type: application/json; charset=utf-8" -v POST http://localhost:8080/api/get-all-drivers -u dungpq:123 -d '{}'
+--------
 Create Delivery Plan
 
 	curl --header "Content-Type: application/json; charset=utf-8" -v POST http://localhost:8080/api/create-delivery-plan -u admin:123 -d '{"deliveryDate":"2020-02-18 10:30:00","createdByUserLoginId":"dungpq","description":null}'
@@ -114,7 +124,19 @@ Get product price
 	
 --------
 Get asigned delivery route 
-    curl --header "Content-Type: application/json" -v GET http://3.1.6.126/api/get-assigned-delivery-routes -u admin:123
+    curl --header "Content-Type: application/json" -v POST http://localhost:8080/api/get-assigned-delivery-routes -u admin:123 -d '{"driverUserLoginId":"datnguyen"}'
+
+	curl --header "Content-Type: application/json" -v POST http://3.1.6.126/api/get-assigned-delivery-routes -u admin:123 -d '{"driverUserLoginId":"trungbui"}'
+--------
+Statistic vehicle-distance
+	curl --header "Content-Type: application/json" -v POST http://localhost:8080/api/statistic-vehicle-distance -u admin:123 -d '{"fromDate":"","thruDate":""}'
+	
+--------
+Complete delivery shipment item
+	curl --header "Content-Type: application/json" -v POST http://localhost:8080/api/complete-shipment-items -u admin:123 -d '{"items":[{"deliveryTripDetailId":"05626fc1-ffd4-46e4-9c5f-d9786a45fa2d"},{"deliveryTripDetailId":"0c028a8a-8ffe-4ef7-b455-9b5f1bedb062"}]}'
+
+
+	curl --header "Content-Type: application/json" -v POST http://3.1.6.126/api/complete-shipment-items -u admin:123 -d '{"items":[{"deliveryTripDetailId":"02d4a648-7e3d-4d3e-9cef-72208151b298"},{"deliveryTripDetailId":"cfa711be-1830-4615-bfbe-677752ecee08"}]}'
 
 --------
 get list facility
@@ -169,8 +191,12 @@ generate sales route detail
 Salesman CheckIn at customer	
 	curl --header "Content-Type: application/json" -v POST http://localhost:8080/api/salesman-checkin-customer -u admin:123 -d '{"partyCustomerId":"42226977-4e40-45a1-9e16-3f87f3602596","latitude":21.43243,"longitude":105.5345}'
 	
+	curl --header "Content-Type: application/json" -v POST http://3.1.6.126/api/salesman-checkin-customer -u admin:123 -d '{"partyCustomerId":"06555383-2f1f-47f9-a536-eda1069cd1bb","latitude":21.43243,"longitude":105.5345}'
+	
 Salesman CheckOut at customer	
 	curl --header "Content-Type: application/json" -v POST http://localhost:8080/api/salesman-checkout-customer -u admin:123 -d '{"partyCustomerId":"42226977-4e40-45a1-9e16-3f87f3602596","latitude":21.43243,"longitude":105.5345}'
+	
+	curl --header "Content-Type: application/json" -v POST http://3.1.6.126/api/salesman-checkout-customer -u admin:123 -d '{"partyCustomerId":"06555383-2f1f-47f9-a536-eda1069cd1bb","latitude":21.43243,"longitude":105.5345}'
 	
 -------
 get customers visited of userlogin
