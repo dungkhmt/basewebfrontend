@@ -488,9 +488,9 @@ export default function SideBar(props) {
               <InboxIcon/>
             </ListItemIcon>
             <ListItemText primary="Quản lý chuyển phát bưu kiện"/>
-            {openCollapse[5] ? <ExpandLess/> : <ExpandMore/>}
+            {openCollapse[6] ? <ExpandLess/> : <ExpandMore/>}
           </ListItem>
-          <Collapse in={openCollapse[5]} timeout="auto" unmountOnExit>
+          <Collapse in={openCollapse[6]} timeout="auto" unmountOnExit>
             <List component="div" disablePadding>
               <ListItem
                 button
@@ -581,9 +581,9 @@ export default function SideBar(props) {
                 <InboxIcon/>
               </ListItemIcon>
               <ListItemText primary="QL sản phẩm"/>
-              {openCollapse[6] ? <ExpandLess/> : <ExpandMore/>}
+              {openCollapse[7] ? <ExpandLess/> : <ExpandMore/>}
             </ListItem>
-            <Collapse in={openCollapse[6]} timeout="auto" unmountOnExit>
+            <Collapse in={openCollapse[7]} timeout="auto" unmountOnExit>
               <List component="div" disablePadding>
                   <ListItem button className={classes.nested}>
                     <ListItemIcon>
@@ -611,9 +611,9 @@ export default function SideBar(props) {
                 <InboxIcon/>
               </ListItemIcon>
               <ListItemText primary="QL Khách hàng"/>
-              {openCollapse[7] ? <ExpandLess/> : <ExpandMore/>}
+              {openCollapse[8] ? <ExpandLess/> : <ExpandMore/>}
             </ListItem>
-            <Collapse in={openCollapse[7]} timeout="auto" unmountOnExit>
+            <Collapse in={openCollapse[8]} timeout="auto" unmountOnExit>
               <List component="div" disablePadding>
                   <ListItem button className={classes.nested}>
                     <ListItemIcon>
@@ -641,9 +641,9 @@ export default function SideBar(props) {
                 <InboxIcon/>
               </ListItemIcon>
               <ListItemText primary="QL đại lí bán lẻ"/>
-              {openCollapse[8] ? <ExpandLess/> : <ExpandMore/>}
+              {openCollapse[9] ? <ExpandLess/> : <ExpandMore/>}
             </ListItem>
-            <Collapse in={openCollapse[8]} timeout="auto" unmountOnExit>
+            <Collapse in={openCollapse[9]} timeout="auto" unmountOnExit>
               <List component="div" disablePadding>
                   <ListItem button className={classes.nested}>
                     <ListItemIcon>
@@ -672,9 +672,9 @@ export default function SideBar(props) {
                 <InboxIcon/>
               </ListItemIcon>
               <ListItemText primary="QL nhân viên bán hàng"/>
-              {openCollapse[9] ? <ExpandLess/> : <ExpandMore/>}
+              {openCollapse[10] ? <ExpandLess/> : <ExpandMore/>}
             </ListItem>
-            <Collapse in={openCollapse[9]} timeout="auto" unmountOnExit>
+            <Collapse in={openCollapse[10]} timeout="auto" unmountOnExit>
               <List component="div" disablePadding>
                   <ListItem button className={classes.nested}>
                     <ListItemIcon>
@@ -703,9 +703,9 @@ export default function SideBar(props) {
                 <InboxIcon/>
               </ListItemIcon>
               <ListItemText primary="QL Nhà Phân Phối"/>
-              {openCollapse[10] ? <ExpandLess/> : <ExpandMore/>}
+              {openCollapse[11] ? <ExpandLess/> : <ExpandMore/>}
             </ListItem>
-            <Collapse in={openCollapse[10]} timeout="auto" unmountOnExit>
+            <Collapse in={openCollapse[11]} timeout="auto" unmountOnExit>
               <List component="div" disablePadding>
                   <ListItem button className={classes.nested}>
                     <ListItemIcon>
@@ -734,9 +734,9 @@ export default function SideBar(props) {
                 <InboxIcon/>
               </ListItemIcon>
               <ListItemText primary="QL giá sản phẩm"/>
-              {openCollapse[11] ? <ExpandLess/> : <ExpandMore/>}
+              {openCollapse[12] ? <ExpandLess/> : <ExpandMore/>}
             </ListItem>
-            <Collapse in={openCollapse[11]} timeout="auto" unmountOnExit>
+            <Collapse in={openCollapse[12]} timeout="auto" unmountOnExit>
               <List component="div" disablePadding>
                   <ListItem button className={classes.nested}>
                     <ListItemIcon>
