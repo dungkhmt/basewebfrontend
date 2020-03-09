@@ -58,7 +58,7 @@ export default function TrackLocationList(){
         })
       }
       icons={tableIcons}
-      onRowClick={(event, rowData) => {
+      onRowClick={(event    , rowData) => {
         console.log("select ",rowData);
       }}
     />
