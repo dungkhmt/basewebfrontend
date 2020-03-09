@@ -12,6 +12,9 @@ import {makeStyles} from "@material-ui/core/styles";
 import Typography from "@material-ui/core/Typography";
 import {toFormattedDateTime} from "../../../utils/dateutils";
 import {useHistory} from "react-router-dom";
+import {Select} from "@material-ui/core";
+import InputLabel from "@material-ui/core/InputLabel";
+import MenuItem from "@material-ui/core/MenuItem";
 
 
 const useStyles = makeStyles(theme => ({
@@ -40,6 +43,19 @@ export default function DeliveryPlanCreate() {
   const [name, setName] = useState('');
   const [date, setDate] = useState(new Date());
 
+  const [facilityList, setFacilityList] = useState([]);
+  const [selectedFacility, setSelectedFacility] = useState();
+
+  function getFacilityList() {
+    authPost(dispatch, token, '/get-list-facility', {}).then(r => r.json()).then(response => {
+      let facilities = response['facilities'];
+      setFacilityList(facilities);
+      setSelectedFacility(facilities[0]['facilityId'])
+    }).catch(console.log);
+  }
+
+  useEffect(() => getFacilityList(), []);
+
   function getUserName() {
     authGet(dispatch, token, '/').then(response => setUserName(response['user'])).catch(console.log)
   }
@@ -50,7 +66,8 @@ export default function DeliveryPlanCreate() {
     const deliveryPlanInfo = {
       description: name,
       createdByUserLoginId: userName,
-      deliveryDate: toFormattedDateTime(date)
+      deliveryDate: toFormattedDateTime(date),
+      facilityId: selectedFacility
     };
     console.log(deliveryPlanInfo);
     authPost(dispatch, token, '/create-delivery-plan', deliveryPlanInfo).then(
@@ -88,6 +105,19 @@ export default function DeliveryPlanCreate() {
                                   "aria-label": "Thay đổi thời gian"
                                 }}
             />
+            <InputLabel>Chọn kho</InputLabel>
+            <Select
+              value={selectedFacility}
+              onChange={event => setSelectedFacility(event.target.value)}
+            >
+              {
+                facilityList.map(value => (
+                  <MenuItem value={value['facilityId']}>
+                    {value['facilityId'] + ' (' + value['facilityName'] + ')'}
+                  </MenuItem>
+                ))
+              }
+            </Select>
           </form>
         </CardContent>
         <CardActions>

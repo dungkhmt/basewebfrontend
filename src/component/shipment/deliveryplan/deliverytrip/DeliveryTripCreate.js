@@ -141,7 +141,7 @@ export default function DeliveryTripCreate() {
                 driverList.map(driver =>
                   <MenuItem value={driver['partyId']}>
                     {driver['partyId'] + ' (' + driver['person']['firstName'] +
-                    driver['person']['middleName'] + driver['person']['lastName'] + ' )'}
+                    driver['person']['middleName'] + driver['person']['lastName'] + ')'}
                   </MenuItem>)
               }
             </Select>

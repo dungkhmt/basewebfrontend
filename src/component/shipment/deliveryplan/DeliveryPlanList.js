@@ -18,6 +18,7 @@ export default function DeliveryPlanList() {
     {title: "Mô tả", field: "description"},
     {title: "Tài khoản tạo", field: "createdByUserLoginId"},
     {title: "Ngày tạo", field: "deliveryDate", type: 'date'},
+    {title: "Kho hàng", field: "deliveryDate", render: rowData => rowData['facility']['facilityName']},
   ];
 
   return <div>
