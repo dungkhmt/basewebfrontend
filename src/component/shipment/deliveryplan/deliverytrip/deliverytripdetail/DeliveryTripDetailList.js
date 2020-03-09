@@ -55,6 +55,8 @@ export default function DeliveryTripDetailList() {
 
   const [deliveryTrip, setDeliveryTrip] = useState(null);
 
+  const [facilityGeoPoint, setFacilityGeoPoint] = useState();
+
   const getDeliveryTripInfo = () => {
     authGet(dispatch, token, '/delivery-trip/' + deliveryTripId + '/basic-info').then(response => {
       console.log('::getDeliveryTripInfo: ', deliveryTripId);
@@ -62,6 +64,7 @@ export default function DeliveryTripDetailList() {
       setDeliveryTrip({
         deliveryTripId,
         deliveryPlanId: response['deliveryPlan']['deliveryPlanId'],
+        facility: response['deliveryPlan']['facility'],
         vehicleId: response['vehicle']['vehicleId'],
         executeDate: response['executeDate'],
         vehicleTypeId: response['externalVehicleType'] == null ? null : response['externalVehicleType']['vehicleTypeId'],
@@ -69,6 +72,7 @@ export default function DeliveryTripDetailList() {
         totalWeight: response['totalWeight'],
         totalPallet: response['totalPallet'],
       });
+      setFacilityGeoPoint(response['deliveryPlan']['facility']['postalAddress']['geoPoint']);
     })
   };
 
@@ -162,10 +166,14 @@ export default function DeliveryTripDetailList() {
           mapOpen && dataTable ?
             <Directions
               routes={[{
-                post: {
-                  lat: dataTable[0]['lat'], lng: dataTable[0]['lng']
-                },
-                items: dataTable.map(value => ({lat: value['lat'], lng: value['lng'], title: value['address']}))
+                post: facilityGeoPoint ? {
+                  lat: parseFloat(facilityGeoPoint['latitude']), lng: parseFloat(facilityGeoPoint['longitude'])
+                } : {},
+                items: dataTable[0] ? dataTable.map(value => ({
+                  lat: value['lat'],
+                  lng: value['lng'],
+                  title: value['address']
+                })) : []
               }]}
             />
             : ''
