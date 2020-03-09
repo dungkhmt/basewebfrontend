@@ -159,7 +159,7 @@ export default function DeliveryTripDetailList() {
       <DialogTitle>Hành trình di chuyển của bưu tá</DialogTitle>
       <DialogContent>
         {
-          mapOpen && dataTable ?
+          mapOpen && dataTable && dataTable[0] ?
             <Directions
               routes={[{
                 post: {
