@@ -483,7 +483,7 @@ export default function SideBar(props) {
 
 {props.menu.has("MENU_TMS") ? (  
         <div>
-          <ListItem button onClick={() => handleListClick(5)}>
+          <ListItem button onClick={() => handleListClick(6)}>
             <ListItemIcon>
               <InboxIcon/>
             </ListItemIcon>
@@ -576,7 +576,7 @@ export default function SideBar(props) {
 
       {props.menu.has("MENU_INVOICE") ? (
           <div>
-            <ListItem button onClick={() => handleListClick(6)}>
+            <ListItem button onClick={() => handleListClick(7)}>
               <ListItemIcon>
                 <InboxIcon/>
               </ListItemIcon>
@@ -606,7 +606,7 @@ export default function SideBar(props) {
         )}
       {props.menu.has("MENU_INVOICE") ? (
           <div>
-            <ListItem button onClick={() => handleListClick(7)}>
+            <ListItem button onClick={() => handleListClick(8)}>
               <ListItemIcon>
                 <InboxIcon/>
               </ListItemIcon>
@@ -636,7 +636,7 @@ export default function SideBar(props) {
 
         {props.menu.has("MENU_INVOICE") ? (
           <div>
-            <ListItem button onClick={() => handleListClick(8)}>
+            <ListItem button onClick={() => handleListClick(9)}>
               <ListItemIcon>
                 <InboxIcon/>
               </ListItemIcon>
@@ -667,7 +667,7 @@ export default function SideBar(props) {
 
         {props.menu.has("MENU_INVOICE") ? (
           <div>
-            <ListItem button onClick={() => handleListClick(9)}>
+            <ListItem button onClick={() => handleListClick(10)}>
               <ListItemIcon>
                 <InboxIcon/>
               </ListItemIcon>
@@ -698,7 +698,7 @@ export default function SideBar(props) {
 
         {props.menu.has("MENU_INVOICE") ? (
           <div>
-            <ListItem button onClick={() => handleListClick(10)}>
+            <ListItem button onClick={() => handleListClick(11)}>
               <ListItemIcon>
                 <InboxIcon/>
               </ListItemIcon>
@@ -729,7 +729,7 @@ export default function SideBar(props) {
 
         {props.menu.has("MENU_INVOICE") ? (
           <div>
-            <ListItem button onClick={() => handleListClick(11)}>
+            <ListItem button onClick={() => handleListClick(12)}>
               <ListItemIcon>
                 <InboxIcon/>
               </ListItemIcon>

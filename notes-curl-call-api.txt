@@ -47,6 +47,17 @@ Create Shipments
   curl --header "Content-Type: application/json" -v POST http://localhost:8080/api/create-shipment -u admin:123 -d '{"shipmentItems":[{"productId":"20201260001","quantity":10,"amountPallet":0.0},{"productId":"20201260002","quantity":100,"amountPallet":0.0},{"productId":"20201260003","quantity":200,"amountPallet":0.0}]}'
   
 --------
+Create Distributor
+  curl --header "Content-Type: application/json; charset=utf-8" -v POST http://localhost:8080/api/create-distributor -u admin:123 -d '{"distributorName":"Nha Phan Phoi Huyen Cam Giang","address":"Xa Tan Truong, Cam Giang, Hai Duong","latitude":"21.006619","longitude":"105.832038"}'
+  
+  curl --header "Content-Type: application/json; charset=utf-8" -v POST http://3.1.6.126/api/create-distributor -u admin:123 -d '{"distributorName":"VinMart Phạm Ngọc Thạch","address":"Pham Ngoc Thach, Hanoi","latitude":"21.006619","longitude":"105.832038"}'
+
+--------
+Get  list distributors
+	curl --header "Content-Type: application/json; charset=utf-8" -v POST http://localhost:8080/api/distributors -u admin:123
+	
+	curl --header "Content-Type: application/json; charset=utf-8" -v POST http://3.1.6.126/api/distributors -u admin:123  
+--------
 Create Customer
   curl --header "Content-Type: application/json; charset=utf-8" -v POST http://localhost:8080/api/create-customer -u admin:123 -d '{"customerName":"VinMart Phạm Ngọc Thạch","address":"Pham Ngoc Thach, Hanoi","latitude":"21.006619","longitude":"105.832038"}'
   
