@@ -32,6 +32,7 @@ const useStyles = makeStyles(theme => ({
 
 
 function ProductCreate(props) {
+
     const token = useSelector(state => state.auth.token);
     const dispatch = useDispatch();
     const history = useHistory();
@@ -72,7 +73,8 @@ function ProductCreate(props) {
     }
 
 
-    const handleSubmit = () => {
+    const handleSubmit = event => {
+
         const data = {
             productId: productId,
             quantityUomId: quantityUomId,
@@ -100,6 +102,13 @@ function ProductCreate(props) {
                     console.log(error);
                 }
             )
+        event.preventDefault();
+        window.location.reload();
+
+
+
+
+
 
     }
 
@@ -167,7 +176,6 @@ function ProductCreate(props) {
                         <TextField
                             id="id"
                             label="product-id"
-                            value={productId}
                             onChange={handleProductIdChange}
                             helperText="product-id"
                             required
@@ -178,7 +186,6 @@ function ProductCreate(props) {
                         <TextField
                             id="productName"
                             label="product name"
-                            value={productName}
                             onChange={handleProductNameChange}
                             helperText="product name"
                             >
@@ -189,7 +196,6 @@ function ProductCreate(props) {
                             id="select-quantityUomId"
                             select
                             label="Select"
-                            value={quantityUomId}
                             onChange={handleQuantityUomIdChange}
                             helperText="Select-quantityUomId"
                             >
@@ -207,7 +213,6 @@ function ProductCreate(props) {
                             id="select-type"
                             select
                             label="select"
-                            value={type}
                             onChange={handleTypeChange}
                             helperText={"select-type"}
                             >

@@ -40,22 +40,13 @@ const useStyles = makeStyles({
 function ProductList(props) {
     const token = useSelector(state => state.auth.token);
     const dispatch = useDispatch();
-    const classes = useStyles();
-    const [productFrontendInfos,setProductFrontendInfos] = useState([]);
-    const [isRequesting, setIsRequesting] = useState(false);
-    const [rowsPerPage, setRowsPerPage] = React.useState(10);
-    const [page, setPage] = React.useState(0);
 
 
-    const handleChangeRowsPerPage = event => {
-        setRowsPerPage(+event.target.value);
-        setPage(0);
-    };
 
 
-    const handleChangePage = (event, newPage) => {
-        setPage(newPage);
-    };
+
+
+
     const columns = [
         {field:'productId',title:'Id'},
         {field:'productName',title: 'Name'},
