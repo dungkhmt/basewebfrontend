@@ -35,6 +35,8 @@ import ProductCreate from "./component/product/ProductCreate";
 import ProductList from "./component/product/ProductList";
 import SalesmanCheckinRoutesHistory from "./component/salesroutes/salesmancheckinrouteshistory";
 import DeliveryTripChart from "./component/shipment/deliveryplan/deliverytrip/DeliveryTripChart";
+import CustomerCreate from "./component/customer/CustomerCreate";
+import CustomerList from "./component/customer/CustomerList";
 
 
 function Routes(props) {// props nay tu parent transfer vao
@@ -267,7 +269,22 @@ function Routes(props) {// props nay tu parent transfer vao
           layout={Layout}
           isAuthenticated={props.isAuthenticated}
           path="/products/list"
-          />
+      />
+
+
+      <PrivateRouteWithLayout
+          component={CustomerCreate}
+          layout={Layout}
+          isAuthenticated={props.isAuthenticated}
+          path="/customer/create"
+      />
+
+      <PrivateRouteWithLayout
+          component={CustomerList}
+          layout={Layout}
+          isAuthenticated={props.isAuthenticated}
+          path="/customer/list"
+      />
 
 
       <Route

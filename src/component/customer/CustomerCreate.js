@@ -31,7 +31,7 @@ const useStyles = makeStyles(theme => ({
 }));
 
 
-function ConsumerCreate(props) {
+function CustomerCreate(props) {
     const token = useSelector(state => state.auth.token);
     const dispatch = useDispatch();
     const [customerCode,setCustomerCode] = useState();
@@ -200,4 +200,4 @@ function ConsumerCreate(props) {
 
 
 
-export default ConsumerCreate
+export default CustomerCreate;
