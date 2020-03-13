@@ -12,6 +12,7 @@ import TableChartIcon from '@material-ui/icons/TableChart';
 import AddIcon from '@material-ui/icons/Add';
 import InsertChartIcon from '@material-ui/icons/InsertChart';
 import ArrowBackIosIcon from '@material-ui/icons/ArrowBackIos';
+import CircularProgress from "@material-ui/core/CircularProgress";
 
 export default function DeliveryTripList() {
   const dispatch = useDispatch();
@@ -50,10 +51,23 @@ export default function DeliveryTripList() {
     authGet(dispatch, token, '/delivery-trip/' + deliveryPlanId + '/all').then(response => setDataTable(response)).catch(console.log);
   }
 
+  const [solveWaiting, setSolveWaiting] = useState(false);
+
   useEffect(() => {
     getDeliveryPlanInfo();
     getDataTable();
   }, []);
+
+  function handleSolve() {
+    setSolveWaiting(true);
+    authGet(dispatch, token, '/solve/' + deliveryPlanId).then(response => {
+      if (!response) {
+        alert('Đã có lỗi xảy ra...');
+      }
+      setSolveWaiting(false);
+      window.location.reload();
+    }).catch(console.log);
+  }
 
   return <div>
     <Link to={'/delivery-plan-list'}>
@@ -98,7 +112,11 @@ export default function DeliveryTripList() {
       <p/>
     </Link>
     <Button color={'default'} variant={'contained'}> DS đơn hàng chưa được xếp chuyến </Button> <p/>
-    <Button color={'default'} variant={'contained'}> Tự động xếp chuyến còn lại </Button> <p/>
+    {
+      solveWaiting ? <CircularProgress color={'secondary'}/> :
+        <Button color={'default'} variant={'contained'} onClick={() => handleSolve()}>
+          Tự động xếp chuyến còn lại </Button>
+    } <p/>
     <Button color={'secondary'} variant={'contained'} startIcon={<DeleteIcon/>}> Hủy chuyến </Button> <p/>
   </div>
 }

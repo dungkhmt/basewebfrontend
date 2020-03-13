@@ -56,8 +56,7 @@ export default function VehicleList() {
       token={token}
       dispatch={dispatch}
       buttonTitle={'Tải lên danh sách xe'}
-      handleSaveCallback={() => {
-      }}
+      handleSaveCallback={() => window.location.reload()}
     />
   </div>
 }

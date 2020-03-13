@@ -51,7 +51,7 @@ export default function ShipmentItemDeliveryPlanAdd() {
 
   return <div>
     {
-      <Link to={'shipment-item-delivery-plan/' + deliveryPlanId + '/list'}>
+      <Link to={'/shipment-item-delivery-plan/' + deliveryPlanId + '/list'}>
         <Button variant={'outlined'} startIcon={<ArrowBackIosIcon/>}>
           Back</Button>
       </Link>
