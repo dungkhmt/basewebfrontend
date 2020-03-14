@@ -41,6 +41,7 @@ export default function DeliveryPlanList() {
             "/delivery-plan" + "?size=" + query.pageSize + "&page=" + query.page + sortParam
           ).then(
             response => {
+              console.log(response.content);
               resolve({
                 data: response.content,
                 page: response.number,

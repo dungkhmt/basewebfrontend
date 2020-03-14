@@ -26,6 +26,7 @@ import { authPost } from "../../api";
 
 import { useDispatch, useSelector } from "react-redux";
 import { CircularProgress } from "@material-ui/core";
+
 const useStyles = makeStyles(theme => ({
   root: {
     padding: theme.spacing(4),
@@ -289,6 +290,7 @@ function UserCreate(props) {
                 {products.map(product => (
                       <MenuItem
                         key={product.productId}
+
                         value={product.productId}
                       >
                         {product.productName}
@@ -327,6 +329,11 @@ function UserCreate(props) {
             />
             </Card>
             </div>
+
+
+
+
+
           </form>
         </CardContent>
         <CardActions>

@@ -31,12 +31,15 @@ import VehicleDeliveryPlanList from "./component/shipment/deliveryplan/vehicle/V
 import ShipmentItemCreate from "./component/shipment/shipment/ShipmentItemCreate";
 import VehicleDeliveryPlanAdd from "./component/shipment/deliveryplan/vehicle/VehicleDeliveryPlanAdd";
 import ShipmentItemDeliveryPlanAdd from "./component/shipment/deliveryplan/shipmentitem/ShipmentItemDeliveryPlanAdd";
+import ProductCreate from "./component/product/ProductCreate";
+import ProductList from "./component/product/ProductList";
 import SalesmanCheckinRoutesHistory from "./component/salesroutes/salesmancheckinrouteshistory";
 import DeliveryTripChart from "./component/shipment/deliveryplan/deliverytrip/DeliveryTripChart";
+import CustomerCreate from "./component/customer/CustomerCreate";
+import CustomerList from "./component/customer/CustomerList";
 
 
 function Routes(props) {// props nay tu parent transfer vao
-  // console.log(props)
   return (
     <Switch>
       <PrivateRouteWithLayout
@@ -252,6 +255,37 @@ function Routes(props) {// props nay tu parent transfer vao
         // exact                                   // props
         path="/delivery-trip-chart/:deliveryPlanId"                    // props
       />
+
+
+
+      <PrivateRouteWithLayout
+          component={ProductCreate}
+          layout={Layout}
+          isAuthenticated={props.isAuthenticated}
+          path="/products/create"
+      />
+      <PrivateRouteWithLayout
+          component={ProductList}
+          layout={Layout}
+          isAuthenticated={props.isAuthenticated}
+          path="/products/list"
+      />
+
+
+      <PrivateRouteWithLayout
+          component={CustomerCreate}
+          layout={Layout}
+          isAuthenticated={props.isAuthenticated}
+          path="/customer/create"
+      />
+
+      <PrivateRouteWithLayout
+          component={CustomerList}
+          layout={Layout}
+          isAuthenticated={props.isAuthenticated}
+          path="/customer/list"
+      />
+
 
       <Route
         component={SignInContainer} // props

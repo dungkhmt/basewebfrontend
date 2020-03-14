@@ -47,6 +47,17 @@ Create Shipments
   curl --header "Content-Type: application/json" -v POST http://localhost:8080/api/create-shipment -u admin:123 -d '{"shipmentItems":[{"productId":"20201260001","quantity":10,"amountPallet":0.0},{"productId":"20201260002","quantity":100,"amountPallet":0.0},{"productId":"20201260003","quantity":200,"amountPallet":0.0}]}'
   
 --------
+Create Distributor
+  curl --header "Content-Type: application/json; charset=utf-8" -v POST http://localhost:8080/api/create-distributor -u admin:123 -d '{"distributorName":"Nha Phan Phoi Huyen Cam Giang","address":"Xa Tan Truong, Cam Giang, Hai Duong","latitude":"21.006619","longitude":"105.832038"}'
+  
+  curl --header "Content-Type: application/json; charset=utf-8" -v POST http://3.1.6.126/api/create-distributor -u admin:123 -d '{"distributorName":"VinMart Phạm Ngọc Thạch","address":"Pham Ngoc Thach, Hanoi","latitude":"21.006619","longitude":"105.832038"}'
+
+--------
+Get  list distributors
+	curl --header "Content-Type: application/json; charset=utf-8" -v POST http://localhost:8080/api/distributors -u admin:123
+	
+	curl --header "Content-Type: application/json; charset=utf-8" -v POST http://3.1.6.126/api/distributors -u admin:123  
+--------
 Create Customer
   curl --header "Content-Type: application/json; charset=utf-8" -v POST http://localhost:8080/api/create-customer -u admin:123 -d '{"customerName":"VinMart Phạm Ngọc Thạch","address":"Pham Ngoc Thach, Hanoi","latitude":"21.006619","longitude":"105.832038"}'
   
@@ -78,11 +89,13 @@ Assign customer to a salesman
 	curl --header "Content-Type: application/json; charset=utf-8" -v POST http://3.1.6.126/api/assign-customer-2-salesman -u dungpq:123 -d '{"partyCustomerId":"5ae20c48-4d6c-11ea-967e-54bf64436441","partySalesmanId":"bb159eab-1200-483c-9684-8164f5570b5c"}'		
 --------
 Create Driver
-	curl --header "Content-Type: application/json; charset=utf-8" -v POST http://localhost:8080/api/create-driver -u dungpq:123 -d '{"userName":"datnguyen","password":"123","lastName":"Nguyen","middleName":"Tuan","firstName":"Dat","birthDate":"2020-03-04T02:44:49.262Z","gender":"M","partyCode":"datnguyen","roles":["ROLE_FULL_ADMIN"]}'
+	curl --header "Content-Type: application/json; charset=utf-8" -v POST http://localhost:8080/api/create-driver -u dungpq:123 -d '{"userName":"datnguyen","password":"123","lastName":"Nguyen","middleName":"Tuan","firstName":"Dat","birthDate":"2020-03-04T02:44:49.262Z","gender":"M","partyCode":"datnguyen","roles":["ROLE_TMS_MANAGER"]}'
 	
 	curl --header "Content-Type: application/json; charset=utf-8" -v POST http://3.1.6.126/api/create-driver -u dungpq:123 -d '{"userName":"trungbui","password":"123","lastName":"Bui","middleName":"Quoc","firstName":"Trung","birthDate":"2020-03-04T02:44:49.262Z","gender":"M","partyCode":"trungbui","roles":["ROLE_FULL_ADMIN"]}'
 	
-	
+--------
+Create facility
+	curl --header "Content-Type: application/json; charset=utf-8" -v POST http://localhost:8080/api/create-facility -u dungpq:123 -d '{"facilityId":"VNM_depot","facilityName":"Kho cua Vinamilk","address":"32 Dang Van Bi, phuong Truong Tho, quan Thu Duc, HCM"}'	
 --------
 Get all drivers
 	curl --header "Content-Type: application/json; charset=utf-8" -v POST http://localhost:8080/api/get-all-drivers -u dungpq:123 -d '{}'
