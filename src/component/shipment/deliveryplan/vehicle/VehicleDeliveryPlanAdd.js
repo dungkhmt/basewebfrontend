@@ -1,4 +1,4 @@
-import React, {useState} from "react";
+import React, {useEffect, useState} from "react";
 import {useDispatch, useSelector} from "react-redux";
 import MaterialTable from "material-table";
 import {authGet, authPost} from "../../../../api";
@@ -45,6 +45,14 @@ export default function VehicleDeliveryPlanAdd() {
     ).catch(console.log);
   }
 
+  const [dataTable, setDataTable] = useState();
+
+  function getDataTable() {
+    authGet(dispatch, token, "/vehicle-not-in/" + deliveryPlanId + '/all').then(response => setDataTable(response));
+  }
+
+  useEffect(() => getDataTable(), []);
+
   return <div>
     {
       <Link to={'/vehicle-delivery-plan/' + deliveryPlanId + '/list'}>
@@ -57,35 +65,7 @@ export default function VehicleDeliveryPlanAdd() {
       title={'Chọn xe'}
       columns={columns}
       options={{search: false, selection: true}}
-      data={query =>
-        new Promise((resolve) => {
-          console.log(query);
-          let sortParam = "";
-          if (query.orderBy !== undefined) {
-            sortParam = "&sort=" + query.orderBy.field + ',' + query.orderDirection;
-          }
-          authGet(
-            dispatch,
-            token,
-            "/vehicle-not-in/" + deliveryPlanId + "?size=" + query.pageSize + "&page=" + query.page + sortParam
-          ).then(
-            response => {
-              setPageNumber(response.number);
-              resolve({
-                data: response.content.map(row => rowSelectedMap[response.number] &&
-                rowSelectedMap[response.number].has(row['vehicleId'])
-                  ? {...row, tableData: {checked: true}} : row),
-
-                page: response.number,
-                totalCount: response.totalElements
-              });
-            },
-            error => {
-              console.log("error");
-            }
-          );
-        })
-      }
+      data={dataTable}
       icons={tableIcons}
       onSelectionChange={rows => handleSelectRow(rows)}
     >
