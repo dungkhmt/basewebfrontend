@@ -13,6 +13,8 @@ import Directions from "../../../../google/Directions";
 import Dialog from "@material-ui/core/Dialog";
 import DialogTitle from "@material-ui/core/DialogTitle";
 import DialogContent from "@material-ui/core/DialogContent";
+import {Select} from "@material-ui/core";
+import MenuItem from "@material-ui/core/MenuItem";
 
 // each shipment item
 export default function DeliveryTripDetailList() {
@@ -67,7 +69,8 @@ export default function DeliveryTripDetailList() {
         facility: response['deliveryPlan']['facility'],
         vehicleId: response['vehicle']['vehicleId'],
         executeDate: response['executeDate'],
-        vehicleTypeId: response['externalVehicleType'] == null ? null : response['externalVehicleType']['vehicleTypeId'],
+        vehicleTypeId: response['externalVehicleType'] ==
+        null ? null : response['externalVehicleType']['vehicleTypeId'],
         totalDistance: response['distance'],
         totalWeight: response['totalWeight'],
         totalPallet: response['totalPallet'],
@@ -95,11 +98,37 @@ export default function DeliveryTripDetailList() {
 
   const [mapOpen, setMapOpen] = useState(false);
 
+
+  const [driverList, setDriverList] = useState([]);
+  const [selectedDriver, setSelectedDriver] = useState({});
+
+  async function getDriverInfo() {
+    Promise.all([authGet(dispatch, token, '/get-all-drivers'),
+      authGet(dispatch, token, '/get-driver-in-delivery-trip/' + deliveryTripId)]).
+      then(([driverList, selectedDriver]) => {
+        setDriverList(driverList);
+
+        let partyId = selectedDriver['partyId'];
+        if (!partyId) {
+          setSelectedDriver('unSelected');
+        } else {
+          setSelectedDriver(partyId);
+        }
+      })
+  }
+
   useEffect(() => {
     getDeliveryTripInfo();
+    getDriverInfo();
     // getDeliveryTripCapacityInfo();
     getDataTable();
   }, []);
+
+  function handleUpdateDriver(driverId) {
+    authGet(dispatch, token, '/set-driver-to-delivery-trip/' + deliveryTripId + '/' + driverId).then(response => {
+      console.log(response);
+    }).catch(console.log);
+  }
 
   return <div>
     {
@@ -123,7 +152,25 @@ export default function DeliveryTripDetailList() {
                 <b>Mã đợt giao hàng: </b> {deliveryTrip === null ? '' : deliveryTrip['deliveryPlanId']} <p/>
                 <b>Ngày tạo: </b> {deliveryTrip === null ? '' : deliveryTrip['executeDate']} <p/>
                 <b>Xe: </b> {deliveryTrip === null ? '' : deliveryTrip['vehicleId']}<p/>
-                <b>Loại xe: </b> {deliveryTrip === null ? '' : deliveryTrip['vehicleTypeId']}
+                <b>Loại xe: </b> {deliveryTrip === null ? '' : deliveryTrip['vehicleTypeId']}<p/>
+                <b>Tài xế: </b>
+                <Select
+                  value={selectedDriver}
+                  onChange={event => {
+                    setSelectedDriver(event.target.value);
+                    if (event.target.value !== 'unSelected') {
+                      handleUpdateDriver(event.target.value);
+                    }
+                  }}
+                >
+                  <MenuItem value={'unSelected'}>{'Chưa chọn'}</MenuItem>
+                  {
+                    driverList.map(driver =>
+                      <MenuItem value={driver['partyId']}>
+                        {driver['partyId'] + ' (' + driver['fullName'] + ')'}
+                      </MenuItem>)
+                  }
+                </Select><p/>
               </Grid>
               <Grid item xs={4}
                     style={{verticalAlign: 'text-bottom', textAlign: 'right', padding: '0px 50px 10px 30px'}}>

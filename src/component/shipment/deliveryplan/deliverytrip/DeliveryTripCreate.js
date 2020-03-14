@@ -53,7 +53,7 @@ export default function DeliveryTripCreate() {
   }
 
   function getDriverList() {
-    authPost(dispatch, token, '/get-all-drivers', {}).then(r => r.json()).then(response => {
+    authGet(dispatch, token, '/get-all-drivers').then(response => {
       setDriverList(response);
       console.log('driver: ' + response);
     }).catch(console.log);
@@ -140,8 +140,7 @@ export default function DeliveryTripCreate() {
               {
                 driverList.map(driver =>
                   <MenuItem value={driver['partyId']}>
-                    {driver['partyId'] + ' (' + driver['person']['firstName'] +
-                    driver['person']['middleName'] + driver['person']['lastName'] + ')'}
+                    {driver['partyId'] + ' (' + driver['fullName'] + ')'}
                   </MenuItem>)
               }
             </Select>
