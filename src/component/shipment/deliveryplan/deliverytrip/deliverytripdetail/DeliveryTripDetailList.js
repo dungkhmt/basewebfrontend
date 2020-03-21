@@ -130,6 +130,16 @@ export default function DeliveryTripDetailList() {
     }).catch(console.log);
   }
 
+  function getDistinctLocation() {
+    let locations = {};
+    dataTable.forEach(value => locations[value['locationCode']] = {
+      lat: value['lat'],
+      lng: value['lng'],
+      address: value['address']
+    });
+    return locations;
+  }
+
   return <div>
     {
       deliveryTrip ?
@@ -216,11 +226,12 @@ export default function DeliveryTripDetailList() {
                 post: facilityGeoPoint ? {
                   lat: parseFloat(facilityGeoPoint['latitude']), lng: parseFloat(facilityGeoPoint['longitude'])
                 } : {},
-                items: dataTable[0] ? dataTable.map(value => ({
-                  lat: value['lat'],
-                  lng: value['lng'],
-                  title: value['address']
-                })) : []
+                items: dataTable[0] ?
+                  Object.values(getDistinctLocation()).map(value => ({
+                    lat: value['lat'],
+                    lng: value['lng'],
+                    title: value['address']
+                  })) : []
               }]}
             />
             : ''
