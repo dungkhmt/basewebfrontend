@@ -75,7 +75,6 @@ export default function DeliveryTripDetailList() {
         totalWeight: response['totalWeight'],
         totalPallet: response['totalPallet'],
       });
-      setFacilityGeoPoint(response['deliveryPlan']['facility']['postalAddress']['geoPoint']);
     })
   };
 
