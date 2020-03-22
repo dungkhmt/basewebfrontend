@@ -37,6 +37,10 @@ import SalesmanCheckinRoutesHistory from "./component/salesroutes/salesmanchecki
 import DeliveryTripChart from "./component/shipment/deliveryplan/deliverytrip/DeliveryTripChart";
 import CustomerCreate from "./component/customer/CustomerCreate";
 import CustomerList from "./component/customer/CustomerList";
+import SalesmanList from "./component/salesman/SalesmanList";
+import DetailSalesman from "./component/salesman/DetailSalesman";
+import SalesmanCreate from "./component/salesman/SalesmanCreate";
+import SalesmanAdd from "./component/salesman/SalesmanAdd";
 import InventoryOrderList from "./component/inventory/InventoryOrderList";
 import InventoryOrderDetail from "./component/inventory/InventoryOrderDetail";
 import InventoryOrderExport from "./component/inventory/InventoryOrderExport";
@@ -296,6 +300,50 @@ function Routes(props) {// props nay tu parent transfer vao
             path="/inventory/order"
           />
 
+      <PrivateRouteWithLayout
+          component={SalesmanList}
+          layout={Layout}
+          isAuthenticated={props.isAuthenticated}
+          path="/salesman/list"
+        />
+
+
+
+        <PrivateRouteWithLayout
+            component={SalesmanCreate}
+            layout={Layout}
+            isAuthenticated={props.isAuthenticated}
+            path="/sales/create"
+        />
+
+        <PrivateRouteWithLayout
+            component={SalesmanAdd}
+            layout={Layout}
+            isAuthenticated={props.isAuthenticated}
+            path="/sales/add/:partyId"
+        />
+
+        <PrivateRouteWithLayout
+            component={DetailSalesman}  //props
+            layout={Layout}          //props
+            isAuthenticated={props.isAuthenticated} // props
+            //isAuthenticated={true}
+            //exact                                   // props
+            path="/salesman/:partyId"                    // props
+        />
+
+
+
+
+
+      <Route
+        component={SignInContainer} // props
+        path="/login"               // props
+      />
+      <Route
+        component={error} // props
+        path="/not-found"               // props
+      />
           <PrivateRouteWithLayout
             component={InventoryOrderDetail}
             layout={Layout}

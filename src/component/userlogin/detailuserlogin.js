@@ -180,7 +180,7 @@ function UserDetail(props) {
                 InputProps={{
                   readOnly: true
                 }}
-              />
+              />re
               <TextField
                 id="userLoginId"
                 label="UserName"

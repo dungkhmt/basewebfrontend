@@ -1,3 +1,9 @@
+Test API
+
+curl --header "Content-Type: application/json" -v POST http://localhost:8080/api/add -u admin:123 -d '{"a":123,"b":456}'
+
+----------
+
 Post location API:
  curl --header "Content-Type: application/json" -v POST http://localhost:8080/api/post-location -u admin:123 -d '{"lat":10.110,"lng":103.83,"timePoint": "2019-12-26T04:45:50.770+0000"}'
  
@@ -171,7 +177,12 @@ Salesman
 	
 		curl --header "Content-Type: application/json" -v POST http://localhost:8080/api/get-list-salesmans -u admin:123 -d '{"statusId":null}'
 -------
+	Create salesman
+	
+	curl --header "Content-Type: application/json" -v POST http://localhost:8080/api/create-salesman -u admin:123 -d '{"userName":"vietdung","password":"123","firstName":"Dung","lastName":"Nguyen","middleName":"Viet"}'
 
+
+-------
 create salesroute planning period
 
 	curl --header "Content-Type: application/json" -v POST http://localhost:8080/api/create-sales-route-planning-period -u admin:123 -d '{"fromDate":"2020-01-01","toDate":"2020-02-28","description":"Sales Route Q1"}' 
