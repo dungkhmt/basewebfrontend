@@ -119,7 +119,9 @@ export default function InventoryOrderExport() {
       inventoryItems: selectedRows.map(rowData => ({
         productId: rowData['productId'],
         facilityId: selectedFacility['facilityId'],
-        quantity: selectedQuantity[rowData['orderItemSeqId']]
+        quantity: selectedQuantity[rowData['orderItemSeqId']],
+        orderId: rowData['orderId'],
+        orderItemSeqId: rowData['orderItemSeqId']
       }))
     };
     authPost(dispatch, token, '/export-inventory-items', body).then(response => {
