@@ -37,6 +37,10 @@ import SalesmanCheckinRoutesHistory from "./component/salesroutes/salesmanchecki
 import DeliveryTripChart from "./component/shipment/deliveryplan/deliverytrip/DeliveryTripChart";
 import CustomerCreate from "./component/customer/CustomerCreate";
 import CustomerList from "./component/customer/CustomerList";
+import SalesmanList from "./component/salesman/SalesmanList";
+import DetailSalesman from "./component/salesman/DetailSalesman";
+import SalesmanCreate from "./component/salesman/SalesmanCreate";
+import SalesmanAdd from "./component/salesman/SalesmanAdd";
 
 
 function Routes(props) {// props nay tu parent transfer vao
@@ -285,6 +289,42 @@ function Routes(props) {// props nay tu parent transfer vao
           isAuthenticated={props.isAuthenticated}
           path="/customer/list"
       />
+
+
+      <PrivateRouteWithLayout
+          component={SalesmanList}
+          layout={Layout}
+          isAuthenticated={props.isAuthenticated}
+          path="/salesman/list"
+        />
+
+
+
+        <PrivateRouteWithLayout
+            component={SalesmanCreate}
+            layout={Layout}
+            isAuthenticated={props.isAuthenticated}
+            path="/sales/create"
+        />
+
+        <PrivateRouteWithLayout
+            component={SalesmanAdd}
+            layout={Layout}
+            isAuthenticated={props.isAuthenticated}
+            path="/sales/add/:partyId"
+        />
+
+        <PrivateRouteWithLayout
+            component={DetailSalesman}  //props
+            layout={Layout}          //props
+            isAuthenticated={props.isAuthenticated} // props
+            //isAuthenticated={true}
+            //exact                                   // props
+            path="/salesman/:partyId"                    // props
+        />
+
+
+
 
 
       <Route

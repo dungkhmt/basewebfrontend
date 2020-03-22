@@ -296,7 +296,6 @@ export default function SideBar(props) {
           ""
         )}
 
-        {props.menu.has("MENU_SALES_ROUTE") ? (  
         <div>
           <ListItem button onClick={() => handleListClick(4)}>
             <ListItemIcon>
@@ -307,12 +306,36 @@ export default function SideBar(props) {
           </ListItem>
           <Collapse in={openCollapse[4]} timeout="auto" unmountOnExit>
             <List component="div" disablePadding>
-              <ListItem button className={classes.nested}>
-                <ListItemIcon>
+
+
+
+              <ListItem
+                  button
+                  className={classes.nested}
+                  component={Link}
+                  to={process.env.PUBLIC_URL + "/salesman/list"}>
+                <ListItemIcon >
                   <StarBorder/>
                 </ListItemIcon>
                 <ListItemText primary="Danh sách NVBH"/>
               </ListItem>
+
+
+
+              <ListItem
+                  button
+                  className={classes.nested}
+                  component={Link}
+                  to={process.env.PUBLIC_URL + "/sales/create"}>
+                <ListItemIcon >
+                  <StarBorder/>
+                </ListItemIcon>
+                <ListItemText primary="Tao moi NVBH"/>
+              </ListItem>
+
+
+
+
               <ListItem button className={classes.nested}>
                 <ListItemIcon>
                   <StarBorder/>
@@ -354,9 +377,7 @@ export default function SideBar(props) {
             </List>
           </Collapse>
         </div>
-        ) : (
-            ""
-        )}
+
 
         {props.menu.has("MENU_SALES_ROUTE") ? (  
         <div>
