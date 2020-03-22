@@ -44,12 +44,9 @@ export default function DeliveryTripDetailCreate() {
   const token = useSelector(state => state.auth.token);
   const dispatch = useDispatch();
   const history = useHistory();
-
-  const [selectedQuantity, setSelectedQuantity] = useState({});
-  const [selectedRows, setSelectedRows] = useState([]);
   const [, rerender] = useState([]);
 
-  const [selectedShipmentItemIdSet, setSelectedShipmentItemIdSet] = useState(new Set());
+
 
   const columns = [
     {title: "Mã đơn hàng", field: "shipmentItemId"},
@@ -70,7 +67,7 @@ export default function DeliveryTripDetailCreate() {
           shrink: true,
         }}
         margin="normal"
-        inputProps={selectedShipmentItemIdSet.has(rowData['shipmentItemId']) ? {
+        inputProps={selectedIdSet.has(rowData['shipmentItemId']) ? {
           min: "0",
           max: "" + rowData['quantity'],
           step: "1"
@@ -150,7 +147,8 @@ export default function DeliveryTripDetailCreate() {
     }));
     authPost(dispatch, token, '/delivery-trip/' + deliveryTripId + '/capacity-info', body).then(response => response.json()).then(response => {
       setTripCapacityInfo(response);
-    }).catch(console.log);
+    }).
+      catch(console.log);
   }
 
   useEffect(() => {
@@ -159,9 +157,15 @@ export default function DeliveryTripDetailCreate() {
     getDeliveryTripCapacityInfo(selectedRows, selectedQuantity);
   }, []);
 
-  function handleSelectionChange(selectedRows) {
+
+  const [selectedQuantity,] = useState({});
+  const [selectedRows, setSelectedRows] = useState([]);
+
+  const [selectedIdSet, setSelectedIdSet] = useState(new Set());
+
+  function onSelectedRowsChange(selectedRows) {
     let unSelectedRowIds = new Set(Object.keys(selectedQuantity));
-    let localSelectedQuantity = selectedRows.reduce((map, row) => {
+    selectedRows.reduce((map, row) => {
       if (!map[row['shipmentItemId']]) {
         map[row['shipmentItemId']] = row['quantity'];
       }
@@ -169,10 +173,9 @@ export default function DeliveryTripDetailCreate() {
       return map;
     }, selectedQuantity);
     unSelectedRowIds.forEach(id => delete selectedQuantity[id]);
-    setSelectedQuantity(localSelectedQuantity);
     setSelectedRows(selectedRows);
-    setSelectedShipmentItemIdSet(new Set(Object.keys(localSelectedQuantity)));
-    getDeliveryTripCapacityInfo(selectedRows, localSelectedQuantity);
+    setSelectedIdSet(new Set(Object.keys(selectedQuantity)));
+    getDeliveryTripCapacityInfo(selectedRows, selectedQuantity);
   }
 
   return <div>
@@ -217,7 +220,7 @@ export default function DeliveryTripDetailCreate() {
             options={{search: false, selection: true}}
             data={dataTable}
             icons={tableIcons}
-            onSelectionChange={selectedRows => handleSelectionChange(selectedRows)}
+            onSelectionChange={selectedRows => onSelectedRowsChange(selectedRows)}
           >
           </MaterialTable>
         </CardContent>

@@ -75,7 +75,6 @@ export default function DeliveryTripDetailList() {
         totalWeight: response['totalWeight'],
         totalPallet: response['totalPallet'],
       });
-      setFacilityGeoPoint(response['deliveryPlan']['facility']['postalAddress']['geoPoint']);
     })
   };
 
@@ -128,6 +127,16 @@ export default function DeliveryTripDetailList() {
     authGet(dispatch, token, '/set-driver-to-delivery-trip/' + deliveryTripId + '/' + driverId).then(response => {
       console.log(response);
     }).catch(console.log);
+  }
+
+  function getDistinctLocation() {
+    let locations = {};
+    dataTable.forEach(value => locations[value['locationCode']] = {
+      lat: value['lat'],
+      lng: value['lng'],
+      address: value['address']
+    });
+    return locations;
   }
 
   return <div>
@@ -216,11 +225,12 @@ export default function DeliveryTripDetailList() {
                 post: facilityGeoPoint ? {
                   lat: parseFloat(facilityGeoPoint['latitude']), lng: parseFloat(facilityGeoPoint['longitude'])
                 } : {},
-                items: dataTable[0] ? dataTable.map(value => ({
-                  lat: value['lat'],
-                  lng: value['lng'],
-                  title: value['address']
-                })) : []
+                items: dataTable[0] ?
+                  Object.values(getDistinctLocation()).map(value => ({
+                    lat: value['lat'],
+                    lng: value['lng'],
+                    title: value['address']
+                  })) : []
               }]}
             />
             : ''

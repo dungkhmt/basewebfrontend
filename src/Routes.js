@@ -23,9 +23,9 @@ import ShipmentItemList from "./component/shipment/shipment/ShipmentItemList";
 import VehicleList from "./component/shipment/vehicle/VehicleList";
 import DeliveryTripCreate from "./component/shipment/deliveryplan/deliverytrip/DeliveryTripCreate";
 import DeliveryTripDetailList
-  from "./component/shipment/deliveryplan/deliverytrip/deliverytripdetail/DeliveryTripDetailList";
+    from "./component/shipment/deliveryplan/deliverytrip/deliverytripdetail/DeliveryTripDetailList";
 import DeliveryTripDetailCreate
-  from "./component/shipment/deliveryplan/deliverytrip/deliverytripdetail/DeliveryTripDetailCreate";
+    from "./component/shipment/deliveryplan/deliverytrip/deliverytripdetail/DeliveryTripDetailCreate";
 import ShipmentItemDeliveryPlanList from "./component/shipment/deliveryplan/shipmentitem/ShipmentItemDeliveryPlanList";
 import VehicleDeliveryPlanList from "./component/shipment/deliveryplan/vehicle/VehicleDeliveryPlanList";
 import ShipmentItemCreate from "./component/shipment/shipment/ShipmentItemCreate";
@@ -37,20 +37,25 @@ import SalesmanCheckinRoutesHistory from "./component/salesroutes/salesmanchecki
 import DeliveryTripChart from "./component/shipment/deliveryplan/deliverytrip/DeliveryTripChart";
 import CustomerCreate from "./component/customer/CustomerCreate";
 import CustomerList from "./component/customer/CustomerList";
+<<<<<<< HEAD
 import SalesmanList from "./component/salesman/SalesmanList";
 import DetailSalesman from "./component/salesman/DetailSalesman";
 import SalesmanCreate from "./component/salesman/SalesmanCreate";
 import SalesmanAdd from "./component/salesman/SalesmanAdd";
+=======
+import InventoryOrderList from "./component/inventory/InventoryOrderList";
+import InventoryOrderDetail from "./component/inventory/InventoryOrderDetail";
+>>>>>>> a4624d30b0d644d316cf82b359a020f1eb56c961
 
 
 function Routes(props) {// props nay tu parent transfer vao
-  return (
-    <Switch>
-      <PrivateRouteWithLayout
-        component={Home}
-        layout={Layout}
-        isAuthenticated={props.isAuthenticated}
-        exact
+    return (
+      <Switch>
+          <PrivateRouteWithLayout
+            component={Home}
+            layout={Layout}
+            isAuthenticated={props.isAuthenticated}
+            exact
         path="/"
       />
 
@@ -277,19 +282,26 @@ function Routes(props) {// props nay tu parent transfer vao
 
 
       <PrivateRouteWithLayout
-          component={CustomerCreate}
-          layout={Layout}
-          isAuthenticated={props.isAuthenticated}
-          path="/customer/create"
+        component={CustomerCreate}
+        layout={Layout}
+        isAuthenticated={props.isAuthenticated}
+        path="/customer/create"
       />
 
-      <PrivateRouteWithLayout
-          component={CustomerList}
-          layout={Layout}
-          isAuthenticated={props.isAuthenticated}
-          path="/customer/list"
-      />
+          <PrivateRouteWithLayout
+            component={CustomerList}
+            layout={Layout}
+            isAuthenticated={props.isAuthenticated}
+            path="/customer/list"
+          />
 
+          <PrivateRouteWithLayout
+            component={InventoryOrderList}
+            layout={Layout}
+            isAuthenticated={props.isAuthenticated}
+            exact
+            path="/inventory/order"
+          />
 
       <PrivateRouteWithLayout
           component={SalesmanList}
@@ -335,6 +347,22 @@ function Routes(props) {// props nay tu parent transfer vao
         component={error} // props
         path="/not-found"               // props
       />
+          <PrivateRouteWithLayout
+            component={InventoryOrderDetail}
+            layout={Layout}
+            isAuthenticated={props.isAuthenticated}
+            path="/inventory/order/:orderId"
+          />
+
+
+          <Route
+            component={SignInContainer} // props
+            path="/login"               // props
+          />
+          <Route
+            component={error} // props
+            path="/not-found"               // props
+          />
       <Redirect to="/not-found"/>
     </Switch>
   );
