@@ -5,7 +5,7 @@ import {authGet} from "../../api";
 import {tableIcons} from "../../utils/iconutil";
 import Grid from "@material-ui/core/Grid";
 import Button from "@material-ui/core/Button";
-import {useParams} from "react-router-dom";
+import {Link, useParams} from "react-router-dom";
 
 export default function InventoryOrderDetail() {
 
@@ -50,7 +50,9 @@ export default function InventoryOrderDetail() {
               </Grid>
               <Grid item xs={4}
                     style={{verticalAlign: 'text-bottom', textAlign: 'right', padding: '0px 50px 10px 30px'}}>
-                <Button color={'primary'} variant={'contained'}> Xuất kho </Button> <p/>
+                <Link to={'/inventory/export/' + orderId}>
+                  <Button color={'primary'} variant={'contained'}> Xuất kho </Button>
+                </Link> <p/>
               </Grid>
             </Grid>
           </div>

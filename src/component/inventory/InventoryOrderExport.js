@@ -78,7 +78,7 @@ export default function InventoryOrderExport() {
   const [dataTable, setDataTable] = useState([]);
 
   function getDataTable() {
-    if (selectedFacility) {
+    if (selectedFacility['facilityId']) {
       authGet(dispatch, token, '/get-inventory-order-export/' + orderId + '/' + selectedFacility).then(response => {
         setDataTable(response);
       }).catch(console.log);
@@ -86,7 +86,7 @@ export default function InventoryOrderExport() {
   }
 
   const [facilityList, setFacilityList] = useState([]);
-  const [selectedFacility, setSelectedFacility] = useState();
+  const [selectedFacility, setSelectedFacility] = useState({});
 
   function getAllFacility() {
     authGet(dispatch, token, '/facility/all').then(response => {
