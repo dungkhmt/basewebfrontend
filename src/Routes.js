@@ -37,15 +37,12 @@ import SalesmanCheckinRoutesHistory from "./component/salesroutes/salesmanchecki
 import DeliveryTripChart from "./component/shipment/deliveryplan/deliverytrip/DeliveryTripChart";
 import CustomerCreate from "./component/customer/CustomerCreate";
 import CustomerList from "./component/customer/CustomerList";
-<<<<<<< HEAD
 import SalesmanList from "./component/salesman/SalesmanList";
 import DetailSalesman from "./component/salesman/DetailSalesman";
 import SalesmanCreate from "./component/salesman/SalesmanCreate";
 import SalesmanAdd from "./component/salesman/SalesmanAdd";
-=======
 import InventoryOrderList from "./component/inventory/InventoryOrderList";
 import InventoryOrderDetail from "./component/inventory/InventoryOrderDetail";
->>>>>>> a4624d30b0d644d316cf82b359a020f1eb56c961
 
 
 function Routes(props) {// props nay tu parent transfer vao
