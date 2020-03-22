@@ -296,19 +296,18 @@ export default function SideBar(props) {
           ""
         )}
 
-        <div>
-          <ListItem button onClick={() => handleListClick(4)}>
-            <ListItemIcon>
-              <InboxIcon/>
-            </ListItemIcon>
-            <ListItemText primary="Tuyến bán hàng"/>
-            {openCollapse[4] ? <ExpandLess/> : <ExpandMore/>}
-          </ListItem>
-          <Collapse in={openCollapse[4]} timeout="auto" unmountOnExit>
-            <List component="div" disablePadding>
+        {props.menu.has("MENU_SALES_ROUTE") ? (
+          <div>
+            <ListItem button onClick={() => handleListClick(4)}>
+              <ListItemIcon>
+                <InboxIcon/>
+              </ListItemIcon>
+              <ListItemText primary="Tuyến bán hàng"/>
+              {openCollapse[4] ? <ExpandLess/> : <ExpandMore/>}
+            </ListItem>
+            <Collapse in={openCollapse[4]} timeout="auto" unmountOnExit>
 
-
-
+              <List component="div" disablePadding>
               <ListItem
                   button
                   className={classes.nested}
@@ -330,71 +329,9 @@ export default function SideBar(props) {
                 <ListItemIcon >
                   <StarBorder/>
                 </ListItemIcon>
-                <ListItemText primary="Tao moi NVBH"/>
+                <ListItemText primary="Tạo mới NVBH"/>
               </ListItem>
 
-
-
-
-              <ListItem button className={classes.nested}>
-                <ListItemIcon>
-                  <StarBorder/>
-                </ListItemIcon>
-                <ListItemText primary="Danh sách khách hàng"/>
-              </ListItem>
-
-              <ListItem button className={classes.nested}>
-                <ListItemIcon>
-                  <StarBorder/>
-                </ListItemIcon>
-                <ListItemText primary="Kế hoạch tuyến"/>
-              </ListItem>
-              <ListItem button className={classes.nested}>
-                <ListItemIcon>
-                  <StarBorder/>
-                </ListItemIcon>
-                <ListItemText primary="Cấu hình tuyến"/>
-              </ListItem>
-
-              <ListItem button className={classes.nested}>
-                <ListItemIcon>
-                  <StarBorder/>
-                </ListItemIcon>
-                <ListItemText primary="Chi tiết tuyến"/>
-              </ListItem>
-
-              <ListItem button className={classes.nested}
-              
-                component={Link}
-                to={process.env.PUBLIC_URL + "/salesroutes/salesman-checkin-routes"}
-              >
-                <ListItemIcon>
-                  <StarBorder/>
-                </ListItemIcon>
-                <ListItemText primary="Lịch sử check-in tuyến"/>
-              </ListItem>
-
-            </List>
-          </Collapse>
-        </div>
-
-        {props.menu.has("MENU_SALES_ROUTE") ? (
-          <div>
-            <ListItem button onClick={() => handleListClick(4)}>
-              <ListItemIcon>
-                <InboxIcon/>
-              </ListItemIcon>
-              <ListItemText primary="Tuyến bán hàng"/>
-              {openCollapse[4] ? <ExpandLess/> : <ExpandMore/>}
-            </ListItem>
-            <Collapse in={openCollapse[4]} timeout="auto" unmountOnExit>
-              <List component="div" disablePadding>
-                <ListItem button className={classes.nested}>
-                  <ListItemIcon>
-                    <StarBorder/>
-                  </ListItemIcon>
-                  <ListItemText primary="Danh sách NVBH"/>
-                </ListItem>
                 <ListItem button className={classes.nested}>
                   <ListItemIcon>
                     <StarBorder/>

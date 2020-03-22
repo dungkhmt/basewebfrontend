@@ -37,10 +37,10 @@ function DetailSalesman(props){
     }
 
     const columns = [
-        {title: "Ma khach hang", field: "customerCode"},
-        {title: "Ten khach hang", field: "customerName"},
-        {title: "Dia chi", field: "address"},
-        {title: "Ten nha phan phoi", field: "partyDistritorName"},
+        {title: "Mã Khách hàng", field: "customerCode"},
+        {title: "Tên Khách hàng", field: "customerName"},
+        {title: "Địa chỉ", field: "address"},
+        {title: "Tên nhà phân phối", field: "partyDistritorName"},
         {title: "", render: rowData => <Button color="primary" variant="contained" onClick={() => handleDelete(rowData.customerSalesmanVendorId)}>Xoa</Button> }
     ]
 
@@ -53,11 +53,20 @@ function DetailSalesman(props){
     return (
 
         <div>
+            <Button
+                type="submit"
+                color="primary"
+                variant="contained"
+                component={Link}
+                to={process.env.PUBLIC_URL + "/sales/add/"+partyId}
+            >
+                Thêm mới
+            </Button>
             <MaterialTable
-                title="List Salemans"
+                title="Danh sách cửa hàng và nhà phân phối phụ trách"
                 columns={columns}
                 options={{
-                    filtering: true,
+                    filtering: false,
                     search: false
                 }}
                 data={query =>
@@ -102,15 +111,7 @@ function DetailSalesman(props){
                     console.log("select ",rowData);
                 }}
             />
-            <Button
-                type="submit"
-                color="primary"
-                variant="contained"
-                component={Link}
-                to={process.env.PUBLIC_URL + "/sales/add/"+partyId}
-            >
-                Them moi
-            </Button>
+            
 
 
 

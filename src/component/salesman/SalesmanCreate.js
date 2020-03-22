@@ -146,7 +146,7 @@ function SalesmanCreate (props){
             <Card>
                 <CardContent>
                     <Typography variant="h5" component="h2">
-                        Create User
+                        Tạo mới nhân viên bán hàng
                     </Typography>
                     <form className={classes.root} noValidate autoComplete="off">
                         <div>
@@ -244,7 +244,7 @@ function SalesmanCreate (props){
                         color="primary"
                         onClick={handleSubmit}
                     >
-                        {isRequesting ? <CircularProgress /> : "Save"}
+                        {isRequesting ? <CircularProgress /> : "Lưu"}
                     </Button>
                 </CardActions>
             </Card>
