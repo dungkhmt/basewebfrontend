@@ -126,6 +126,9 @@ function SalesmanAdd(props){
                         alert("Id exits!!");
                     } else if (res.status === 201) {
                         return res.json();
+                    }else if (res.status === 208) {
+                        alert('DUPLICTED');
+                        return res.json();
                     }
                 },
                 error => {
