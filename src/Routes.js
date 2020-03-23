@@ -23,9 +23,9 @@ import ShipmentItemList from "./component/shipment/shipment/ShipmentItemList";
 import VehicleList from "./component/shipment/vehicle/VehicleList";
 import DeliveryTripCreate from "./component/shipment/deliveryplan/deliverytrip/DeliveryTripCreate";
 import DeliveryTripDetailList
-    from "./component/shipment/deliveryplan/deliverytrip/deliverytripdetail/DeliveryTripDetailList";
+  from "./component/shipment/deliveryplan/deliverytrip/deliverytripdetail/DeliveryTripDetailList";
 import DeliveryTripDetailCreate
-    from "./component/shipment/deliveryplan/deliverytrip/deliverytripdetail/DeliveryTripDetailCreate";
+  from "./component/shipment/deliveryplan/deliverytrip/deliverytripdetail/DeliveryTripDetailCreate";
 import ShipmentItemDeliveryPlanList from "./component/shipment/deliveryplan/shipmentitem/ShipmentItemDeliveryPlanList";
 import VehicleDeliveryPlanList from "./component/shipment/deliveryplan/vehicle/VehicleDeliveryPlanList";
 import ShipmentItemCreate from "./component/shipment/shipment/ShipmentItemCreate";
@@ -44,26 +44,27 @@ import SalesmanAdd from "./component/salesman/SalesmanAdd";
 import InventoryOrderList from "./component/inventory/InventoryOrderList";
 import InventoryOrderDetail from "./component/inventory/InventoryOrderDetail";
 import InventoryOrderExport from "./component/inventory/InventoryOrderExport";
+import InventoryList from "./component/inventory/InventoryList";
 
 
 function Routes(props) {// props nay tu parent transfer vao
-    return (
-      <Switch>
-          <PrivateRouteWithLayout
-            component={Home}
-            layout={Layout}
-            isAuthenticated={props.isAuthenticated}
-            exact
-            path="/"
-          />
+  return (
+    <Switch>
+      <PrivateRouteWithLayout
+        component={Home}
+        layout={Layout}
+        isAuthenticated={props.isAuthenticated}
+        exact
+        path="/"
+      />
 
-          <PrivateRouteWithLayout
-            component={UserCreate}  //props
-            layout={Layout}          //props
-            isAuthenticated={props.isAuthenticated} // props
-            //isAuthenticated={true}
-            //exact                                   // props
-            path="/userlogin/create"                    // props
+      <PrivateRouteWithLayout
+        component={UserCreate}  //props
+        layout={Layout}          //props
+        isAuthenticated={props.isAuthenticated} // props
+        //isAuthenticated={true}
+        //exact                                   // props
+        path="/userlogin/create"                    // props
       />
       <PrivateRouteWithLayout
         component={UserList}  //props
@@ -264,76 +265,72 @@ function Routes(props) {// props nay tu parent transfer vao
       />
 
 
-          <PrivateRouteWithLayout
-            component={ProductCreate}
-            layout={Layout}
-            isAuthenticated={props.isAuthenticated}
-            path="/products/create"
-          />
-          <PrivateRouteWithLayout
-            component={ProductList}
-            layout={Layout}
-            isAuthenticated={props.isAuthenticated}
-            path="/products/list"
-          />
+      <PrivateRouteWithLayout
+        component={ProductCreate}
+        layout={Layout}
+        isAuthenticated={props.isAuthenticated}
+        path="/products/create"
+      />
+      <PrivateRouteWithLayout
+        component={ProductList}
+        layout={Layout}
+        isAuthenticated={props.isAuthenticated}
+        path="/products/list"
+      />
 
-
-          <PrivateRouteWithLayout
-            component={CustomerCreate}
-            layout={Layout}
-            isAuthenticated={props.isAuthenticated}
-            path="/customer/create"
-          />
-
-          <PrivateRouteWithLayout
-            component={CustomerList}
-            layout={Layout}
-            isAuthenticated={props.isAuthenticated}
-            path="/customer/list"
-          />
-
-          <PrivateRouteWithLayout
-            component={InventoryOrderList}
-            layout={Layout}
-            isAuthenticated={props.isAuthenticated}
-            exact
-            path="/inventory/order"
-          />
 
       <PrivateRouteWithLayout
-          component={SalesmanList}
-          layout={Layout}
-          isAuthenticated={props.isAuthenticated}
-          path="/salesman/list"
-        />
+        component={CustomerCreate}
+        layout={Layout}
+        isAuthenticated={props.isAuthenticated}
+        path="/customer/create"
+      />
+
+      <PrivateRouteWithLayout
+        component={CustomerList}
+        layout={Layout}
+        isAuthenticated={props.isAuthenticated}
+        path="/customer/list"
+      />
+
+      <PrivateRouteWithLayout
+        component={InventoryOrderList}
+        layout={Layout}
+        isAuthenticated={props.isAuthenticated}
+        exact
+        path="/inventory/order"
+      />
+
+      <PrivateRouteWithLayout
+        component={SalesmanList}
+        layout={Layout}
+        isAuthenticated={props.isAuthenticated}
+        path="/salesman/list"
+      />
 
 
+      <PrivateRouteWithLayout
+        component={SalesmanCreate}
+        layout={Layout}
+        isAuthenticated={props.isAuthenticated}
+        path="/sales/create"
+      />
 
-        <PrivateRouteWithLayout
-            component={SalesmanCreate}
-            layout={Layout}
-            isAuthenticated={props.isAuthenticated}
-            path="/sales/create"
-        />
+      <PrivateRouteWithLayout
+        component={SalesmanAdd}
+        layout={Layout}
+        isAuthenticated={props.isAuthenticated}
+        path="/sales/add/:partyId"
+      />
 
-        <PrivateRouteWithLayout
-            component={SalesmanAdd}
-            layout={Layout}
-            isAuthenticated={props.isAuthenticated}
-            path="/sales/add/:partyId"
-        />
-
-        <PrivateRouteWithLayout
-            component={DetailSalesman}  //props
-            layout={Layout}          //props
-            isAuthenticated={props.isAuthenticated} // props
-            //isAuthenticated={true}
-            //exact                                   // props
-            path="/salesman/:partyId"                    // props
-        />
-
-
-
+      <PrivateRouteWithLayout
+        component={DetailSalesman}  //props
+        layout={Layout}          //props
+        isAuthenticated={props.isAuthenticated} // props
+        //isAuthenticated={true}
+        //exact                                   // props
+        path="/salesman/:partyId"                    // props
+      />
 
 
       <Route
@@ -344,31 +341,38 @@ function Routes(props) {// props nay tu parent transfer vao
         component={error} // props
         path="/not-found"               // props
       />
-          <PrivateRouteWithLayout
-            component={InventoryOrderDetail}
-            layout={Layout}
-            isAuthenticated={props.isAuthenticated}
-            path="/inventory/order/:orderId"
-          />
+      <PrivateRouteWithLayout
+        component={InventoryOrderDetail}
+        layout={Layout}
+        isAuthenticated={props.isAuthenticated}
+        path="/inventory/order/:orderId"
+      />
 
-          <PrivateRouteWithLayout
-            component={InventoryOrderExport}
-            layout={Layout}
-            isAuthenticated={props.isAuthenticated}
-            path="/inventory/export/:orderId"
-          />
+      <PrivateRouteWithLayout
+        component={InventoryOrderExport}
+        layout={Layout}
+        isAuthenticated={props.isAuthenticated}
+        path="/inventory/export/:orderId"
+      />
+
+      <PrivateRouteWithLayout
+        component={InventoryList}
+        layout={Layout}
+        isAuthenticated={props.isAuthenticated}
+        path="/inventory/list"
+      />
 
 
-          <Route
-            component={SignInContainer} // props
-            path="/login"               // props
-          />
-          <Route
-            component={error} // props
-            path="/not-found"               // props
-          />
-          <Redirect to="/not-found"/>
-      </Switch>
+      <Route
+        component={SignInContainer} // props
+        path="/login"               // props
+      />
+      <Route
+        component={error} // props
+        path="/not-found"               // props
+      />
+      <Redirect to="/not-found"/>
+    </Switch>
   );
 }
 
