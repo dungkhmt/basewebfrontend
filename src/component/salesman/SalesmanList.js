@@ -14,9 +14,9 @@ function SalesmanList(props) {
 
 
     const columns = [
-        {title: "Ma NVBH", field:"partyId", render: rowData => <Link to={"/salesman/"+rowData.partyId}>{rowData.partyId}</Link>},
-        {title: "Ten NVBH", field:"name"},
-        {title: "TK Dang Nhap", field:"userName"}
+        {title: "Mã NVBH", field:"partyId", render: rowData => <Link to={"/salesman/"+rowData.partyId}>{rowData.partyId}</Link>},
+        {title: "Tên NVBH", field:"name"},
+        {title: "TK đăng nhập", field:"userName"}
     ]
 
 
