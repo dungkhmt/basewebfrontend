@@ -1,6 +1,5 @@
 import React, {useEffect, useState} from "react";
 import SimpleMap from "./SimpleMap";
-import {authGet} from "../../api";
 import {useDispatch, useSelector} from "react-redux";
 
 function getRandomColor() {
@@ -50,7 +49,7 @@ export default function Directions(props) {
     routes.forEach(route => {
       let post = route['post'];
       let postMarker = new window.google.maps.Marker({
-        position: {lat: post['lat'], lng: post['lng']},
+        position: {lat: parseFloat(post['lat']), lng: parseFloat(post['lng'])},
         map: map,
         title: post['title'] ? post['title'] : '',
         label: {
@@ -63,12 +62,17 @@ export default function Directions(props) {
       let items = route['items'];
       let itemId = 0;
       items.forEach(item => {
+        if (!item['lat'] || !item['lng']) {
+          return;
+        }
         let marker = new window.google.maps.Marker({
-          position: {lat: item['lat'], lng: item['lng']},
+          position: {lat: parseFloat(item['lat']), lng: parseFloat(item['lng'])},
           map: map,
           title: item['title'] ? item['title'] : '',
           icon: {
-            url: "http://chart.googleapis.com/chart?chst=d_map_spin&chld=0.5|0|" + route['color'].substring(1) + "|1|_|.",
+            url: "http://chart.googleapis.com/chart?chst=d_map_spin&chld=0.5|0|" +
+              route['color'].substring(1) +
+              "|1|_|.",
             labelOrigin: new window.google.maps.Point(9, 9)
           },
           label: {
@@ -79,7 +83,8 @@ export default function Directions(props) {
         itemId += 1;
         bounds.extend(marker.position);
         if (item['infoWindow']) {
-          marker.addListener('click', () => new window.google.maps.InfoWindow({content: item['infoWindow']}).open(map, marker));
+          marker.addListener('click',
+            () => new window.google.maps.InfoWindow({content: item['infoWindow']}).open(map, marker));
         }
       })
     });
@@ -96,7 +101,7 @@ export default function Directions(props) {
       let routeColor = route['color'];
 
       const wayPoints = [];
-      items.forEach(item => wayPoints.push({location: item['lat'] + ',' + item['lng'], stopover: true}))
+      items.forEach(item => wayPoints.push({location: item['lat'] + ',' + item['lng'], stopover: true}));
 
       directionsService.route({
           origin: postLatLng,
