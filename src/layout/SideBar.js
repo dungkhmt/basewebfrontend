@@ -838,7 +838,11 @@ export default function SideBar(props) {
             </ListItem>
             <Collapse in={openCollapse[15]} timeout="auto" unmountOnExit>
               <List component="div" disablePadding>
-                <ListItem button className={classes.nested}>
+                <ListItem
+                  button
+                  className={classes.nested}
+                  component={Link}
+                  to={process.env.PUBLIC_URL + "/sale-reports-by-customer"}>
                   <ListItemIcon>
                     <StarBorder/>
                   </ListItemIcon>
@@ -850,19 +854,23 @@ export default function SideBar(props) {
                   </ListItemIcon>
                   <ListItemText primary="Doanh số theo nhà phân phối"/>
                 </ListItem>
-                
+
                 <ListItem button className={classes.nested}>
                   <ListItemIcon>
                     <StarBorder/>
                   </ListItemIcon>
                   <ListItemText primary="Doanh số theo nhân viên bán hàng"/>
                 </ListItem>
-                <ListItem button className={classes.nested}>
+                <ListItem
+                  button
+                  className={classes.nested}
+                  component={Link}
+                  to={process.env.PUBLIC_URL + "/sale-reports-by-product"}>
                   <ListItemIcon>
                     <StarBorder/>
                   </ListItemIcon>
                   <ListItemText primary="Doanh số theo sản phẩm"/>
-                </ListItem>          
+                </ListItem>
 
               </List>
             </Collapse>
@@ -894,7 +902,7 @@ export default function SideBar(props) {
                   </ListItemIcon>
                   <ListItemText primary="Xuất kho"/>
                 </ListItem>
-                
+
                 <ListItem button className={classes.nested}>
                   <ListItemIcon>
                     <StarBorder/>
@@ -932,7 +940,7 @@ export default function SideBar(props) {
                   </ListItemIcon>
                   <ListItemText primary="Báo cáo chuyến theo KH"/>
                 </ListItem>
-                
+
                 <ListItem button className={classes.nested}>
                   <ListItemIcon>
                     <StarBorder/>

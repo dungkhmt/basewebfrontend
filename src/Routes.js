@@ -23,9 +23,9 @@ import ShipmentItemList from "./component/shipment/shipment/ShipmentItemList";
 import VehicleList from "./component/shipment/vehicle/VehicleList";
 import DeliveryTripCreate from "./component/shipment/deliveryplan/deliverytrip/DeliveryTripCreate";
 import DeliveryTripDetailList
-  from "./component/shipment/deliveryplan/deliverytrip/deliverytripdetail/DeliveryTripDetailList";
+    from "./component/shipment/deliveryplan/deliverytrip/deliverytripdetail/DeliveryTripDetailList";
 import DeliveryTripDetailCreate
-  from "./component/shipment/deliveryplan/deliverytrip/deliverytripdetail/DeliveryTripDetailCreate";
+    from "./component/shipment/deliveryplan/deliverytrip/deliverytripdetail/DeliveryTripDetailCreate";
 import ShipmentItemDeliveryPlanList from "./component/shipment/deliveryplan/shipmentitem/ShipmentItemDeliveryPlanList";
 import VehicleDeliveryPlanList from "./component/shipment/deliveryplan/vehicle/VehicleDeliveryPlanList";
 import ShipmentItemCreate from "./component/shipment/shipment/ShipmentItemCreate";
@@ -45,6 +45,7 @@ import InventoryOrderList from "./component/inventory/InventoryOrderList";
 import InventoryOrderDetail from "./component/inventory/InventoryOrderDetail";
 import InventoryOrderExport from "./component/inventory/InventoryOrderExport";
 import InventoryList from "./component/inventory/InventoryList";
+import {SaleReportByPartyCustomer, SaleReportByProduct} from "./component/report/SaleReport";
 
 
 function Routes(props) {// props nay tu parent transfer vao
@@ -348,29 +349,43 @@ function Routes(props) {// props nay tu parent transfer vao
         path="/inventory/order/:orderId"
       />
 
-      <PrivateRouteWithLayout
-        component={InventoryOrderExport}
-        layout={Layout}
-        isAuthenticated={props.isAuthenticated}
-        path="/inventory/export/:orderId"
-      />
+        <PrivateRouteWithLayout
+          component={InventoryOrderExport}
+          layout={Layout}
+          isAuthenticated={props.isAuthenticated}
+          path="/inventory/export/:orderId"
+        />
 
-      <PrivateRouteWithLayout
-        component={InventoryList}
-        layout={Layout}
-        isAuthenticated={props.isAuthenticated}
-        path="/inventory/list"
-      />
+        <PrivateRouteWithLayout
+          component={InventoryList}
+          layout={Layout}
+          isAuthenticated={props.isAuthenticated}
+          path="/inventory/list"
+        />
+
+        <PrivateRouteWithLayout
+          component={SaleReportByProduct}
+          layout={Layout}
+          isAuthenticated={props.isAuthenticated}
+          path="/sale-reports-by-product"
+        />
+
+        <PrivateRouteWithLayout
+          component={SaleReportByPartyCustomer}
+          layout={Layout}
+          isAuthenticated={props.isAuthenticated}
+          path="/sale-reports-by-customer"
+        />
 
 
-      <Route
-        component={SignInContainer} // props
-        path="/login"               // props
-      />
-      <Route
-        component={error} // props
-        path="/not-found"               // props
-      />
+        <Route
+          component={SignInContainer} // props
+          path="/login"               // props
+        />
+        <Route
+          component={error} // props
+          path="/not-found"               // props
+        />
       <Redirect to="/not-found"/>
     </Switch>
   );
