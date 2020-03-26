@@ -1,54 +1,77 @@
-import React, {useEffect, useState} from "react";
-import {useDispatch, useSelector} from "react-redux";
-import MaterialTable, {MTableToolbar} from "material-table";
-import {authGet} from "../../../../api";
-import {toFormattedDateTime} from "../../../../utils/dateutils";
-import Button from "@material-ui/core/Button";
-import DeleteIcon from '@material-ui/icons/Delete';
-import {tableIcons} from "../../../../utils/iconutil";
-import {Link, useParams} from "react-router-dom";
-import ListIcon from '@material-ui/icons/List';
-import TableChartIcon from '@material-ui/icons/TableChart';
-import AddIcon from '@material-ui/icons/Add';
-import InsertChartIcon from '@material-ui/icons/InsertChart';
-import ArrowBackIosIcon from '@material-ui/icons/ArrowBackIos';
+import { Box, Button, Grid, IconButton, Paper, Table, Typography } from "@material-ui/core";
 import CircularProgress from "@material-ui/core/CircularProgress";
-
+import { makeStyles } from "@material-ui/core/styles";
+import TableBody from "@material-ui/core/TableBody";
+import TableCell from "@material-ui/core/TableCell";
+import TableRow from "@material-ui/core/TableRow";
+import { mdiArrowLeft, mdiCancel, mdiChartBar, mdiDeveloperBoard, mdiFileExcel, mdiReceipt, mdiRobotIndustrial, mdiTruckFast } from "@mdi/js";
+import Icon from "@mdi/react";
+import MaterialTable from "material-table";
+import React, { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { Link, useHistory, useParams } from "react-router-dom";
+import { authGet } from "../../../../api";
+import { toFormattedDateTime } from "../../../../utils/dateutils";
+import { tableIcons } from "../../../../utils/iconutil";
+const useStyles = makeStyles(theme => ({
+  root: {
+    flexGrow: 1
+  },
+  paper: {
+    padding: theme.spacing(2)
+  },
+  table: {
+    minWidth: "50%",
+    maxWidth: "80%"
+  }
+}));
 export default function DeliveryTripList() {
+  const classes = useStyles();
+  const history = useHistory();
   const dispatch = useDispatch();
   const token = useSelector(state => state.auth.token);
   const columns = [
-    {title: "Thứ tự lời giải", field: "deliveryPlanSolutionSeqId"},
+    { title: "Thứ tự lời giải", field: "deliveryPlanSolutionSeqId" },
     {
-      title: "Mã chuyến giao", field: "deliveryTripId",
-      render: rowData => <Link to={'/delivery-trip/' + rowData['deliveryTripId']}>{rowData['deliveryTripId']}</Link>
+      title: "Mã chuyến giao",
+      field: "deliveryTripId",
+      render: rowData => (
+        <Link to={"/delivery-trip/" + rowData["deliveryTripId"]}>
+          {rowData["deliveryTripId"]}
+        </Link>
+      )
     },
-    {title: "Ngày thực hiện", field: "executeDate", type: 'date'},
-    {title: "Tổng khoảng cách", field: "totalDistance"},
-    {title: "Tổng khối lượng", field: "totalWeight"},
-    {title: "Tổng số pallet", field: "totalPallet"},
-    {title: "Mã xe", field: "vehicleId"},
-    {title: "Tải trọng tối đa của xe", field: "maxVehicleCapacity"},
-    {title: "Mã tài xế", field: "driverId"},
+    { title: "Ngày thực hiện", field: "executeDate", type: "date" },
+    { title: "Tổng khoảng cách", field: "totalDistance" },
+    { title: "Tổng khối lượng", field: "totalWeight" },
+    { title: "Tổng số pallet", field: "totalPallet" },
+    { title: "Mã xe", field: "vehicleId" },
+    { title: "Tải trọng tối đa của xe", field: "maxVehicleCapacity" },
+    { title: "Mã tài xế", field: "driverId" }
   ];
 
-  const {deliveryPlanId} = useParams();
+  const { deliveryPlanId } = useParams();
 
   const [deliveryPlan, setDeliveryPlan] = useState(null);
 
   const getDeliveryPlanInfo = () => {
-    authGet(dispatch, token, '/delivery-plan/' + deliveryPlanId).then(response => setDeliveryPlan({
-      deliveryPlanId,
-      deliveryPlanDate: toFormattedDateTime(response['deliveryDate']),
-      description: response['description'],
-      createdByUserLoginId: response['createdByUserLoginId']
-    }))
+    authGet(dispatch, token, "/delivery-plan/" + deliveryPlanId).then(
+      response =>
+        setDeliveryPlan({
+          deliveryPlanId,
+          deliveryPlanDate: toFormattedDateTime(response["deliveryDate"]),
+          description: response["description"],
+          createdByUserLoginId: response["createdByUserLoginId"]
+        })
+    );
   };
 
   const [dataTable, setDataTable] = useState([]);
 
   function getDataTable() {
-    authGet(dispatch, token, '/delivery-trip/' + deliveryPlanId + '/all').then(response => setDataTable(response)).catch(console.log);
+    authGet(dispatch, token, "/delivery-trip/" + deliveryPlanId + "/all")
+      .then(response => setDataTable(response))
+      .catch(console.log);
   }
 
   const [solveWaiting, setSolveWaiting] = useState(false);
@@ -60,63 +83,190 @@ export default function DeliveryTripList() {
 
   function handleSolve() {
     setSolveWaiting(true);
-    authGet(dispatch, token, '/solve/' + deliveryPlanId).then(response => {
-      if (!response) {
-        alert('Đã có lỗi xảy ra...');
-      }
-      setSolveWaiting(false);
-      window.location.reload();
-    }).catch(console.log);
+    authGet(dispatch, token, "/solve/" + deliveryPlanId)
+      .then(response => {
+        if (!response) {
+          alert("Đã có lỗi xảy ra...");
+        }
+        setSolveWaiting(false);
+        window.location.reload();
+      })
+      .catch(console.log);
   }
 
-  return <div>
-    <Link to={'/delivery-plan-list'}>
-      <Button variant={'outlined'} startIcon={<ArrowBackIosIcon/>}>
-        Back</Button>
-    </Link>
+  return (
+    <div>
+      <Grid container spacing={3}>
+        <Grid item xs={12}>
+          <Paper className={classes.paper}>
+            <Typography variant="h5" component="h2" align="left">
+              Chi tiết đợt giao hàng {deliveryPlanId}
+              <IconButton
+                size="small"
+                style={{ float: "left" }}
+                onClick={() => history.push("/delivery-plan-list")}
+              >
+                <Icon
+                  path={mdiArrowLeft}
+                  title="Danh sách đợt giao hàng"
+                  size={1}
+                />
+              </IconButton>
+              <IconButton
+                style={{ float: "right" }}
+                //onClick={() => handlePopup(true)}
 
-    <MaterialTable
-      title={'Chi tiết đợt giao hàng'}
-      columns={columns}
-      options={{search: false}}
-      components={{
-        Toolbar: props => (
-          <div>
-            <MTableToolbar {...props} />
-            <div>
-              <div style={{padding: '0px 30px'}}>
-                <b>Mã đợt giao hàng: </b> {deliveryPlanId} <p/>
-                <b>Ngày tạo: </b> {deliveryPlan === null ? '' : deliveryPlan['deliveryPlanDate']} <p/>
-                <b>Mô tả: </b> {deliveryPlan === null ? '' : deliveryPlan['description']}
-              </div>
-            </div>
-          </div>
-        )
-      }}
-      data={dataTable}
-      icons={tableIcons}
-    >
-    </MaterialTable>
-    <Link to={'/create-delivery-trip/' + deliveryPlanId}>
-      <Button color={'primary'} variant={'contained'} startIcon={<AddIcon/>}> Thêm mới </Button> <p/>
-    </Link>
-    <Link to={'/vehicle-delivery-plan/' + deliveryPlanId + '/list'}>
-      <Button color={'primary'} variant={'contained'} startIcon={<ListIcon/>}> Danh sách xe </Button>
-    </Link>
-    <Link to={'/shipment-item-delivery-plan/' + deliveryPlanId + '/list'}>
-      <Button color={'primary'} variant={'contained'} startIcon={<ListIcon/>}> Danh sách đơn hàng </Button> <p/>
-    </Link>
-    <Button color={'default'} variant={'contained'} startIcon={<TableChartIcon/>}> Xuất excel </Button><p/>
-    <Link to={'/delivery-trip-chart/' + deliveryPlanId}>
-      <Button color={'default'} variant={'contained'} startIcon={<InsertChartIcon/>}> Biểu đồ các chuyến </Button>
-      <p/>
-    </Link>
-    <Button color={'default'} variant={'contained'}> DS đơn hàng chưa được xếp chuyến </Button> <p/>
-    {
-      solveWaiting ? <CircularProgress color={'secondary'}/> :
-        <Button color={'default'} variant={'contained'} onClick={() => handleSolve()}>
-          Tự động xếp chuyến còn lại </Button>
-    } <p/>
-    <Button color={'secondary'} variant={'contained'} startIcon={<DeleteIcon/>}> Hủy chuyến </Button> <p/>
-  </div>
+                component="span"
+              >
+                <Icon path={mdiTruckFast} title="Danh sách xe" size={1} />
+              </IconButton>
+              <IconButton
+                style={{ float: "right" }}
+                onClick={() =>
+                  history.push(
+                    "/shipment-item-delivery-plan/" + deliveryPlanId + "/list"
+                  )
+                }
+                component="span"
+              >
+                <Icon
+                  path={mdiReceipt}
+                  title="Danh sách đơn hàng"
+                  size={1}
+                  color="blue"
+                />
+              </IconButton>
+              <IconButton
+                style={{ float: "right" }}
+                //onClick={() => handlePopup(true)}
+                aria-label=""
+                component="span"
+              >
+                <Icon
+                  path={mdiFileExcel}
+                  title="Xuất excel"
+                  size={1}
+                  color="green"
+                />
+              </IconButton>
+              <IconButton
+                style={{ float: "right" }}
+                onClick={() =>
+                  history.push("/delivery-trip-chart/" + deliveryPlanId)
+                }
+                component="span"
+              >
+                <Icon
+                  path={mdiChartBar}
+                  title="Biểu đồ các chuyến"
+                  size={1}
+                  color="blue"
+                />
+              </IconButton>
+              <IconButton
+                style={{ float: "right" }}
+                //onClick={() => handlePopup(true)}
+
+                component="span"
+              >
+                <Icon
+                  path={mdiDeveloperBoard}
+                  title="DS đơn hàng chưa được xếp chuyến"
+                  size={1}
+                  color="blue"
+                />
+              </IconButton>
+              <IconButton
+                style={{ float: "right" }}
+                onClick={() => handleSolve()}
+                aria-label="Tự động xếp chuyến còn lại"
+                component="span"
+              >
+                {solveWaiting ? (
+                  <CircularProgress color={"secondary"} />
+                ) : (
+                  <Icon
+                    path={mdiRobotIndustrial}
+                    title="Tự động xếp chuyến còn lại"
+                    size={1}
+                    color="green"
+                  />
+                )}
+              </IconButton>
+              <IconButton
+                style={{ float: "right" }}
+                //onClick={() => handlePopup(true)}
+
+                component="span"
+              >
+                <Icon
+                  path={mdiCancel}
+                  title="Hủy chuyến"
+                  size={1}
+                  color="red"
+                />
+              </IconButton>
+            </Typography>
+            <Grid container spacing={3}>
+              <Grid item xs={6}>
+                <Table className={classes.table} aria-label="simple table">
+                  <TableBody>
+                    <TableRow key="description">
+                      <TableCell align="center">
+                        <Box fontWeight="fontWeightBold" m={1}>
+                          Mô tả
+                        </Box>
+                      </TableCell>
+                      <TableCell align="center">
+                        {deliveryPlan === null
+                          ? ""
+                          : deliveryPlan["description"]}
+                      </TableCell>
+                    </TableRow>
+                  </TableBody>
+                </Table>
+              </Grid>
+              <Grid item xs={6}>
+                <Table className={classes.table} aria-label="simple table">
+                  <TableBody>
+                    <TableRow key="deliveryPlanDate">
+                      <TableCell align="center">
+                        <Box fontWeight="fontWeightBold" m={1}>
+                          Ngày tạo
+                        </Box>
+                      </TableCell>
+                      <TableCell align="center">
+                        {deliveryPlan === null
+                          ? ""
+                          : deliveryPlan["deliveryPlanDate"]}
+                      </TableCell>
+                    </TableRow>
+                  </TableBody>
+                </Table>
+              </Grid>
+            </Grid>
+          </Paper>
+        </Grid>
+        <Grid item xs={12}>
+          <Button
+            style={{ float: "right" }}
+            color="primary"
+            variant="contained"
+            onClick={() => history.push("/create-delivery-trip")}
+          >
+            Tạo mới chuyến
+          </Button>
+        </Grid>
+        <Grid item xs={12}>
+          <MaterialTable
+            title={"Danh sách chuyến giao"}
+            columns={columns}
+            options={{ search: false }}
+            data={dataTable}
+            icons={tableIcons}
+          ></MaterialTable>
+        </Grid>
+      </Grid>
+    </div>
+  );
 }
