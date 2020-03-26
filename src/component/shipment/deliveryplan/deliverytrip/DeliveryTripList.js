@@ -1,18 +1,28 @@
-import { Box, Button, Grid, IconButton, Paper, Table, Typography } from "@material-ui/core";
+import {Box, Button, Grid, IconButton, Paper, Table, Typography} from "@material-ui/core";
 import CircularProgress from "@material-ui/core/CircularProgress";
-import { makeStyles } from "@material-ui/core/styles";
+import {makeStyles} from "@material-ui/core/styles";
 import TableBody from "@material-ui/core/TableBody";
 import TableCell from "@material-ui/core/TableCell";
 import TableRow from "@material-ui/core/TableRow";
-import { mdiArrowLeft, mdiCancel, mdiChartBar, mdiDeveloperBoard, mdiFileExcel, mdiReceipt, mdiRobotIndustrial, mdiTruckFast } from "@mdi/js";
+import {
+  mdiArrowLeft,
+  mdiCancel,
+  mdiChartBar,
+  mdiDeveloperBoard,
+  mdiFileExcel,
+  mdiReceipt,
+  mdiRobotIndustrial,
+  mdiTruckFast
+} from "@mdi/js";
 import Icon from "@mdi/react";
 import MaterialTable from "material-table";
-import React, { useEffect, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { Link, useHistory, useParams } from "react-router-dom";
-import { authGet } from "../../../../api";
-import { toFormattedDateTime } from "../../../../utils/dateutils";
-import { tableIcons } from "../../../../utils/iconutil";
+import React, {useEffect, useState} from "react";
+import {useDispatch, useSelector} from "react-redux";
+import {Link, useHistory, useParams} from "react-router-dom";
+import {authGet} from "../../../../api";
+import {toFormattedDateTime} from "../../../../utils/dateutils";
+import {tableIcons} from "../../../../utils/iconutil";
+
 const useStyles = makeStyles(theme => ({
   root: {
     flexGrow: 1
@@ -31,7 +41,7 @@ export default function DeliveryTripList() {
   const dispatch = useDispatch();
   const token = useSelector(state => state.auth.token);
   const columns = [
-    { title: "Thứ tự lời giải", field: "deliveryPlanSolutionSeqId" },
+    {title: "Thứ tự lời giải", field: "deliveryPlanSolutionSeqId"},
     {
       title: "Mã chuyến giao",
       field: "deliveryTripId",
@@ -41,16 +51,16 @@ export default function DeliveryTripList() {
         </Link>
       )
     },
-    { title: "Ngày thực hiện", field: "executeDate", type: "date" },
-    { title: "Tổng khoảng cách", field: "totalDistance" },
-    { title: "Tổng khối lượng", field: "totalWeight" },
-    { title: "Tổng số pallet", field: "totalPallet" },
-    { title: "Mã xe", field: "vehicleId" },
-    { title: "Tải trọng tối đa của xe", field: "maxVehicleCapacity" },
-    { title: "Mã tài xế", field: "driverId" }
+    {title: "Ngày thực hiện", field: "executeDate", type: "date"},
+    {title: "Tổng khoảng cách", field: "totalDistance"},
+    {title: "Tổng khối lượng", field: "totalWeight"},
+    {title: "Tổng số pallet", field: "totalPallet"},
+    {title: "Mã xe", field: "vehicleId"},
+    {title: "Tải trọng tối đa của xe", field: "maxVehicleCapacity"},
+    {title: "Mã tài xế", field: "driverId"}
   ];
 
-  const { deliveryPlanId } = useParams();
+  const {deliveryPlanId} = useParams();
 
   const [deliveryPlan, setDeliveryPlan] = useState(null);
 
@@ -69,9 +79,9 @@ export default function DeliveryTripList() {
   const [dataTable, setDataTable] = useState([]);
 
   function getDataTable() {
-    authGet(dispatch, token, "/delivery-trip/" + deliveryPlanId + "/all")
-      .then(response => setDataTable(response))
-      .catch(console.log);
+    authGet(dispatch, token, "/delivery-trip/" + deliveryPlanId + "/all").
+      then(response => setDataTable(response)).
+      catch(console.log);
   }
 
   const [solveWaiting, setSolveWaiting] = useState(false);
@@ -83,15 +93,13 @@ export default function DeliveryTripList() {
 
   function handleSolve() {
     setSolveWaiting(true);
-    authGet(dispatch, token, "/solve/" + deliveryPlanId)
-      .then(response => {
-        if (!response) {
-          alert("Đã có lỗi xảy ra...");
-        }
-        setSolveWaiting(false);
-        window.location.reload();
-      })
-      .catch(console.log);
+    authGet(dispatch, token, "/solve/" + deliveryPlanId).then(response => {
+      if (!response) {
+        alert("Đã có lỗi xảy ra...");
+      }
+      setSolveWaiting(false);
+      window.location.reload();
+    }).catch(console.log);
   }
 
   return (
@@ -103,7 +111,7 @@ export default function DeliveryTripList() {
               Chi tiết đợt giao hàng {deliveryPlanId}
               <IconButton
                 size="small"
-                style={{ float: "left" }}
+                style={{float: "left"}}
                 onClick={() => history.push("/delivery-plan-list")}
               >
                 <Icon
@@ -113,15 +121,19 @@ export default function DeliveryTripList() {
                 />
               </IconButton>
               <IconButton
-                style={{ float: "right" }}
+                style={{float: "right"}}
                 //onClick={() => handlePopup(true)}
-
+                onClick={() =>
+                  history.push(
+                    '/vehicle-delivery-plan/' + deliveryPlanId + '/list'
+                  )
+                }
                 component="span"
               >
-                <Icon path={mdiTruckFast} title="Danh sách xe" size={1} />
+                <Icon path={mdiTruckFast} title="Danh sách xe" size={1}/>
               </IconButton>
               <IconButton
-                style={{ float: "right" }}
+                style={{float: "right"}}
                 onClick={() =>
                   history.push(
                     "/shipment-item-delivery-plan/" + deliveryPlanId + "/list"
@@ -137,7 +149,7 @@ export default function DeliveryTripList() {
                 />
               </IconButton>
               <IconButton
-                style={{ float: "right" }}
+                style={{float: "right"}}
                 //onClick={() => handlePopup(true)}
                 aria-label=""
                 component="span"
@@ -150,7 +162,7 @@ export default function DeliveryTripList() {
                 />
               </IconButton>
               <IconButton
-                style={{ float: "right" }}
+                style={{float: "right"}}
                 onClick={() =>
                   history.push("/delivery-trip-chart/" + deliveryPlanId)
                 }
@@ -164,7 +176,7 @@ export default function DeliveryTripList() {
                 />
               </IconButton>
               <IconButton
-                style={{ float: "right" }}
+                style={{float: "right"}}
                 //onClick={() => handlePopup(true)}
 
                 component="span"
@@ -177,13 +189,13 @@ export default function DeliveryTripList() {
                 />
               </IconButton>
               <IconButton
-                style={{ float: "right" }}
+                style={{float: "right"}}
                 onClick={() => handleSolve()}
                 aria-label="Tự động xếp chuyến còn lại"
                 component="span"
               >
                 {solveWaiting ? (
-                  <CircularProgress color={"secondary"} />
+                  <CircularProgress color={"secondary"}/>
                 ) : (
                   <Icon
                     path={mdiRobotIndustrial}
@@ -194,7 +206,7 @@ export default function DeliveryTripList() {
                 )}
               </IconButton>
               <IconButton
-                style={{ float: "right" }}
+                style={{float: "right"}}
                 //onClick={() => handlePopup(true)}
 
                 component="span"
@@ -249,10 +261,10 @@ export default function DeliveryTripList() {
         </Grid>
         <Grid item xs={12}>
           <Button
-            style={{ float: "right" }}
+            style={{float: "right"}}
             color="primary"
             variant="contained"
-            onClick={() => history.push("/create-delivery-trip")}
+            onClick={() => history.push("/create-delivery-trip/" + deliveryPlanId)}
           >
             Tạo mới chuyến
           </Button>
@@ -261,10 +273,10 @@ export default function DeliveryTripList() {
           <MaterialTable
             title={"Danh sách chuyến giao"}
             columns={columns}
-            options={{ search: false }}
+            options={{search: false}}
             data={dataTable}
             icons={tableIcons}
-          ></MaterialTable>
+          />
         </Grid>
       </Grid>
     </div>
