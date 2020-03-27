@@ -52,10 +52,6 @@ export default function Directions(props) {
         position: {lat: parseFloat(post['lat']), lng: parseFloat(post['lng'])},
         map: map,
         title: post['title'] ? post['title'] : '',
-        label: {
-          color: 'white',
-          text: post['label']
-        }
       });
       bounds.extend(postMarker.position);
 

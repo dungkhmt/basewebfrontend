@@ -132,11 +132,19 @@ export default function DeliveryTripDetailList() {
 
   function getDistinctLocation() {
     let locations = {};
-    dataTable.forEach(value => locations[value['locationCode']] = {
-      lat: value['lat'],
-      lng: value['lng'],
-      address: value['address']
+    dataTable.forEach(value => {
+      if (!locations[value['locationCode']]) {
+        locations[value['locationCode']] = {
+          lat: value['lat'],
+          lng: value['lng'],
+          address: value['address'],
+          seq: value['sequence']
+        }
+      }
     });
+    locations = Object.values(locations).sort((a, b) => a['seq'] - b['seq']);
+    console.log(dataTable);
+    console.log(locations);
     return locations;
   }
 
