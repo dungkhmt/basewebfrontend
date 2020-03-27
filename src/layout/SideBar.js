@@ -838,12 +838,20 @@ export default function SideBar(props) {
             </ListItem>
             <Collapse in={openCollapse[15]} timeout="auto" unmountOnExit>
               <List component="div" disablePadding>
+              <ListItem button className={classes.nested}>
+                  <ListItemIcon>
+                    <StarBorder/>
+                  </ListItemIcon>
+                  <ListItemText primary="Doanh số theo ngày"/>
+                </ListItem>
+                
                 <ListItem button className={classes.nested}>
                   <ListItemIcon>
                     <StarBorder/>
                   </ListItemIcon>
                   <ListItemText primary="Doanh số theo khách hàng"/>
                 </ListItem>
+
                 <ListItem button className={classes.nested}>
                   <ListItemIcon>
                     <StarBorder/>
