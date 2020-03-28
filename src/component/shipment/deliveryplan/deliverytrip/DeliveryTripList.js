@@ -55,7 +55,7 @@ export default function DeliveryTripList() {
     {
       title: "Tổng khoảng cách",
       field: "totalDistance",
-      // render: rowData => Math.round(rowData['totalDistance'] * 100) / 100
+      render: rowData => Math.round(rowData['totalDistance'] * 100) / 100
     },
     {
       title: "Tổng khối lượng",
