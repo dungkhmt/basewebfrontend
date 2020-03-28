@@ -1,9 +1,10 @@
 import {useDispatch, useSelector} from "react-redux";
-import MaterialTable from "material-table";
+import MaterialTable, {MTableToolbar} from "material-table";
 import {authGet} from "../../../api";
 import {tableIcons} from "../../../utils/iconutil";
 import React from "react";
 import Upload from "../../../utils/Upload";
+import Grid from "@material-ui/core/Grid";
 
 export default function VehicleList() {
 
@@ -22,6 +23,27 @@ export default function VehicleList() {
       columns={columns}
       options={{
         search: false
+      }}
+      components={{
+        Toolbar: props => (
+          <div>
+            <MTableToolbar {...props} />
+            <Grid container spacing={3}>
+              <Grid item xs={8} style={{textAlign: 'left', padding: '0px 30px 20px 30px'}}>
+              </Grid>
+              <Grid item xs={4}
+                    style={{verticalAlign: 'text-bottom', textAlign: 'right', padding: '0px 50px 10px 30px'}}>
+                <Upload
+                  url={'upload-vehicle'}
+                  token={token}
+                  dispatch={dispatch}
+                  buttonTitle={'Tải lên danh sách xe'}
+                  handleSaveCallback={() => window.location.reload()}
+                />
+              </Grid>
+            </Grid>
+          </div>
+        )
       }}
       data={query =>
         new Promise((resolve) => {
@@ -51,12 +73,6 @@ export default function VehicleList() {
       icons={tableIcons}
 
     />
-    <Upload
-      url={'upload-vehicle'}
-      token={token}
-      dispatch={dispatch}
-      buttonTitle={'Tải lên danh sách xe'}
-      handleSaveCallback={() => window.location.reload()}
-    />
+
   </div>
 }

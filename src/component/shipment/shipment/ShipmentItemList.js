@@ -1,5 +1,5 @@
 import {useDispatch, useSelector} from "react-redux";
-import MaterialTable from "material-table";
+import MaterialTable, {MTableToolbar} from "material-table";
 import {authGet} from "../../../api";
 import {tableIcons} from "../../../utils/iconutil";
 import React, {useState} from "react";
@@ -8,6 +8,7 @@ import Button from "@material-ui/core/Button";
 import {Link} from "react-router-dom";
 import AddIcon from "@material-ui/icons/Add";
 import CircularProgress from "@material-ui/core/CircularProgress";
+import Grid from "@material-ui/core/Grid";
 
 export default function ShipmentItemList() {
 
@@ -43,6 +44,34 @@ export default function ShipmentItemList() {
       options={{
         search: false
       }}
+      components={{
+        Toolbar: props => (
+          <div>
+            <MTableToolbar {...props} />
+            <Grid container spacing={3}>
+              <Grid item xs={8} style={{textAlign: 'left', padding: '0px 30px 20px 30px'}}>
+              </Grid>
+              <Grid item xs={4}
+                    style={{verticalAlign: 'text-bottom', textAlign: 'right', padding: '0px 50px 10px 30px'}}>
+                <Link to={'/create-shipment-item'}>
+                  <Button color={'primary'} variant={'contained'} startIcon={<AddIcon/>}> Thêm mới </Button>
+                </Link>
+                <Upload
+                  url={'shipment/upload'}
+                  token={token}
+                  dispatch={dispatch}
+                  buttonTitle={'Tải lên đơn hàng'}
+                  handleSaveCallback={() => window.location.reload()}
+                />
+                {calcWaiting ? <CircularProgress color={'secondary'}/> :
+                  <Button color={'primary'} variant={'contained'} onClick={() => handleCalcDistance()}>
+                    Tính khoảng cách </Button>
+                }
+              </Grid>
+            </Grid>
+          </div>
+        )
+      }}
       data={query =>
         new Promise((resolve) => {
           console.log(query);
@@ -71,18 +100,6 @@ export default function ShipmentItemList() {
       icons={tableIcons}
 
     />
-    <Link to={'/create-shipment-item'}>
-      <Button color={'primary'} variant={'contained'} startIcon={<AddIcon/>}> Thêm mới </Button>
-    </Link>
-    <Upload
-      url={'shipment/upload'}
-      token={token}
-      dispatch={dispatch}
-      buttonTitle={'Tải lên đơn hàng'}
-      handleSaveCallback={() => window.location.reload()}
-    />
-    {calcWaiting ? <CircularProgress color={'secondary'}/> :
-      <Button color={'primary'} variant={'contained'} onClick={() => handleCalcDistance()}> Tính khoảng cách </Button>
-    }
+
   </div>
 }

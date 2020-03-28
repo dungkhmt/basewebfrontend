@@ -1,6 +1,6 @@
 import React, {useEffect, useState} from "react";
 import {useDispatch, useSelector} from "react-redux";
-import MaterialTable from "material-table";
+import MaterialTable, {MTableToolbar} from "material-table";
 import {authGet, authPost} from "../../../../api";
 import Button from "@material-ui/core/Button";
 import {tableIcons} from "../../../../utils/iconutil";
@@ -12,6 +12,7 @@ import DialogTitle from "@material-ui/core/DialogTitle";
 import DialogContent from "@material-ui/core/DialogContent";
 import Dialog from "@material-ui/core/Dialog";
 import Markers from "../../../google/Markers";
+import Grid from "@material-ui/core/Grid";
 
 export default function ShipmentItemDeliveryPlanList() {
   const dispatch = useDispatch();
@@ -70,16 +71,34 @@ export default function ShipmentItemDeliveryPlanList() {
       title={'Danh sách đơn hàng'}
       columns={columns}
       options={{search: false}}
+      components={{
+        Toolbar: props => (
+          <div>
+            <MTableToolbar {...props} />
+            <Grid container spacing={3}>
+              <Grid item xs={8} style={{textAlign: 'left', padding: '0px 30px 20px 30px'}}>
+              </Grid>
+              <Grid item xs={4}
+                    style={{verticalAlign: 'text-bottom', textAlign: 'right', padding: '0px 50px 10px 30px'}}>
+                <Link to={'/vehicle-delivery-plan/' + deliveryPlanId + '/add'}>
+                  <Link to={'/shipment-item-delivery-plan/' + deliveryPlanId + '/add'}>
+                    <Button color={'primary'} variant={'contained'} startIcon={<AddIcon/>}>Thêm mới</Button>
+                  </Link>
+                  <p/>
+
+                  <Button color={'primary'} variant={'contained'} onClick={() => setMapOpen(true)}>
+                    Xem trên bản đồ </Button>
+                </Link>
+              </Grid>
+            </Grid>
+          </div>
+        )
+      }}
       data={dataTable}
       icons={tableIcons}
     >
     </MaterialTable>
-    <Link to={'/shipment-item-delivery-plan/' + deliveryPlanId + '/add'}>
-      <Button color={'primary'} variant={'contained'} startIcon={<AddIcon/>}>Thêm mới</Button>
-    </Link>
-    <p/>
 
-    <Button color={'primary'} variant={'contained'} onClick={() => setMapOpen(true)}>Xem trên bản đồ </Button>
 
     <Dialog
       fullWidth={'lg'}

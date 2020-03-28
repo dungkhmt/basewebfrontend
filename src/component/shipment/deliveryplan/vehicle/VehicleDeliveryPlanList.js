@@ -1,6 +1,6 @@
 import React from "react";
 import {useDispatch, useSelector} from "react-redux";
-import MaterialTable from "material-table";
+import MaterialTable, {MTableToolbar} from "material-table";
 import {authGet, authPost} from "../../../../api";
 import Button from "@material-ui/core/Button";
 import {tableIcons} from "../../../../utils/iconutil";
@@ -8,6 +8,7 @@ import {Link, useHistory, useParams} from "react-router-dom";
 import DeleteIcon from '@material-ui/icons/Delete';
 import AddIcon from "@material-ui/icons/Add";
 import ArrowBackIosIcon from "@material-ui/icons/ArrowBackIos";
+import Grid from "@material-ui/core/Grid";
 
 export default function VehicleDeliveryPlanList() {
   const dispatch = useDispatch();
@@ -49,39 +50,55 @@ export default function VehicleDeliveryPlanList() {
       </Link>
     }
 
-    <MaterialTable title={'Danh sách xe'}
-                   columns={columns}
-                   options={{search: false}}
-                   data={query =>
-                     new Promise((resolve) => {
-                       console.log(query);
-                       let sortParam = "";
-                       if (query.orderBy !== undefined) {
-                         sortParam = "&sort=" + query.orderBy.field + ',' + query.orderDirection;
-                       }
-                       authGet(
-                         dispatch,
-                         token,
-                         "/vehicle/" + deliveryPlanId + "/page?size=" + query.pageSize + "&page=" + query.page + sortParam
-                       ).then(
-                         response => {
-                           resolve({
-                             data: response.content,
-                             page: response.number,
-                             totalCount: response.totalElements
-                           });
-                         },
-                         error => {
-                           console.log("error");
-                         }
-                       );
-                     })
-                   }
-                   icons={tableIcons}
+    <MaterialTable
+      title={'Danh sách xe'}
+      columns={columns}
+      options={{search: false}}
+      components={{
+        Toolbar: props => (
+          <div>
+            <MTableToolbar {...props} />
+            <Grid container spacing={3}>
+              <Grid item xs={8} style={{textAlign: 'left', padding: '0px 30px 20px 30px'}}>
+              </Grid>
+              <Grid item xs={4}
+                    style={{verticalAlign: 'text-bottom', textAlign: 'right', padding: '0px 50px 10px 30px'}}>
+                <Link to={'/vehicle-delivery-plan/' + deliveryPlanId + '/add'}>
+                  <Button color={'primary'} variant={'contained'} startIcon={<AddIcon/>}> Thêm mới</Button>
+                </Link>
+              </Grid>
+            </Grid>
+          </div>
+        )
+      }}
+      data={query =>
+        new Promise((resolve) => {
+          console.log(query);
+          let sortParam = "";
+          if (query.orderBy !== undefined) {
+            sortParam = "&sort=" + query.orderBy.field + ',' + query.orderDirection;
+          }
+          authGet(
+            dispatch,
+            token,
+            "/vehicle/" + deliveryPlanId + "/page?size=" + query.pageSize + "&page=" + query.page + sortParam
+          ).then(
+            response => {
+              resolve({
+                data: response.content,
+                page: response.number,
+                totalCount: response.totalElements
+              });
+            },
+            error => {
+              console.log("error");
+            }
+          );
+        })
+      }
+      icons={tableIcons}
     >
     </MaterialTable>
-    <Link to={'/vehicle-delivery-plan/' + deliveryPlanId + '/add'}>
-      <Button color={'primary'} variant={'contained'} startIcon={<AddIcon/>}> Thêm mới</Button>
-    </Link>
+
   </div>;
 }

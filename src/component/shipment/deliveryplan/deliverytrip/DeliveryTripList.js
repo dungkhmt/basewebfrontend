@@ -52,12 +52,22 @@ export default function DeliveryTripList() {
       )
     },
     {title: "Ngày thực hiện", field: "executeDate", type: "date"},
-    {title: "Tổng khoảng cách", field: "totalDistance"},
-    {title: "Tổng khối lượng", field: "totalWeight"},
+    {
+      title: "Tổng khoảng cách",
+      field: "totalDistance",
+      // render: rowData => Math.round(rowData['totalDistance'] * 100) / 100
+    },
+    {
+      title: "Tổng khối lượng",
+      field: "totalWeight",
+      render: rowData => Math.round(rowData['totalWeight'] * 100) / 100
+    },
     {title: "Tổng số pallet", field: "totalPallet"},
+    {title: "Tổng thời gian", field: "totalExecutionTime"},
+    {title: "Tổng số điểm", field: "totalLocation"},
     {title: "Mã xe", field: "vehicleId"},
     {title: "Tải trọng tối đa của xe", field: "maxVehicleCapacity"},
-    {title: "Mã tài xế", field: "driverId"}
+    {title: "Mã tài xế", field: "userLoginId"}
   ];
 
   const {deliveryPlanId} = useParams();
