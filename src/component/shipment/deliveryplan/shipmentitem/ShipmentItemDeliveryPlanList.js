@@ -80,15 +80,13 @@ export default function ShipmentItemDeliveryPlanList() {
               </Grid>
               <Grid item xs={4}
                     style={{verticalAlign: 'text-bottom', textAlign: 'right', padding: '0px 50px 10px 30px'}}>
-                <Link to={'/vehicle-delivery-plan/' + deliveryPlanId + '/add'}>
-                  <Link to={'/shipment-item-delivery-plan/' + deliveryPlanId + '/add'}>
-                    <Button color={'primary'} variant={'contained'} startIcon={<AddIcon/>}>Thêm mới</Button>
-                  </Link>
-                  <p/>
-
-                  <Button color={'primary'} variant={'contained'} onClick={() => setMapOpen(true)}>
-                    Xem trên bản đồ </Button>
+                <Link to={'/shipment-item-delivery-plan/' + deliveryPlanId + '/add'}>
+                  <Button color={'primary'} variant={'contained'} startIcon={<AddIcon/>}>Thêm mới</Button>
                 </Link>
+                <p/>
+
+                <Button color={'primary'} variant={'contained'} onClick={() => setMapOpen(true)}>
+                  Xem trên bản đồ </Button>
               </Grid>
             </Grid>
           </div>
