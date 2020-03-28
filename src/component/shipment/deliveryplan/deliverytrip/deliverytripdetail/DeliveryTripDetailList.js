@@ -65,12 +65,10 @@ export default function DeliveryTripDetailList() {
       console.log(response);
       setDeliveryTrip({
         deliveryTripId,
-        deliveryPlanId: response['deliveryPlan']['deliveryPlanId'],
-        // facility: response['deliveryPlan']['facility'],
-        vehicleId: response['vehicle']['vehicleId'],
+        deliveryPlanId: response['deliveryPlanId'],
+        vehicleId: response['vehicleId'],
         executeDate: response['executeDate'],
-        vehicleTypeId: response['externalVehicleType'] ==
-        null ? null : response['externalVehicleType']['vehicleTypeId'],
+        vehicleTypeId: response['vehicleTypeId'],
         totalDistance: response['distance'],
         totalWeight: response['totalWeight'],
         totalPallet: response['totalPallet'],

@@ -132,10 +132,10 @@ export default function DeliveryTripDetailCreate() {
       console.log(response);
       setDeliveryTrip({
         deliveryTripId,
-        deliveryPlanId: response['deliveryPlan']['deliveryPlanId'],
-        vehicleId: response['vehicle']['vehicleId'],
+        deliveryPlanId: response['deliveryPlanId'],
+        vehicleId: response['vehicleId'],
         executeDate: response['executeDate'],
-        vehicleTypeId: response['externalVehicleType'] == null ? null : response['externalVehicleType']['vehicleTypeId']
+        vehicleTypeId: response['vehicleTypeId']
       });
     })
   };
