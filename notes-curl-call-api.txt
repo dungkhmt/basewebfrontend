@@ -1,9 +1,12 @@
 Test API
 
-curl --header "Content-Type: application/json" -v POST http://localhost:8080/api/add -u admin:123 -d '{"a":123,"b":456}'
+	curl --header "Content-Type: application/json" -v POST http://localhost:8080/api/add -u admin:123 -d '{"a":123,"b":456}'
 
 ----------
+Create Department
+	curl --header "Content-Type: application/json" -v POST http://localhost:8080/api/create-department -u admin:123 -d '{"departmentName":"Phong HR"}'
 
+----------
 Post location API:
  curl --header "Content-Type: application/json" -v POST http://localhost:8080/api/post-location -u admin:123 -d '{"lat":10.110,"lng":103.83,"timePoint": "2019-12-26T04:45:50.770+0000"}'
  
@@ -101,7 +104,16 @@ Create Driver
 	
 --------
 Create facility
-	curl --header "Content-Type: application/json; charset=utf-8" -v POST http://localhost:8080/api/create-facility -u dungpq:123 -d '{"facilityId":"VNM_depot","facilityName":"Kho cua Vinamilk","address":"32 Dang Van Bi, phuong Truong Tho, quan Thu Duc, HCM"}'	
+	curl --header "Content-Type: application/json; charset=utf-8" -v POST http://localhost:8080/api/create-facility -u dungpq:123 -d '{"facilityId":"VNM_depot","facilityName":"Kho cua Vinamilk","address":"32 Dang Van Bi, phuong Truong Tho, quan Thu Duc, HCM"}'
+
+	curl --header "Content-Type: application/json; charset=utf-8" -v POST http://localhost:8080/api/create-facility -u dungpq:123 -d '{"facilityId":"SGF","facilityName":"Kho cua Vinamilk","address":"32 Dang Van Bi, phuong Truong Tho, quan Thu Duc, HCM"}'
+	
+	
+	curl --header "Content-Type: application/json; charset=utf-8" -v POST http://localhost:8080/api/create-facility -u dungpq:123 -d '{"facilityId":"TNF","facilityName":"Nha may sua bot Vinamilk","address":"So 9 Dai lo Tu Do, KCN VSIP1, Thuan An, Binh Dương, Vietnam"}'
+	
+	curl --header "Content-Type: application/json; charset=utf-8" -v POST http://localhost:8080/api/create-facility -u dungpq:123 -d '{"facilityId":"TRF","facilityName":"Vinamilk Bien Hoa","address":"145/11, Khu Pho 5 Pham Van Thuan, Tam Hiep, Thanh pho Bien Hoa, Dong Nai, Vietnam"}'
+	
+	
 --------
 Get all drivers
 	curl --header "Content-Type: application/json; charset=utf-8" -v POST http://localhost:8080/api/get-all-drivers -u dungpq:123 -d '{}'
@@ -179,7 +191,7 @@ Salesman
 -------
 	Create salesman
 	
-	curl --header "Content-Type: application/json" -v POST http://localhost:8080/api/create-salesman -u admin:123 -d '{"userName":"vietdung","password":"123","firstName":"Dung","lastName":"Nguyen","middleName":"Viet"}'
+	curl --header "Content-Type: application/json" -v POST http://localhost:8080/api/create-salesman -u admin:123 -d '{"userName":"vietdung","password":"123","firstName":"Dung","lastName":"Nguyen","middleName":"Viet","roles":["ROLE_SALESMAN"]}'
 
 
 -------
