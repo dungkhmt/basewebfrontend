@@ -244,3 +244,9 @@ get customers visited of userlogin
 get customers visited of salesman date
 	curl --header "Content-Type: application/json" -v POST http://localhost:8080/api/get-customers-visited-salesman-date -u dungpq:123 -d '{"partySalesmanId":"847254bb-c0f1-4696-b11f-682976965eed","date":"2020-01-13"}'
 -------
+
+REPORT SALES
+
+Get date based revenue
+	curl --header "Content-Type: application/json" -v POST http://localhost:8080/api/report-date-based-revenue -u admin:123 -d '{"fromDate":"2020-03-29","toDate":"2020-03-31"}'
+------------

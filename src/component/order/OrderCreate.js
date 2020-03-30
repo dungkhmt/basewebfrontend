@@ -146,7 +146,7 @@ function UserCreate(props) {
         }
       )
       .then(res => {
-        console.log('got distributors',res);
+        console.log('got distributors ',res);
         setDistributors(res);
         console.log(distributors); 
       });
@@ -171,7 +171,7 @@ function UserCreate(props) {
         }
       )
       .then(res => {
-        console.log('got distributors',res);
+        console.log('got salesman ',res);
         setSalesmans(res);
         console.log(salesmans); 
       });
@@ -235,7 +235,7 @@ function UserCreate(props) {
                         key={distributor.partyId}
                         value={distributor.partyId}
                       >
-                        {distributor.customerName}
+                        {distributor.distributorName}
                       </MenuItem>
                     ))}
               </TextField>
