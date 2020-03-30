@@ -84,12 +84,12 @@ export default function InventoryOrderExport() {
   }
 
   const [facilityList, setFacilityList] = useState([]);
-  const [selectedFacility, setSelectedFacility] = useState({});
+  const [selectedFacility, setSelectedFacility] = useState();
 
   function getAllFacility() {
     authGet(dispatch, token, '/facility/all').then(response => {
       setFacilityList(response);
-      setSelectedFacility(response[0]);
+      setSelectedFacility(response[0]['facilityId']);
     }).catch(console.log);
   }
 
@@ -116,7 +116,7 @@ export default function InventoryOrderExport() {
     let body = {
       inventoryItems: selectedRows.map(rowData => ({
         productId: rowData['productId'],
-        facilityId: selectedFacility['facilityId'],
+        facilityId: selectedFacility,
         quantity: selectedQuantity[rowData['orderItemSeqId']],
         orderId: rowData['orderId'],
         orderItemSeqId: rowData['orderItemSeqId']
@@ -141,7 +141,7 @@ export default function InventoryOrderExport() {
           <Grid item xs={8} style={{textAlign: 'left', padding: '0px 30px 20px 30px'}}>
             {'Chọn kho: '}
             <Select
-              value={selectedFacility['facilityId']}
+              value={selectedFacility}
               onChange={event => setSelectedFacility(event.target.value)}
             >
               {facilityList.map(facility => (<MenuItem value={facility['facilityId']}>
