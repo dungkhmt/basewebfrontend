@@ -21,7 +21,6 @@ export default function InventoryOrderDetail() {
     {title: "Tên sản phẩm", field: "productName"},
     {title: "Số lượng", field: "quantity"},
     {title: "Số lượng đã xuất", field: "exportedQuantity"},
-    {title: "Số lượng xuất", field: "quantity"},
   ];
 
   const [dataTable, setDataTable] = useState([]);

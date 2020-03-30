@@ -48,7 +48,7 @@ export default function InventoryOrderExport() {
     {title: "Tên sản phẩm", field: "productName"},
     {title: "Số lượng", field: "quantity"},
     {title: "Số lượng đã xuất", field: "exportedQuantity"},
-    {title: "Số lượng xuất", field: "quantity"},
+    {title: "Số lượng tồn", field: "inventoryQuantity"}, // TODO
     {
       title: "Chọn số lượng",
       field: "quantitySelection",
@@ -78,9 +78,11 @@ export default function InventoryOrderExport() {
   const [dataTable, setDataTable] = useState([]);
 
   function getDataTable() {
-    authGet(dispatch, token, '/get-inventory-order-detail/' + orderId + '/all').then(response => {
-      setDataTable(response);
-    }).catch(console.log);
+    authGet(dispatch, token, '/get-inventory-order-detail-in-facility/' + orderId + '/' + selectedFacility + '/all').
+      then(response => {
+        setDataTable(response);
+      }).
+      catch(console.log);
   }
 
   const [facilityList, setFacilityList] = useState([]);
