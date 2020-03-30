@@ -22,7 +22,7 @@ export default function InventoryList() {
   const [dataTable, setDataTable] = useState([]);
 
   function getDataTable() {
-    if (selectedFacility['facilityId']) {
+    if (selectedFacility) {
       authGet(dispatch, token, '/get-inventory-list/' + selectedFacility).then(response => {
         setDataTable(response);
       }).catch(console.log);
@@ -30,12 +30,12 @@ export default function InventoryList() {
   }
 
   const [facilityList, setFacilityList] = useState([]);
-  const [selectedFacility, setSelectedFacility] = useState({});
+  const [selectedFacility, setSelectedFacility] = useState();
 
   function getAllFacility() {
     authGet(dispatch, token, '/facility/all').then(response => {
       setFacilityList(response);
-      setSelectedFacility(response[0]);
+      setSelectedFacility(response[0]['facilityId']);
     }).catch(console.log);
   }
 
@@ -53,7 +53,7 @@ export default function InventoryList() {
           <Grid item xs={8} style={{textAlign: 'left', padding: '0px 30px 20px 30px'}}>
             {'Chọn kho: '}
             <Select
-              value={selectedFacility['facilityId']}
+              value={selectedFacility}
               onChange={event => setSelectedFacility(event.target.value)}
             >
               {facilityList.map(facility => (<MenuItem value={facility['facilityId']}>
