@@ -46,9 +46,9 @@ export default function InventoryOrderExport() {
       field: "productId",
     },
     {title: "Tên sản phẩm", field: "productName"},
-    {title: "Số lượng", field: "quantity"},
+    {title: "Số lượng trong đơn", field: "quantity"},
     {title: "Số lượng đã xuất", field: "exportedQuantity"},
-    {title: "Số lượng tồn", field: "inventoryQuantity"}, // TODO
+    {title: "Số lượng tồn kho", field: "inventoryQuantity"}, // TODO
     {
       title: "Chọn số lượng",
       field: "quantitySelection",
@@ -78,11 +78,11 @@ export default function InventoryOrderExport() {
   const [dataTable, setDataTable] = useState([]);
 
   function getDataTable() {
-    authGet(dispatch, token, '/get-inventory-order-detail-in-facility/' + orderId + '/' + selectedFacility + '/all').
+    let body = {orderId, facilityId: selectedFacility};
+    authPost(dispatch, token, '/get-inventory-order-detail', body).then(value => value.json()).
       then(response => {
         setDataTable(response);
-      }).
-      catch(console.log);
+      }).catch(console.log);
   }
 
   const [facilityList, setFacilityList] = useState([]);
@@ -133,7 +133,7 @@ export default function InventoryOrderExport() {
     Promise.all([getDataTable(), getAllFacility()]).then(r => r);
   }, []);
 
-  // useEffect(() => getDataTable(), [selectedFacility]);
+  useEffect(() => getDataTable(), [selectedFacility]);
 
   const components = {
     Toolbar: props => (

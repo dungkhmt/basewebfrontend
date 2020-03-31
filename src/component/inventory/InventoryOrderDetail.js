@@ -1,11 +1,11 @@
 import React, {useEffect, useState} from "react";
 import {useDispatch, useSelector} from "react-redux";
 import MaterialTable, {MTableToolbar} from "material-table";
-import {authGet} from "../../api";
 import {tableIcons} from "../../utils/iconutil";
 import Grid from "@material-ui/core/Grid";
 import Button from "@material-ui/core/Button";
 import {Link, useParams} from "react-router-dom";
+import {authPost} from "../../api";
 
 export default function InventoryOrderDetail() {
 
@@ -26,7 +26,8 @@ export default function InventoryOrderDetail() {
   const [dataTable, setDataTable] = useState([]);
 
   function getDataTable() {
-    authGet(dispatch, token, '/get-inventory-order-detail/' + orderId + '/all').then(response => {
+    let body = {orderId};
+    authPost(dispatch, token, '/get-inventory-order-detail', body).then(value => value.json()).then(response => {
       setDataTable(response);
     }).catch(console.log);
   }
