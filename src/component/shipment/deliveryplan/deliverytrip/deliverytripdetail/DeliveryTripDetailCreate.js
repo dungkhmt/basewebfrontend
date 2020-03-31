@@ -47,7 +47,6 @@ export default function DeliveryTripDetailCreate() {
   const [, rerender] = useState([]);
 
 
-
   const columns = [
     {title: "Mã đơn hàng", field: "shipmentItemId"},
     {title: "Tên sản phẩm", field: "productName"},
@@ -68,13 +67,20 @@ export default function DeliveryTripDetailCreate() {
         }}
         margin="normal"
         inputProps={selectedIdSet.has(rowData['shipmentItemId']) ? {
-          min: "0",
+          min: "1",
           max: "" + rowData['quantity'],
           step: "1"
         } : {readOnly: true}}
         value={orElse(selectedQuantity[rowData['shipmentItemId']], 0)}
         onChange={event => {
-          selectedQuantity[rowData['shipmentItemId']] = event.target.value;
+          let newValue = event.target.value;
+          let maxValue = rowData['quantity'];
+          if (newValue <= 0) {
+            newValue = 1;
+          } else if (newValue > maxValue) {
+            newValue = maxValue;
+          }
+          selectedQuantity[rowData['shipmentItemId']] = newValue;
           rerender([]);
           getDeliveryTripCapacityInfo(selectedRows, selectedQuantity);
         }}
@@ -93,17 +99,19 @@ export default function DeliveryTripDetailCreate() {
       deliveryQuantity: selectedQuantity[shipmentItem['shipmentItemId']]
     }));
     console.log(body);
-    authPost(dispatch, token, '/create-delivery-trip-detail/' + deliveryTripId, body).then(response => response.json()).then(
-      response => {
-        if (typeof response === 'number') {
-          alert('Đã thêm vào chuyến cho ' + response + ' đơn hàng');
-          console.log(response);
-          // browserHistory.goBack();
-          history.push(process.env.PUBLIC_URL + "/delivery-trip/" + deliveryTripId)
-        }
-      },
-      error => console.log(error)
-    )
+    authPost(dispatch, token, '/create-delivery-trip-detail/' + deliveryTripId, body).
+      then(response => response.json()).
+      then(
+        response => {
+          if (typeof response === 'number') {
+            alert('Đã thêm vào chuyến cho ' + response + ' đơn hàng');
+            console.log(response);
+            // browserHistory.goBack();
+            history.push(process.env.PUBLIC_URL + "/delivery-trip/" + deliveryTripId)
+          }
+        },
+        error => console.log(error)
+      )
   };
 
   const classes = useStyles();
@@ -145,9 +153,11 @@ export default function DeliveryTripDetailCreate() {
       shipmentItemId: shipmentItem['shipmentItemId'],
       deliveryQuantity: selectedQuantity[shipmentItem['shipmentItemId']]
     }));
-    authPost(dispatch, token, '/delivery-trip/' + deliveryTripId + '/capacity-info', body).then(response => response.json()).then(response => {
-      setTripCapacityInfo(response);
-    }).
+    authPost(dispatch, token, '/delivery-trip/' + deliveryTripId + '/capacity-info', body).
+      then(response => response.json()).
+      then(response => {
+        setTripCapacityInfo(response);
+      }).
       catch(console.log);
   }
 

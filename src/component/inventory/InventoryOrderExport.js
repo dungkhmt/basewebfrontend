@@ -5,7 +5,7 @@ import {authGet, authPost} from "../../api";
 import {tableIcons} from "../../utils/iconutil";
 import Grid from "@material-ui/core/Grid";
 import Button from "@material-ui/core/Button";
-import {useParams} from "react-router-dom";
+import {useHistory, useParams} from "react-router-dom";
 import {Select} from "@material-ui/core";
 import MenuItem from "@material-ui/core/MenuItem";
 import TextField from "@material-ui/core/TextField";
@@ -39,6 +39,7 @@ export default function InventoryOrderExport() {
   const dispatch = useDispatch();
   const token = useSelector(state => state.auth.token);
   const {orderId} = useParams();
+  const history = useHistory();
 
   const columns = [
     {
@@ -48,7 +49,7 @@ export default function InventoryOrderExport() {
     {title: "Tên sản phẩm", field: "productName"},
     {title: "Số lượng trong đơn", field: "quantity"},
     {title: "Số lượng đã xuất", field: "exportedQuantity"},
-    {title: "Số lượng tồn kho", field: "inventoryQuantity"}, // TODO
+    {title: "Số lượng tồn kho", field: "inventoryQuantity"},
     {
       title: "Chọn số lượng",
       field: "quantitySelection",
@@ -62,13 +63,20 @@ export default function InventoryOrderExport() {
         }}
         margin="normal"
         inputProps={selectedIdSet.has(rowData['orderItemSeqId']) ? {
-          min: "0",
-          max: "" + rowData['quantity'],
+          min: "1",
+          max: "" + Math.min(rowData['quantity'], rowData['inventoryQuantity']),
           step: "1"
         } : {readOnly: true}}
         value={orElse(selectedQuantity[rowData['orderItemSeqId']], 0)}
         onChange={event => {
-          selectedQuantity[rowData['orderItemSeqId']] = event.target.value;
+          let newValue = event.target.value;
+          let maxValue = Math.min(rowData['quantity'], rowData['inventoryQuantity']);
+          if (newValue <= 0) {
+            newValue = 1;
+          } else if (newValue > maxValue) {
+            newValue = maxValue;
+          }
+          selectedQuantity[rowData['orderItemSeqId']] = newValue;
           rerender([]);
         }}
       />,
@@ -104,7 +112,7 @@ export default function InventoryOrderExport() {
     let unSelectedRowIds = new Set(Object.keys(selectedQuantity));
     selectedRows.reduce((map, row) => {
       if (!map[row['orderItemSeqId']]) {
-        map[row['orderItemSeqId']] = row['quantity'];
+        map[row['orderItemSeqId']] = Math.min(row['quantity'], row['inventoryQuantity']);
       }
       unSelectedRowIds.delete(row['orderItemSeqId']);
       return map;
@@ -125,7 +133,7 @@ export default function InventoryOrderExport() {
       }))
     };
     authPost(dispatch, token, '/export-inventory-items', body).then(response => {
-      // TODO: go to screen 4
+      history.push(process.env.PUBLIC_URL + '/inventory/export-list');
     }).catch(console.log);
   }
 

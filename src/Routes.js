@@ -46,6 +46,7 @@ import InventoryOrderDetail from "./component/inventory/InventoryOrderDetail";
 import InventoryOrderExport from "./component/inventory/InventoryOrderExport";
 import InventoryList from "./component/inventory/InventoryList";
 import {SaleReportByPartyCustomer, SaleReportByProduct} from "./component/report/SaleReport";
+import InventoryOrderExportList from "./component/inventory/InventoryOrderExportList";
 
 
 function Routes(props) {// props nay tu parent transfer vao
@@ -334,26 +335,33 @@ function Routes(props) {// props nay tu parent transfer vao
       />
 
 
-      <Route
-        component={SignInContainer} // props
-        path="/login"               // props
-      />
-      <Route
-        component={error} // props
-        path="/not-found"               // props
-      />
-      <PrivateRouteWithLayout
-        component={InventoryOrderDetail}
-        layout={Layout}
-        isAuthenticated={props.isAuthenticated}
-        path="/inventory/order/:orderId"
-      />
+        <Route
+          component={SignInContainer} // props
+          path="/login"               // props
+        />
+        <Route
+          component={error} // props
+          path="/not-found"               // props
+        />
+        <PrivateRouteWithLayout
+          component={InventoryOrderDetail}
+          layout={Layout}
+          isAuthenticated={props.isAuthenticated}
+          path="/inventory/order/:orderId"
+        />
 
         <PrivateRouteWithLayout
           component={InventoryOrderExport}
           layout={Layout}
           isAuthenticated={props.isAuthenticated}
           path="/inventory/export/:orderId"
+        />
+
+        <PrivateRouteWithLayout
+          component={InventoryOrderExportList}
+          layout={Layout}
+          isAuthenticated={props.isAuthenticated}
+          path="/inventory/export-list"
         />
 
         <PrivateRouteWithLayout
