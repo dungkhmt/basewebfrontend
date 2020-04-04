@@ -63,7 +63,7 @@ export default function Home(props) {
 
   function getRevenueDateRecent(){
     console.log("getRevenueDateRecent");
-    authPost(dispatch, token, '/report-date-based-revenue-recent', {"nbDays":5}
+    authPost(dispatch, token, '/report-date-based-revenue-recent', {"nbDays":15}
     ).then(
       response => response.json()
     ).then(response => {
