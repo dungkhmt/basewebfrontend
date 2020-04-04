@@ -249,4 +249,6 @@ REPORT SALES
 
 Get date based revenue
 	curl --header "Content-Type: application/json" -v POST http://localhost:8080/api/report-date-based-revenue -u admin:123 -d '{"fromDate":"2020-03-29","toDate":"2020-03-31"}'
+	
+	curl --header "Content-Type: application/json" -v POST http://localhost:8080/api/get-report-date-based-revenue -u admin:123 -d '{"fromDate":"2020-03-01 00:00:00","thruDate":"2020-03-31 00:00:00"}'	
 ------------

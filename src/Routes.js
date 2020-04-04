@@ -46,6 +46,8 @@ import InventoryOrderDetail from "./component/inventory/InventoryOrderDetail";
 import InventoryOrderExport from "./component/inventory/InventoryOrderExport";
 import InventoryList from "./component/inventory/InventoryList";
 import {SaleReportByPartyCustomer, SaleReportByProduct} from "./component/report/SaleReport";
+import SaleReportByDate from "./component/reportsales/SalesReportByDate";
+
 import InventoryOrderExportList from "./component/inventory/InventoryOrderExportList";
 
 
@@ -385,6 +387,12 @@ function Routes(props) {// props nay tu parent transfer vao
           path="/sale-reports-by-customer"
         />
 
+        <PrivateRouteWithLayout
+          component={SaleReportByDate}
+          layout={Layout}
+          isAuthenticated={props.isAuthenticated}
+          path="/sale-reports-by-date"
+        />
 
         <Route
           component={SignInContainer} // props
