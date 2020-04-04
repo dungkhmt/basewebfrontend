@@ -17,7 +17,7 @@ function GeoListDistanceInfo(props) {
         {field: 'travelTime', title: 'Thời gian di chuyển'},
         {field: 'travelTimeMotobike', title: 'Thời gian đi bằng xe máy'},
         {field: 'travelTimeTruck', title: 'Thời gian đi bằng xe tải'},
-        {field: 'enumId', title:'Nguồn'},
+        {field: 'enumID', title:'Nguồn'},
         {title: '', render: rowData => <Link to={"/geo/change/distance-detail/"+rowData.idStart+"/"+rowData.idEnd}><Button color="primary" variant="contained">Sửa</Button></Link>}
 
     ];
@@ -53,6 +53,7 @@ function GeoListDistanceInfo(props) {
                             token,
                             "/get-list-distance-info" + "?size=" + query.pageSize + "&page=" + query.page+sortParam+filterParam
                         ).then(
+
                             res => {
 
                                 resolve({
@@ -61,11 +62,15 @@ function GeoListDistanceInfo(props) {
                                     totalCount: res.totalElements
 
                                 });
+                                console.log("res",res.content);
 
                             },
+
                             error => {
                                 console.log("error");
-                            }
+                            },
+
+
                         );
                     })
                 }

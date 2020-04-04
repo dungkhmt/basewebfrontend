@@ -29,8 +29,8 @@ function ChangeDistanceDetail(props) {
     const [lngStart, setLngStart] = useState();
     const [latEnd, setLatEnd] = useState();
     const [lngEnd, setLngEnd] = useState();
-    const [enumIdList, setEnumIdList] = useState([]);
     const [enumId, setEnumId] = useState();
+    const [enumIdList, setEnumIdList] = useState([]);
     const [isRequesting, setIsRequesting] = useState(false);
     const style = {
         width: '40%',
@@ -182,7 +182,9 @@ function ChangeDistanceDetail(props) {
                     setTravelTime(res.travelTime);
                     setTravelTimeTruck(res.travelTimeTruck);
                     setDistance(res.distance);
-                    setEnumId(res.enumId);
+                    setEnumId(res.enumID);
+                    console.log("enumID",res.enumID);
+                    console.log()
                 })
     },[])
 
@@ -287,10 +289,11 @@ function ChangeDistanceDetail(props) {
                         Nguồn
                     </Typography>
                     <TextField
-                        value={enumId}
                         select
-                        label="select"
+                        required
                         onChange={handleEnumIdChange}
+                        value={enumId}
+                        label={enumId}
                     >
                         {enumIdList.map(e => (
                             <MenuItem
