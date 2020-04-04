@@ -47,6 +47,10 @@ import InventoryOrderExport from "./component/inventory/InventoryOrderExport";
 import InventoryList from "./component/inventory/InventoryList";
 import {SaleReportByPartyCustomer, SaleReportByProduct} from "./component/report/SaleReport";
 import InventoryOrderExportList from "./component/inventory/InventoryOrderExportList";
+import ListLocation from "./component/geo/ListLocation";
+import GeoGoogleMapChangeCoordinates from "./component/geo/GeoGoogleMapChangeCoordinates";
+import GeoListDistanceInfo from "./component/geo/GeoListDistanceInfo";
+import ChangeDistanceDetail from "./component/geo/ChangeDistanceDetail";
 
 
 function Routes(props) {// props nay tu parent transfer vao
@@ -383,6 +387,35 @@ function Routes(props) {// props nay tu parent transfer vao
           layout={Layout}
           isAuthenticated={props.isAuthenticated}
           path="/sale-reports-by-customer"
+        />
+
+
+        <PrivateRouteWithLayout
+            component={ListLocation}
+            layout={Layout}
+            isAuthenticated={props.isAuthenticated}
+            path="/geo/list/location"
+        />
+
+        <PrivateRouteWithLayout
+            component={GeoGoogleMapChangeCoordinates}
+            layout={Layout}
+            isAuthenticated={props.isAuthenticated}
+            path="/geo/location/map/:contactMechId"
+        />
+
+        <PrivateRouteWithLayout
+            component={GeoListDistanceInfo}
+            layout={Layout}
+            isAuthenticated={props.isAuthenticated}
+            path="/geo/list/distance-info"
+        />
+
+        <PrivateRouteWithLayout
+            component={ChangeDistanceDetail}
+            layout={Layout}
+            isAuthenticated={props.isAuthenticated}
+            path="/geo/change/distance-detail/:fromContactMechId/:toContactMechId"
         />
 
 

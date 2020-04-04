@@ -1,34 +1,32 @@
-import React, { useEffect, useState } from "react";
-import { tableIcons } from "../../utils/iconutil";
+import React, { Component } from 'react';
 import MaterialTable from "material-table";
-import { useSelector, useDispatch } from "react-redux";
-import { authGet } from "../../api";
-
+import {authGet} from "../../api";
+import {tableIcons} from "../../utils/iconutil";
+import {useDispatch, useSelector} from "react-redux";
 import { useHistory, Link } from "react-router-dom";
+import Button from "@material-ui/core/Button";
 
 
-function SalesmanList(props) {
-
+function GeoListDistanceInfo(props) {
     const token = useSelector(state => state.auth.token);
     const dispatch = useDispatch();
-
-
     const columns = [
-        {title: "Mã NVBH", field:"partyId", render: rowData => <Link to={"/salesman/"+rowData.partyId}>{rowData.partyId}</Link>},
-        {title: "Tên NVBH", field:"name"},
-        {title: "TK đăng nhập", field:"userName"}
-    ]
+        {field: 'addressStart', title: 'Địa chỉ đầu'},
+        {field: 'addressEnd', title: 'Địa chỉ cuối'},
+        {field: 'distance', title: 'Khoảng cách'},
+        {field: 'travelTime', title: 'Thời gian di chuyển'},
+        {field: 'travelTimeMotobike', title: 'Thời gian đi bằng xe máy'},
+        {field: 'travelTimeTruck', title: 'Thời gian đi bằng xe tải'},
+        {field: 'enumId', title:'Nguồn'},
+        {title: '', render: rowData => <Link to={"/geo/change/distance-detail/"+rowData.idStart+"/"+rowData.idEnd}><Button color="primary" variant="contained">Sửa</Button></Link>}
 
-
-
-
-
+    ];
 
     return (
 
         <div>
             <MaterialTable
-                title="List Salemans"
+                title="Bảng thông tin khoảng cách "
                 columns={columns}
                 options={{
                     filtering: true,
@@ -53,7 +51,7 @@ function SalesmanList(props) {
                         authGet(
                             dispatch,
                             token,
-                            "/get-list-salesman" + "?size=" + query.pageSize + "&page=" + query.page+sortParam+filterParam
+                            "/get-list-distance-info" + "?size=" + query.pageSize + "&page=" + query.page+sortParam+filterParam
                         ).then(
                             res => {
 
@@ -79,8 +77,9 @@ function SalesmanList(props) {
         </div>
 
     );
+
 }
 
-export default SalesmanList;
 
+export default GeoListDistanceInfo;
 

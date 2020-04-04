@@ -821,7 +821,7 @@ export default function SideBar(props) {
           )}
 
 
-          {props.menu.has("MENU_GEO_ADDRESS") ? (
+
               <div>
                 <ListItem button onClick={() => handleListClick(14)}>
                   <ListItemIcon>
@@ -832,13 +832,23 @@ export default function SideBar(props) {
                 </ListItem>
                 <Collapse in={openCollapse[14]} timeout="auto" unmountOnExit>
                   <List component="div" disablePadding>
-                    <ListItem button className={classes.nested}>
+                    <ListItem
+                        button
+                        className={classes.nested}
+                        component={Link}
+                        to={process.env.PUBLIC_URL + "/geo/list/location"}
+                    >
                       <ListItemIcon>
                         <StarBorder/>
                       </ListItemIcon>
                       <ListItemText primary="Danh sách vị trí"/>
                     </ListItem>
-                    <ListItem button className={classes.nested}>
+                    <ListItem
+                        button
+                        className={classes.nested}
+                        component={Link}
+                        to={process.env.PUBLIC_URL + "/geo/list/distance-info"}
+                    >
                       <ListItemIcon>
                         <StarBorder/>
                       </ListItemIcon>
@@ -848,9 +858,7 @@ export default function SideBar(props) {
                   </List>
                 </Collapse>
               </div>
-          ) : (
-              ""
-          )}
+
 
 
           {props.menu.has("MENU_SALES_REPORT") ? (

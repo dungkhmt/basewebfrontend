@@ -1,34 +1,28 @@
-import React, { useEffect, useState } from "react";
-import { tableIcons } from "../../utils/iconutil";
-import MaterialTable from "material-table";
-import { useSelector, useDispatch } from "react-redux";
-import { authGet } from "../../api";
-
+import React, { Component } from 'react';
+import {useDispatch, useSelector} from "react-redux";
+import Button from "@material-ui/core/Button";
 import { useHistory, Link } from "react-router-dom";
+import MaterialTable from "material-table";
+import {authGet} from "../../api";
+import {tableIcons} from "../../utils/iconutil";
 
 
-function SalesmanList(props) {
 
+function ListLocation() {
     const token = useSelector(state => state.auth.token);
     const dispatch = useDispatch();
-
-
     const columns = [
-        {title: "Mã NVBH", field:"partyId", render: rowData => <Link to={"/salesman/"+rowData.partyId}>{rowData.partyId}</Link>},
-        {title: "Tên NVBH", field:"name"},
-        {title: "TK đăng nhập", field:"userName"}
+        {field: 'contactMechId', title: 'Mã địa chỉ '},
+        {field: 'address', title: 'Địa chỉ '},
+        {field: 'coordinates', title: 'Tọa độ '},
+        {title: '', render: rowData => <Link to={"/geo/location/map/"+rowData.contactMechId}><Button color="primary" variant="contained">Sửa</Button></Link> }
     ]
-
-
-
-
-
 
     return (
 
         <div>
             <MaterialTable
-                title="List Salemans"
+                title="Bảng thông tin địa chỉ "
                 columns={columns}
                 options={{
                     filtering: true,
@@ -53,7 +47,7 @@ function SalesmanList(props) {
                         authGet(
                             dispatch,
                             token,
-                            "/get-list-salesman" + "?size=" + query.pageSize + "&page=" + query.page+sortParam+filterParam
+                            "/get-list-geo-point-page" + "?size=" + query.pageSize + "&page=" + query.page+sortParam+filterParam
                         ).then(
                             res => {
 
@@ -79,8 +73,8 @@ function SalesmanList(props) {
         </div>
 
     );
+
 }
 
-export default SalesmanList;
 
-
+export default ListLocation;
