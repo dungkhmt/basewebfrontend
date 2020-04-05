@@ -2,12 +2,13 @@ import React, { Component } from 'react';
 import { Map, GoogleApiWrapper } from "google-map-react";
 import { connect } from "react-redux";
 
+
 class GISMap extends Component {
     constructor(props) {
       super(props);
       this.onScriptLoad = this.onScriptLoad.bind(this);
     }
-  
+
     onScriptLoad() {
         console.log("onScriptLoad");
       const map = new window.google.maps.Map(
@@ -16,7 +17,7 @@ class GISMap extends Component {
       );
       this.props.onMapLoad(map);
     }
-  
+
     componentDidMount() {
       console.log("sssssssss");
       if (!window.google) {
@@ -35,23 +36,24 @@ class GISMap extends Component {
         this.onScriptLoad();
       }
     }
-  
+
     componentDidUpdate(prevProps, prevState) {
+
       if ((prevProps.flag !== this.props.flag) && window.google) {
         this.onScriptLoad();
       }
     }
-  
+
     render() {
       console.log('render, props = ',this.props);
       return (
         // Important! Always set the container height explicitly
-  
+
         <div style={{height: this.props.height, width: "100%"}} id={this.props.id}/>
-          
-        
+
+
       );
     }
   }
-  
+
   export default GISMap;
