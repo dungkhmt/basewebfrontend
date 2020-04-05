@@ -49,7 +49,7 @@ import {SaleReportByPartyCustomer, SaleReportByProduct} from "./component/report
 import SaleReportByDate from "./component/reportsales/SalesReportByDate";
 
 import InventoryOrderExportList from "./component/inventory/InventoryOrderExportList";
-
+import ListDepartment from "./component/departments/listdepartment";
 
 function Routes(props) {// props nay tu parent transfer vao
   return (
@@ -61,6 +61,16 @@ function Routes(props) {// props nay tu parent transfer vao
         exact
         path="/"
       />
+
+      <PrivateRouteWithLayout
+        component={ListDepartment}  //props
+        layout={Layout}          //props
+        isAuthenticated={props.isAuthenticated} // props
+        //isAuthenticated={true}
+        //exact                                   // props
+        path="/departments/list"                    // props
+      />
+
 
       <PrivateRouteWithLayout
         component={UserCreate}  //props

@@ -145,6 +145,37 @@ export default function SideBar(props) {
         </div>
         <Divider/>
         <List>
+
+          
+        <div>
+            <ListItem button onClick={() => handleListClick(18)}>
+              <ListItemIcon >
+                <BlurOnIcon/>
+              </ListItemIcon>
+              <ListItemText primary="Quản lý phòng ban"/>
+              {openCollapse[18] ? <ExpandLess/> : <ExpandMore/>}
+            </ListItem>
+            <Collapse in={openCollapse[18]} timeout="auto" unmountOnExit>
+              <List component="div" disablePadding>
+                <ListItem
+                    button
+                    className={classes.nested}
+                    component={Link}
+                    to={process.env.PUBLIC_URL + "/departments/list"}
+                >
+                  <ListItemIcon>
+                    <StarBorder/>
+                  </ListItemIcon>
+                  <ListItemText primary="DS phòng ban"/>
+                </ListItem>              
+
+              </List>
+            </Collapse>
+          </div>
+
+
+
+
           <div>
             <ListItem button onClick={() => handleListClick(0)}>
               <ListItemIcon >
