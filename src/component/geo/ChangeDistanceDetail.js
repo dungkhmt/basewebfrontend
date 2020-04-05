@@ -190,7 +190,7 @@ function ChangeDistanceDetail(props) {
 
 
     useEffect(() =>{
-        authPost(dispatch,token,"/get-list-enumeration",{"statusId":null})
+        authPost(dispatch,token,"/get-list-enumeration-distance-source",{"statusId":null})
             .then(
                 res => {
                     console.log(res);

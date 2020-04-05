@@ -1,15 +1,18 @@
-import React, { Component } from 'react';
+import React, { Component, useState } from 'react';
 import MaterialTable from "material-table";
-import {authGet} from "../../api";
+import {authGet, authPost} from "../../api";
 import {tableIcons} from "../../utils/iconutil";
 import {useDispatch, useSelector} from "react-redux";
 import { useHistory, Link } from "react-router-dom";
 import Button from "@material-ui/core/Button";
-
+import {CardContent, CircularProgress} from "@material-ui/core";
 
 function GeoListDistanceInfo(props) {
     const token = useSelector(state => state.auth.token);
     const dispatch = useDispatch();
+
+    const [isRequesting, setIsRequesting] = useState(false);
+
     const columns = [
         {field: 'addressStart', title: 'Địa chỉ đầu'},
         {field: 'addressEnd', title: 'Địa chỉ cuối'},
@@ -18,19 +21,44 @@ function GeoListDistanceInfo(props) {
         {field: 'travelTimeMotobike', title: 'Thời gian đi bằng xe máy'},
         {field: 'travelTimeTruck', title: 'Thời gian đi bằng xe tải'},
         {field: 'enumID', title:'Nguồn'},
-        {title: '', render: rowData => <Link to={"/geo/change/distance-detail/"+rowData.idStart+"/"+rowData.idEnd}><Button color="primary" variant="contained">Sửa</Button></Link>}
+        {title: '', render: rowData => <Link 
+                                        to={"/geo/change/distance-detail/"+rowData.idStart+"/"+rowData.idEnd}
+                                       >
+                                           <Button color="primary" variant="contained">Sửa</Button>
+                                       </Link>
+        }
 
     ];
 
+    function handleSubmit(){
+        setIsRequesting(true);
+        
+        let cnt = authPost( dispatch,
+            token,
+            "/compute-missing-address-distances",{distanceSource:'HAVERSINE', speedTruck:30, speedMotobike:40});
+            
+        console.log('GOT ',cnt);    
+
+        setIsRequesting(false);
+    }
     return (
 
         <div>
+            <Button
+                            disabled={isRequesting}
+                            variant="contained"
+                            color="primary"
+                            onClick={handleSubmit}
+            >
+                            {isRequesting ? <CircularProgress /> : "Bổ sung khoảng cách còn thiếu"}
+            </Button>
+
             <MaterialTable
                 title="Bảng thông tin khoảng cách "
                 columns={columns}
                 options={{
-                    filtering: true,
-                    search: false
+                    filtering: false,
+                    search: true
                 }}
                 data={query =>
                     new Promise((resolve, reject) => {

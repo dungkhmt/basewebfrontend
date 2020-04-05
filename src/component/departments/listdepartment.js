@@ -3,6 +3,7 @@ import React, { useEffect, useState } from "react";
 import MaterialTable from "material-table";
 import {useDispatch, useSelector} from "react-redux";
 import {authGet, authPost} from "../../api";
+import { API_URL } from "../../config/config";
 
 function ListDepartment(props){
 
@@ -22,7 +23,7 @@ function ListDepartment(props){
 
     function getDepartmentList(){
         //console.log("getDepartmentList....");
-        fetch('http://localhost:8080/api/get-all-departments', requestOptionsGet)
+        fetch(API_URL + '/get-all-departments', requestOptionsGet)
         .then(response => response.json())
         .then(response =>{
 			console.log(response);
