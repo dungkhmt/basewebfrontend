@@ -35,7 +35,8 @@ function GeoListDistanceInfo(props) {
         
         let cnt = authPost( dispatch,
             token,
-            "/compute-missing-address-distances",{distanceSource:'HAVERSINE', speedTruck:30, speedMotobike:40});
+            "/compute-missing-address-distances",{distanceSource:'OPEN_STREET_MAP', 
+            speedTruck:30, speedMotobike:40,maxElements:10000});
             
         console.log('GOT ',cnt);    
 
