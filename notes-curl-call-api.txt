@@ -168,11 +168,18 @@ Complete delivery shipment item
 
 
 	curl --header "Content-Type: application/json" -v POST http://3.1.6.126/api/complete-shipment-items -u admin:123 -d '{"items":[{"deliveryTripDetailId":"02d4a648-7e3d-4d3e-9cef-72208151b298"},{"deliveryTripDetailId":"cfa711be-1830-4615-bfbe-677752ecee08"}]}'
+--------
 
+START execute delivery trip
+	curl --header "Content-Type: application/json" -v GET http://localhost:8080/api/start-execute-delivery-trip/22a93103-fbd7-4357-88fb-a33389c58539 -u admin:123  
 --------
 get list facility
  curl --header "Content-Type: application/json" -v POST http://localhost:8080/api/get-list-facility -u admin:123 -d '{"statusId":null}'
+--------
 
+GEO quản lý vị trí, quãng đường
+	
+	curl --header "Content-Type: application/json" -v POST http://3.1.6.126/api/compute-missing-address-distances -u admin:123 -d '{"distanceSource":"OPEN_STREET_MAP","speedTruck":30, "speedMotobike":40,"maxElements":1000}'
 --------
 Login:
  

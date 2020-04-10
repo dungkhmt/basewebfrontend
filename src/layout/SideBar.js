@@ -1035,6 +1035,89 @@ export default function SideBar(props) {
               ""
           )}
 
+
+          {props.menu.has("MENU_TMS_CONTAINER") ? (
+              <div>
+                <ListItem button onClick={() => handleListClick(18)}>
+                  <ListItemIcon>
+                    <FormatListNumberedIcon/>
+                    <AirportShuttleIcon/>
+
+                  </ListItemIcon>
+                  <ListItemText primary="Vận chuyển container"/>
+                  {openCollapse[18] ? <ExpandLess/> : <ExpandMore/>}
+                </ListItem>
+                <Collapse in={openCollapse[18]} timeout="auto" unmountOnExit>
+                  <List component="div" disablePadding>
+                    <ListItem button className={classes.nested}>
+                      <ListItemIcon>
+                        <StarBorder/>
+                      </ListItemIcon>
+                      <ListItemText primary="DS bãi đầu kéo"/>
+                    </ListItem>
+                    <ListItem button className={classes.nested}>
+                      <ListItemIcon>
+                        <StarBorder/>
+                      </ListItemIcon>
+                      <ListItemText primary="DS bãi rơ mooc"/>
+                    </ListItem>
+
+                    <ListItem button className={classes.nested}>
+                      <ListItemIcon>
+                        <StarBorder/>
+                      </ListItemIcon>
+                      <ListItemText primary="DS bãi container"/>
+                    </ListItem>
+                    <ListItem button className={classes.nested}>
+                      <ListItemIcon>
+                        <StarBorder/>
+                      </ListItemIcon>
+                      <ListItemText primary="DS container"/>
+                    </ListItem>
+                    <ListItem button className={classes.nested}>
+                      <ListItemIcon>
+                        <StarBorder/>
+                      </ListItemIcon>
+                      <ListItemText primary="DS rơ mooc"/>
+                    </ListItem>
+                    <ListItem button className={classes.nested}>
+                      <ListItemIcon>
+                        <StarBorder/>
+                      </ListItemIcon>
+                      <ListItemText primary="DS đơn vận chuyển import empty"/>
+                    </ListItem>
+                    <ListItem button className={classes.nested}>
+                      <ListItemIcon>
+                        <StarBorder/>
+                      </ListItemIcon>
+                      <ListItemText primary="DS đơn vận chuyển import full"/>
+                    </ListItem>
+                    <ListItem button className={classes.nested}>
+                      <ListItemIcon>
+                        <StarBorder/>
+                      </ListItemIcon>
+                      <ListItemText primary="DS đơn vận chuyển export empty"/>
+                    </ListItem>
+                    <ListItem button className={classes.nested}>
+                      <ListItemIcon>
+                        <StarBorder/>
+                      </ListItemIcon>
+                      <ListItemText primary="DS đơn vận chuyển export full"/>
+                    </ListItem>
+                    <ListItem button className={classes.nested}>
+                      <ListItemIcon>
+                        <StarBorder/>
+                      </ListItemIcon>
+                      <ListItemText primary="DS đơn chuyển kho"/>
+                    </ListItem>
+
+                  </List>
+                </Collapse>
+              </div>
+          ) : (
+              ""
+          )}
+
         </List>
       </Drawer>
   );

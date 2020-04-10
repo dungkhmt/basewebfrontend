@@ -18,10 +18,10 @@ import {
   KeyboardDatePicker,
   MuiPickersUtilsProvider
 } from "@material-ui/pickers";
-import React, { useState } from "react";
+import React, {useEffect, useState } from "react";
 import { useHistory } from "react-router-dom";
-import { authPost } from "../../api";
-
+import { authPost, authGet } from "../../api";
+import { API_URL } from "../../config/config";
 import { useDispatch, useSelector } from "react-redux";
 import { CircularProgress } from "@material-ui/core";
 const useStyles = makeStyles(theme => ({
@@ -52,6 +52,9 @@ function UserCreate(props) {
   const token = useSelector(state => state.auth.token);
   const dispatch = useDispatch();
   const history = useHistory();
+
+  const [securityGroups, setSecurityGroups] = useState([]);
+
   const [lastName, setLastName] = useState();
   const [middleName, setMiddleName] = useState();
   const [firstName, setFirstName] = useState();
@@ -67,6 +70,30 @@ function UserCreate(props) {
   const [isRequesting, setIsRequesting] = useState(false);
 
   const classes = useStyles();
+
+  function getSecurityGroups(){
+    fetch(
+      API_URL + '/get-security-groups', 
+      {
+        method: 'GET',
+        headers: { 'Content-Type': 'application/json',"X-Auth-Token": token}
+      }
+    ).then(response => response.json())
+        .then(response =>{
+			console.log(response);
+			let arr = [];
+			response.forEach(d => {
+				arr.push(d);
+			});
+            setSecurityGroups(arr);
+            //console.log('getDepartmentList = ',departments);
+        });    
+  }
+  useEffect( () =>{
+    //let lst = authGet(dispatch, token,"/get-security-groups");
+    //console.log(lst);
+    getSecurityGroups();
+  },[]);
 
   const handleUserNameChange = event => {
     setUserName(event.target.value);
@@ -226,19 +253,17 @@ function UserCreate(props) {
                   input={<Input />}
                   MenuProps={MenuProps}
                 >
-                  <MenuItem key="ROLE_SALE_MANAGER" value="ROLE_SALE_MANAGER">
-                    {" "}
-                    ROLE_SALE_MANAGER
+
+                {securityGroups.map(s => (
+                  <MenuItem 
+                    key={s.groupId}
+                    value={s.groupId}
+                  >
+                    {s.description}
                   </MenuItem>
-                  <MenuItem key="ROLE_ACCOUNTANT" value="ROLE_ACCOUNTANT">
-                    ROLE_ACCOUNTANT
-                  </MenuItem>
-                  <MenuItem key="ROLE_FULL_ADMIN" value="ROLE_FULL_ADMIN">
-                    ROLE_FULL_ADMIN
-                  </MenuItem>
-                  <MenuItem key="ROLE_TMS_MANAGER" value="ROLE_TMS_MANAGER">
-                    ROLE_TMS_MANAGER
-                  </MenuItem>
+                ))}
+
+                  
                   
                 </Select>
               </FormControl>
