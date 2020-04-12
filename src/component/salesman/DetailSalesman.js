@@ -16,7 +16,8 @@ function DetailSalesman(props){
     const dispatch = useDispatch();
 
     const handleDelete = (Id)=>{
-        authGet(dispatch,token,"/delete-customer-distributor-salesman/"+Id)
+        //authGet(dispatch,token,"/delete-customer-distributor-salesman/"+Id)
+        authGet(dispatch,token,"/delete-retail-outlet-distributor-salesman/"+Id)
             .then(
                 res => {
                     console.log(res);

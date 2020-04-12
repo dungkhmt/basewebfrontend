@@ -55,7 +55,8 @@ function SalesmanAdd(props){
 
     useEffect(() =>{
         console.log("partyId ",partyId);
-        authPost(dispatch,token,"/get-list-customer",{"statusId":null})
+        //authPost(dispatch,token,"/get-list-customer",{"statusId":null})
+        authPost(dispatch,token,"/get-list-retail-outlet",{"statusId":null})
             .then(
                 res => {
                     console.log(res);
@@ -114,7 +115,8 @@ function SalesmanAdd(props){
         }
         console.log("data ",data);
         setIsRequesting(true);
-        authPost(dispatch,token,"/add-customer-distributor-salesman/"+partyId,data)
+        //authPost(dispatch,token,"/add-customer-distributor-salesman/"+partyId,data)
+        authPost(dispatch,token,"/add-retail-outlet-distributor-salesman/"+partyId,data)
             .then(
                 res => {
                     console.log(res);
