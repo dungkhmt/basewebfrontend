@@ -72,6 +72,14 @@ Create Customer
   
   curl --header "Content-Type: application/json; charset=utf-8" -v POST http://3.1.6.126/api/create-customer -u admin:123 -d '{"customerName":"VinMart Phạm Ngọc Thạch","address":"Pham Ngoc Thach, Hanoi","latitude":"21.006619","longitude":"105.832038"}'
 --------
+Create Retail Outlet
+  curl --header "Content-Type: application/json; charset=utf-8" -v POST http://localhost:8080/api/create-retail-outlet -u admin:123 -d '{"retailOutletName":"VinMart VK","address":"Van Kiep, Hanoi","latitude":"21.006619","longitude":"105.832038"}'
+	
+--------
+Create Distributor
+  curl --header "Content-Type: application/json; charset=utf-8" -v POST http://localhost:8080/api/create-distributor -u admin:123 -d '{"distributorName":"Nha phan phoi Tu Liem","address":"Xuan Thuy, Cau giay, Hanoi","latitude":"21.006619","longitude":"105.832038"}'
+
+--------
 
 Get list customers
 	curl --header "Content-Type: application/json; charset=utf-8" -v POST http://localhost:8080/api/customers -u admin:123
@@ -218,11 +226,21 @@ create salesroute config
 	curl --header "Content-Type: application/json" -v POST http://localhost:8080/api/create-sales-route-config -u admin:123 -d '{"days":"5","repeatWeek":2}'
 	
 -------
-create salesroute config customer
+create salesroute config retail outlet
 
-	curl --header "Content-Type: application/json" -v POST http://localhost:8080/api/create-sales-route-config-customer -u admin:123 -d '{"salesRouteConfigId":"ef4d38e2-fe57-4c0e-9242-298f78ca005a","partyCustomerId":"5ae20c48-4d6c-11ea-967e-54bf64436441","partySalesmanId":"847254bb-c0f1-4696-b11f-682976965eed","startExecuteDate":"2020-01-01"}'
+	curl --header "Content-Type: application/json" -v POST http://localhost:8080/api/create-sales-route-config-retail-outlet -u admin:123 -d '{"salesRouteConfigId":"ef4d38e2-fe57-4c0e-9242-298f78ca005a","retailOutletSalesmanVendorId":"","startExecuteDate":"2020-01-01"}'
 	
 	curl --header "Content-Type: application/json" -v POST http://3.1.6.126/api/create-sales-route-config-customer -u admin:123 -d '{"salesRouteConfigId":"92d5db5f-a41f-4bc5-ad54-50eeca5423b0","partyCustomerId":"5ae20c48-4d6c-11ea-967e-54bf64436441","partySalesmanId":"bb159eab-1200-483c-9684-8164f5570b5c","startExecuteDate":"2020-01-01"}'	
+-------
+create retail outlet salesman vendor
+	curl --header "Content-Type: application/json" -v POST http://localhost:8080/api/add-retail-outlet-distributor-salesman -u admin:123 -d '{"partyRetailOutletId":"6f954ca4-052f-4794-aae5-76ccf9ee55ff","partyDistributorId":"a91c4258-9295-4f74-96f7-dc04b1ae5bd5","partySalesmanId":"847254bb-c0f1-4696-b11f-682976965eed","startExecuteDate":"2020-01-01"}'
+
+	
+-------
+create sales_route_config_retail_outlet
+	curl --header "Content-Type: application/json" -v POST http://localhost:8080/api/create-sales-route-config-retail-outlet -u admin:123 -d '{"partyRetailOutletId":"6f954ca4-052f-4794-aae5-76ccf9ee55ff","salesRouteConfigId":"10f3f5ec-7d1e-11ea-a2b1-54bf64436441","retailOutletSalesmanVendorId":"c96a212a-61ba-4804-a3a8-3bd306b2464e","salesRoutePlanningPeriodId":"b15c646d-59d1-4c85-9db4-522bb19ec474","visitFrequencyId":"FW2","startExecuteDate":"2020-01-01"}'
+
+
 -------
 generate sales route detail
 	curl --header "Content-Type: application/json" -v POST http://localhost:8080/api/generate-sales-route-detail -u admin:123 -d '{"partySalesmanId":"847254bb-c0f1-4696-b11f-682976965eed","salesRoutePlanningPeriodId":"30212f3a-b44b-45a7-b094-769746aac9dc"}'

@@ -59,7 +59,7 @@ function SalesmanAdd(props){
         authPost(dispatch,token,"/get-list-retail-outlet",{"statusId":null})
             .then(
                 res => {
-                    console.log(res);
+                    console.log("GOT retail-outlet",res);
                     setIsRequesting(false);
                     if(res.status === 401){
                         dispatch(failed());
@@ -74,8 +74,8 @@ function SalesmanAdd(props){
             )
             .then(
                 res =>{
-                    console.log("res1 ",res.lists);
-                    setListCustomer(res.lists);
+                    console.log("res1 ",res.list);
+                    setListCustomer(res.list);
                 })
     },[])
 
@@ -110,13 +110,15 @@ function SalesmanAdd(props){
     const handleSubmit = event => {
 
         const data = {
-            partyCustomerId: customer,
+            partyRetailOutletId: customer,
+            partySalesmanId:partyId,
             partyDistributorId: distributor
         }
         console.log("data ",data);
         setIsRequesting(true);
         //authPost(dispatch,token,"/add-customer-distributor-salesman/"+partyId,data)
-        authPost(dispatch,token,"/add-retail-outlet-distributor-salesman/"+partyId,data)
+        //authPost(dispatch,token,"/add-retail-outlet-distributor-salesman/"+partyId,data)
+        authPost(dispatch,token,"/add-retail-outlet-distributor-salesman",data)
             .then(
                 res => {
                     console.log(res);
@@ -161,7 +163,7 @@ function SalesmanAdd(props){
                                     key={c.partyId}
                                     value={c.partyId}
                                 >
-                                    {c.customerName}
+                                    {c.retailOutletName}
                                 </MenuItem>
                             ))}
                         </TextField>

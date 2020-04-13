@@ -38,11 +38,11 @@ function DetailSalesman(props){
     }
 
     const columns = [
-        {title: "Mã Khách hàng", field: "customerCode"},
-        {title: "Tên Khách hàng", field: "customerName"},
+        {title: "Mã đại lí bán lẻ", field: "partyId"},
+        {title: "Tên đại lí bán lẻ", field: "retailOutletName"},
         {title: "Địa chỉ", field: "address"},
         {title: "Tên nhà phân phối", field: "partyDistritorName"},
-        {title: "", render: rowData => <Button color="primary" variant="contained" onClick={() => handleDelete(rowData.customerSalesmanVendorId)}>Xoa</Button> }
+        {title: "", render: rowData => <Button color="primary" variant="contained" onClick={() => handleDelete(rowData.retailOutletSalesmanVendorId)}>Xoa</Button> }
     ]
 
 
@@ -92,7 +92,7 @@ function DetailSalesman(props){
                             "/salesman-detail/"+ partyId+"?size=" + query.pageSize + "&page=" + query.page+sortParam+filterParam
                         ).then(
                             res => {
-
+                                console.log("res.content = ",res.content);
                                 resolve({
                                     data: res.content,
                                     page: res.number,
