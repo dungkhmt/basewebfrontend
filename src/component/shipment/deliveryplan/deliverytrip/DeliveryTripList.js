@@ -19,9 +19,14 @@ import MaterialTable from "material-table";
 import React, {useEffect, useState} from "react";
 import {useDispatch, useSelector} from "react-redux";
 import {Link, useHistory, useParams} from "react-router-dom";
-import {authGet} from "../../../../api";
+import {authGet, authPost} from "../../../../api";
 import {toFormattedDateTime} from "../../../../utils/dateutils";
 import {tableIcons} from "../../../../utils/iconutil";
+import TextField from "@material-ui/core/TextField";
+import Dialog from "@material-ui/core/Dialog";
+import DialogContent from "@material-ui/core/DialogContent";
+import DialogActions from "@material-ui/core/DialogActions";
+import DialogTitle from "@material-ui/core/DialogTitle";
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -112,6 +117,9 @@ export default function DeliveryTripList() {
     setDeliveryPlanDetailInfo({numberTrips: dataTable.length, totalWeight, totalWeightScheduled});
   }
 
+  const [solverOptionOpen, setSolverOptionOpen] = useState(false);
+  const [solverTimeLimit, setSolverTimeLimit] = useState(120);
+
   const [solveWaiting, setSolveWaiting] = useState(false);
 
   useEffect(() => {
@@ -119,9 +127,10 @@ export default function DeliveryTripList() {
     getDataTable().then(r => r);
   }, []);
 
-  function handleSolve() {
+  function handleSolve(timeLimit) {
+    let body = {deliveryPlanId, timeLimit};
     setSolveWaiting(true);
-    authGet(dispatch, token, "/solve/" + deliveryPlanId).then(response => {
+    authPost(dispatch, token, "/solve", body).then(r => r.json()).then(response => {
       if (!response) {
         alert("Đã có lỗi xảy ra...");
       }
@@ -218,7 +227,7 @@ export default function DeliveryTripList() {
               </IconButton>
               <IconButton
                 style={{float: "right"}}
-                onClick={() => handleSolve()}
+                onClick={() => setSolverOptionOpen(true)}
                 aria-label="Tự động xếp chuyến còn lại"
                 component="span"
               >
@@ -361,6 +370,31 @@ export default function DeliveryTripList() {
           }
         </Grid>
       </Grid>
+
+      <Dialog open={solverOptionOpen} maxWidth={'sm'} fullWidth={true}>
+        <DialogTitle>Tùy chọn bộ giải</DialogTitle>
+        <DialogContent>
+          <TextField label={'Giới hạn thời gian chạy:'} required={true} type={'number'} defaultValue={120}
+                     value={solverTimeLimit} onChange={event => {
+            let newValue = event.target.value;
+            if (!newValue || !(typeof newValue === 'number')) {
+              return;
+            }
+            if (newValue <= 0 || newValue > 10000) {
+              return;
+            }
+            setSolverTimeLimit(newValue);
+          }}/>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => {
+            setSolverOptionOpen(false);
+            handleSolve(solverTimeLimit);
+          }} color="primary">
+            Solve
+          </Button>
+        </DialogActions>
+      </Dialog>
     </div>
   );
 }
