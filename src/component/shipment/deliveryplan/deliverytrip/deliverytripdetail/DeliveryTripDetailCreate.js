@@ -87,9 +87,9 @@ export default function DeliveryTripDetailCreate() {
       />,
     },
     {
-      title: "Tổng khối lượng",
+      title: "Tổng khối lượng (kg)",
       field: "weight",
-      render: rowData => (rowData['weight'] * selectedQuantity[rowData['shipmentItemId']] || 0).toFixed(2)
+      render: rowData => Math.round(rowData['weight'] * selectedQuantity[rowData['shipmentItemId']] * 100000 || 0) / 100
     },
   ];
 
@@ -217,7 +217,8 @@ export default function DeliveryTripDetailCreate() {
                     style={{verticalAlign: 'text-bottom', textAlign: 'left', padding: '30px 30px 20px 30px'}}>
                 <div>
                   <b>Tổng khoảng cách: </b> {tripCapacityInfo == null ? 0 : tripCapacityInfo['totalDistance']} <p/>
-                  <b>Tổng khối lượng: </b> {tripCapacityInfo == null ? 0 : tripCapacityInfo['totalWeight']} <p/>
+                  <b>Tổng khối lượng (kg): </b> {tripCapacityInfo == null ? 0 :
+                  Math.round(tripCapacityInfo['totalWeight'] * 100000) / 100} <p/>
                   <b>Tổng số pallet: </b> {tripCapacityInfo == null ? 0 : tripCapacityInfo['totalPallet']} <p/>
                 </div>
               </Grid>
