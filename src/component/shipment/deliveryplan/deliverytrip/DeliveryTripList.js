@@ -371,17 +371,16 @@ export default function DeliveryTripList() {
         </Grid>
       </Grid>
 
-      <Dialog open={solverOptionOpen} maxWidth={'sm'} fullWidth={true}>
+      <Dialog open={solverOptionOpen} maxWidth={'sm'} fullWidth={true} onClose={() => setSolverOptionOpen(false)}>
         <DialogTitle>Tùy chọn bộ giải</DialogTitle>
         <DialogContent>
-          <TextField label={'Giới hạn thời gian chạy:'} required={true} type={'number'} defaultValue={120}
+          <TextField label={'Giới hạn thời gian chạy:'} required={true} type={'number'}
                      value={solverTimeLimit} onChange={event => {
             let newValue = event.target.value;
-            if (!newValue || !(typeof newValue === 'number')) {
-              return;
-            }
-            if (newValue <= 0 || newValue > 10000) {
-              return;
+            if (newValue <= 0) {
+              newValue = 1;
+            } else if (newValue > 10000) {
+              newValue = 10000;
             }
             setSolverTimeLimit(newValue);
           }}/>
