@@ -1,116 +1,118 @@
-import React, { Component, useState } from 'react';
+import React, {useState} from 'react';
 import MaterialTable from "material-table";
 import {authGet, authPost} from "../../api";
 import {tableIcons} from "../../utils/iconutil";
 import {useDispatch, useSelector} from "react-redux";
-import { useHistory, Link } from "react-router-dom";
+import {Link} from "react-router-dom";
 import Button from "@material-ui/core/Button";
-import {CardContent, CircularProgress} from "@material-ui/core";
+import {CircularProgress} from "@material-ui/core";
 
 function GeoListDistanceInfo(props) {
-    const token = useSelector(state => state.auth.token);
-    const dispatch = useDispatch();
+  const token = useSelector(state => state.auth.token);
+  const dispatch = useDispatch();
 
-    const [isRequesting, setIsRequesting] = useState(false);
+  const [isRequesting, setIsRequesting] = useState(false);
 
-    const columns = [
-        {field: 'addressStart', title: 'Địa chỉ đầu'},
-        {field: 'addressEnd', title: 'Địa chỉ cuối'},
-        {field: 'distance', title: 'Khoảng cách'},
-        {field: 'travelTime', title: 'Thời gian di chuyển'},
-        {field: 'travelTimeMotobike', title: 'Thời gian đi bằng xe máy'},
-        {field: 'travelTimeTruck', title: 'Thời gian đi bằng xe tải'},
-        {field: 'enumID', title:'Nguồn'},
-        {title: '', render: rowData => <Link 
-                                        to={"/geo/change/distance-detail/"+rowData.idStart+"/"+rowData.idEnd}
-                                       >
-                                           <Button color="primary" variant="contained">Sửa</Button>
-                                       </Link>
-        }
-
-    ];
-
-    function handleSubmit(){
-        setIsRequesting(true);
-        
-        let cnt = authPost( dispatch,
-            token,
-            "/compute-missing-address-distances",{distanceSource:'OPEN_STREET_MAP', 
-            speedTruck:30, speedMotobike:40,maxElements:10000});
-            
-        console.log('GOT ',cnt);    
-
-        setIsRequesting(false);
+  const columns = [
+    {field: 'addressStart', title: 'Địa chỉ đầu'},
+    {field: 'addressEnd', title: 'Địa chỉ cuối'},
+    {field: 'distance', title: 'Khoảng cách'},
+    {field: 'travelTime', title: 'Thời gian di chuyển'},
+    {field: 'travelTimeMotorbike', title: 'Thời gian đi bằng xe máy'},
+    {field: 'travelTimeTruck', title: 'Thời gian đi bằng xe tải'},
+    {field: 'enumID', title: 'Nguồn'},
+    {
+      title: '', render: rowData => <Link
+        to={"/geo/change/distance-detail/" + rowData.idStart + "/" + rowData.idEnd}
+      >
+        <Button color="primary" variant="contained">Sửa</Button>
+      </Link>
     }
-    return (
 
-        <div>
-            <Button
-                            disabled={isRequesting}
-                            variant="contained"
-                            color="primary"
-                            onClick={handleSubmit}
-            >
-                            {isRequesting ? <CircularProgress /> : "Bổ sung khoảng cách còn thiếu"}
-            </Button>
+  ];
 
-            <MaterialTable
-                title="Bảng thông tin khoảng cách "
-                columns={columns}
-                options={{
-                    filtering: false,
-                    search: true
-                }}
-                data={query =>
-                    new Promise((resolve, reject) => {
-                        console.log(query);
-                        let sortParam="";
-                        if(query.orderBy!==undefined){
-                            sortParam="&sort="+query.orderBy.field+','+query.orderDirection;
-                        }
-                        let filterParam="";
-                        if(query.filters.length>0){
-                            let filter=query.filters;
-                            filter.forEach(v=>{
-                                filterParam=v.column.field+"="+v.value+"&"
-                            })
-                            filterParam="&"+filterParam.substring(0,filterParam.length-1);
-                        }
+  async function handleSubmit() {
+    setIsRequesting(true);
 
-                        authGet(
-                            dispatch,
-                            token,
-                            "/get-list-distance-info" + "?size=" + query.pageSize + "&page=" + query.page+sortParam+filterParam
-                        ).then(
+    let cnt = await authPost(dispatch,
+      token,
+      "/compute-missing-address-distances", {
+        distanceSource: 'OPEN_STREET_MAP',
+        speedTruck: 30, speedMotobike: 40, maxElements: 10000
+      }).then(r => r.json());
 
-                            res => {
+    console.log('GOT ', cnt);
 
-                                resolve({
-                                    data: res.content,
-                                    page: res.number,
-                                    totalCount: res.totalElements
+    setIsRequesting(false);
+    window.location.reload();
+  }
 
-                                });
-                                console.log("res",res.content);
+  return (
 
-                            },
+    <div>
+      <Button
+        disabled={isRequesting}
+        variant="contained"
+        color="primary"
+        onClick={handleSubmit}
+      >
+        {isRequesting ? <CircularProgress/> : "Bổ sung khoảng cách còn thiếu"}
+      </Button>
 
-                            error => {
-                                console.log("error");
-                            },
+      <MaterialTable
+        title="Bảng thông tin khoảng cách "
+        columns={columns}
+        options={{
+          filtering: false,
+          search: true
+        }}
+        data={query =>
+          new Promise((resolve, reject) => {
+            console.log(query);
+            let sortParam = "";
+            if (query.orderBy !== undefined) {
+              sortParam = "&sort=" + query.orderBy.field + ',' + query.orderDirection;
+            }
+            let filterParam = "";
+            if (query.filters.length > 0) {
+              let filter = query.filters;
+              filter.forEach(v => {
+                filterParam = v.column.field + "=" + v.value + "&"
+              })
+              filterParam = "&" + filterParam.substring(0, filterParam.length - 1);
+            }
 
+            authGet(
+              dispatch,
+              token,
+              "/get-list-distance-info" + "?size=" + query.pageSize + "&page=" + query.page + sortParam + filterParam
+            ).then(
+              res => {
 
-                        );
-                    })
-                }
-                icons={tableIcons}
-                onRowClick={(event    , rowData) => {
-                    console.log("select ",rowData);
-                }}
-            />
-        </div>
+                resolve({
+                  data: res.content,
+                  page: res.number,
+                  totalCount: res.totalElements
 
-    );
+                });
+                console.log("res", res.content);
+
+              },
+
+              error => {
+                console.log("error");
+              },
+            );
+          })
+        }
+        icons={tableIcons}
+        onRowClick={(event, rowData) => {
+          console.log("select ", rowData);
+        }}
+      />
+    </div>
+
+  );
 
 }
 
