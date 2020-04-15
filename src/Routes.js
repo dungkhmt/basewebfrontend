@@ -23,9 +23,9 @@ import ShipmentItemList from "./component/shipment/shipment/ShipmentItemList";
 import VehicleList from "./component/shipment/vehicle/VehicleList";
 import DeliveryTripCreate from "./component/shipment/deliveryplan/deliverytrip/DeliveryTripCreate";
 import DeliveryTripDetailList
-    from "./component/shipment/deliveryplan/deliverytrip/deliverytripdetail/DeliveryTripDetailList";
+  from "./component/shipment/deliveryplan/deliverytrip/deliverytripdetail/DeliveryTripDetailList";
 import DeliveryTripDetailCreate
-    from "./component/shipment/deliveryplan/deliverytrip/deliverytripdetail/DeliveryTripDetailCreate";
+  from "./component/shipment/deliveryplan/deliverytrip/deliverytripdetail/DeliveryTripDetailCreate";
 import ShipmentItemDeliveryPlanList from "./component/shipment/deliveryplan/shipmentitem/ShipmentItemDeliveryPlanList";
 import VehicleDeliveryPlanList from "./component/shipment/deliveryplan/vehicle/VehicleDeliveryPlanList";
 import ShipmentItemCreate from "./component/shipment/shipment/ShipmentItemCreate";
@@ -67,6 +67,7 @@ import DepotTruckList from "./component/tmscontainer/depotTruck/DepotTruckList";
 import DepotTruckGoogleMap from "./component/tmscontainer/depotTruck/DepotTruckGoogleMap";
 import TrailerCreate from "./component/tmscontainer/trailer/TrailerCreate";
 import TrailerList from "./component/tmscontainer/trailer/TrailerList";
+import ItemDelivery from "./component/postsystem/delivery/ItemDelivery";
 
 
 function Routes(props) {// props nay tu parent transfer vao
@@ -571,6 +572,108 @@ function Routes(props) {// props nay tu parent transfer vao
           component={error} // props
           path="/not-found"               // props
         />
+
+      <Route
+        component={SignInContainer} // props
+        path="/login"               // props
+      />
+      <Route
+        component={error} // props
+        path="/not-found"               // props
+      />
+      <PrivateRouteWithLayout
+        component={InventoryOrderDetail}
+        layout={Layout}
+        isAuthenticated={props.isAuthenticated}
+        path="/inventory/order/:orderId"
+      />
+
+      <PrivateRouteWithLayout
+        component={InventoryOrderExport}
+        layout={Layout}
+        isAuthenticated={props.isAuthenticated}
+        path="/inventory/export/:orderId"
+      />
+
+      <PrivateRouteWithLayout
+        component={InventoryOrderExportList}
+        layout={Layout}
+        isAuthenticated={props.isAuthenticated}
+        path="/inventory/export-list"
+      />
+
+      <PrivateRouteWithLayout
+        component={InventoryList}
+        layout={Layout}
+        isAuthenticated={props.isAuthenticated}
+        path="/inventory/list"
+      />
+
+      <PrivateRouteWithLayout
+        component={SaleReportByProduct}
+        layout={Layout}
+        isAuthenticated={props.isAuthenticated}
+        path="/sale-reports-by-product"
+      />
+
+      <PrivateRouteWithLayout
+        component={SaleReportByPartyCustomer}
+        layout={Layout}
+        isAuthenticated={props.isAuthenticated}
+        path="/sale-reports-by-customer"
+      />
+
+      <PrivateRouteWithLayout
+        component={SaleReportByDate}
+        layout={Layout}
+        isAuthenticated={props.isAuthenticated}
+        path="/sale-reports-by-date"
+      />
+
+      <PrivateRouteWithLayout
+        component={ListLocation}
+        layout={Layout}
+        isAuthenticated={props.isAuthenticated}
+        path="/geo/list/location"
+      />
+
+      <PrivateRouteWithLayout
+        component={GeoGoogleMapChangeCoordinates}
+        layout={Layout}
+        isAuthenticated={props.isAuthenticated}
+        path="/geo/location/map/:contactMechId"
+      />
+
+      <PrivateRouteWithLayout
+        component={GeoListDistanceInfo}
+        layout={Layout}
+        isAuthenticated={props.isAuthenticated}
+        path="/geo/list/distance-info"
+      />
+
+      <PrivateRouteWithLayout
+        component={ChangeDistanceDetail}
+        layout={Layout}
+        isAuthenticated={props.isAuthenticated}
+        path="/geo/change/distance-detail/:fromContactMechId/:toContactMechId"
+      />
+
+      <PrivateRouteWithLayout
+        component={ItemDelivery}
+        layout={Layout}
+        isAuthenticated={props.isAuthenticated}
+        path="/create-item-delivery-plan"
+      />
+
+
+      <Route
+        component={SignInContainer} // props
+        path="/login"               // props
+      />
+      <Route
+        component={error} // props
+        path="/not-found"               // props
+      />
       <Redirect to="/not-found"/>
     </Switch>
   );

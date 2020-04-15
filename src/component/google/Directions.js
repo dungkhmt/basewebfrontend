@@ -16,7 +16,8 @@ export default function Directions(props) {
   const token = useSelector(state => state.auth.token);
 
   const {
-    routes  // list of route: [ {post:{label,lat,lng,title}, items:[item:{lat,lng,label,title}]}]
+    routes,  // list of route: [ {post:{label,lat,lng,title}, items:[item:{lat,lng,label,title}]}]
+    settings = {color: 'random'} // color: is 'random' or [] list color code
   } = props;
 
   const [mapOption,] = useState({
@@ -30,9 +31,14 @@ export default function Directions(props) {
   }, [routes]);
 
   function updateColor() {
-    const colors = [];
-    for (let i = 0; i < routes.length; ++i) {
-      colors.push(getRandomColor());
+    let colors;
+    if (settings['color'] === 'random') {
+      colors = [];
+      for (let i = 0; i < routes.length; ++i) {
+        colors.push(getRandomColor());
+      }
+    } else {
+      colors = settings['color'];
     }
     let idx = 0;
     routes.forEach(route => {
@@ -116,13 +122,13 @@ export default function Directions(props) {
                 strokeColor: routeColor,
                 strokeOpacity: 0.8,
                 strokeWeight: 2,
-                // icons: [{
-                //   icon: {
-                //     path: window.google.maps.SymbolPath.FORWARD_CLOSED_ARROW
-                //   },
-                //   repeat: '30px',
-                //   offset: '100%'
-                // }],
+                icons: [{
+                  icon: {
+                    path: window.google.maps.SymbolPath.FORWARD_CLOSED_ARROW
+                  },
+                  repeat: '80px',
+                  offset: '30%'
+                }],
                 path: paths
               },
               suppressMarkers: true,

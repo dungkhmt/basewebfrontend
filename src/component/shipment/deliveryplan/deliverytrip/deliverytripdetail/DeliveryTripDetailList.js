@@ -34,8 +34,8 @@ export default function DeliveryTripDetailList() {
 
   const columns = [
     {title: "Thứ tự hành trình", field: "sequence"},
-    {title: "Mã chi tiết chuyến giao hàng", field: "deliveryTripDetailId"},
-    {title: "Mã chuyến giao hàng", field: "deliveryTripId"},
+    // {title: "Mã chi tiết chuyến giao hàng", field: "deliveryTripDetailId"},
+    // {title: "Mã chuyến giao hàng", field: "deliveryTripId"},
     {title: "Mã khách hàng", field: "customerCode"},
     {title: "Địa chỉ", field: "address"},
     {title: "Tọa độ", field: "latLng", render: rowData => rowData['lat'] + ',' + rowData['lng']},
@@ -43,13 +43,17 @@ export default function DeliveryTripDetailList() {
     {title: "Tên sản phẩm", field: "productName"},
     {title: "Tổng số lượng sản phẩm trong đơn hàng", field: "shipmentQuantity"},
     {title: "Số lượng sản phẩm đã chọn", field: "deliveryQuantity"},
-    {title: "Tổng khối lượng sản phẩm đã chọn", field: "weight"},
+    {
+      title: "Tổng khối lượng sản phẩm đã chọn (kg)",
+      field: "weight",
+      render: rowData => Math.round(rowData['weight'] * 100000) / 100
+    },
     {
       title: "Note",
       field: "note",
-      render: rowData => <Button variant={'contained'}
-                                 onClick={() => handleDelete(rowData['deliveryTripDetailId'])}
-                                 startIcon={<DeleteIcon/>}>Xóa</Button>
+      render: rowData => (deliveryTrip && deliveryTrip['editable'] ?
+        <Button variant={'contained'} onClick={() => handleDelete(rowData['deliveryTripDetailId'])}
+                startIcon={<DeleteIcon/>}>Xóa</Button> : '')
     },
   ];
 
@@ -58,6 +62,10 @@ export default function DeliveryTripDetailList() {
   const [deliveryTrip, setDeliveryTrip] = useState(null);
 
   const [facilityLatLng, setFacilityLatLng] = useState();
+
+  const NOT_EDITABLE_TRIP_STATUS = new Set(['DELIVERY_TRIP_APPROVED_TRIP',
+    'DELIVERY_TRIP_EXECUTED',
+    'DELIVERY_TRIP_COMPLETED']);
 
   const getDeliveryTripInfo = () => {
     authGet(dispatch, token, '/delivery-trip/' + deliveryTripId + '/basic-info').then(response => {
@@ -72,6 +80,8 @@ export default function DeliveryTripDetailList() {
         totalDistance: response['distance'],
         totalWeight: response['totalWeight'],
         totalPallet: response['totalPallet'],
+        statusId: response['statusId'],
+        editable: !NOT_EDITABLE_TRIP_STATUS.has(response['statusId'])
       });
     })
   };
@@ -164,7 +174,7 @@ export default function DeliveryTripDetailList() {
             <MTableToolbar {...props} />
             <Grid container spacing={3}>
               <Grid item xs={8} style={{textAlign: 'left', padding: '0px 30px 20px 30px'}}>
-                <b>Mã chuyến hàng: </b> {deliveryTripId} <p/>
+                {/*<b>Mã chuyến hàng: </b> {deliveryTripId} <p/>*/}
                 <b>Mã đợt giao hàng: </b> {deliveryTrip === null ? '' : deliveryTrip['deliveryPlanId']} <p/>
                 <b>Ngày tạo: </b> {deliveryTrip === null ? '' : deliveryTrip['executeDate']} <p/>
                 <b>Xe: </b> {deliveryTrip === null ? '' : deliveryTrip['vehicleId']}<p/>
@@ -191,20 +201,31 @@ export default function DeliveryTripDetailList() {
               <Grid item xs={4}
                     style={{verticalAlign: 'text-bottom', textAlign: 'right', padding: '0px 50px 10px 30px'}}>
                 <div style={{textAlign: 'left'}}>
+                  <b>Trạng thái chuyến: </b> {deliveryTrip == null ? 0 : deliveryTrip['statusId']} <p/>
                   <b>Tổng khoảng cách: </b> {deliveryTrip == null ? 0 : deliveryTrip['totalDistance']} <p/>
-                  <b>Tổng khối lượng: </b> {deliveryTrip == null ? 0 : deliveryTrip['totalWeight']} <p/>
+                  <b>Tổng khối lượng (kg): </b> {deliveryTrip == null ? 0 :
+                  Math.round(deliveryTrip['totalWeight'] * 100000) / 100} <p/>
                   <b>Tổng số pallet: </b> {deliveryTrip == null ? 0 : deliveryTrip['totalPallet']} <p/>
                 </div>
-                <Link to={'/create-delivery-trip-detail/' + deliveryTripId}>
-                  <Button color={'primary'} variant={'contained'} startIcon={<AddIcon/>}> Thêm mới </Button>
-                </Link>
+
+                {deliveryTrip && deliveryTrip['editable'] ?
+                  <Link to={'/create-delivery-trip-detail/' + deliveryTripId}>
+                    <Button color={'primary'} variant={'contained'} startIcon={<AddIcon/>}> Thêm mới </Button>
+                  </Link> : ''}
                 <Button color={'primary'} variant={'contained'} onClick={() => {
                   setMapOpen(true);
                   console.log(dataTable);
                 }}>
                   Hiển thị bản đồ
                 </Button>
-                <Button color={'primary'} variant={'contained'}> Phê duyệt </Button> <p/>
+
+                {deliveryTrip && deliveryTrip['editable'] ?
+                  <Button color={'primary'} variant={'contained'}
+                          onClick={() => {
+                            authGet(dispatch, token, '/approve-delivery-trip/' + deliveryTripId).then(r => r);
+                            window.location.reload();
+                          }}>
+                    Phê duyệt </Button> : ''} <p/>
                 {/*<Button color={'secondary'} variant={'contained'} startIcon={<DeleteIcon/>}> Hủy chi tiết*/}
                 {/*  chuyến </Button>*/}
               </Grid>
@@ -239,6 +260,7 @@ export default function DeliveryTripDetailList() {
                     title: value['address']
                   })) : []
               }]}
+              settings={{color: ['#0000FF']}}
             />
             : ''
         }

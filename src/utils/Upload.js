@@ -11,7 +11,7 @@ import CloudUploadIcon from "@material-ui/icons/CloudUpload";
 
 export default function Upload(props) {
 
-  const {url, token, buttonTitle, dispatch, handleSaveCallback} = props;
+  const {url, token, buttonTitle, dispatch, handleSaveCallback, fullUrl} = props;
 
   const [open, setOpen] = useState(false);
 
@@ -24,9 +24,9 @@ export default function Upload(props) {
     setWaiting(true);
     let data = new FormData();
     data.append('file', files[0]);
-    Promise.all([uploadFile(url, data)]).then(([response]) => {
+    Promise.all([uploadFile(url, data, fullUrl)]).then(([response]) => {
       setWaiting(false);
-      handleSaveCallback();
+      handleSaveCallback(response);
     }).catch(error => {
       console.log(error);
       alert('Upload thất bại: ' + error);
@@ -77,7 +77,7 @@ export default function Upload(props) {
     </div>
   );
 
-  function uploadFile(url, file) {
+  function uploadFile(url, file, fullUrl) {
     let fields;
     fields = {
       method: 'POST',
@@ -86,7 +86,11 @@ export default function Upload(props) {
       },
       body: file
     };
-    return fetch(`${API_URL}/${url}`, fields).then(res => res.json());
+    if (fullUrl) {
+      return fetch(fullUrl, fields).then(res => res.json());
+    } else {
+      return fetch(`${API_URL}/${url}`, fields).then(res => res.json());
+    }
   }
 }
 
