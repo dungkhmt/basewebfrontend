@@ -54,6 +54,19 @@ import ListLocation from "./component/geo/ListLocation";
 import GeoGoogleMapChangeCoordinates from "./component/geo/GeoGoogleMapChangeCoordinates";
 import GeoListDistanceInfo from "./component/geo/GeoListDistanceInfo";
 import ChangeDistanceDetail from "./component/geo/ChangeDistanceDetail";
+import CreateContainer from "./component/tmscontainer/container/CreateContainer";
+import ListContainer from "./component/tmscontainer/container/ListContainer";
+import DepotContainerCreate from "./component/tmscontainer/depotContainer/DepotContainerCreate";
+import DepotContainerList from "./component/tmscontainer/depotContainer/DepotContainerList";
+import DepotContainerGoogleMap from "./component/tmscontainer/depotContainer/DepotContainerGoogleMap";
+import DepotTrailerCreate from "./component/tmscontainer/depotTrailer/DepotTrailerCreate";
+import DepotTrailerList from "./component/tmscontainer/depotTrailer/DepotTrailerList";
+import DepotTrailerGoogleMap from "./component/tmscontainer/depotTrailer/DepotTrailerGoogleMap";
+import DepotTruckCreate from "./component/tmscontainer/depotTruck/DepotTruckCreate";
+import DepotTruckList from "./component/tmscontainer/depotTruck/DepotTruckList";
+import DepotTruckGoogleMap from "./component/tmscontainer/depotTruck/DepotTruckGoogleMap";
+import TrailerCreate from "./component/tmscontainer/trailer/TrailerCreate";
+import TrailerList from "./component/tmscontainer/trailer/TrailerList";
 
 
 function Routes(props) {// props nay tu parent transfer vao
@@ -436,6 +449,118 @@ function Routes(props) {// props nay tu parent transfer vao
             isAuthenticated={props.isAuthenticated}
             path="/geo/change/distance-detail/:fromContactMechId/:toContactMechId"
         />
+        <PrivateRouteWithLayout
+            component={CreateContainer}
+            layout={Layout}
+            isAuthenticated={props.isAuthenticated}
+            path="/containerfunc/create"
+        />
+
+        <PrivateRouteWithLayout
+            component={ListContainer}
+            layout={Layout}
+            isAuthenticated={props.isAuthenticated}
+            path="/containerfunc/list"
+        />
+
+
+        <PrivateRouteWithLayout
+            component={DepotContainerCreate}
+            layout={Layout}
+            isAuthenticated={props.isAuthenticated}
+            path="/depotcontainerfunc/create"
+        />
+
+        <PrivateRouteWithLayout
+            component={DepotContainerList}
+            layout={Layout}
+            isAuthenticated={props.isAuthenticated}
+            path="/depotcontainerfunc/list"
+        />
+
+        <PrivateRouteWithLayout
+            component={DepotContainerGoogleMap}
+            layout={Layout}
+            isAuthenticated={props.isAuthenticated}
+            path="/depotcontainerfunc/googlemap"
+        />
+
+
+        <PrivateRouteWithLayout
+            component={DepotTrailerCreate}
+            layout={Layout}
+            isAuthenticated={props.isAuthenticated}
+            path="/depottrailerfunc/create"
+        />
+
+        <PrivateRouteWithLayout
+            component={DepotTrailerList}
+            layout={Layout}
+            isAuthenticated={props.isAuthenticated}
+            path="/depottrailerfunc/list"
+        />
+        <PrivateRouteWithLayout
+            component={DepotTrailerGoogleMap}
+            layout={Layout}
+            isAuthenticated={props.isAuthenticated}
+            path="/depottrailerfunc/googlemap"
+        />
+
+        <PrivateRouteWithLayout
+            component={DepotTruckCreate}
+            layout={Layout}
+            isAuthenticated={props.isAuthenticated}
+            path="/depottruckfunc/create"
+        />
+
+        <PrivateRouteWithLayout
+            component={DepotTruckList}
+            layout={Layout}
+            isAuthenticated={props.isAuthenticated}
+            path="/depottruckfunc/list"
+        />
+        <PrivateRouteWithLayout
+            component={DepotTruckGoogleMap}
+            layout={Layout}
+            isAuthenticated={props.isAuthenticated}
+            path="/depottruckfunc/googlemap"
+        />
+
+
+
+
+        <PrivateRouteWithLayout
+            component={TrailerCreate}
+            layout={Layout}
+            isAuthenticated={props.isAuthenticated}
+            path="/trailerfunc/create"
+        />
+
+        <PrivateRouteWithLayout
+            component={TrailerList}
+            layout={Layout}
+            isAuthenticated={props.isAuthenticated}
+            path="/trailerfunc/list"
+        />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
         <Route

@@ -1036,7 +1036,6 @@ export default function SideBar(props) {
           )}
 
 
-          {props.menu.has("MENU_TMS_CONTAINER") ? (
               <div>
                 <ListItem button onClick={() => handleListClick(18)}>
                   <ListItemIcon>
@@ -1049,61 +1048,166 @@ export default function SideBar(props) {
                 </ListItem>
                 <Collapse in={openCollapse[18]} timeout="auto" unmountOnExit>
                   <List component="div" disablePadding>
-                    <ListItem button className={classes.nested}>
+
+
+
+
+                    <ListItem
+                        button
+                        className={classes.nested}
+                        component={Link}
+                        to={process.env.PUBLIC_URL + "/depottruckfunc/create"}
+                    >
+                      <ListItemIcon>
+                        <StarBorder/>
+                      </ListItemIcon>
+                      <ListItemText primary="Thêm mới bãi đầu kéo "/>
+                    </ListItem>
+
+
+
+                    <ListItem
+                        button
+                        className={classes.nested}
+                        component={Link}
+                        to={process.env.PUBLIC_URL + "/depottruckfunc/list"}
+                    >
                       <ListItemIcon>
                         <StarBorder/>
                       </ListItemIcon>
                       <ListItemText primary="DS bãi đầu kéo"/>
                     </ListItem>
-                    <ListItem button className={classes.nested}>
+
+
+                    <ListItem
+                        button
+                        className={classes.nested}
+                        component={Link}
+                        to={process.env.PUBLIC_URL + "/depottrailerfunc/create"}
+                    >
+                      <ListItemIcon>
+                        <StarBorder/>
+                      </ListItemIcon>
+                      <ListItemText primary="Thêm mới bãi mooc"/>
+                    </ListItem>
+
+                    <ListItem
+                        button
+                        className={classes.nested}
+                        component={Link}
+                        to={process.env.PUBLIC_URL + "/depottrailerfunc/list"}
+                    >
                       <ListItemIcon>
                         <StarBorder/>
                       </ListItemIcon>
                       <ListItemText primary="DS bãi rơ mooc"/>
                     </ListItem>
 
-                    <ListItem button className={classes.nested}>
+                    <ListItem
+                        button
+                        className={classes.nested}
+                        component={Link}
+                        to={process.env.PUBLIC_URL + "/depotcontainerfunc/create"}
+                    >
+                      <ListItemIcon>
+                        <StarBorder/>
+                      </ListItemIcon>
+                      <ListItemText primary="Thêm mới bãi container"/>
+                    </ListItem>
+
+
+                    <ListItem
+                        button
+                        className={classes.nested}
+                        component={Link}
+                        to={process.env.PUBLIC_URL + "/depotcontainerfunc/list"}
+                    >
                       <ListItemIcon>
                         <StarBorder/>
                       </ListItemIcon>
                       <ListItemText primary="DS bãi container"/>
                     </ListItem>
-                    <ListItem button className={classes.nested}>
+
+                    <ListItem
+                        button
+                        className={classes.nested}
+                        component={Link}
+                        to={process.env.PUBLIC_URL + "/containerfunc/create"}
+                    >
+                      <ListItemIcon>
+                        <StarBorder/>
+                      </ListItemIcon>
+                      <ListItemText primary="Tạo mới container"/>
+                    </ListItem>
+
+
+                    <ListItem
+                        button
+                        className={classes.nested}
+                        component={Link}
+                        to={process.env.PUBLIC_URL + "/containerfunc/list"}
+                    >
                       <ListItemIcon>
                         <StarBorder/>
                       </ListItemIcon>
                       <ListItemText primary="DS container"/>
                     </ListItem>
+
+                    <ListItem
+                        button
+                        className={classes.nested}
+                        component={Link}
+                        to={process.env.PUBLIC_URL + "/trailerfunc/create"}
+                    >
+                      <ListItemIcon>
+                        <StarBorder/>
+                      </ListItemIcon>
+                      <ListItemText primary="Thêm mới rơ mooc"/>
+                    </ListItem>
+
+
+
                     <ListItem button className={classes.nested}>
                       <ListItemIcon>
                         <StarBorder/>
                       </ListItemIcon>
                       <ListItemText primary="DS rơ mooc"/>
                     </ListItem>
+
+
                     <ListItem button className={classes.nested}>
                       <ListItemIcon>
                         <StarBorder/>
                       </ListItemIcon>
                       <ListItemText primary="DS đơn vận chuyển import empty"/>
                     </ListItem>
+
+
+
                     <ListItem button className={classes.nested}>
                       <ListItemIcon>
                         <StarBorder/>
                       </ListItemIcon>
                       <ListItemText primary="DS đơn vận chuyển import full"/>
                     </ListItem>
+
+
                     <ListItem button className={classes.nested}>
                       <ListItemIcon>
                         <StarBorder/>
                       </ListItemIcon>
                       <ListItemText primary="DS đơn vận chuyển export empty"/>
                     </ListItem>
+
+
                     <ListItem button className={classes.nested}>
                       <ListItemIcon>
                         <StarBorder/>
                       </ListItemIcon>
                       <ListItemText primary="DS đơn vận chuyển export full"/>
                     </ListItem>
+
+
                     <ListItem button className={classes.nested}>
                       <ListItemIcon>
                         <StarBorder/>
@@ -1114,9 +1218,7 @@ export default function SideBar(props) {
                   </List>
                 </Collapse>
               </div>
-          ) : (
-              ""
-          )}
+
 
         </List>
       </Drawer>
