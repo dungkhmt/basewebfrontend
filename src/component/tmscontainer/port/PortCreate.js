@@ -138,7 +138,7 @@ function PortCreate(props) {
                         id="portId"
                         onChange={handlePortIdChange}
                         required
-                        value={PortId}
+                        value={portId}
                         fullWidth
                     >
                     </TextField>

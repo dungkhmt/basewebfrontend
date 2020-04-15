@@ -1046,11 +1046,34 @@ export default function SideBar(props) {
                   <ListItemText primary="Vận chuyển container"/>
                   {openCollapse[18] ? <ExpandLess/> : <ExpandMore/>}
                 </ListItem>
+
+
                 <Collapse in={openCollapse[18]} timeout="auto" unmountOnExit>
                   <List component="div" disablePadding>
 
+                    <ListItem
+                        button
+                        className={classes.nested}
+                        component={Link}
+                        to={process.env.PUBLIC_URL + "/portfunc/create"}
+                    >
+                      <ListItemIcon>
+                        <StarBorder/>
+                      </ListItemIcon>
+                      <ListItemText primary="Thêm mới bến cảng "/>
+                    </ListItem>
 
-
+                    <ListItem
+                        button
+                        className={classes.nested}
+                        component={Link}
+                        to={process.env.PUBLIC_URL + "/portfunc/list"}
+                    >
+                      <ListItemIcon>
+                        <StarBorder/>
+                      </ListItemIcon>
+                      <ListItemText primary="Danh sách bến cảng "/>
+                    </ListItem>
 
                     <ListItem
                         button
