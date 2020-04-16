@@ -360,7 +360,7 @@ export default function DeliveryTripList() {
         </Grid>
         <Grid item xs={12}>
           {
-            dataTable.length > 0 ?
+            deliveryPlanDetailInfo && deliveryPlanDetailInfo['totalWeight'] ?
               <MaterialTable
                 title={"Danh sách chuyến giao"}
                 columns={columns}
@@ -387,7 +387,7 @@ export default function DeliveryTripList() {
           }}/>
         </DialogContent>
         <DialogActions>
-          <Button onClick={() => {
+          <Button variant={"contained"} onClick={() => {
             setSolverOptionOpen(false);
             handleSolve(solverTimeLimit);
           }} color="primary">
