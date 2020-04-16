@@ -55,8 +55,8 @@ export default function DeliveryPlanList() {
             shipmentItems[i].forEach(shipmentItem => totalWeight += shipmentItem['weight']);
             deliveryTrips[i].forEach(deliveryTrip => totalWeightScheduled += deliveryTrip['totalWeight']);
 
-            totalWeight = Math.round(totalWeight * 100000) / 100;
-            totalWeightScheduled = Math.round(totalWeightScheduled * 100000) / 100;
+            totalWeight = Math.round(totalWeight * 100) / 100.0;
+            totalWeightScheduled = Math.round(totalWeightScheduled * 100) / 100.0;
 
             deliveryPlan['totalWeight'] = totalWeight;
             deliveryPlan['totalWeightScheduled'] = totalWeightScheduled;

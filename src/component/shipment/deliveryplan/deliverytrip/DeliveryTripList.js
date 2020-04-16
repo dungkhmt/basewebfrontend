@@ -60,12 +60,12 @@ export default function DeliveryTripList() {
     {
       title: "Tổng khoảng cách",
       field: "totalDistance",
-      render: rowData => Math.round(rowData['totalDistance'] * 100) / 100
+      render: rowData => Math.round(rowData['totalDistance'] * 100) / 100.0
     },
     {
       title: "Tổng khối lượng (kg)",
       field: "totalWeight",
-      render: rowData => Math.round(rowData['totalWeight'] * 100000) / 100
+      render: rowData => Math.round(rowData['totalWeight'] * 100) / 100.0
     },
     {title: "Tổng số pallet", field: "totalPallet"},
     {title: "Tổng thời gian", field: "totalExecutionTime"},
@@ -74,7 +74,7 @@ export default function DeliveryTripList() {
     {
       title: "Tải trọng tối đa của xe (kg)",
       field: "maxVehicleCapacity",
-      render: rowData => Math.round(rowData['maxVehicleCapacity'] * 100000) / 100
+      render: rowData => Math.round(rowData['maxVehicleCapacity'] * 100) / 100.0
     },
     {title: 'Mã trạng thái', field: 'statusId'},
     {title: "Mã tài xế", field: "userLoginId"}
@@ -108,11 +108,11 @@ export default function DeliveryTripList() {
 
     let totalWeight = 0;
     allShipmentItems.forEach(shipmentItem => totalWeight += shipmentItem['weight']);
-    totalWeight = Math.round(totalWeight * 100000) / 100;
+    totalWeight = Math.round(totalWeight * 100) / 100.0;
 
     let totalWeightScheduled = 0;
     dataTable.forEach(deliveryTrip => totalWeightScheduled += deliveryTrip['totalWeight']);
-    totalWeightScheduled = Math.round(totalWeightScheduled * 100000) / 100;
+    totalWeightScheduled = Math.round(totalWeightScheduled * 100) / 100.0;
 
     setDeliveryPlanDetailInfo({numberTrips: dataTable.length, totalWeight, totalWeightScheduled});
   }

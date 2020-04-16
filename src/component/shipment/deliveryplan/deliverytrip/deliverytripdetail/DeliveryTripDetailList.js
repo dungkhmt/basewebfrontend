@@ -46,7 +46,7 @@ export default function DeliveryTripDetailList() {
     {
       title: "Tổng khối lượng sản phẩm đã chọn (kg)",
       field: "weight",
-      render: rowData => Math.round(rowData['weight'] * 100000) / 100
+      render: rowData => Math.round(rowData['weight'] * 100) / 100.0
     },
     {
       title: "Note",
@@ -204,7 +204,7 @@ export default function DeliveryTripDetailList() {
                   <b>Trạng thái chuyến: </b> {deliveryTrip == null ? 0 : deliveryTrip['statusId']} <p/>
                   <b>Tổng khoảng cách: </b> {deliveryTrip == null ? 0 : deliveryTrip['totalDistance']} <p/>
                   <b>Tổng khối lượng (kg): </b> {deliveryTrip == null ? 0 :
-                  Math.round(deliveryTrip['totalWeight'] * 100000) / 100} <p/>
+                  Math.round(deliveryTrip['totalWeight'] * 100) / 100.0} <p/>
                   <b>Tổng số pallet: </b> {deliveryTrip == null ? 0 : deliveryTrip['totalPallet']} <p/>
                 </div>
 
