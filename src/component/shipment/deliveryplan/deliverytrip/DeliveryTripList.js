@@ -360,7 +360,7 @@ export default function DeliveryTripList() {
         </Grid>
         <Grid item xs={12}>
           {
-            deliveryPlanDetailInfo && deliveryPlanDetailInfo['totalWeight'] ?
+            deliveryPlanDetailInfo && typeof deliveryPlanDetailInfo['totalWeight'] === 'number' ?
               <MaterialTable
                 title={"Danh sách chuyến giao"}
                 columns={columns}
