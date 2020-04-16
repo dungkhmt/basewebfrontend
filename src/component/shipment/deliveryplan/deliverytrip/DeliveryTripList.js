@@ -122,6 +122,8 @@ export default function DeliveryTripList() {
 
   const [solveWaiting, setSolveWaiting] = useState(false);
 
+  const [notScheduledShipmentItemOpen, setNotScheduledShipmentItemOpen] = useState(false);
+
   useEffect(() => {
     getDeliveryPlanInfo();
     getDataTable().then(r => r);
@@ -214,8 +216,7 @@ export default function DeliveryTripList() {
               </IconButton>
               <IconButton
                 style={{float: "right"}}
-                //onClick={() => handlePopup(true)}
-
+                onClick={() => setNotScheduledShipmentItemOpen(true)}
                 component="span"
               >
                 <Icon
@@ -394,6 +395,61 @@ export default function DeliveryTripList() {
           </Button>
         </DialogActions>
       </Dialog>
+
+      <NotScheduleShipmentItem
+        open={notScheduledShipmentItemOpen}
+        setOpen={setNotScheduledShipmentItemOpen}
+        deliveryPlanId={deliveryPlanId}
+      />
     </div>
   );
+}
+
+function NotScheduleShipmentItem(props) {
+  const {open, setOpen, deliveryPlanId} = props;
+  const dispatch = useDispatch();
+  const token = useSelector(state => state.auth.token);
+
+  const columns = [
+    {title: "Mã đơn hàng", field: "shipmentItemId"},
+    {title: "Tổng số lượng", field: "quantity"},
+    {title: "Số lượng đã xếp chuyến", field: "scheduledQuantity"},
+    {title: "Số pallet", field: "pallet"},
+    {title: "Mã sản phẩm", field: "productId"},
+    {title: "Mã khách hàng", field: "customerCode"},
+    {title: "Mã địa chỉ", field: "locationCode"},
+  ];
+
+  const [dataTable, setDataTable] = useState([]);
+
+  const [waitData, setWaitData] = useState(false);
+
+  async function getDataTable() {
+    setWaitData(true);
+    let shipmentItems = await authGet(dispatch, token, '/shipment-item-not-scheduled/' + deliveryPlanId);
+    setDataTable(shipmentItems);
+    setWaitData(false);
+  }
+
+  useEffect(() => {
+    if (open) {
+      getDataTable().then(r => r);
+    }
+  }, [open]);
+
+  return <div>
+    <Dialog open={open} onClose={() => setOpen(false)} fullWidth={false} maxWidth={"xl"}>
+
+      <DialogContent>
+        {waitData ? <CircularProgress color="secondary"/> :
+
+          <MaterialTable title={'Danh sách các đơn hàng chưa được xếp chuyến'}
+                         columns={columns}
+                         data={dataTable}
+                         options={{search: false}}/>
+        }
+      </DialogContent>
+
+    </Dialog>
+  </div>;
 }

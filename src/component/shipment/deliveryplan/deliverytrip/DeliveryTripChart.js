@@ -6,6 +6,7 @@ import {authGet, authPost} from "../../../../api";
 import Grid from "@material-ui/core/Grid";
 import Button from "@material-ui/core/Button";
 import ArrowBackIosIcon from "@material-ui/icons/ArrowBackIos";
+import CircularProgress from "@material-ui/core/CircularProgress";
 
 export default function DeliveryTripChart() {
   const dispatch = useDispatch();
@@ -112,6 +113,8 @@ function HorizontalBarChart(props) {
 
   const [chartData, setChartData] = useState({});
 
+  const [hasData, setHasData] = useState(false);
+
   function initChartData() {
     let backgroundColors = [];
     let borderColors = [];
@@ -133,6 +136,11 @@ function HorizontalBarChart(props) {
         }]
       }
     );
+    if (data.length > 0) {
+      setHasData(true);
+    } else {
+      setHasData(false);
+    }
   }
 
   useEffect(() => {
@@ -146,11 +154,18 @@ function HorizontalBarChart(props) {
           beginAtZero: true
         }
       }]
-    }
+    },
+    maintainAspectRatio: false,
+    responsive: true
   };
 
+  function getPixel() {
+    return ((chartData && chartData['labels']) ? (chartData['labels'].length * 27) : 300) + 'px';
+  }
+
   return (
-    <div>
+    <div style={{height: getPixel()}}>
+      {!hasData ? <CircularProgress color={"secondary"}/> : ''}
       <HorizontalBar data={chartData} options={options}/>
     </div>
   );

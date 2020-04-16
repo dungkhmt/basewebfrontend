@@ -7,7 +7,6 @@ import Upload from "../../../utils/Upload";
 import Button from "@material-ui/core/Button";
 import {Link} from "react-router-dom";
 import AddIcon from "@material-ui/icons/Add";
-import CircularProgress from "@material-ui/core/CircularProgress";
 import Grid from "@material-ui/core/Grid";
 
 export default function ShipmentItemList() {
@@ -63,10 +62,10 @@ export default function ShipmentItemList() {
                   buttonTitle={'Tải lên đơn hàng'}
                   handleSaveCallback={() => window.location.reload()}
                 />
-                {calcWaiting ? <CircularProgress color={'secondary'}/> :
-                  <Button color={'primary'} variant={'contained'} onClick={() => handleCalcDistance()}>
-                    Tính khoảng cách </Button>
-                }
+                {/*{calcWaiting ? <CircularProgress color={'secondary'}/> :*/}
+                {/*  <Button color={'primary'} variant={'contained'} onClick={() => handleCalcDistance()}>*/}
+                {/*    Tính khoảng cách </Button>*/}
+                {/*}*/}
               </Grid>
             </Grid>
           </div>
