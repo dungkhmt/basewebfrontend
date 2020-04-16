@@ -15,7 +15,9 @@ export default function ShipmentItemList() {
   const token = useSelector(state => state.auth.token);
   const columns = [
     {title: "Mã đơn hàng", field: "shipmentItemId"},
-    {title: "Số lượng", field: "quantity"},
+    {title: "Tổng số lượng", field: "quantity"},
+    {title: "Số lượng đã xếp chuyến", field: "scheduledQuantity"},
+    {title: "Số lượng đã giao", field: "completedQuantity"},
     {title: "Số pallet", field: "pallet"},
     {title: "Mã sản phẩm", field: "productId"},
     {title: "Mã khách hàng", field: "customerCode"},
