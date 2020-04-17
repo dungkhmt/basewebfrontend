@@ -28,10 +28,12 @@ export default function ShipmentItemDeliveryTripDetailList() {
     setWaiting(false);
 
     setInfo(shipmentItemInfo);
-    setDataTable(info['details']);
+    setDataTable(shipmentItemInfo['details']);
   }
 
-  useEffect(() => getDataTable(), []);
+  useEffect(() => {
+    getDataTable().then(r => r);
+  }, []);
 
   const columns = [
     {title: 'Mã đợt giao hàng', field: 'deliveryPlanId'},
