@@ -70,6 +70,8 @@ import TrailerList from "./component/tmscontainer/trailer/TrailerList";
 import PortCreate from "./component/tmscontainer/port/PortCreate";
 import PortList from "./component/tmscontainer/port/PortList";
 import PortGoogleMap from "./component/tmscontainer/port/PortGoogleMap";
+import ShipmentItemDeliveryTripDetailList
+    from "./component/shipment/deliveryplan/shipmentitem/ShipmentItemDeliveryTripDetailList";
 
 
 function Routes(props) {// props nay tu parent transfer vao
@@ -246,18 +248,27 @@ function Routes(props) {// props nay tu parent transfer vao
         path="/vehicle"                    // props
       />
 
-      <PrivateRouteWithLayout
-        component={ShipmentItemCreate}  //props
-        layout={Layout}          //props
-        isAuthenticated={props.isAuthenticated} // props
-        //isAuthenticated={true}
-        exact                                   // props
-        path="/create-shipment-item"                    // props
-      />
+        <PrivateRouteWithLayout
+          component={ShipmentItemCreate}  //props
+          layout={Layout}          //props
+          isAuthenticated={props.isAuthenticated} // props
+          //isAuthenticated={true}
+          exact                                   // props
+          path="/create-shipment-item"                    // props
+        />
 
-      <PrivateRouteWithLayout
-        component={VehicleDeliveryPlanList}  //props
-        layout={Layout}          //props
+        <PrivateRouteWithLayout
+          component={ShipmentItemDeliveryTripDetailList}  //props
+          layout={Layout}          //props
+          isAuthenticated={props.isAuthenticated} // props
+          //isAuthenticated={true}
+          // exact                                   // props
+          path="/shipment-item-info/:shipmentItemId"                    // props
+        />
+
+        <PrivateRouteWithLayout
+          component={VehicleDeliveryPlanList}  //props
+          layout={Layout}          //props
         isAuthenticated={props.isAuthenticated} // props
         //isAuthenticated={true}
         // exact                                   // props
@@ -358,14 +369,14 @@ function Routes(props) {// props nay tu parent transfer vao
         path="/sales/add/:partyId"
       />
 
-      <PrivateRouteWithLayout
-        component={DetailSalesman}  //props
-        layout={Layout}          //props
-        isAuthenticated={props.isAuthenticated} // props
-        //isAuthenticated={true}
-        //exact                                   // props
-        path="/salesman/:partyId"                    // props
-      />
+        <PrivateRouteWithLayout
+          component={DetailSalesman}  //props
+          layout={Layout}          //props
+          isAuthenticated={props.isAuthenticated} // props
+          //isAuthenticated={true}
+          //exact                                   // props
+          path="/salesman/:partyId"                    // props
+        />
 
 
         <Route
@@ -426,160 +437,147 @@ function Routes(props) {// props nay tu parent transfer vao
         />
 
         <PrivateRouteWithLayout
-            component={ListLocation}
-            layout={Layout}
-            isAuthenticated={props.isAuthenticated}
-            path="/geo/list/location"
+          component={ListLocation}
+          layout={Layout}
+          isAuthenticated={props.isAuthenticated}
+          path="/geo/list/location"
         />
 
         <PrivateRouteWithLayout
-            component={GeoGoogleMapChangeCoordinates}
-            layout={Layout}
-            isAuthenticated={props.isAuthenticated}
-            path="/geo/location/map/:contactMechId"
+          component={GeoGoogleMapChangeCoordinates}
+          layout={Layout}
+          isAuthenticated={props.isAuthenticated}
+          path="/geo/location/map/:contactMechId"
         />
 
         <PrivateRouteWithLayout
-            component={GeoListDistanceInfo}
-            layout={Layout}
-            isAuthenticated={props.isAuthenticated}
-            path="/geo/list/distance-info"
+          component={GeoListDistanceInfo}
+          layout={Layout}
+          isAuthenticated={props.isAuthenticated}
+          path="/geo/list/distance-info"
         />
 
         <PrivateRouteWithLayout
-            component={ChangeDistanceDetail}
-            layout={Layout}
-            isAuthenticated={props.isAuthenticated}
-            path="/geo/change/distance-detail/:fromContactMechId/:toContactMechId"
+          component={ChangeDistanceDetail}
+          layout={Layout}
+          isAuthenticated={props.isAuthenticated}
+          path="/geo/change/distance-detail/:fromContactMechId/:toContactMechId"
         />
         <PrivateRouteWithLayout
-            component={CreateContainer}
-            layout={Layout}
-            isAuthenticated={props.isAuthenticated}
-            path="/containerfunc/create"
-        />
-
-        <PrivateRouteWithLayout
-            component={ListContainer}
-            layout={Layout}
-            isAuthenticated={props.isAuthenticated}
-            path="/containerfunc/list"
-        />
-
-
-        <PrivateRouteWithLayout
-            component={DepotContainerCreate}
-            layout={Layout}
-            isAuthenticated={props.isAuthenticated}
-            path="/depotcontainerfunc/create"
+          component={CreateContainer}
+          layout={Layout}
+          isAuthenticated={props.isAuthenticated}
+          path="/containerfunc/create"
         />
 
         <PrivateRouteWithLayout
-            component={DepotContainerList}
-            layout={Layout}
-            isAuthenticated={props.isAuthenticated}
-            path="/depotcontainerfunc/list"
-        />
-
-        <PrivateRouteWithLayout
-            component={DepotContainerGoogleMap}
-            layout={Layout}
-            isAuthenticated={props.isAuthenticated}
-            path="/depotcontainerfunc/googlemap"
+          component={ListContainer}
+          layout={Layout}
+          isAuthenticated={props.isAuthenticated}
+          path="/containerfunc/list"
         />
 
 
         <PrivateRouteWithLayout
-            component={DepotTrailerCreate}
-            layout={Layout}
-            isAuthenticated={props.isAuthenticated}
-            path="/depottrailerfunc/create"
+          component={DepotContainerCreate}
+          layout={Layout}
+          isAuthenticated={props.isAuthenticated}
+          path="/depotcontainerfunc/create"
         />
 
         <PrivateRouteWithLayout
-            component={DepotTrailerList}
-            layout={Layout}
-            isAuthenticated={props.isAuthenticated}
-            path="/depottrailerfunc/list"
-        />
-        <PrivateRouteWithLayout
-            component={DepotTrailerGoogleMap}
-            layout={Layout}
-            isAuthenticated={props.isAuthenticated}
-            path="/depottrailerfunc/googlemap"
+          component={DepotContainerList}
+          layout={Layout}
+          isAuthenticated={props.isAuthenticated}
+          path="/depotcontainerfunc/list"
         />
 
         <PrivateRouteWithLayout
-            component={DepotTruckCreate}
-            layout={Layout}
-            isAuthenticated={props.isAuthenticated}
-            path="/depottruckfunc/create"
-        />
-
-        <PrivateRouteWithLayout
-            component={DepotTruckList}
-            layout={Layout}
-            isAuthenticated={props.isAuthenticated}
-            path="/depottruckfunc/list"
-        />
-        <PrivateRouteWithLayout
-            component={DepotTruckGoogleMap}
-            layout={Layout}
-            isAuthenticated={props.isAuthenticated}
-            path="/depottruckfunc/googlemap"
-        />
-
-
-
-
-        <PrivateRouteWithLayout
-            component={TrailerCreate}
-            layout={Layout}
-            isAuthenticated={props.isAuthenticated}
-            path="/trailerfunc/create"
-        />
-
-        <PrivateRouteWithLayout
-            component={TrailerList}
-            layout={Layout}
-            isAuthenticated={props.isAuthenticated}
-            path="/trailerfunc/list"
-        />
-
-
-
-        <PrivateRouteWithLayout
-            component={PortCreate}
-            layout={Layout}
-            isAuthenticated={props.isAuthenticated}
-            path="/portfunc/create"
+          component={DepotContainerGoogleMap}
+          layout={Layout}
+          isAuthenticated={props.isAuthenticated}
+          path="/depotcontainerfunc/googlemap"
         />
 
 
         <PrivateRouteWithLayout
-            component={PortList}
-            layout={Layout}
-            isAuthenticated={props.isAuthenticated}
-            path="/portfunc/list"
+          component={DepotTrailerCreate}
+          layout={Layout}
+          isAuthenticated={props.isAuthenticated}
+          path="/depottrailerfunc/create"
         />
 
+        <PrivateRouteWithLayout
+          component={DepotTrailerList}
+          layout={Layout}
+          isAuthenticated={props.isAuthenticated}
+          path="/depottrailerfunc/list"
+        />
+        <PrivateRouteWithLayout
+          component={DepotTrailerGoogleMap}
+          layout={Layout}
+          isAuthenticated={props.isAuthenticated}
+          path="/depottrailerfunc/googlemap"
+        />
+
+        <PrivateRouteWithLayout
+          component={DepotTruckCreate}
+          layout={Layout}
+          isAuthenticated={props.isAuthenticated}
+          path="/depottruckfunc/create"
+        />
+
+        <PrivateRouteWithLayout
+          component={DepotTruckList}
+          layout={Layout}
+          isAuthenticated={props.isAuthenticated}
+          path="/depottruckfunc/list"
+        />
+        <PrivateRouteWithLayout
+          component={DepotTruckGoogleMap}
+          layout={Layout}
+          isAuthenticated={props.isAuthenticated}
+          path="/depottruckfunc/googlemap"
+        />
 
 
         <PrivateRouteWithLayout
-            component={PortGoogleMap}
-            layout={Layout}
-            isAuthenticated={props.isAuthenticated}
-            path="/portfunc/googlemap"
+          component={TrailerCreate}
+          layout={Layout}
+          isAuthenticated={props.isAuthenticated}
+          path="/trailerfunc/create"
+        />
+
+        <PrivateRouteWithLayout
+          component={TrailerList}
+          layout={Layout}
+          isAuthenticated={props.isAuthenticated}
+          path="/trailerfunc/list"
         />
 
 
+        <PrivateRouteWithLayout
+          component={PortCreate}
+          layout={Layout}
+          isAuthenticated={props.isAuthenticated}
+          path="/portfunc/create"
+        />
 
 
+        <PrivateRouteWithLayout
+          component={PortList}
+          layout={Layout}
+          isAuthenticated={props.isAuthenticated}
+          path="/portfunc/list"
+        />
 
 
-
-
-
+        <PrivateRouteWithLayout
+          component={PortGoogleMap}
+          layout={Layout}
+          isAuthenticated={props.isAuthenticated}
+          path="/portfunc/googlemap"
+        />
 
 
         <Route
@@ -590,7 +588,7 @@ function Routes(props) {// props nay tu parent transfer vao
           component={error} // props
           path="/not-found"               // props
         />
-      <Redirect to="/not-found"/>
+        <Redirect to="/not-found"/>
     </Switch>
   );
 }

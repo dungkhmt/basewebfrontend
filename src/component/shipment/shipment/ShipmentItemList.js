@@ -14,7 +14,12 @@ export default function ShipmentItemList() {
   const dispatch = useDispatch();
   const token = useSelector(state => state.auth.token);
   const columns = [
-    {title: "Mã đơn hàng", field: "shipmentItemId"},
+    {
+      title: "Mã đơn hàng",
+      field: "shipmentItemId",
+      render: rowData => (
+        <Link to={'/shipment-item-info/' + rowData['shipmentItemId']}>{rowData['shipmentItemId']}</Link>)
+    },
     {title: "Tổng số lượng", field: "quantity"},
     {title: "Số lượng đã xếp chuyến", field: "scheduledQuantity"},
     {title: "Số lượng đã giao", field: "completedQuantity"},
