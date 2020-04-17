@@ -36,8 +36,16 @@ export default function ShipmentItemDeliveryTripDetailList() {
   }, []);
 
   const columns = [
-    {title: 'Mã đợt giao hàng', field: 'deliveryPlanId'},
-    {title: 'Mã chuyến', field: 'deliveryTripId'},
+    {
+      title: 'Mã đợt giao hàng',
+      field: 'deliveryPlanId',
+      render: rowData => (<Link to={'/delivery-plan/' + rowData['deliveryPlanId']}>{rowData['deliveryPlanId']}</Link>)
+    },
+    {
+      title: 'Mã chuyến',
+      field: 'deliveryTripId',
+      render: rowData => (<Link to={'/delivery-trip/' + rowData['deliveryTripId']}>{rowData['deliveryTripId']}</Link>)
+    },
     {title: 'Ngày thực hiện', field: 'executeDate'},
     {title: 'Số lượng xếp trên chuyến', field: 'deliveryQuantity'},
     {title: 'Số xe', field: 'vehicleId'},
