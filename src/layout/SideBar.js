@@ -1189,8 +1189,12 @@ export default function SideBar(props) {
                     </ListItem>
 
 
-
-                    <ListItem button className={classes.nested}>
+                    <ListItem
+                        button
+                        className={classes.nested}
+                        component={Link}
+                        to={process.env.PUBLIC_URL + "/trailerfunc/list"}
+                    >
                       <ListItemIcon>
                         <StarBorder/>
                       </ListItemIcon>
