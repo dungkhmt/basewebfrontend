@@ -38,6 +38,7 @@ export default function ShipmentItemCreate() {
   const dispatch = useDispatch();
   const history = useHistory();
 
+  const [orderId, setOrderId] = useState(0);
   const [quantity, setQuantity] = useState(0);
   const [pallet, setPallet] = useState(0);
   const [productId, setProductId] = useState(null);
@@ -51,7 +52,7 @@ export default function ShipmentItemCreate() {
 
   const handleSubmit = () => {
     const shipmentItemInfo = {
-      quantity, pallet, productId, productName, weight, uom, customerCode, customerName, locationCode, address,
+      orderId, quantity, pallet, productId, productName, weight, uom, customerCode, customerName, locationCode, address,
       facilityId: selectedFacility
     };
     console.log(shipmentItemInfo);
@@ -94,9 +95,10 @@ export default function ShipmentItemCreate() {
       <Card>
         <CardContent>
           <Typography variant="h5" component="h2">
-            Tạo mới đơn hàng
+            Tạo mới đơn hàng vận chuyển
           </Typography>
           <form className={classes.root} noValidate autoComplete="off">
+            {textField("orderId", "Mã đơn hàng", "search", setOrderId)}
             {textField("quantity", "Số lượng", "number", setQuantity)}
             {textField("pallet", "Số lượng pallet", "number", setPallet)}
             {textField("productId", "Mã sản phẩm", "search", setProductId)}
@@ -108,6 +110,7 @@ export default function ShipmentItemCreate() {
             {textField("locationCode", "Mã địa điểm", "search", setLocationCode)}
             {textField("address", "Địa chỉ", "search", setAddress)}
 
+            <p/>
             <InputLabel>Chọn kho</InputLabel>
             <Select
               value={selectedFacility}
@@ -121,6 +124,7 @@ export default function ShipmentItemCreate() {
                 ))
               }
             </Select>
+
           </form>
         </CardContent>
         <CardActions>
