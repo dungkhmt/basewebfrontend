@@ -101,13 +101,12 @@ export default function DeliveryTripList() {
   const [deliveryPlanDetailInfo, setDeliveryPlanDetailInfo] = useState({});
 
   async function getDataTable() {
-    const [dataTable, allShipmentItems] = await Promise.all(
+    const [dataTable, totalWeightShipmentItems] = await Promise.all(
       [authGet(dispatch, token, "/delivery-trip/" + deliveryPlanId + "/all"),
-        authGet(dispatch, token, "/shipment-item-delivery-plan/" + deliveryPlanId + "/all")]);
+        authGet(dispatch, token, "/get-total-weight-shipment-items-in-delivery-plan/" + deliveryPlanId)]);
     setDataTable(dataTable);
 
-    let totalWeight = 0;
-    allShipmentItems.forEach(shipmentItem => totalWeight += shipmentItem['weight']);
+    let totalWeight = totalWeightShipmentItems;
     totalWeight = Math.round(totalWeight * 100) / 100.0;
 
     let totalWeightScheduled = 0;

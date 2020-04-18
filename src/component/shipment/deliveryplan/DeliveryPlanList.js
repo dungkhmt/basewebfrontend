@@ -40,9 +40,11 @@ export default function DeliveryPlanList() {
           let response = await authGet(dispatch, token,
             "/delivery-plan" + "?size=" + query.pageSize + "&page=" + query.page + sortParam);
 
-          let [shipmentItems, deliveryTrips] = await Promise.all(
+          let [totalWeightShipmentItems, deliveryTrips] = await Promise.all(
             [Promise.all(response.content.map(deliveryPlan =>
-              authGet(dispatch, token, "/shipment-item-delivery-plan/" + deliveryPlan['deliveryPlanId'] + "/all"))),
+              authGet(dispatch,
+                token,
+                "/get-total-weight-shipment-items-in-delivery-plan/" + deliveryPlan['deliveryPlanId']))),
 
               Promise.all(response.content.map(deliveryPlan =>
                 authGet(dispatch, token, "/delivery-trip/" + deliveryPlan['deliveryPlanId'] + "/all")))]);
@@ -50,9 +52,9 @@ export default function DeliveryPlanList() {
           for (let i = 0; i < response.content.length; i++) {
             let deliveryPlan = response.content[i];
             deliveryPlan['numberTrips'] = deliveryTrips[i].length;
-            let totalWeight = 0;
+            let totalWeight = totalWeightShipmentItems;
             let totalWeightScheduled = 0;
-            shipmentItems[i].forEach(shipmentItem => totalWeight += shipmentItem['weight']);
+
             deliveryTrips[i].forEach(deliveryTrip => totalWeightScheduled += deliveryTrip['totalWeight']);
 
             totalWeight = Math.round(totalWeight * 100) / 100.0;
