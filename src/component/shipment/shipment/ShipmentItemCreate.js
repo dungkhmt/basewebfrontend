@@ -1,4 +1,4 @@
-import React, {useState} from "react";
+import React, {useEffect, useState} from "react";
 import TextField from "@material-ui/core/TextField";
 import DateFnsUtils from "@date-io/date-fns";
 import {MuiPickersUtilsProvider} from "@material-ui/pickers";
@@ -12,6 +12,9 @@ import Typography from "@material-ui/core/Typography";
 import {useHistory} from "react-router-dom";
 import CloudUploadIcon from "@material-ui/icons/CloudUpload";
 import {authPost} from "../../../api";
+import InputLabel from "@material-ui/core/InputLabel";
+import {Select} from "@material-ui/core";
+import MenuItem from "@material-ui/core/MenuItem";
 
 
 const useStyles = makeStyles(theme => ({
@@ -48,7 +51,8 @@ export default function ShipmentItemCreate() {
 
   const handleSubmit = () => {
     const shipmentItemInfo = {
-      quantity, pallet, productId, productName, weight, uom, customerCode, customerName, locationCode, address
+      quantity, pallet, productId, productName, weight, uom, customerCode, customerName, locationCode, address,
+      facilityId: selectedFacility
     };
     console.log(shipmentItemInfo);
     authPost(dispatch, token, '/create-shipment-item', shipmentItemInfo).then(
@@ -62,6 +66,19 @@ export default function ShipmentItemCreate() {
       }
     )
   };
+
+  const [selectedFacility, setSelectedFacility] = useState();
+  const [facilityList, setFacilityList] = useState([]);
+
+  function getFacilityList() {
+    authPost(dispatch, token, '/get-list-facility', {}).then(r => r.json()).then(response => {
+      let facilities = response['facilities'];
+      setFacilityList(facilities);
+      setSelectedFacility(facilities[0]['facilityId'])
+    }).catch(console.log);
+  }
+
+  useEffect(() => getFacilityList(), []);
 
   const classes = useStyles();
 
@@ -90,6 +107,20 @@ export default function ShipmentItemCreate() {
             {textField("customerName", "Tên khách hàng", "search", setCustomerName)}
             {textField("locationCode", "Mã địa điểm", "search", setLocationCode)}
             {textField("address", "Địa chỉ", "search", setAddress)}
+
+            <InputLabel>Chọn kho</InputLabel>
+            <Select
+              value={selectedFacility}
+              onChange={event => setSelectedFacility(event.target.value)}
+            >
+              {
+                facilityList.map(value => (
+                  <MenuItem value={value['facilityId']}>
+                    {value['facilityId'] + ' (' + value['facilityName'] + ')'}
+                  </MenuItem>
+                ))
+              }
+            </Select>
           </form>
         </CardContent>
         <CardActions>
