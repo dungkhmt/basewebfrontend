@@ -52,7 +52,7 @@ export default function DeliveryPlanList() {
           for (let i = 0; i < response.content.length; i++) {
             let deliveryPlan = response.content[i];
             deliveryPlan['numberTrips'] = deliveryTrips[i].length;
-            let totalWeight = totalWeightShipmentItems;
+            let totalWeight = totalWeightShipmentItems[i];
             let totalWeightScheduled = 0;
 
             deliveryTrips[i].forEach(deliveryTrip => totalWeightScheduled += deliveryTrip['totalWeight']);
