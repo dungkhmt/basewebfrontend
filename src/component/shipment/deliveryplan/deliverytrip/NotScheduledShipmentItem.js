@@ -9,6 +9,9 @@ import ArrowBackIosIcon from "@material-ui/icons/ArrowBackIos";
 import {toFormattedTime} from "../../../../utils/dateutils";
 import DialogTitle from "@material-ui/core/DialogTitle";
 import Dialog from "@material-ui/core/Dialog";
+import InputLabel from "@material-ui/core/InputLabel";
+import {Select} from "@material-ui/core";
+import MenuItem from "@material-ui/core/MenuItem";
 
 export default function NotScheduledShipmentItem() {
   const {deliveryPlanId} = useParams();
@@ -25,6 +28,17 @@ export default function NotScheduledShipmentItem() {
     {title: "Mã khách hàng", field: "customerCode"},
     {title: "Mã địa chỉ", field: "locationCode"},
   ];
+
+  const [facilityList, setFacilityList] = useState([]);
+  const [selectedFacility, setSelectedFacility] = useState();
+
+  function getFacilityList() {
+    authPost(dispatch, token, '/get-list-facility', {}).then(r => r.json()).then(response => {
+      let facilities = response['facilities'];
+      setFacilityList(facilities);
+      setSelectedFacility(facilities[0]['facilityId'])
+    }).catch(console.log);
+  }
 
   const [dataTable, setDataTable] = useState([]);
 
@@ -65,6 +79,7 @@ export default function NotScheduledShipmentItem() {
 
   useEffect(() => {
     getDataTable().then(r => r);
+    getFacilityList();
   }, []);
 
   async function handleSuggest() {
@@ -94,6 +109,21 @@ export default function NotScheduledShipmentItem() {
     {waitData ? <CircularProgress color="secondary"/> :
 
       <div>
+        <InputLabel>Chọn kho</InputLabel>
+        <Select
+          value={selectedFacility}
+          onChange={event => setSelectedFacility(event.target.value)}
+        >
+          {
+            facilityList.map(value => (
+              <MenuItem value={value['facilityId']}>
+                {value['facilityId'] + ' (' + value['facilityName'] + ')'}
+              </MenuItem>
+            ))
+          }
+        </Select>
+        <p/>
+
         {
           tripSuggestionWait ? <CircularProgress color="secondary"/> :
             <Button color={'primary'} variant={'contained'} onClick={() => handleSuggest()}> Gợi ý chuyến </Button>
