@@ -20,7 +20,7 @@ import React, {useEffect, useState} from "react";
 import {useDispatch, useSelector} from "react-redux";
 import {Link, useHistory, useParams} from "react-router-dom";
 import {authGet, authPost} from "../../../../api";
-import {toFormattedDateTime} from "../../../../utils/dateutils";
+import {toFormattedDateTime, toFormattedTime} from "../../../../utils/dateutils";
 import {tableIcons} from "../../../../utils/iconutil";
 import TextField from "@material-ui/core/TextField";
 import Dialog from "@material-ui/core/Dialog";
@@ -58,9 +58,9 @@ export default function DeliveryTripList() {
     },
     {title: "Ngày thực hiện", field: "executeDate", type: "date"},
     {
-      title: "Tổng khoảng cách",
+      title: "Tổng khoảng cách (km)",
       field: "totalDistance",
-      render: rowData => Math.round(rowData['totalDistance'] * 100) / 100.0
+      render: rowData => rowData['totalDistance'] / 1000.0
     },
     {
       title: "Tổng khối lượng (kg)",
@@ -68,7 +68,11 @@ export default function DeliveryTripList() {
       render: rowData => Math.round(rowData['totalWeight'] * 100) / 100.0
     },
     {title: "Tổng số pallet", field: "totalPallet"},
-    {title: "Tổng thời gian", field: "totalExecutionTime"},
+    {
+      title: "Tổng thời gian",
+      field: "totalExecutionTime",
+      render: rowData => toFormattedTime(rowData['totalExecutionTime'])
+    },
     {title: "Tổng số điểm", field: "totalLocation"},
     {title: "Mã xe", field: "vehicleId"},
     {
@@ -76,6 +80,7 @@ export default function DeliveryTripList() {
       field: "maxVehicleCapacity",
       render: rowData => Math.round(rowData['maxVehicleCapacity'] * 100) / 100.0
     },
+    {title: 'Loại xe', field: 'vehicleProductTransportCategoryId'},
     {title: 'Mã trạng thái', field: 'statusId'},
     {title: "Mã tài xế", field: "userLoginId"}
   ];
