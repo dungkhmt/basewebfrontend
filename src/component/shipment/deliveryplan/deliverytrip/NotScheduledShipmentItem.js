@@ -36,10 +36,12 @@ export default function NotScheduledShipmentItem() {
     authPost(dispatch, token, '/get-list-facility', {}).then(r => r.json()).then(response => {
       let facilities = response['facilities'];
       setFacilityList(facilities);
-      setSelectedFacility(facilities[0]['facilityId'])
+      setSelectedFacility(facilities[0]['facilityId']);
+      setDataTable(shipmentItemData.filter(shipmentItem => shipmentItem['facilityId'] === facilities[0]['facilityId']))
     }).catch(console.log);
   }
 
+  const [shipmentItemData, setShipmentItemData] = useState([]);
   const [dataTable, setDataTable] = useState([]);
 
   const [waitData, setWaitData] = useState(false);
@@ -69,16 +71,18 @@ export default function NotScheduledShipmentItem() {
     }
   }
 
-  async function getDataTable() {
+  async function getShipmentItemData() {
     setWaitData(true);
     let shipmentItems = await authGet(dispatch, token, '/shipment-item-not-scheduled/' + deliveryPlanId);
     setWaitData(false);
 
-    setDataTable(shipmentItems);
+    setShipmentItemData(shipmentItems);
+
+    setDataTable(shipmentItems.filter(shipmentItem => shipmentItem['facilityId'] === selectedFacility))
   }
 
   useEffect(() => {
-    getDataTable().then(r => r);
+    getShipmentItemData().then(r => r);
     getFacilityList();
   }, []);
 
@@ -112,7 +116,10 @@ export default function NotScheduledShipmentItem() {
         <InputLabel>Chọn kho</InputLabel>
         <Select
           value={selectedFacility}
-          onChange={event => setSelectedFacility(event.target.value)}
+          onChange={event => {
+            setSelectedFacility(event.target.value);
+            setDataTable(shipmentItemData.filter(shipmentItem => shipmentItem['facilityId'] === event.target.value))
+          }}
         >
           {
             facilityList.map(value => (
