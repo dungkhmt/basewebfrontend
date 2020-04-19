@@ -23,9 +23,9 @@ import ShipmentItemList from "./component/shipment/shipment/ShipmentItemList";
 import VehicleList from "./component/shipment/vehicle/VehicleList";
 import DeliveryTripCreate from "./component/shipment/deliveryplan/deliverytrip/DeliveryTripCreate";
 import DeliveryTripDetailList
-    from "./component/shipment/deliveryplan/deliverytrip/deliverytripdetail/DeliveryTripDetailList";
+  from "./component/shipment/deliveryplan/deliverytrip/deliverytripdetail/DeliveryTripDetailList";
 import DeliveryTripDetailCreate
-    from "./component/shipment/deliveryplan/deliverytrip/deliverytripdetail/DeliveryTripDetailCreate";
+  from "./component/shipment/deliveryplan/deliverytrip/deliverytripdetail/DeliveryTripDetailCreate";
 import ShipmentItemDeliveryPlanList from "./component/shipment/deliveryplan/shipmentitem/ShipmentItemDeliveryPlanList";
 import VehicleDeliveryPlanList from "./component/shipment/deliveryplan/vehicle/VehicleDeliveryPlanList";
 import ShipmentItemCreate from "./component/shipment/shipment/ShipmentItemCreate";
@@ -71,7 +71,8 @@ import PortCreate from "./component/tmscontainer/port/PortCreate";
 import PortList from "./component/tmscontainer/port/PortList";
 import PortGoogleMap from "./component/tmscontainer/port/PortGoogleMap";
 import ShipmentItemDeliveryTripDetailList
-    from "./component/shipment/deliveryplan/shipmentitem/ShipmentItemDeliveryTripDetailList";
+  from "./component/shipment/deliveryplan/shipmentitem/ShipmentItemDeliveryTripDetailList";
+import NotScheduledShipmentItem from "./component/shipment/deliveryplan/deliverytrip/NotScheduledShipmentItem";
 
 
 function Routes(props) {// props nay tu parent transfer vao
@@ -257,18 +258,27 @@ function Routes(props) {// props nay tu parent transfer vao
           path="/create-shipment-item"                    // props
         />
 
-        <PrivateRouteWithLayout
-          component={ShipmentItemDeliveryTripDetailList}  //props
-          layout={Layout}          //props
-          isAuthenticated={props.isAuthenticated} // props
-          //isAuthenticated={true}
-          // exact                                   // props
-          path="/shipment-item-info/:shipmentItemId"                    // props
-        />
+      <PrivateRouteWithLayout
+        component={ShipmentItemDeliveryTripDetailList}  //props
+        layout={Layout}          //props
+        isAuthenticated={props.isAuthenticated} // props
+        //isAuthenticated={true}
+        // exact                                   // props
+        path="/shipment-item-info/:shipmentItemId"                    // props
+      />
 
-        <PrivateRouteWithLayout
-          component={VehicleDeliveryPlanList}  //props
-          layout={Layout}          //props
+      <PrivateRouteWithLayout
+        component={NotScheduledShipmentItem}  //props
+        layout={Layout}          //props
+        isAuthenticated={props.isAuthenticated} // props
+        //isAuthenticated={true}
+        // exact                                   // props
+        path="/not-scheduled-shipment-items/:deliveryPlanId"                    // props
+      />
+
+      <PrivateRouteWithLayout
+        component={VehicleDeliveryPlanList}  //props
+        layout={Layout}          //props
         isAuthenticated={props.isAuthenticated} // props
         //isAuthenticated={true}
         // exact                                   // props

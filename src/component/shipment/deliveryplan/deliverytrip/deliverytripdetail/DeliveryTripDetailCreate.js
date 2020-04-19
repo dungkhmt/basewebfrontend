@@ -216,7 +216,8 @@ export default function DeliveryTripDetailCreate() {
               <Grid item xs={5}
                     style={{verticalAlign: 'text-bottom', textAlign: 'left', padding: '30px 30px 20px 30px'}}>
                 <div>
-                  <b>Tổng khoảng cách: </b> {tripCapacityInfo == null ? 0 : tripCapacityInfo['totalDistance']} <p/>
+                  <b>Tổng khoảng cách dự tính: </b> {tripCapacityInfo == null ? 0 : tripCapacityInfo['totalDistance']}
+                  <p/>
                   <b>Tổng khối lượng (kg): </b> {tripCapacityInfo == null ? 0 :
                   Math.round(tripCapacityInfo['totalWeight'] * 100) / 100.0} <p/>
                   <b>Tổng số pallet: </b> {tripCapacityInfo == null ? 0 : tripCapacityInfo['totalPallet']} <p/>
