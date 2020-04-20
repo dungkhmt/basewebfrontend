@@ -87,6 +87,11 @@ export default function NotScheduledShipmentItem() {
   }, []);
 
   async function handleSuggest() {
+    if (selectedRows.length === 0) {
+      alert('Cần chọn ít nhất 1 đơn hàng để sử dụng chức năng này.');
+      return;
+    }
+
     let body = {
       deliveryPlanId,
       shipmentItemIds: selectedRows.map(shipmentItem => ({
