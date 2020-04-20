@@ -88,10 +88,7 @@ function ProductCreate(props) {
           }
         )
         .then((res) => {
-          console.log(res);
-          console.log(contentIds);
           contentIds.push(res);
-          console.log(contentIds);
         });
     }
   };
@@ -103,27 +100,29 @@ function ProductCreate(props) {
       productName: productName,
       content: contentIds,
     };
-    console.log("data ", data);
     setIsRequesting(true);
-    authPost(dispatch, token, "/add-new-product-to-db", data).then(
-      (res) => {
-        console.log(res);
-        setIsRequesting(false);
-        if (res.status === 401) {
-          dispatch(failed());
-          throw Error("Unauthorized");
-        } else if (res.status === 409) {
-          alert("Id exits!!");
-        } else if (res.status === 201) {
-          return res.json();
+    authPost(dispatch, token, "/add-new-product-to-db", data)
+      .then(
+        (res) => {
+          console.log(res);
+          setIsRequesting(false);
+          if (res.status === 401) {
+            dispatch(failed());
+            throw Error("Unauthorized");
+          } else if (res.status === 409) {
+            alert("Id exits!!");
+          } else if (res.status === 201) {
+            return res.text();
+          }
+        },
+        (error) => {
+          console.log(error);
         }
-      },
-      (error) => {
-        console.log(error);
-      }
-    );
+      )
+      .then((res) => {
+        history.push("/product/" + res);
+      });
     event.preventDefault();
-    window.location.reload();
   };
 
   useEffect(() => {

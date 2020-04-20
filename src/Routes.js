@@ -73,6 +73,7 @@ import PortGoogleMap from "./component/tmscontainer/port/PortGoogleMap";
 import ShipmentItemDeliveryTripDetailList
   from "./component/shipment/deliveryplan/shipmentitem/ShipmentItemDeliveryTripDetailList";
 import NotScheduledShipmentItem from "./component/shipment/deliveryplan/deliverytrip/NotScheduledShipmentItem";
+import ProductDetail from "./component/product/detailproduct";
 
 
 function Routes(props) {// props nay tu parent transfer vao
@@ -333,7 +334,14 @@ function Routes(props) {// props nay tu parent transfer vao
         isAuthenticated={props.isAuthenticated}
         path="/products/list"
       />
-
+      <PrivateRouteWithLayout
+        component={ProductDetail}  //props
+        layout={Layout}          //props
+        isAuthenticated={props.isAuthenticated} // props
+        //isAuthenticated={true}
+        //exact                                   // props
+        path="/product/:productId"                    // props
+      />
 
       <PrivateRouteWithLayout
         component={CustomerCreate}

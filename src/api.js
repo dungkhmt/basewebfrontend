@@ -29,6 +29,14 @@ export const authPut = (dispatch, token, url, body) => {
     body: JSON.stringify(body),
   });
 };
+export const authGetImg = (dispatch, token, url) => {
+  return fetch(API_URL + url, {
+    method: "GET",
+    headers: {
+      "X-Auth-Token": token,
+    },
+  });
+};
 export const authGet = (dispatch, token, url) => {
   return fetch(API_URL + url, {
     method: "GET",
