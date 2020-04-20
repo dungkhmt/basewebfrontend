@@ -104,7 +104,7 @@ export default function NotScheduledShipmentItem() {
     let response = await authPost(dispatch, token, '/suggest-trips', body).then(r => r.json());
     setTripSuggestionWait(false);
 
-    setTripSuggestionList(response);
+    setTripSuggestionList(response['trips']);
     setTripSuggestionOpen(true);
   }
 
