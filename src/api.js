@@ -1,13 +1,22 @@
-import { API_URL } from "./config/config";
 import { failed } from "./action/Auth";
+import { API_URL } from "./config/config";
 export const authPost = (dispatch, token, url, body) => {
   return fetch(API_URL + url, {
     method: "POST",
     headers: {
       "content-type": "application/json",
-      "X-Auth-Token": token
+      "X-Auth-Token": token,
     },
-    body: JSON.stringify(body)
+    body: JSON.stringify(body),
+  });
+};
+export const authPostMultiPart = (dispatch, token, url, body) => {
+  return fetch(API_URL + url, {
+    method: "POST",
+    headers: {
+      "X-Auth-Token": token,
+    },
+    body: body,
   });
 };
 export const authPut = (dispatch, token, url, body) => {
@@ -15,9 +24,9 @@ export const authPut = (dispatch, token, url, body) => {
     method: "PUT",
     headers: {
       "content-type": "application/json",
-      "X-Auth-Token": token
+      "X-Auth-Token": token,
     },
-    body: JSON.stringify(body)
+    body: JSON.stringify(body),
   });
 };
 export const authGet = (dispatch, token, url) => {
@@ -25,17 +34,17 @@ export const authGet = (dispatch, token, url) => {
     method: "GET",
     headers: {
       "content-type": "application/json",
-      "X-Auth-Token": token
-    }
+      "X-Auth-Token": token,
+    },
   }).then(
-    res => {
+    (res) => {
       if (!res.ok) {
         dispatch(failed());
         throw Error("Unauthorized");
       }
       return res.json();
     },
-    error => {
+    (error) => {
       console.log(error);
     }
   );
@@ -45,17 +54,17 @@ export const authDelete = (dispatch, token, url) => {
     method: "DELETE",
     headers: {
       "content-type": "application/json",
-      "X-Auth-Token": token
-    }
+      "X-Auth-Token": token,
+    },
   }).then(
-    res => {
+    (res) => {
       if (!res.ok) {
         dispatch(failed());
         throw Error("Unauthorized");
       }
-      return true; 
+      return true;
     },
-    error => {
+    (error) => {
       console.log(error);
     }
   );
@@ -63,5 +72,5 @@ export const authDelete = (dispatch, token, url) => {
 export default {
   getMenu: (dispatch, token) => {
     return authGet(dispatch, token, "/menu");
-  }
+  },
 };
