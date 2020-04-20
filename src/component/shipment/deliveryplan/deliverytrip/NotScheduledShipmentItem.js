@@ -94,7 +94,7 @@ export default function NotScheduledShipmentItem() {
 
     let body = {
       deliveryPlanId,
-      shipmentItemIds: selectedRows.map(shipmentItem => ({
+      shipmentItems: selectedRows.map(shipmentItem => ({
         shipmentItemId: shipmentItem['shipmentItemId'],
         deliveryQuantity: (shipmentItem['quantity'] - shipmentItem['scheduledQuantity'])
       }))
