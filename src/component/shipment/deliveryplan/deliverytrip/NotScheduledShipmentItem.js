@@ -157,6 +157,11 @@ export default function NotScheduledShipmentItem() {
   </div>;
 }
 
+function round(n, i) {
+  let times = Math.pow(10, i);
+  return Math.round(times * n) / times;
+}
+
 function TripSuggestion(props) {
   const {open, setOpen, trips, handleSubmit} = props;
 
@@ -164,7 +169,8 @@ function TripSuggestion(props) {
     {title: 'Mã chuyến', render: rowData => rowData['deliveryTripModel']['deliveryTripId']},
     {
       title: 'Tổng khối lượng',
-      render: rowData => rowData['deliveryTripModel']['totalWeight'] + ' (+' + rowData['extraTotalWeight'] + ')'
+      render: rowData => round(rowData['deliveryTripModel']['totalWeight'], 2) +
+        ' (+' + round(rowData['extraTotalWeight'], 2) + ')'
     },
     {
       title: 'Tải trọng',
@@ -177,7 +183,7 @@ function TripSuggestion(props) {
         let extraWeight = rowData['extraTotalWeight'];
         let newWeight = oldWeight + extraWeight;
         let capacity = rowData['deliveryTripModel']['maxVehicleCapacity'];
-        return (oldWeight / capacity) + ' (+' + (newWeight / capacity) + ')'
+        return round(oldWeight / capacity, 2) + ' (+' + round(newWeight / capacity, 2) + ')'
       }
     },
     {
@@ -187,7 +193,8 @@ function TripSuggestion(props) {
     },
     {
       title: 'Quãng đường',
-      render: rowData => rowData['deliveryTripModel']['totalDistance'] + ' (+' + rowData['extraTotalDistance'] + ')'
+      render: rowData => Math.round(rowData['deliveryTripModel']['totalDistance']) +
+        ' (+' + Math.round(rowData['extraTotalDistance']) + ')'
     },
     {title: 'Mã xe', render: rowData => rowData['deliveryTripModel']['vehicleId']},
     {title: 'Loại xe', render: rowData => rowData['deliveryTripModel']['vehicleProductTransportCategoryId']},
