@@ -14,6 +14,9 @@ export function toFormattedDateTime(rawTime) {
 }
 
 export function toFormattedTime(numberSeconds) {
+  if (numberSeconds < 0) {
+    return '-' + toFormattedTime(-numberSeconds);
+  }
   let hour = parseInt(numberSeconds / 3600);
   let minute = parseInt((numberSeconds / 60) % 60);
   let second = parseInt(numberSeconds % 60);

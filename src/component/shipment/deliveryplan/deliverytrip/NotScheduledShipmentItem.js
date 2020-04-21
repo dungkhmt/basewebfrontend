@@ -179,11 +179,13 @@ function TripSuggestion(props) {
     {
       title: 'Tỉ lệ tải',
       render: rowData => {
-        let oldWeight = rowData['extraTotalWeight'];
+        let oldWeight = rowData['deliveryTripModel']['totalWeight'];
         let extraWeight = rowData['extraTotalWeight'];
         let newWeight = oldWeight + extraWeight;
         let capacity = rowData['deliveryTripModel']['maxVehicleCapacity'];
-        return round(oldWeight / capacity, 2) + ' (+' + round(newWeight / capacity, 2) + ')'
+        let oldRate = oldWeight / capacity;
+        let newRate = newWeight / capacity;
+        return round(oldRate, 2) + ' (+' + round(newRate - oldRate, 2) + ')'
       }
     },
     {
@@ -212,7 +214,7 @@ function TripSuggestion(props) {
 
       <DialogTitle title={'Các chuyến được gợi ý'}/>
 
-      <MaterialTable columns={columns} data={trips} options={{search: false}}/>
+      <MaterialTable title={'Chi tiết các chuyến được gợi ý'} columns={columns} data={trips} options={{search: false}}/>
 
     </Dialog>
 
