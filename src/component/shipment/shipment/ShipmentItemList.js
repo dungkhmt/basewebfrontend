@@ -88,7 +88,8 @@ export default function ShipmentItemList() {
           authGet(
             dispatch,
             token,
-            "/shipment-item" + "?size=" + query.pageSize + "&page=" + query.page + sortParam
+            //"/shipment-item" + "?size=" + query.pageSize + "&page=" + query.page + sortParam
+            "/shipment-item-of-user-login" + "?size=" + query.pageSize + "&page=" + query.page + sortParam
           ).then(
             response => {
               resolve({

@@ -52,7 +52,8 @@ export default function ShipmentItemDeliveryPlanAdd() {
   const [dataTable, setDataTable] = useState();
 
   function getDataTable() {
-    authGet(dispatch, token, "/shipment-item-not-in-delivery-plan/" + deliveryPlanId + '/all').
+    //authGet(dispatch, token, "/shipment-item-not-in-delivery-plan/" + deliveryPlanId + '/all').
+    authGet(dispatch, token, "/shipment-item-of-user-login-not-in-delivery-plan/" + deliveryPlanId + '/all').
       then(response => setDataTable(response));
   }
 
