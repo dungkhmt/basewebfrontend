@@ -15,6 +15,7 @@ import {makeStyles} from "@material-ui/core/styles";
 import { useHistory, Link } from "react-router-dom";
 import {GoogleApiWrapper, Map, Marker} from "google-maps-react";
 import Grid from "@material-ui/core/Grid";
+import Autocomplete from '@material-ui/lab/Autocomplete';
 
 
 const useStyles = makeStyles(theme => ({
@@ -43,10 +44,59 @@ function DepotContainerCreate(props) {
     const [lat,setLat] = useState();
     const [lng,setLng] = useState();
     const [coordinates, setCoordinates] = useState();
+    const [suggestionList, setSuggestionList] = useState([]);
+    const [contactMechId, setContactMechId] = useState([]);
+    const defaultProps = {
+        options: suggestionList,
+        getOptionLabel: (option) => option.address,
+    };
 
+
+    const checkAddressToChangeLatLng = (event,newValue) =>{
+        console.log("checkAddressToChangeLatLng", newValue);
+        if(newValue !== null){
+            setLat(newValue.lat);
+            setLng(newValue.lng);
+            setContactMechId(newValue.contactMechId);
+        }else{
+            setContactMechId(null);
+        }
+        console.log("contactMenchId check....",contactMechId);
+
+    }
 
     const handleAddressChange = event=>{
+        console.log("address", event.target.value)
         setAddress(event.target.value)
+        setContactMechId(null);
+        console.log("contactMenchId handle....",contactMechId);
+
+        const data = {
+            address: event.target.value,
+        }
+        authPost(dispatch,token,"/get-list-address-suggestion",data)
+            .then(
+                res => {
+                    console.log(res);
+                    setIsRequesting(false);
+                    if(res.status === 401){
+                        dispatch(failed());
+                        throw Error("Unauthorized")
+                    }else if(res.status === 200){
+                        return res.json();
+                    }
+                },
+                error => {
+                    console.log(error);
+                }
+            )
+            .then(
+                res =>{
+                    console.log('res',res.list);
+                    setSuggestionList(res.list);
+
+                })
+
     }
 
     const handleDepotContainerIdChange = event=>{
@@ -67,6 +117,8 @@ function DepotContainerCreate(props) {
 
     }
 
+
+
     useEffect(() => {
 
         navigator.geolocation.getCurrentPosition(position => {
@@ -80,13 +132,18 @@ function DepotContainerCreate(props) {
 
         }, []
     )
+
+
+
+
     const handleSubmit = event => {
         const data = {
             lat: lat,
             lng: lng,
             address: address,
             depotContainerId: depotContainerId,
-            depotContainerName: depotContainerName
+            depotContainerName: depotContainerName,
+            contactMechId: contactMechId
         }
         setIsRequesting(true);
         authPost(dispatch,token,"/create-depot-container",data)
@@ -125,6 +182,10 @@ function DepotContainerCreate(props) {
 
 
                     <br/>
+
+
+
+
 
 
 
@@ -169,14 +230,25 @@ function DepotContainerCreate(props) {
                     </Typography>
 
 
-                    <TextField
-                        id="address"
-                        onChange={handleAddressChange}
-                        required
-                        value={address}
-                        fullWidth
-                    >
-                    </TextField>
+                    <Autocomplete
+                        {...defaultProps}
+                        debug
+                        renderInput={(params) =>
+                            <TextField
+                                {...params}
+                                margin="normal"
+                                id="address"
+                                onChange={handleAddressChange}
+                                required
+                                value={address}
+                                fullWidth
+                            />
+                        }
+                        onChange={checkAddressToChangeLatLng}
+
+                    />
+
+
 
 
                     <br/><br/><br/>
