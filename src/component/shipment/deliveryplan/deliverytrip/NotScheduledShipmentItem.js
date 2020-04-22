@@ -53,13 +53,15 @@ export default function NotScheduledShipmentItem() {
   const [tripSuggestionWait, setTripSuggestionWait] = useState(false);
 
   async function handleSubmit(deliveryTripId) {
-    let body = dataTable.map(shipmentItem => ({
+    setTripSuggestionOpen(false);
+
+    let body = selectedRows.map(shipmentItem => ({
       shipmentItemId: shipmentItem['shipmentItemId'],
       deliveryQuantity: (shipmentItem['quantity'] - shipmentItem['scheduledQuantity'])
     }));
     setWaitData(true);
     let numberAddedShipmentItems = await authPost(dispatch, token,
-      '/create-delivery-trip-detail/' + deliveryTripId, body);
+      '/create-delivery-trip-detail/' + deliveryTripId, body).then(r => r.json());
     setWaitData(false);
 
     numberAddedShipmentItems = parseInt(numberAddedShipmentItems);
@@ -69,6 +71,8 @@ export default function NotScheduledShipmentItem() {
     } else {
       alert('Error...');
     }
+
+    window.location.reload();
   }
 
   async function getShipmentItemData() {
