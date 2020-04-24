@@ -507,12 +507,7 @@ export default function SideBar(props) {
                       <ListItemText primary="DS khách hàng"/>
                     </ListItem>
 
-                    <ListItem button className={classes.nested}>
-                      <ListItemIcon>
-                        <StarBorder/>
-                      </ListItemIcon>
-                      <ListItemText primary="Thời gian/quãng đường"/>
-                    </ListItem>
+                    
                     <ListItem
                         button
                         className={classes.nested}
@@ -744,7 +739,10 @@ export default function SideBar(props) {
                       </ListItemIcon>
                       <ListItemText primary="Tạo mới ĐLBL"/>
                     </ListItem>
-                    <ListItem button className={classes.nested}>
+                    <ListItem button className={classes.nested}
+                     component={Link}
+                     to={process.env.PUBLIC_URL + "/retailoutlet/list"}
+                    >
                       <ListItemIcon>
                         <StarBorder/>
                       </ListItemIcon>
@@ -806,7 +804,11 @@ export default function SideBar(props) {
                       </ListItemIcon>
                       <ListItemText primary="Tạo mới NPP"/>
                     </ListItem>
-                    <ListItem button className={classes.nested}>
+                   
+                    <ListItem button className={classes.nested}
+                      component={Link}
+                      to={process.env.PUBLIC_URL + "/distributor/list"}
+                    >
                       <ListItemIcon>
                         <StarBorder/>
                       </ListItemIcon>

@@ -37,6 +37,10 @@ import SalesmanCheckinRoutesHistory from "./component/salesroutes/salesmanchecki
 import DeliveryTripChart from "./component/shipment/deliveryplan/deliverytrip/DeliveryTripChart";
 import CustomerCreate from "./component/customer/CustomerCreate";
 import CustomerList from "./component/customer/CustomerList";
+import DistributorList from "./component/distributor/DistributorList";
+import RetailOutletList from "./component/retailoutlet/RetailOutletList";
+
+
 import SalesmanList from "./component/salesman/SalesmanList";
 import DetailSalesman from "./component/salesman/DetailSalesman";
 import SalesmanCreate from "./component/salesman/SalesmanCreate";
@@ -356,7 +360,20 @@ function Routes(props) {// props nay tu parent transfer vao
         isAuthenticated={props.isAuthenticated}
         path="/customer/list"
       />
+      <PrivateRouteWithLayout
+        component={DistributorList}
+        layout={Layout}
+        isAuthenticated={props.isAuthenticated}
+        path="/distributor/list"
+      />
 
+      <PrivateRouteWithLayout
+        component={RetailOutletList}
+        layout={Layout}
+        isAuthenticated={props.isAuthenticated}
+        path="/retailoutlet/list"
+      />
+      
       <PrivateRouteWithLayout
         component={InventoryOrderList}
         layout={Layout}

@@ -85,6 +85,8 @@ get list retail outlet
 get list retail outlet of userlogin which is a salesman
 	curl --header "Content-Type: application/json; charset=utf-8" -v GET http://3.1.6.126/api/get-retail-outlets-of-userlogin-salesman -u dungpq:123 
 	
+	curl --header "Content-Type: application/json; charset=utf-8" -v GET http://localhost:8080/api/get-retail-outlets-of-userlogin-salesman -u dungpq:123 
+	
 --------
 Create Customer
   curl --header "Content-Type: application/json; charset=utf-8" -v POST http://localhost:8080/api/create-customer -u admin:123 -d '{"customerName":"VinMart Phạm Ngọc Thạch","address":"Pham Ngoc Thach, Hanoi","latitude":"21.006619","longitude":"105.832038"}'
@@ -123,7 +125,8 @@ get list of distributor of userlogin
 get list of distributor of userlogin which is a salesma
 	curl --header "Content-Type: application/json; charset=utf-8" -v GET http://3.1.6.126/api/get-distributors-of-userlogin-salesman -u dungpq:123 
 
-	
+	curl --header "Content-Type: application/json; charset=utf-8" -v GET http://localhost:8080/api/get-distributors-of-userlogin-salesman -u dungpq:123 
+
 --------
 Assign customer to a salesman
 	curl --header "Content-Type: application/json; charset=utf-8" -v POST http://localhost:8080/api/assign-customer-2-salesman -u dungpq:123 -d '{"partyCustomerId":"5ae20c48-4d6c-11ea-967e-54bf64436441","partySalesmanId":"847254bb-c0f1-4696-b11f-682976965eed"}'
@@ -192,6 +195,10 @@ Get asigned delivery route
     curl --header "Content-Type: application/json" -v POST http://localhost:8080/api/get-assigned-delivery-routes -u admin:123 -d '{"driverUserLoginId":"datnguyen"}'
 
 	curl --header "Content-Type: application/json" -v POST http://3.1.6.126/api/get-assigned-delivery-routes -u admin:123 -d '{"driverUserLoginId":"trungbui"}'
+	
+	curl --header "Content-Type: application/json" -v POST http://54.169.36.84/api/get-assigned-delivery-routes -u admin:123 -d '{"driverUserLoginId":"trungbui"}'
+	
+	curl --header "Content-Type: application/json" -v POST http://sscm.dailyopt.ai/api/get-assigned-delivery-routes -u admin:123 -d '{"driverUserLoginId":"trungbui"}'
 --------
 Statistic vehicle-distance
 	curl --header "Content-Type: application/json" -v POST http://localhost:8080/api/statistic-vehicle-distance -u admin:123 -d '{"fromDate":"","thruDate":""}'
@@ -240,7 +247,15 @@ Salesman
 	
 	curl --header "Content-Type: application/json" -v POST http://localhost:8080/api/create-salesman -u admin:123 -d '{"userName":"vietdung","password":"123","firstName":"Dung","lastName":"Nguyen","middleName":"Viet","roles":["ROLE_SALESMAN"]}'
 
+-------
+add distributor to salesman
+	curl --header "Content-Type: application/json" -v POST http://localhost:8080/api/add-salesman-sell-from-distributor -u admin:123 -d '{"salesmanId":"847254bb-c0f1-4696-b11f-682976965eed","distributorId":"a91c4258-9295-4f74-96f7-dc04b1ae5bd5"}'
 
+-------
+add retailoutlet to salesman
+	curl --header "Content-Type: application/json" -v POST http://localhost:8080/api/add-salesman-sell-to-retail-outlet -u admin:123 -d '{"salesmanId":"847254bb-c0f1-4696-b11f-682976965eed","retailOutletId":"6dc7c1bd-62f5-4c95-a97b-f62b30c19b14"}'
+
+	
 -------
 create salesroute planning period
 
