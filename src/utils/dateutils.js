@@ -13,6 +13,15 @@ export function toFormattedDateTime(rawTime) {
     addZeroBefore(date.getSeconds(), 2);
 }
 
+export function toFormattedDate(rawTime) {
+  let date = new Date(rawTime);
+  return date.getFullYear() +
+    '-' +
+    addZeroBefore(date.getMonth() + 1, 2) +
+    '-' +
+    addZeroBefore(date.getDate(), 2);
+}
+
 export function toFormattedTime(numberSeconds) {
   if (numberSeconds < 0) {
     return '-' + toFormattedTime(-numberSeconds);
