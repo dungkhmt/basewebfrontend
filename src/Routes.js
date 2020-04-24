@@ -23,9 +23,9 @@ import ShipmentItemList from "./component/shipment/shipment/ShipmentItemList";
 import VehicleList from "./component/shipment/vehicle/VehicleList";
 import DeliveryTripCreate from "./component/shipment/deliveryplan/deliverytrip/DeliveryTripCreate";
 import DeliveryTripDetailList
-  from "./component/shipment/deliveryplan/deliverytrip/deliverytripdetail/DeliveryTripDetailList";
+    from "./component/shipment/deliveryplan/deliverytrip/deliverytripdetail/DeliveryTripDetailList";
 import DeliveryTripDetailCreate
-  from "./component/shipment/deliveryplan/deliverytrip/deliverytripdetail/DeliveryTripDetailCreate";
+    from "./component/shipment/deliveryplan/deliverytrip/deliverytripdetail/DeliveryTripDetailCreate";
 import ShipmentItemDeliveryPlanList from "./component/shipment/deliveryplan/shipmentitem/ShipmentItemDeliveryPlanList";
 import VehicleDeliveryPlanList from "./component/shipment/deliveryplan/vehicle/VehicleDeliveryPlanList";
 import ShipmentItemCreate from "./component/shipment/shipment/ShipmentItemCreate";
@@ -71,9 +71,14 @@ import PortCreate from "./component/tmscontainer/port/PortCreate";
 import PortList from "./component/tmscontainer/port/PortList";
 import PortGoogleMap from "./component/tmscontainer/port/PortGoogleMap";
 import ShipmentItemDeliveryTripDetailList
-  from "./component/shipment/deliveryplan/shipmentitem/ShipmentItemDeliveryTripDetailList";
+    from "./component/shipment/deliveryplan/shipmentitem/ShipmentItemDeliveryTripDetailList";
 import NotScheduledShipmentItem from "./component/shipment/deliveryplan/deliverytrip/NotScheduledShipmentItem";
 import ProductDetail from "./component/product/detailproduct";
+import {
+    TransportReportByDriver,
+    TransportReportByFacility,
+    TransportReportByPartyCustomer
+} from "./component/report/TransportReport";
 
 
 function Routes(props) {// props nay tu parent transfer vao
@@ -241,14 +246,14 @@ function Routes(props) {// props nay tu parent transfer vao
         path="/shipment"                    // props
       />
 
-      <PrivateRouteWithLayout
-        component={VehicleList}  //props
-        layout={Layout}          //props
-        isAuthenticated={props.isAuthenticated} // props
-        //isAuthenticated={true}
-        exact                                   // props
-        path="/vehicle"                    // props
-      />
+        <PrivateRouteWithLayout
+          component={VehicleList}  //props
+          layout={Layout}          //props
+          isAuthenticated={props.isAuthenticated} // props
+          //isAuthenticated={true}
+          exact                                   // props
+          path="/vehicle"                    // props
+        />
 
         <PrivateRouteWithLayout
           component={ShipmentItemCreate}  //props
@@ -259,14 +264,14 @@ function Routes(props) {// props nay tu parent transfer vao
           path="/create-shipment-item"                    // props
         />
 
-      <PrivateRouteWithLayout
-        component={ShipmentItemDeliveryTripDetailList}  //props
-        layout={Layout}          //props
-        isAuthenticated={props.isAuthenticated} // props
-        //isAuthenticated={true}
-        // exact                                   // props
-        path="/shipment-item-info/:shipmentItemId"                    // props
-      />
+        <PrivateRouteWithLayout
+          component={ShipmentItemDeliveryTripDetailList}  //props
+          layout={Layout}          //props
+          isAuthenticated={props.isAuthenticated} // props
+          //isAuthenticated={true}
+          // exact                                   // props
+          path="/shipment-item-info/:shipmentItemId"                    // props
+        />
 
       <PrivateRouteWithLayout
         component={NotScheduledShipmentItem}  //props
@@ -380,12 +385,12 @@ function Routes(props) {// props nay tu parent transfer vao
         path="/sales/create"
       />
 
-      <PrivateRouteWithLayout
-        component={SalesmanAdd}
-        layout={Layout}
-        isAuthenticated={props.isAuthenticated}
-        path="/sales/add/:partyId"
-      />
+        <PrivateRouteWithLayout
+          component={SalesmanAdd}
+          layout={Layout}
+          isAuthenticated={props.isAuthenticated}
+          path="/sales/add/:partyId"
+        />
 
         <PrivateRouteWithLayout
           component={DetailSalesman}  //props
@@ -453,6 +458,31 @@ function Routes(props) {// props nay tu parent transfer vao
           isAuthenticated={props.isAuthenticated}
           path="/sale-reports-by-date"
         />
+
+        {/*transport report*/}
+
+        <PrivateRouteWithLayout
+          component={TransportReportByDriver}
+          layout={Layout}
+          isAuthenticated={props.isAuthenticated}
+          path="/transport-reports-by-driver"
+        />
+
+        <PrivateRouteWithLayout
+          component={TransportReportByFacility}
+          layout={Layout}
+          isAuthenticated={props.isAuthenticated}
+          path="/transport-reports-by-facility"
+        />
+
+        <PrivateRouteWithLayout
+          component={TransportReportByPartyCustomer}
+          layout={Layout}
+          isAuthenticated={props.isAuthenticated}
+          path="/transport-reports-by-customer"
+        />
+
+        {/*end*/}
 
         <PrivateRouteWithLayout
           component={ListLocation}
