@@ -38,24 +38,58 @@ export default function ShipmentItemCreate() {
   const dispatch = useDispatch();
   const history = useHistory();
 
-  const [orderId, setOrderId] = useState(0);
-  const [quantity, setQuantity] = useState(0);
+  const [orderId, setOrderId] = useState(null);
+  const [quantity, setQuantity] = useState(1);
   const [pallet, setPallet] = useState(0);
-  const [productId, setProductId] = useState(null);
-  const [productName, setProductName] = useState(null);
-  const [weight, setWeight] = useState(null);
-  const [uom, setUom] = useState(null);
-  const [customerCode, setCustomerCode] = useState(null);
-  const [customerName, setCustomerName] = useState(null);
+
+  const [selectedProduct, setSelectedProduct] = useState(null);
+  const [productList, setProductList] = useState([]);
+
+  async function getProductList() {
+    let response = await authPost(dispatch, token, '/get-list-product', {}).then(r => r.json());
+    setProductList(response['products']);
+    setSelectedProduct(response['products'][0]);
+    setWeight(response['products'][0]['weight'] * quantity);
+  }
+
+  const [weight, setWeight] = useState(0);
+
+  const [selectedUom, setSelectedUom] = useState(null);
+  const [uomList, setUomList] = useState([]);
+
+  async function getUomList() {
+    let response = await authPost(dispatch, token, '/get-list-uoms', {statusId: ''}).then(r => r.json());
+    setUomList(response['uoms']);
+    setSelectedUom(response['uoms'][0]);
+  }
+
+  const [selectedCustomer, setSelectedCustomer] = useState(null);
+  const [customerList, setCustomerList] = useState([]);
+
+  async function getCustomerList() {
+    let response = await authPost(dispatch, token, '/get-list-customer', {}).then(r => r.json());
+    setCustomerList(response['lists']);
+    setSelectedCustomer(response['lists'][0]);
+  }
+
   const [locationCode, setLocationCode] = useState(null);
   const [address, setAddress] = useState(null);
 
   const handleSubmit = () => {
     const shipmentItemInfo = {
-      orderId, quantity, pallet, productId, productName, weight, uom, customerCode, customerName, locationCode, address,
-      facilityId: selectedFacility
+      orderId,
+      quantity,
+      pallet,
+      productId: selectedProduct['productId'],
+      productName: selectedProduct['productName'],
+      weight,
+      uom: selectedUom['uomId'],
+      customerCode: selectedCustomer['customerCode'],
+      customerName: selectedCustomer['customerName'],
+      locationCode,
+      address,
+      facilityId: selectedFacility['facilityId']
     };
-    console.log(shipmentItemInfo);
     authPost(dispatch, token, '/create-shipment-item', shipmentItemInfo).then(
       response => {
         console.log(response);
@@ -68,26 +102,48 @@ export default function ShipmentItemCreate() {
     )
   };
 
-  const [selectedFacility, setSelectedFacility] = useState();
+  const [selectedFacility, setSelectedFacility] = useState(null);
   const [facilityList, setFacilityList] = useState([]);
 
   function getFacilityList() {
     authPost(dispatch, token, '/get-list-facility', {}).then(r => r.json()).then(response => {
       let facilities = response['facilities'];
       setFacilityList(facilities);
-      setSelectedFacility(facilities[0]['facilityId'])
-    }).catch(console.log);
+      setSelectedFacility(facilities[0]);
+    });
   }
 
-  useEffect(() => getFacilityList(), []);
+  useEffect(() => {
+    (async () => {
+      getFacilityList();
+      getCustomerList().then(r => r);
+      getProductList().then(r => r);
+      getUomList().then(r => r);
+    })();
+  }, []);
 
   const classes = useStyles();
 
-  function textField(id, label, type, onChange) {
-    return <TextField id={id}
-                      label={label}
-                      type={type}
-                      onChange={event => onChange(event.target.value)}/>;
+  function textField(id, label, type, value, onChange, readOnly) {
+    return <div>
+      <TextField id={id}
+                 label={label}
+                 type={type}
+                 value={value}
+                 onChange={event => onChange(event.target.value)}
+                 InputProps={{readOnly: readOnly}}/>
+      <p/>
+    </div>;
+  }
+
+  function select(label, list, id, name, value, onChange) {
+    return <div>
+      <InputLabel>{label}</InputLabel>
+      <Select value={value} onChange={event => onChange(event.target.value)}>
+        {list.map(e => (<MenuItem value={e}>{e[name] + ' (' + e[id] + ')'}</MenuItem>))}
+      </Select>
+      <p/>
+    </div>;
   }
 
   return <div>
@@ -97,35 +153,44 @@ export default function ShipmentItemCreate() {
           <Typography variant="h5" component="h2">
             Tạo mới đơn hàng vận chuyển
           </Typography>
-          <form className={classes.root} noValidate autoComplete="off">
-            {textField("orderId", "Mã đơn hàng", "search", setOrderId)}
-            {textField("quantity", "Số lượng", "number", setQuantity)}
-            {textField("pallet", "Số lượng pallet", "number", setPallet)}
-            {textField("productId", "Mã sản phẩm", "search", setProductId)}
-            {textField("productName", "Tên sản phẩm", "search", setProductName)}
-            {textField("weight", "Khối lượng", "number", setWeight)}
-            {textField("uom", "Uom", "search", setUom)}
-            {textField("customerCode", "Mã khách hàng", "search", setCustomerCode)}
-            {textField("customerName", "Tên khách hàng", "search", setCustomerName)}
-            {textField("locationCode", "Mã địa điểm", "search", setLocationCode)}
-            {textField("address", "Địa chỉ", "search", setAddress)}
 
-            <p/>
-            <InputLabel>Chọn kho</InputLabel>
-            <Select
-              value={selectedFacility}
-              onChange={event => setSelectedFacility(event.target.value)}
-            >
-              {
-                facilityList.map(value => (
-                  <MenuItem value={value['facilityId']}>
-                    {value['facilityId'] + ' (' + value['facilityName'] + ')'}
-                  </MenuItem>
-                ))
-              }
-            </Select>
+          <p/>
 
-          </form>
+          {textField("orderId", "Mã đơn hàng", "search", orderId, setOrderId)}
+          {textField("quantity", "Số lượng", "number", quantity, newValue => {
+            if (newValue > 0) {
+              setQuantity(newValue);
+              setWeight(selectedProduct['weight'] * newValue);
+            }
+          })}
+          {textField("pallet", "Số lượng pallet", "number", pallet, newValue => {
+            if (newValue >= 0) {
+              setPallet(newValue);
+            }
+          })}
+
+          {select('Chọn sản phẩm',
+            productList,
+            'productId',
+            'productName',
+            selectedProduct,
+            newProduct => {
+              setSelectedProduct(newProduct);
+              setWeight(newProduct['weight'] * quantity);
+            })}
+
+          {textField("weight", "Khối lượng (kg)", undefined, weight, undefined, true)}
+
+          {select('Chọn đơn vị sản phẩm', uomList, 'uomId', 'uomId', selectedUom, setSelectedUom)}
+
+
+          {select('Chọn khách hàng', customerList, 'partyId', 'customerName', selectedCustomer, setSelectedCustomer)}
+
+          {textField("locationCode", "Mã địa điểm", "search", locationCode, setLocationCode)}
+          {textField("address", "Địa chỉ", "search", address, setAddress)}
+
+          {select('Chọn kho', facilityList, 'facilityId', 'facilityName', selectedFacility, setSelectedFacility)}
+
         </CardContent>
         <CardActions>
           <Button variant="contained" color="primary" startIcon={<CloudUploadIcon/>} onClick={handleSubmit}>
