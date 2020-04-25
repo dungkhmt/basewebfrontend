@@ -38,8 +38,10 @@ import DeliveryTripChart from "./component/shipment/deliveryplan/deliverytrip/De
 import CustomerCreate from "./component/customer/CustomerCreate";
 import CustomerList from "./component/customer/CustomerList";
 import DistributorList from "./component/distributor/DistributorList";
+import DistributorDetail from "./component/distributor/DistributorDetail";
+import DistributorCreate from "./component/distributor/DistributorCreate";
 import RetailOutletList from "./component/retailoutlet/RetailOutletList";
-
+import RetailOutletCreate from "./component/retailoutlet/RetailOutletCreate";
 
 import SalesmanList from "./component/salesman/SalesmanList";
 import DetailSalesman from "./component/salesman/DetailSalesman";
@@ -366,12 +368,32 @@ function Routes(props) {// props nay tu parent transfer vao
         path="/customer/list"
       />
       <PrivateRouteWithLayout
+        component={DistributorCreate}
+        layout={Layout}
+        isAuthenticated={props.isAuthenticated}
+        path="/distributor/create"
+      />
+      <PrivateRouteWithLayout
         component={DistributorList}
         layout={Layout}
         isAuthenticated={props.isAuthenticated}
         path="/distributor/list"
       />
-
+      <PrivateRouteWithLayout
+        component={DistributorDetail}  //props
+        layout={Layout}          //props
+        isAuthenticated={props.isAuthenticated} // props
+        //isAuthenticated={true}
+        //exact                                   // props
+        path="/distributor/:partyId"                    // props
+      />
+      <PrivateRouteWithLayout
+        component={RetailOutletCreate}
+        layout={Layout}
+        isAuthenticated={props.isAuthenticated}
+        path="/retailoutlet/create"
+      />
+      
       <PrivateRouteWithLayout
         component={RetailOutletList}
         layout={Layout}

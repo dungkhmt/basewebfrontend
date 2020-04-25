@@ -6,6 +6,7 @@ import MaterialTable from "material-table";
 import {tableIcons} from "../../utils/iconutil";
 import { makeStyles } from '@material-ui/core/styles';
 import { API_URL } from "../../config/config";
+import { Link } from "react-router-dom";
 
 function DistributorList(props){
     const token = useSelector(state => state.auth.token);
@@ -14,7 +15,7 @@ function DistributorList(props){
     const [distributors, setDistributors] = useState([]);
 
     const columns =[
-        {field:'partyId',title:'Party Id'},
+        {title:'Party Id',render: rowData => <Link to={'/distributor/' + rowData['partyId']}>{rowData['partyId']}</Link>},
         {field:'distributorCode', title:'Mã NPP'},
         {field:'distributorName', title:'Tên NPP'}
     ];
