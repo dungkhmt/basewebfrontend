@@ -60,11 +60,13 @@ function SaleReport(props) {
   const [selected, setSelected] = useState('');
   const [selectData, setSelectData] = useState([]);
 
-  useEffect(async () => {
-    let selectDataResponse = await selectDataRequest(); // get all product/customer....
-    setSelectData(selectDataResponse);
-    setSelected(selectDataResponse[0][filterId]);
-    await onChangeSelected(fromDate, thruDate, selectDataResponse[0][filterId]);
+  useEffect(() => {
+    (async () => {
+      let selectDataResponse = await selectDataRequest(); // get all product/customer....
+      setSelectData(selectDataResponse);
+      setSelected(selectDataResponse[0][filterId]);
+      await onChangeSelected(fromDate, thruDate, selectDataResponse[0][filterId])
+    })();
   }, []);
 
   async function onChangeSelected(fromDate, thruDate, selectedData) {
