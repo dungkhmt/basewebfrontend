@@ -70,10 +70,13 @@ export default function ShipmentItemCreate() {
     let response = await authPost(dispatch, token, '/get-list-customer', {}).then(r => r.json());
     setCustomerList(response['lists']);
     setSelectedCustomer(response['lists'][0]);
+    let location = response['lists'][0]['postalAddress'][0];
+    setLocationCode(location['contactMechId']);
+    setAddress(location['address']);
   }
 
-  const [locationCode, setLocationCode] = useState(null);
-  const [address, setAddress] = useState(null);
+  const [locationCode, setLocationCode] = useState('');
+  const [address, setAddress] = useState('');
 
   const handleSubmit = () => {
     const shipmentItemInfo = {
@@ -129,6 +132,7 @@ export default function ShipmentItemCreate() {
       <TextField id={id}
                  label={label}
                  type={type}
+                 fullWidth={true}
                  value={value}
                  onChange={event => onChange(event.target.value)}
                  InputProps={{readOnly: readOnly}}/>
@@ -184,10 +188,15 @@ export default function ShipmentItemCreate() {
           {select('Chọn đơn vị sản phẩm', uomList, 'uomId', 'uomId', selectedUom, setSelectedUom)}
 
 
-          {select('Chọn khách hàng', customerList, 'partyId', 'customerName', selectedCustomer, setSelectedCustomer)}
+          {select('Chọn khách hàng', customerList, 'partyId', 'customerName', selectedCustomer, newCustomer => {
+            setSelectedCustomer(newCustomer);
+            let location = newCustomer['postalAddress'][0];
+            setLocationCode(location['contactMechId']);
+            setAddress(location['address']);
+          })}
 
-          {textField("locationCode", "Mã địa điểm", "search", locationCode, setLocationCode)}
-          {textField("address", "Địa chỉ", "search", address, setAddress)}
+          {textField("locationCode", "Mã địa điểm", undefined, locationCode, undefined, true)}
+          {textField("address", "Địa chỉ", undefined, address, undefined, true)}
 
           {select('Chọn kho', facilityList, 'facilityId', 'facilityName', selectedFacility, setSelectedFacility)}
 
