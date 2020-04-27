@@ -178,7 +178,7 @@ function UserCreate(props) {
     console.log("submit order, data = ",data);
 
     setIsRequesting(true);
-    authPost(dispatch, token, "/create-order-distributor-to-retailoutlet", data)
+    authPost(dispatch, token, "/create-order-distributor-to-retail-outlet", data)
       .then(
         res => {
           console.log(res);

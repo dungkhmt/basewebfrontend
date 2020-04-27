@@ -1,4 +1,4 @@
-import React,{ useEffect, useState } from "react";
+import React, {useEffect, useState} from "react";
 import {connect} from "react-redux";
 import TableContainer from "@material-ui/core/TableContainer";
 import Table from "@material-ui/core/Table";
@@ -9,18 +9,18 @@ import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 import Paper from '@material-ui/core/Paper';
 import Button from '@material-ui/core/Button';
-import { API_URL } from "../../config/config";
-import { useHistory } from "react-router-dom";
+import {API_URL} from "../../config/config";
+import {useHistory} from "react-router-dom";
 
 const useStyles = makeStyles({
-    table: {
-      minWidth: 650,
-    },
-  });
+  table: {
+    minWidth: 650,
+  },
+});
 
-function ListUserLogins(props){
-    const classes = useStyles();
-    const [data,setData]= useState([]);
+function ListUserLogins(props) {
+  const classes = useStyles();
+  const [data, setData] = useState([]);
     const history = useHistory(); // HOOK moc cau
 
     const viewDetailUserLogin = (username) => {
@@ -36,10 +36,10 @@ function ListUserLogins(props){
           //headers.append("Accept", "application/json");
       
           headers.append("X-Auth-Token", props.token);
-          fetch(`${API_URL}/get-list-userlogins`, {
-            method: "GET",
-            headers: headers
-          })
+      fetch(`${API_URL}/get-list-user-logins`, {
+        method: "GET",
+        headers: headers
+      })
             .then(res => res.json())
             .then(
               res => {

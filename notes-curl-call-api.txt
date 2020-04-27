@@ -83,9 +83,9 @@ get list retail outlet
 	curl --header "Content-Type: application/json; charset=utf-8" -v POST http://3.1.6.126/api/get-list-retail-outlet -u admin:123 -d '{"statusId":null}'
 --------
 get list retail outlet of userlogin which is a salesman
-	curl --header "Content-Type: application/json; charset=utf-8" -v GET http://3.1.6.126/api/get-retail-outlets-of-userlogin-salesman -u dungpq:123 
+	curl --header "Content-Type: application/json; charset=utf-8" -v GET http://3.1.6.126/api/get-retail-outlets-of-user-login-salesman -u dungpq:123
 	
-	curl --header "Content-Type: application/json; charset=utf-8" -v GET http://localhost:8080/api/get-retail-outlets-of-userlogin-salesman -u dungpq:123 
+	curl --header "Content-Type: application/json; charset=utf-8" -v GET http://localhost:8080/api/get-retail-outlets-of-user-login-salesman -u dungpq:123
 	
 --------
 Create Customer
@@ -112,9 +112,9 @@ Get list customers
 	
 --------
 Get list of customer of a salesman
-	curl --header "Content-Type: application/json; charset=utf-8" -v POST http://localhost:8080/api/get-customers-of-userlogin -u dungpq:123 
+	curl --header "Content-Type: application/json; charset=utf-8" -v POST http://localhost:8080/api/get-customers-of-user-login -u dungpq:123
 	
-	curl --header "Content-Type: application/json; charset=utf-8" -v POST http://3.1.6.126/api/get-customers-of-userlogin -u dungpq:123 
+	curl --header "Content-Type: application/json; charset=utf-8" -v POST http://3.1.6.126/api/get-customers-of-user-login -u dungpq:123
 --------
 get list of distributor of userlogin
 	curl --header "Content-Type: application/json; charset=utf-8" -v POST http://3.1.6.126/api/get-distributors-of-user-login -u dungpq:123 -d '{"statusId":null}'
@@ -127,7 +127,7 @@ get list of distributor of userlogin which is a salesma
 
 	curl --header "Content-Type: application/json; charset=utf-8" -v GET http://localhost:8080/api/get-distributors-of-user-login-salesman -u dungpq:123
 
-	curl --header "Content-Type: application/json; charset=utf-8" -v GET http://sscm.dailyopt.ai/api/get-distributors-of-userlogin-salesman -u dungpq:123 
+	curl --header "Content-Type: application/json; charset=utf-8" -v GET http://sscm.dailyopt.ai/api/get-distributors-of-user-login-salesman -u dungpq:123
 	
 --------
 Assign customer to a salesman
@@ -237,7 +237,7 @@ Login:
 -------
 Create UserLogin
 
- curl --header "Content-Type: application/json" -v POST http://localhost:8080/api/create-userlogin -u admin:123 -d '{"userName":"dungpq","password":"123"}'
+ curl --header "Content-Type: application/json" -v POST http://localhost:8080/api/create-user-login -u admin:123 -d '{"userName":"dungpq","password":"123"}'
 
 -------
 Salesman
@@ -319,11 +319,11 @@ Salesman CheckOut at customer
 	
 -------
 get customers visited of userlogin
-	curl --header "Content-Type: application/json" -v POST http://localhost:8080/api/get-customers-visited-date-of-userlogin -u dungpq:123 -d '{"date":"2020-01-13"}'
+	curl --header "Content-Type: application/json" -v POST http://localhost:8080/api/get-customers-visited-date-of-user-login -u dungpq:123 -d '{"date":"2020-01-13"}'
 	
-	curl --header "Content-Type: application/json" -v POST http://3.1.6.126/api/get-customers-visited-date-of-userlogin -u dungpq:123 -d '{"date":"2020-01-13"}'
+	curl --header "Content-Type: application/json" -v POST http://3.1.6.126/api/get-customers-visited-date-of-user-login -u dungpq:123 -d '{"date":"2020-01-13"}'
 	
-	curl --header "Content-Type: application/json" -v POST http://sscm.dailyopt.ai/api/get-retail-outlets-visited-date-of-userlogin -u dungpq:123 -d '{"date":"2020-01-13"}'
+	curl --header "Content-Type: application/json" -v POST http://sscm.dailyopt.ai/api/get-retail-outlets-visited-date-of-user-login -u dungpq:123 -d '{"date":"2020-01-13"}'
 	
 -------
 get customers visited of salesman date

@@ -1,11 +1,9 @@
-
-import React, { useEffect, useState } from "react";
+import React, {useEffect, useState} from "react";
 import {useDispatch, useSelector} from "react-redux";
-import {authGet, authPost} from "../../api";
+import {authGet} from "../../api";
 import MaterialTable from "material-table";
 import {tableIcons} from "../../utils/iconutil";
-import { makeStyles } from '@material-ui/core/styles';
-import { API_URL } from "../../config/config";
+import {API_URL} from "../../config/config";
 
 function RetailOutletList(props){
     const token = useSelector(state => state.auth.token);
@@ -24,7 +22,7 @@ function RetailOutletList(props){
     };
 
     function getListRetailOutlets(){
-        fetch(API_URL + '/get-retail-outlets-of-userlogin-salesman', requestOptionsGet)
+      fetch(API_URL + '/get-retail-outlets-of-user-login-salesman', requestOptionsGet)
         .then(response => response.json())
         .then(response =>{
 			console.log(response);
@@ -65,7 +63,13 @@ function RetailOutletList(props){
                         authGet(
                             dispatch,
                             token,
-                            "/get-page-retail-outlets-of-userlogin-salesman" + "?size=" + query.pageSize + "&page=" + query.page+sortParam+filterParam
+                          "/get-page-retail-outlets-of-user-login-salesman" +
+                          "?size=" +
+                          query.pageSize +
+                          "&page=" +
+                          query.page +
+                          sortParam +
+                          filterParam
                         ).then(
                             res => {
                                 console.log("res = ",res);

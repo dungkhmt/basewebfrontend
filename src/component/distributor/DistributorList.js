@@ -64,7 +64,13 @@ function DistributorList(props) {
                         authGet(
                             dispatch,
                             token,
-                            "/get-page-distributors-of-userlogin-salesman" + "?size=" + query.pageSize + "&page=" + query.page+sortParam+filterParam
+                            "/get-page-distributors-of-user-login-salesman" +
+                          "?size=" +
+                          query.pageSize +
+                          "&page=" +
+                          query.page +
+                          sortParam +
+                          filterParam
                         ).then(
                             res => {
                                 console.log("res = ",res);
