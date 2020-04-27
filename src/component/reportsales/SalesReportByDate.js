@@ -14,7 +14,11 @@ function SalesReportByDate(props) {
 
   const [dataTable, setDataTable] = useState();
 
-  const [fromDate, setFromDate] = useState(new Date());
+  const [fromDate, setFromDate] = useState((() => {
+    let date = new Date();
+    date.setDate(date.getDate() - 7);
+    return date;
+  })());
   const [thruDate, setThruDate] = useState(new Date());
 
   const columns = [
