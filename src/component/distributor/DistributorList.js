@@ -1,22 +1,20 @@
-
-import React, { useEffect, useState } from "react";
+import React, {useEffect, useState} from "react";
 import {useDispatch, useSelector} from "react-redux";
-import {authGet, authPost} from "../../api";
+import {authGet} from "../../api";
 import MaterialTable from "material-table";
 import {tableIcons} from "../../utils/iconutil";
-import { makeStyles } from '@material-ui/core/styles';
-import { API_URL } from "../../config/config";
-import { Link } from "react-router-dom";
+import {API_URL} from "../../config/config";
+import {Link} from "react-router-dom";
 
-function DistributorList(props){
-    const token = useSelector(state => state.auth.token);
-    const dispatch = useDispatch();
+function DistributorList(props) {
+  const token = useSelector(state => state.auth.token);
+  const dispatch = useDispatch();
 
-    const [distributors, setDistributors] = useState([]);
+  const [distributors, setDistributors] = useState([]);
 
-    const columns =[
-        {title:'Party Id',render: rowData => <Link to={'/distributor/' + rowData['partyId']}>{rowData['partyId']}</Link>},
-        {field:'distributorCode', title:'Mã NPP'},
+  const columns = [
+    {title: 'Party Id', render: rowData => <Link to={'/distributor/' + rowData['partyId']}>{rowData['partyId']}</Link>},
+    {field: 'distributorCode', title: 'Mã NPP'},
         {field:'distributorName', title:'Tên NPP'}
     ];
     const requestOptionsGet = {
@@ -25,7 +23,7 @@ function DistributorList(props){
     };
 
     function getListDistributors(){
-        fetch(API_URL + '/get-distributors-of-userlogin-salesman', requestOptionsGet)
+      fetch(API_URL + '/get-distributors-of-user-login-salesman', requestOptionsGet)
         .then(response => response.json())
         .then(response =>{
 			console.log(response);

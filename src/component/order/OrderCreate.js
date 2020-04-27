@@ -3,29 +3,20 @@ import Button from "@material-ui/core/Button";
 import Card from "@material-ui/core/Card";
 import CardActions from "@material-ui/core/CardActions";
 import CardContent from "@material-ui/core/CardContent";
-import { makeStyles } from "@material-ui/core/styles";
+import {makeStyles} from "@material-ui/core/styles";
 import TextField from "@material-ui/core/TextField";
 import Typography from "@material-ui/core/Typography";
-import InputLabel from "@material-ui/core/InputLabel";
 import MenuItem from "@material-ui/core/MenuItem";
-import FormHelperText from "@material-ui/core/FormHelperText";
-import FormControl from "@material-ui/core/FormControl";
-import Select from "@material-ui/core/Select";
-import Input from "@material-ui/core/Input";
 import MaterialTable from "material-table";
-import { failed } from "../../action/Auth";
-import { authGet } from "../../api";
-import React, { useEffect, useState } from "react";
-import {
-  KeyboardDatePicker,
-  MuiPickersUtilsProvider
-} from "@material-ui/pickers";
+import {failed} from "../../action/Auth";
+import {authPost} from "../../api";
+import React, {useEffect, useState} from "react";
+import {KeyboardDatePicker, MuiPickersUtilsProvider} from "@material-ui/pickers";
 
-import { useHistory } from "react-router-dom";
-import { authPost } from "../../api";
+import {useHistory} from "react-router-dom";
 
-import { useDispatch, useSelector } from "react-redux";
-import { CircularProgress } from "@material-ui/core";
+import {useDispatch, useSelector} from "react-redux";
+import {CircularProgress} from "@material-ui/core";
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -128,7 +119,7 @@ function UserCreate(props) {
   }, []);
   
   useEffect(() => {
-    authPost(dispatch, token, "/get-distributors-of-userlogin",{"statusId":null} )
+    authPost(dispatch, token, "/get-distributors-of-user-login", {"statusId": null})
       .then(
         res => {
           console.log(res);

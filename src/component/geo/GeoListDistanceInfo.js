@@ -38,7 +38,7 @@ function GeoListDistanceInfo(props) {
       token,
       "/compute-missing-address-distances", {
         distanceSource: 'OPEN_STREET_MAP',
-        speedTruck: 30, speedMotobike: 40, maxElements: 1000000
+        speedTruck: 30, speedMotorbike: 40, maxElements: 1000000
       }).then(r => r.json());
 
     console.log('GOT ', cnt);
