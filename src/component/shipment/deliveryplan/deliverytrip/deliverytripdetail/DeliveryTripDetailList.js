@@ -55,6 +55,7 @@ export default function DeliveryTripDetailList() {
         <Button variant={'contained'} onClick={() => handleDelete(rowData['deliveryTripDetailId'])}
                 startIcon={<DeleteIcon/>}>Xóa</Button> : '')
     },
+    {title: "Trạng thái", field: "statusId"}
   ];
 
   const {deliveryTripId} = useParams();
