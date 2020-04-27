@@ -127,6 +127,8 @@ get list of distributor of userlogin which is a salesma
 
 	curl --header "Content-Type: application/json; charset=utf-8" -v GET http://localhost:8080/api/get-distributors-of-userlogin-salesman -u dungpq:123 
 
+	curl --header "Content-Type: application/json; charset=utf-8" -v GET http://sscm.dailyopt.ai/api/get-distributors-of-userlogin-salesman -u dungpq:123 
+	
 --------
 Assign customer to a salesman
 	curl --header "Content-Type: application/json; charset=utf-8" -v POST http://localhost:8080/api/assign-customer-2-salesman -u dungpq:123 -d '{"partyCustomerId":"5ae20c48-4d6c-11ea-967e-54bf64436441","partySalesmanId":"847254bb-c0f1-4696-b11f-682976965eed"}'
@@ -320,6 +322,8 @@ get customers visited of userlogin
 	curl --header "Content-Type: application/json" -v POST http://localhost:8080/api/get-customers-visited-date-of-userlogin -u dungpq:123 -d '{"date":"2020-01-13"}'
 	
 	curl --header "Content-Type: application/json" -v POST http://3.1.6.126/api/get-customers-visited-date-of-userlogin -u dungpq:123 -d '{"date":"2020-01-13"}'
+	
+	curl --header "Content-Type: application/json" -v POST http://sscm.dailyopt.ai/api/get-retail-outlets-visited-date-of-userlogin -u dungpq:123 -d '{"date":"2020-01-13"}'
 	
 -------
 get customers visited of salesman date

@@ -717,7 +717,7 @@ export default function SideBar(props) {
           ""
         )}
 
-        {props.menu.has("MENU_INVOICE") ? (
+        {props.menu.has("MENU_RETAIL_OUTLET") ? (
           <div>
             <ListItem button onClick={() => handleListClick(10)}>
               <ListItemIcon>
@@ -728,6 +728,8 @@ export default function SideBar(props) {
             </ListItem>
                 <Collapse in={openCollapse[10]} timeout="auto" unmountOnExit>
                   <List component="div" disablePadding>
+                    
+                  {props.menu.has("MENU_CREATE_RETAIL_OUTLET") ? (
                     <ListItem button className={classes.nested}
                      component={Link}
                      to={process.env.PUBLIC_URL + "/retailoutlet/create"}
@@ -737,6 +739,11 @@ export default function SideBar(props) {
                       </ListItemIcon>
                       <ListItemText primary="Tạo mới ĐLBL"/>
                     </ListItem>
+                  ):(
+                    ""
+                  )}
+                  
+                  {props.menu.has("MENU_VIEW_RETAIL_OUTLET") ? (
                     <ListItem button className={classes.nested}
                      component={Link}
                      to={process.env.PUBLIC_URL + "/retailoutlet/list"}
@@ -746,7 +753,22 @@ export default function SideBar(props) {
                       </ListItemIcon>
                       <ListItemText primary="Danh sách ĐLBL"/>
                     </ListItem>
-
+                  ):(
+                    ""
+                  )}
+                  {props.menu.has("MENU_VIEW_ALL_RETAIL_OUTLET") ? (
+                    <ListItem button className={classes.nested}
+                     component={Link}
+                     to={process.env.PUBLIC_URL + "/retailoutlet/list"}
+                    >
+                      <ListItemIcon>
+                        <StarBorder/>
+                      </ListItemIcon>
+                      <ListItemText primary="Danh sách tất cả ĐLBL"/>
+                    </ListItem>
+                  ):(
+                    ""
+                  )}
                   </List>
                 </Collapse>
               </div>
