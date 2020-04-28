@@ -15,7 +15,8 @@ import {makeStyles} from "@material-ui/core/styles";
 import { useHistory, Link } from "react-router-dom";
 import {GoogleApiWrapper, Map, Marker} from "google-maps-react";
 import Grid from "@material-ui/core/Grid";
-
+import Autocomplete from '@material-ui/lab/Autocomplete';
+import Geocoder from 'react-native-geocoding';
 
 const useStyles = makeStyles(theme => ({
     root: {
@@ -43,10 +44,83 @@ function DeporTrailerCreate(props) {
     const [lat,setLat] = useState();
     const [lng,setLng] = useState();
     const [coordinates, setCoordinates] = useState();
+    const [suggestionList, setSuggestionList] = useState([]);
+    const [contactMechId, setContactMechId] = useState([]);
+    const defaultProps = {
+        options: suggestionList,
+        getOptionLabel: (option) => option.address,
+    };
+    const handleSuggestAddress = event =>{
+        //console.log("handleSuggestAddress ",event.target.address);
+        const data = {
+            address: address,
+        }
+        //console.log("handleSuggestAddress ",data.address);
+        //console.log("api key ",""+process.env.REACT_APP_GOOGLE_MAP_API_KEY);
+        Geocoder.init(process.env.REACT_APP_GOOGLE_MAP_API_KEY);
 
+        Geocoder.from(data.address)
+            .then(json => {
+                var location = json.results[0].geometry.location;
+
+                setLat(location.lat);
+                setLng(location.lng);
+
+                setCoordinates(""+ location.lat + ", " + location.lng);
+                setContactMechId(null);
+
+            })
+            .catch(error => console.warn(error));
+
+    }
+
+
+    const checkAddressToChangeLatLng = (event,newValue) =>{
+        console.log("checkAddressToChangeLatLng", newValue);
+        if(newValue !== null){
+            setLat(newValue.lat);
+            setLng(newValue.lng);
+            setCoordinates("" + newValue.lat + ", " + newValue.lng);
+            setContactMechId(newValue.contactMechId);
+        }else{
+            setContactMechId(null);
+        }
+        console.log("contactMenchId check....",contactMechId);
+
+    }
 
     const handleAddressChange = event=>{
+        console.log("address", event.target.value)
         setAddress(event.target.value)
+        setContactMechId(null);
+        console.log("contactMenchId handle....",contactMechId);
+
+        const data = {
+            address: event.target.value,
+        }
+        authPost(dispatch,token,"/get-list-address-suggestion",data)
+            .then(
+                res => {
+                    console.log(res);
+                    setIsRequesting(false);
+                    if(res.status === 401){
+                        dispatch(failed());
+                        throw Error("Unauthorized")
+                    }else if(res.status === 200){
+                        return res.json();
+                    }
+                },
+                error => {
+                    console.log(error);
+                }
+            )
+            .then(
+                res =>{
+                    console.log('res',res.list);
+                    setSuggestionList(res.list);
+
+                })
+
     }
 
     const handleDepotTrailerIdChange = event=>{
@@ -86,7 +160,8 @@ function DeporTrailerCreate(props) {
             lng: lng,
             address: address,
             depotTrailerId: depotTrailerId,
-            depotTrailerName: depotTrailerName
+            depotTrailerName: depotTrailerName,
+            contactMechId: contactMechId
         }
         setIsRequesting(true);
         authPost(dispatch,token,"/create-depot-trailer",data)
@@ -169,14 +244,23 @@ function DeporTrailerCreate(props) {
                     </Typography>
 
 
-                    <TextField
-                        id="address"
-                        onChange={handleAddressChange}
-                        required
-                        value={address}
-                        fullWidth
-                    >
-                    </TextField>
+                    <Autocomplete
+                        {...defaultProps}
+                        debug
+                        renderInput={(params) =>
+                            <TextField
+                                {...params}
+                                margin="normal"
+                                id="address"
+                                onChange={handleAddressChange}
+                                required
+                                value={address}
+                                fullWidth
+                            />
+                        }
+                        onChange={checkAddressToChangeLatLng}
+
+                    />
 
 
                     <br/><br/><br/>
@@ -184,6 +268,19 @@ function DeporTrailerCreate(props) {
                     <Typography variant="h6" >
                         Tọa độ:  {' '} {coordinates}
                     </Typography>
+
+                    <CardActions>
+                        <Button
+                            variant="contained"
+                            color="primary"
+                            onClick={handleSuggestAddress}
+                        >
+                            Gợi ý tọa độ
+                        </Button>
+
+                    </CardActions>
+
+
 
                     <CardActions>
                         <Link to={"/depottrailerfunc/list"}>
