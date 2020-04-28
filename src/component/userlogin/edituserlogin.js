@@ -22,7 +22,7 @@ import {
   KeyboardDatePicker,
   MuiPickersUtilsProvider
 } from "@material-ui/pickers";
-
+import { API_URL } from "../../config/config";
 import DateFnsUtils from "@date-io/date-fns";
 const useStyles = makeStyles(theme => ({
   root: {
@@ -63,12 +63,38 @@ function EditUser(props) {
   const [partyCode, setPartyCode] = useState();
   const [roles, setRoles] = useState([]);
   const [birthDate, setBirthDate] = useState(new Date());
+
+  const [securityGroups, setSecurityGroups] = useState([]);
+
   const handleBirthDateChange = date => {
     setBirthDate(date);
   };
   const [isRequesting, setIsRequesting] = useState(false);
 
-  
+  function getSecurityGroups(){
+    fetch(
+      API_URL + '/get-security-groups', 
+      {
+        method: 'GET',
+        headers: { 'Content-Type': 'application/json',"X-Auth-Token": token}
+      }
+    ).then(response => response.json())
+        .then(response =>{
+			console.log(response);
+			let arr = [];
+			response.forEach(d => {
+				arr.push(d);
+			});
+            setSecurityGroups(arr);
+            //console.log('getDepartmentList = ',departments);
+        });    
+  }
+  useEffect( () =>{
+    //let lst = authGet(dispatch, token,"/get-security-groups");
+    //console.log(lst);
+    getSecurityGroups();
+  },[]);
+
   const handleLastNameChange = event => {
     setLastName(event.target.value);
   };
@@ -209,16 +235,15 @@ function EditUser(props) {
                   input={<Input />}
                   MenuProps={MenuProps}
                 >
-                  <MenuItem key="ROLE_SALE_MANAGER" value="ROLE_SALE_MANAGER">
-                    {" "}
-                    ROLE_SALE_MANAGER
+                  {securityGroups.map(s => (
+                  <MenuItem 
+                    key={s.groupId}
+                    value={s.groupId}
+                  >
+                    {s.description}
                   </MenuItem>
-                  <MenuItem key="ROLE_ACCOUNTANT" value="ROLE_ACCOUNTANT">
-                    ROLE_ACCOUNTANT
-                  </MenuItem>
-                  <MenuItem key="ROLE_FULL_ADMIN" value="ROLE_FULL_ADMIN">
-                    ROLE_FULL_ADMIN
-                  </MenuItem>
+                ))}
+
                 </Select>
               </FormControl>
             </div>

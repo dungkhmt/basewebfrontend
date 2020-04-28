@@ -138,7 +138,7 @@ export default function SideBar(props) {
       <Divider/>
       <List>
 
-
+      {props.menu.has("MENU_DEPARTMENT") ? (      
         <div>
           <ListItem button onClick={() => handleListClick(18)}>
             <ListItemIcon>
@@ -164,8 +164,11 @@ export default function SideBar(props) {
             </List>
           </Collapse>
         </div>
+      ):(
+        ""
+      )}
 
-
+      {props.menu.has("MENU_TMS") ? (  
         <div>
           <ListItem button onClick={() => handleListClick(0)}>
             <ListItemIcon>
@@ -205,6 +208,9 @@ export default function SideBar(props) {
             </List>
           </Collapse>
         </div>
+      ):(
+        ""
+      )}
 
         {props.menu.has("MENU_USER") ? (
           <div>
@@ -423,7 +429,7 @@ export default function SideBar(props) {
           ""
         )}
 
-        {props.menu.has("MENU_SALES_ROUTE") ? (
+        {props.menu.has("MENU_WAREHOUSE") ? (
           <div>
             <ListItem button onClick={() => handleListClick(5)}>
               <ListItemIcon>
@@ -434,12 +440,19 @@ export default function SideBar(props) {
             </ListItem>
             <Collapse in={openCollapse[5]} timeout="auto" unmountOnExit>
               <List component="div" disablePadding>
+                
+              {props.menu.has("MENU_WAREHOUSE_IMPORT") ? (
                 <ListItem button className={classes.nested}>
                   <ListItemIcon>
                     <StarBorder/>
                   </ListItemIcon>
                   <ListItemText primary="Nhập kho"/>
                 </ListItem>
+              ):(
+                ""
+              )}
+
+              {props.menu.has("MENU_WAREHOUSE_EXPORT") ? (  
                 <ListItem button
                           className={classes.nested}
                           component={Link}
@@ -449,7 +462,11 @@ export default function SideBar(props) {
                   </ListItemIcon>
                   <ListItemText primary="Xuất kho"/>
                 </ListItem>
+              ):(
+                ""
+              )}
 
+              {props.menu.has("MENU_WAREHOUSE_INVENTORY_ITEM") ? (    
                 <ListItem button
                           className={classes.nested}
                           component={Link}
@@ -459,6 +476,9 @@ export default function SideBar(props) {
                   </ListItemIcon>
                   <ListItemText primary="QL tồn kho"/>
                 </ListItem>
+              ):(
+                ""
+              )}
 
               </List>
             </Collapse>
@@ -490,6 +510,32 @@ export default function SideBar(props) {
                   </ListItemIcon>
                   <ListItemText primary="DS Xe"/>
                 </ListItem>
+                
+                <ListItem
+                  button
+                  className={classes.nested}
+                  component={Link}
+                  to={process.env.PUBLIC_URL + "/driver/create"}
+                >
+                  <ListItemIcon>
+                    <StarBorder/>
+                  </ListItemIcon>
+                  <ListItemText primary="Tạo mới Tài xế"/>
+                </ListItem>
+
+                <ListItem
+                  button
+                  className={classes.nested}
+                  component={Link}
+                  to={process.env.PUBLIC_URL + "/driver/list"}
+                >
+                  <ListItemIcon>
+                    <StarBorder/>
+                  </ListItemIcon>
+                  <ListItemText primary="DS Tài xế"/>
+                </ListItem>
+                
+                
                 <ListItem button className={classes.nested}>
                   <ListItemIcon>
                     <StarBorder/>
@@ -647,7 +693,7 @@ export default function SideBar(props) {
           ""
         )}
 
-        {props.menu.has("MENU_INVOICE") ? (
+        {props.menu.has("MENU_PRODUCT") ? (
           <div>
             <ListItem button onClick={() => handleListClick(8)}>
               <ListItemIcon>
@@ -658,6 +704,8 @@ export default function SideBar(props) {
             </ListItem>
             <Collapse in={openCollapse[8]} timeout="auto" unmountOnExit>
               <List component="div" disablePadding>
+
+              {props.menu.has("MENU_PRODUCT_CREATE") ? (
                 <ListItem button className={classes.nested} component={Link}
                           to={process.env.PUBLIC_URL + "/products/create"}>
                   <ListItemIcon>
@@ -665,6 +713,11 @@ export default function SideBar(props) {
                   </ListItemIcon>
                   <ListItemText primary="Tạo mới sản phẩm"/>
                 </ListItem>
+              ):(
+                ""
+              )}
+
+              {props.menu.has("MENU_PRODUCT_VIEW") ? (    
                 <ListItem button className={classes.nested} component={Link}
                           to={process.env.PUBLIC_URL + "/products/list"}>
                   <ListItemIcon>
@@ -672,6 +725,9 @@ export default function SideBar(props) {
                   </ListItemIcon>
                   <ListItemText primary="Danh sách SP"/>
                 </ListItem>
+              ):(
+                ""
+              )}
 
               </List>
             </Collapse>
@@ -679,7 +735,8 @@ export default function SideBar(props) {
         ) : (
           ""
         )}
-        {props.menu.has("MENU_INVOICE") ? (
+        
+        {props.menu.has("MENU_CUSTOMER") ? (
           <div>
             <ListItem button onClick={() => handleListClick(9)}>
               <ListItemIcon>
@@ -690,6 +747,7 @@ export default function SideBar(props) {
             </ListItem>
             <Collapse in={openCollapse[9]} timeout="auto" unmountOnExit>
               <List component="div" disablePadding>
+              {props.menu.has("MENU_CUSTOMER_CREATE") ? (  
                 <ListItem
                   button
                   className={classes.nested}
@@ -701,6 +759,11 @@ export default function SideBar(props) {
                   </ListItemIcon>
                   <ListItemText primary="Tạo mới KH"/>
                 </ListItem>
+              ):(
+                ""
+              )}
+
+              {props.menu.has("MENU_CUSTOMER_VIEW") ? (  
                 <ListItem
                   button
                   className={classes.nested}
@@ -712,6 +775,10 @@ export default function SideBar(props) {
                   </ListItemIcon>
                   <ListItemText primary="Danh sách KH"/>
                 </ListItem>
+              ):(
+                ""
+              )}
+              
               </List>
             </Collapse>
           </div>
@@ -761,7 +828,7 @@ export default function SideBar(props) {
                   {props.menu.has("MENU_VIEW_ALL_RETAIL_OUTLET") ? (
                     <ListItem button className={classes.nested}
                      component={Link}
-                     to={process.env.PUBLIC_URL + "/retailoutlet/list"}
+                     to={process.env.PUBLIC_URL + "/retailoutlet/listall"}
                     >
                       <ListItemIcon>
                         <StarBorder/>
@@ -778,7 +845,7 @@ export default function SideBar(props) {
               ""
           )}
 
-        {props.menu.has("MENU_INVOICE") ? (
+        {props.menu.has("MENU_USER") ? (
           <div>
             <ListItem button onClick={() => handleListClick(11)}>
               <ListItemIcon>
@@ -789,18 +856,28 @@ export default function SideBar(props) {
             </ListItem>
             <Collapse in={openCollapse[11]} timeout="auto" unmountOnExit>
               <List component="div" disablePadding>
+              
+              {props.menu.has("MENU_USER_CREATE") ? (
                 <ListItem button className={classes.nested}>
                   <ListItemIcon>
                     <StarBorder/>
                   </ListItemIcon>
                   <ListItemText primary="Tạo mới NVBH"/>
                 </ListItem>
+              ):(
+                ""
+              )}
+
+              {props.menu.has("MENU_USER_LIST") ? (    
                 <ListItem button className={classes.nested}>
                   <ListItemIcon>
                     <StarBorder/>
                   </ListItemIcon>
                   <ListItemText primary="Danh sách NVBH"/>
                 </ListItem>
+              ):(
+                ""
+              )}
 
               </List>
             </Collapse>
@@ -809,7 +886,7 @@ export default function SideBar(props) {
           ""
         )}
 
-        {props.menu.has("MENU_INVOICE") ? (
+        {props.menu.has("MENU_DISTRIBUTOR") ? (
           <div>
             <ListItem button onClick={() => handleListClick(12)}>
               <ListItemIcon>
@@ -820,6 +897,7 @@ export default function SideBar(props) {
             </ListItem>
                <Collapse in={openCollapse[12]} timeout="auto" unmountOnExit>
                   <List component="div" disablePadding>
+                  {props.menu.has("MENU_CREATE_DISTRIBUTOR") ? (
                     <ListItem button className={classes.nested}
                       component={Link}
                       to={process.env.PUBLIC_URL + "/distributor/create"}
@@ -829,7 +907,12 @@ export default function SideBar(props) {
                       </ListItemIcon>
                       <ListItemText primary="Tạo mới NPP"/>
                     </ListItem>
-                   
+                  ):(
+                    ""
+                  )} 
+
+                  {props.menu.has("MENU_VIEW_DISTRIBUTOR") ? (
+
                     <ListItem button className={classes.nested}
                       component={Link}
                       to={process.env.PUBLIC_URL + "/distributor/list"}
@@ -839,14 +922,31 @@ export default function SideBar(props) {
                       </ListItemIcon>
                       <ListItemText primary="Danh sách NPP"/>
                     </ListItem>
+                  ):(
+                    ""
+                  )}
 
+                  {props.menu.has("MENU_VIEW_ALL_DISTRIBUTOR") ? (
+
+                  <ListItem button className={classes.nested}
+                    component={Link}
+                    to={process.env.PUBLIC_URL + "/distributor/listall"}
+                    >
+                    <ListItemIcon>
+                      <StarBorder/>
+                    </ListItemIcon>
+                    <ListItemText primary="Danh sách tất cả NPP"/>
+                  </ListItem>
+                  ):(
+                    ""
+                  )}
                   </List>
                 </Collapse>
               </div>
           ) : (
               ""
           )}
-        {props.menu.has("MENU_INVOICE") ? (
+        {props.menu.has("MENU_PRODUCT") ? (
           <div>
             <ListItem button onClick={() => handleListClick(13)}>
               <ListItemIcon>
@@ -857,18 +957,28 @@ export default function SideBar(props) {
             </ListItem>
             <Collapse in={openCollapse[13]} timeout="auto" unmountOnExit>
               <List component="div" disablePadding>
+
+              {props.menu.has("MENU_PRODUCT_PRICE_CREATE") ? (
                 <ListItem button className={classes.nested}>
                   <ListItemIcon>
                     <StarBorder/>
                   </ListItemIcon>
                   <ListItemText primary="Thiết lập giá sản phẩm"/>
                 </ListItem>
+              ):(
+                ""
+              )}
+
+              {props.menu.has("MENU_PRODUCT_VIEW") ? (
                 <ListItem button className={classes.nested}>
                   <ListItemIcon>
                     <StarBorder/>
                   </ListItemIcon>
                   <ListItemText primary="Danh sách SP"/>
                 </ListItem>
+              ):(
+                ""
+              )}
 
               </List>
             </Collapse>
@@ -877,7 +987,7 @@ export default function SideBar(props) {
           ""
         )}
 
-
+        {props.menu.has("MENU_TMS") ? (
         <div>
           <ListItem button onClick={() => handleListClick(14)}>
             <ListItemIcon>
@@ -888,6 +998,8 @@ export default function SideBar(props) {
           </ListItem>
           <Collapse in={openCollapse[14]} timeout="auto" unmountOnExit>
             <List component="div" disablePadding>
+
+            
               <ListItem
                 button
                 className={classes.nested}
@@ -914,7 +1026,9 @@ export default function SideBar(props) {
             </List>
           </Collapse>
         </div>
-
+        ):(
+          ""
+        )}
 
         {props.menu.has("MENU_SALES_REPORT") ? (
           <div>
@@ -1069,6 +1183,7 @@ export default function SideBar(props) {
         )}
 
 
+        {props.menu.has("MENU_TMS_CONTAINER") ? (  
         <div>
           <ListItem button onClick={() => handleListClick(18)}>
             <ListItemIcon>
@@ -1276,7 +1391,9 @@ export default function SideBar(props) {
             </List>
           </Collapse>
         </div>
-
+        ):(
+          ""
+        )}
 
       </List>
     </Drawer>

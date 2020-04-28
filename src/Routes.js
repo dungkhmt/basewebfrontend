@@ -43,7 +43,11 @@ import DistributorCreate from "./component/distributor/DistributorCreate";
 import RetailOutletList from "./component/retailoutlet/RetailOutletList";
 import RetailOutletCreate from "./component/retailoutlet/RetailOutletCreate";
 
+import DriverList from "./component/shipment/driver/DriverList";
+import DriverCreate from "./component/shipment/driver/DriverCreate";
+
 import SalesmanList from "./component/salesman/SalesmanList";
+
 import DetailSalesman from "./component/salesman/DetailSalesman";
 import SalesmanCreate from "./component/salesman/SalesmanCreate";
 import SalesmanAdd from "./component/salesman/SalesmanAdd";
@@ -416,6 +420,18 @@ function Routes(props) {// props nay tu parent transfer vao
         path="/salesman/list"
       />
 
+      <PrivateRouteWithLayout
+        component={DriverList}
+        layout={Layout}
+        isAuthenticated={props.isAuthenticated}
+        path="/driver/list"
+      />
+      <PrivateRouteWithLayout
+        component={DriverCreate}
+        layout={Layout}
+        isAuthenticated={props.isAuthenticated}
+        path="/driver/create"
+      />
 
       <PrivateRouteWithLayout
         component={SalesmanCreate}

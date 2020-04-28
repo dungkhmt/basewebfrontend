@@ -19,7 +19,7 @@ function CustomerList(props) {
 
     return (
         <MaterialTable
-            title="List product"
+            title="Danh sách khách hàng"
             columns={columns}
             options={{
                 filtering: true,
