@@ -16,6 +16,11 @@ import { useHistory, Link } from "react-router-dom";
 import {GoogleApiWrapper, Map, Marker} from "google-maps-react";
 import Grid from "@material-ui/core/Grid";
 import Autocomplete from '@material-ui/lab/Autocomplete';
+import Geocoder from 'react-native-geocoding';
+
+
+
+
 
 
 const useStyles = makeStyles(theme => ({
@@ -52,11 +57,38 @@ function DepotContainerCreate(props) {
     };
 
 
+    const handleSuggestAddress = event =>{
+        //console.log("handleSuggestAddress ",event.target.address);
+        const data = {
+            address: address,
+        }
+        //console.log("handleSuggestAddress ",data.address);
+        //console.log("api key ",""+process.env.REACT_APP_GOOGLE_MAP_API_KEY);
+        Geocoder.init(process.env.REACT_APP_GOOGLE_MAP_API_KEY);
+
+        Geocoder.from(data.address)
+            .then(json => {
+                var location = json.results[0].geometry.location;
+
+                setLat(location.lat);
+                setLng(location.lng);
+
+                setCoordinates(""+ location.lat + ", " + location.lng);
+                setContactMechId(null);
+
+            })
+            .catch(error => console.warn(error));
+
+    }
+
+
+
     const checkAddressToChangeLatLng = (event,newValue) =>{
         console.log("checkAddressToChangeLatLng", newValue);
         if(newValue !== null){
             setLat(newValue.lat);
             setLng(newValue.lng);
+            setCoordinates("" + newValue.lat + ", " + newValue.lng);
             setContactMechId(newValue.contactMechId);
         }else{
             setContactMechId(null);
@@ -256,6 +288,18 @@ function DepotContainerCreate(props) {
                     <Typography variant="h6" >
                         Tọa độ:  {' '} {coordinates}
                     </Typography>
+
+                    <CardActions>
+                        <Button
+                            variant="contained"
+                            color="primary"
+                            onClick={handleSuggestAddress}
+                            >
+                            Gợi ý tọa độ
+                        </Button>
+
+                    </CardActions>
+
 
                     <CardActions>
                         <Link to={"/depotcontainerfunc/list"}>
