@@ -17,13 +17,13 @@ export default function SolverConfigParam() {
   const dispatch = useDispatch();
   const history = useHistory();
 
-  const [maxDistanceConsecutiveLocationTripAllowed, setMaxDistanceConsecutiveLocationTripAllowed] = useState(null);
-  const [maxLocationsPerTripAllowed, setMaxLocationsPerTripAllowed] = useState(null);
-  const [fixLoadTime, setFixLoadTime] = useState(null);
-  const [fixUnloadTime, setFixUnloadTime] = useState(null);
-  const [loadRate, setLoadRate] = useState(null);
-  const [manualUnloadTime, setManualUnloadTime] = useState(null);
-  const [palletUnloadTime, setPalletUnloadTime] = useState(null);
+  const [maxDistanceConsecutiveLocationTripAllowed, setMaxDistanceConsecutiveLocationTripAllowed] = useState(0);
+  const [maxLocationsPerTripAllowed, setMaxLocationsPerTripAllowed] = useState(0);
+  const [fixLoadTime, setFixLoadTime] = useState(0);
+  const [fixUnloadTime, setFixUnloadTime] = useState(0);
+  const [loadRate, setLoadRate] = useState(0);
+  const [manualUnloadTime, setManualUnloadTime] = useState(0);
+  const [palletUnloadTime, setPalletUnloadTime] = useState(0);
 
   function textField(id, label, type, value, onChange, readOnly) {
     return <div>
