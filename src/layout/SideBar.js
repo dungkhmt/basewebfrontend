@@ -112,6 +112,8 @@ export default function SideBar(props) {
     setOpenCollapse(tmp);
   };
 
+  // const logo = require('../favicon.ico');
+
   return (
     <Drawer
       variant="permanent"
@@ -127,6 +129,8 @@ export default function SideBar(props) {
       }}
     >
       <div className={classes.toolbar}>
+        {/*<img src={logo} height={25} width={25}/>*/}
+        {/*<h2>{'Daily Opt'}</h2>*/}
         <IconButton onClick={handleDrawerClose}>
           {theme.direction === "rtl" ? (
             <ChevronRightIcon/>
@@ -497,7 +501,7 @@ export default function SideBar(props) {
                   <ListItemText primary="DS khách hàng"/>
                 </ListItem>
 
-                
+
                 <ListItem
                   button
                   className={classes.nested}
@@ -538,12 +542,16 @@ export default function SideBar(props) {
                   </ListItemIcon>
                   <ListItemText primary="Lập kế hoạch giao hàng"/>
                 </ListItem>
-                
-                <ListItem button className={classes.nested}>
+
+                <ListItem
+                  button
+                  className={classes.nested}
+                  component={Link}
+                  to={process.env.PUBLIC_URL + "/solver-config-param"}>
                   <ListItemIcon>
                     <StarBorder/>
                   </ListItemIcon>
-                  <ListItemText primary="Cấu hình"/>
+                  <ListItemText primary="Cấu hình bộ giải"/>
                 </ListItem>
 
               </List>
@@ -728,55 +736,55 @@ export default function SideBar(props) {
               <ListItemText primary="QL đại lí bán lẻ"/>
               {openCollapse[10] ? <ExpandLess/> : <ExpandMore/>}
             </ListItem>
-                <Collapse in={openCollapse[10]} timeout="auto" unmountOnExit>
-                  <List component="div" disablePadding>
-                    
-                  {props.menu.has("MENU_CREATE_RETAIL_OUTLET") ? (
-                    <ListItem button className={classes.nested}
-                     component={Link}
-                     to={process.env.PUBLIC_URL + "/retailoutlet/create"}
-                    >
-                      <ListItemIcon>
-                        <StarBorder/>
-                      </ListItemIcon>
-                      <ListItemText primary="Tạo mới ĐLBL"/>
-                    </ListItem>
-                  ):(
-                    ""
-                  )}
-                  
-                  {props.menu.has("MENU_VIEW_RETAIL_OUTLET") ? (
-                    <ListItem button className={classes.nested}
-                     component={Link}
-                     to={process.env.PUBLIC_URL + "/retailoutlet/list"}
-                    >
-                      <ListItemIcon>
-                        <StarBorder/>
-                      </ListItemIcon>
-                      <ListItemText primary="Danh sách ĐLBL"/>
-                    </ListItem>
-                  ):(
-                    ""
-                  )}
-                  {props.menu.has("MENU_VIEW_ALL_RETAIL_OUTLET") ? (
-                    <ListItem button className={classes.nested}
-                     component={Link}
-                     to={process.env.PUBLIC_URL + "/retailoutlet/list"}
-                    >
-                      <ListItemIcon>
-                        <StarBorder/>
-                      </ListItemIcon>
-                      <ListItemText primary="Danh sách tất cả ĐLBL"/>
-                    </ListItem>
-                  ):(
-                    ""
-                  )}
-                  </List>
-                </Collapse>
-              </div>
-          ) : (
-              ""
-          )}
+            <Collapse in={openCollapse[10]} timeout="auto" unmountOnExit>
+              <List component="div" disablePadding>
+
+                {props.menu.has("MENU_CREATE_RETAIL_OUTLET") ? (
+                  <ListItem button className={classes.nested}
+                            component={Link}
+                            to={process.env.PUBLIC_URL + "/retailoutlet/create"}
+                  >
+                    <ListItemIcon>
+                      <StarBorder/>
+                    </ListItemIcon>
+                    <ListItemText primary="Tạo mới ĐLBL"/>
+                  </ListItem>
+                ) : (
+                  ""
+                )}
+
+                {props.menu.has("MENU_VIEW_RETAIL_OUTLET") ? (
+                  <ListItem button className={classes.nested}
+                            component={Link}
+                            to={process.env.PUBLIC_URL + "/retailoutlet/list"}
+                  >
+                    <ListItemIcon>
+                      <StarBorder/>
+                    </ListItemIcon>
+                    <ListItemText primary="Danh sách ĐLBL"/>
+                  </ListItem>
+                ) : (
+                  ""
+                )}
+                {props.menu.has("MENU_VIEW_ALL_RETAIL_OUTLET") ? (
+                  <ListItem button className={classes.nested}
+                            component={Link}
+                            to={process.env.PUBLIC_URL + "/retailoutlet/list"}
+                  >
+                    <ListItemIcon>
+                      <StarBorder/>
+                    </ListItemIcon>
+                    <ListItemText primary="Danh sách tất cả ĐLBL"/>
+                  </ListItem>
+                ) : (
+                  ""
+                )}
+              </List>
+            </Collapse>
+          </div>
+        ) : (
+          ""
+        )}
 
         {props.menu.has("MENU_INVOICE") ? (
           <div>
@@ -818,34 +826,34 @@ export default function SideBar(props) {
               <ListItemText primary="QL Nhà Phân Phối"/>
               {openCollapse[12] ? <ExpandLess/> : <ExpandMore/>}
             </ListItem>
-               <Collapse in={openCollapse[12]} timeout="auto" unmountOnExit>
-                  <List component="div" disablePadding>
-                    <ListItem button className={classes.nested}
-                      component={Link}
-                      to={process.env.PUBLIC_URL + "/distributor/create"}
-                    >
-                      <ListItemIcon>
-                        <StarBorder/>
-                      </ListItemIcon>
-                      <ListItemText primary="Tạo mới NPP"/>
-                    </ListItem>
-                   
-                    <ListItem button className={classes.nested}
-                      component={Link}
-                      to={process.env.PUBLIC_URL + "/distributor/list"}
-                    >
-                      <ListItemIcon>
-                        <StarBorder/>
-                      </ListItemIcon>
-                      <ListItemText primary="Danh sách NPP"/>
-                    </ListItem>
+            <Collapse in={openCollapse[12]} timeout="auto" unmountOnExit>
+              <List component="div" disablePadding>
+                <ListItem button className={classes.nested}
+                          component={Link}
+                          to={process.env.PUBLIC_URL + "/distributor/create"}
+                >
+                  <ListItemIcon>
+                    <StarBorder/>
+                  </ListItemIcon>
+                  <ListItemText primary="Tạo mới NPP"/>
+                </ListItem>
 
-                  </List>
-                </Collapse>
-              </div>
-          ) : (
-              ""
-          )}
+                <ListItem button className={classes.nested}
+                          component={Link}
+                          to={process.env.PUBLIC_URL + "/distributor/list"}
+                >
+                  <ListItemIcon>
+                    <StarBorder/>
+                  </ListItemIcon>
+                  <ListItemText primary="Danh sách NPP"/>
+                </ListItem>
+
+              </List>
+            </Collapse>
+          </div>
+        ) : (
+          ""
+        )}
         {props.menu.has("MENU_INVOICE") ? (
           <div>
             <ListItem button onClick={() => handleListClick(13)}>
