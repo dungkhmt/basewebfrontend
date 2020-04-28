@@ -23,9 +23,9 @@ import ShipmentItemList from "./component/shipment/shipment/ShipmentItemList";
 import VehicleList from "./component/shipment/vehicle/VehicleList";
 import DeliveryTripCreate from "./component/shipment/deliveryplan/deliverytrip/DeliveryTripCreate";
 import DeliveryTripDetailList
-    from "./component/shipment/deliveryplan/deliverytrip/deliverytripdetail/DeliveryTripDetailList";
+  from "./component/shipment/deliveryplan/deliverytrip/deliverytripdetail/DeliveryTripDetailList";
 import DeliveryTripDetailCreate
-    from "./component/shipment/deliveryplan/deliverytrip/deliverytripdetail/DeliveryTripDetailCreate";
+  from "./component/shipment/deliveryplan/deliverytrip/deliverytripdetail/DeliveryTripDetailCreate";
 import ShipmentItemDeliveryPlanList from "./component/shipment/deliveryplan/shipmentitem/ShipmentItemDeliveryPlanList";
 import VehicleDeliveryPlanList from "./component/shipment/deliveryplan/vehicle/VehicleDeliveryPlanList";
 import ShipmentItemCreate from "./component/shipment/shipment/ShipmentItemCreate";
@@ -81,14 +81,15 @@ import PortCreate from "./component/tmscontainer/port/PortCreate";
 import PortList from "./component/tmscontainer/port/PortList";
 import PortGoogleMap from "./component/tmscontainer/port/PortGoogleMap";
 import ShipmentItemDeliveryTripDetailList
-    from "./component/shipment/deliveryplan/shipmentitem/ShipmentItemDeliveryTripDetailList";
+  from "./component/shipment/deliveryplan/shipmentitem/ShipmentItemDeliveryTripDetailList";
 import NotScheduledShipmentItem from "./component/shipment/deliveryplan/deliverytrip/NotScheduledShipmentItem";
 import ProductDetail from "./component/product/detailproduct";
 import {
-    TransportReportByDriver,
-    TransportReportByFacility,
-    TransportReportByPartyCustomer
+  TransportReportByDriver,
+  TransportReportByFacility,
+  TransportReportByPartyCustomer
 } from "./component/report/TransportReport";
+import SolverConfigParam from "./component/shipment/solver/SolverConfigParam";
 
 
 function Routes(props) {// props nay tu parent transfer vao
@@ -334,6 +335,15 @@ function Routes(props) {// props nay tu parent transfer vao
         //isAuthenticated={true}
         // exact                                   // props
         path="/delivery-trip-chart/:deliveryPlanId"                    // props
+      />
+
+      <PrivateRouteWithLayout
+        component={SolverConfigParam}  //props
+        layout={Layout}          //props
+        isAuthenticated={props.isAuthenticated} // props
+        //isAuthenticated={true}
+        // exact                                   // props
+        path="/solver-config-param"                    // props
       />
 
 

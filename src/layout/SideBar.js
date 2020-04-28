@@ -112,6 +112,8 @@ export default function SideBar(props) {
     setOpenCollapse(tmp);
   };
 
+  // const logo = require('../favicon.ico');
+
   return (
     <Drawer
       variant="permanent"
@@ -127,6 +129,8 @@ export default function SideBar(props) {
       }}
     >
       <div className={classes.toolbar}>
+        {/*<img src={logo} height={25} width={25}/>*/}
+        {/*<h2>{'Daily Opt'}</h2>*/}
         <IconButton onClick={handleDrawerClose}>
           {theme.direction === "rtl" ? (
             <ChevronRightIcon/>
@@ -543,7 +547,7 @@ export default function SideBar(props) {
                   <ListItemText primary="DS khách hàng"/>
                 </ListItem>
 
-                
+
                 <ListItem
                   button
                   className={classes.nested}
@@ -584,12 +588,16 @@ export default function SideBar(props) {
                   </ListItemIcon>
                   <ListItemText primary="Lập kế hoạch giao hàng"/>
                 </ListItem>
-                
-                <ListItem button className={classes.nested}>
+
+                <ListItem
+                  button
+                  className={classes.nested}
+                  component={Link}
+                  to={process.env.PUBLIC_URL + "/solver-config-param"}>
                   <ListItemIcon>
                     <StarBorder/>
                   </ListItemIcon>
-                  <ListItemText primary="Cấu hình"/>
+                  <ListItemText primary="Cấu hình bộ giải"/>
                 </ListItem>
 
               </List>
@@ -844,7 +852,6 @@ export default function SideBar(props) {
           ) : (
               ""
           )}
-
         {props.menu.has("MENU_USER") ? (
           <div>
             <ListItem button onClick={() => handleListClick(11)}>
