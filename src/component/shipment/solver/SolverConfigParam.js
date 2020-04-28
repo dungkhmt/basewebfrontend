@@ -71,13 +71,13 @@ export default function SolverConfigParam() {
     window.location.reload();
   }
 
-  const positiveIntFilterOnChange = (newValue, setValue) => {
+  const notNegativeIntFilterOnChange = (newValue, setValue) => {
     newValue = parseInt(newValue);
-    positiveFilterOnChange(newValue, setValue);
+    notNegativeFilterOnChange(newValue, setValue);
   };
 
-  const positiveFilterOnChange = (newValue, setValue) => {
-    if (newValue > 0) {
+  const notNegativeFilterOnChange = (newValue, setValue) => {
+    if (newValue >= 0) {
       setValue(newValue);
     }
   };
@@ -96,37 +96,37 @@ export default function SolverConfigParam() {
             'maxDistanceConsecutiveLocationTripAllowed',
             'number',
             maxDistanceConsecutiveLocationTripAllowed,
-            newValue => positiveFilterOnChange(newValue, setMaxDistanceConsecutiveLocationTripAllowed))}
+            newValue => notNegativeFilterOnChange(newValue, setMaxDistanceConsecutiveLocationTripAllowed))}
           {textField('maxLocationsPerTripAllowed',
             'maxLocationsPerTripAllowed',
             'number',
             maxLocationsPerTripAllowed,
-            newValue => positiveIntFilterOnChange(newValue, setMaxLocationsPerTripAllowed))}
+            newValue => notNegativeIntFilterOnChange(newValue, setMaxLocationsPerTripAllowed))}
           {textField('fixLoadTime',
             'fixLoadTime',
             'number',
             fixLoadTime,
-            newValue => positiveIntFilterOnChange(newValue, setFixLoadTime))}
+            newValue => notNegativeIntFilterOnChange(newValue, setFixLoadTime))}
           {textField('fixUnloadTime',
             'fixUnloadTime',
             'number',
             fixUnloadTime,
-            newValue => positiveIntFilterOnChange(newValue, setFixUnloadTime))}
+            newValue => notNegativeIntFilterOnChange(newValue, setFixUnloadTime))}
           {textField('loadRate',
             'loadRate',
             'number',
             loadRate,
-            newValue => positiveFilterOnChange(newValue, setLoadRate))}
+            newValue => notNegativeFilterOnChange(newValue, setLoadRate))}
           {textField('manualUnloadTime',
             'manualUnloadTime',
             'number',
             manualUnloadTime,
-            newValue => positiveFilterOnChange(newValue, setManualUnloadTime))}
+            newValue => notNegativeFilterOnChange(newValue, setManualUnloadTime))}
           {textField('palletUnloadTime',
             'palletUnloadTime',
             'number',
             palletUnloadTime,
-            newValue => positiveFilterOnChange(newValue, setPalletUnloadTime))}
+            newValue => notNegativeFilterOnChange(newValue, setPalletUnloadTime))}
 
         </CardContent>
         <CardActions>
