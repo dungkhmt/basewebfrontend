@@ -62,7 +62,9 @@ export default function DeliveryTripDetailList() {
 
   const [deliveryTrip, setDeliveryTrip] = useState(null);
 
-  const [facilityLatLng, setFacilityLatLng] = useState();
+  const [facilityLatLng, setFacilityLatLng] = useState(null);
+
+  const [totalDistance, setTotalDistance] = useState(0);
 
   const NOT_EDITABLE_TRIP_STATUS = new Set(['DELIVERY_TRIP_APPROVED_TRIP',
     'DELIVERY_TRIP_EXECUTED',
@@ -245,8 +247,9 @@ export default function DeliveryTripDetailList() {
       open={mapOpen}
       onClose={() => setMapOpen(false)}
     >
-      <DialogTitle>Hành trình di chuyển của bưu tá</DialogTitle>
+      <DialogTitle>Hành trình chuyến giao hàng</DialogTitle>
       <DialogContent>
+        <b>Tổng quãng đường: </b> {totalDistance / 1000 + ' Km'}
         {
           mapOpen && dataTable ?
             <Directions
@@ -262,6 +265,7 @@ export default function DeliveryTripDetailList() {
                   })) : []
               }]}
               settings={{color: ['#0000FF']}}
+              setTotalDistance={setTotalDistance}
             />
             : ''
         }

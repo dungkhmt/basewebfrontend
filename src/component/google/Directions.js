@@ -17,7 +17,8 @@ export default function Directions(props) {
 
   const {
     routes,  // list of route: [ {post:{label,lat,lng,title}, items:[item:{lat,lng,label,title}]}]
-    settings = {color: 'random'} // color: is 'random' or [] list color code
+    settings = {color: 'random'}, // color: is 'random' or [] list color code
+    setTotalDistance = () => null
   } = props;
 
   const [mapOption,] = useState({
@@ -29,6 +30,12 @@ export default function Directions(props) {
   useEffect(() => {
     rerender([]);
   }, [routes]);
+
+  function getTotalDistance(legs) {
+    let sum = 0;
+    legs.forEach(leg => sum += leg['distance']['value']);
+    return sum;
+  }
 
   function updateColor() {
     let colors;
@@ -115,7 +122,10 @@ export default function Directions(props) {
         }, (response, status) => {
           if (status === 'OK') {
             const paths = [];
-            response['routes'][0]['legs'].forEach(leg => leg['steps'].forEach(step => paths.push(step['path'])));
+            let legs = response['routes'][0]['legs'];
+            legs.forEach(leg => leg['steps'].forEach(step => paths.push(step['path'])));
+
+            setTotalDistance(getTotalDistance(legs));
 
             new window.google.maps.DirectionsRenderer({
               polylineOptions: {
