@@ -71,7 +71,7 @@ export default function ShipmentItemCreate() {
     setCustomerList(response['lists']);
     setSelectedCustomer(response['lists'][0]);
     let location = response['lists'][0]['postalAddress'][0];
-    setLocationCode(location['contactMechId']);
+    setLocationCode(location['locationCode']);
     setAddress(location['address']);
   }
 
@@ -191,7 +191,7 @@ export default function ShipmentItemCreate() {
           {select('Chọn khách hàng', customerList, 'partyId', 'customerName', selectedCustomer, newCustomer => {
             setSelectedCustomer(newCustomer);
             let location = newCustomer['postalAddress'][0];
-            setLocationCode(location['contactMechId']);
+            setLocationCode(location['locationCode']);
             setAddress(location['address']);
           })}
 

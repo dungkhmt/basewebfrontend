@@ -12,7 +12,8 @@ import {
   mdiFileExcel,
   mdiReceipt,
   mdiRobotIndustrial,
-  mdiTruckFast
+  mdiTruckFast,
+  mdiTruckTrailer
 } from "@mdi/js";
 import Icon from "@mdi/react";
 import MaterialTable from "material-table";
@@ -74,7 +75,10 @@ export default function DeliveryTripList() {
       render: rowData => toFormattedTime(rowData['totalExecutionTime'])
     },
     {title: "Tổng số điểm", field: "totalLocation"},
-    {title: "Mã xe", field: "vehicleId"},
+    {
+      title: "Mã xe",
+      render: rowData => <Link to={"/vehicle-detail/" + rowData['vehicleId']}>{rowData['vehicleId']}</Link>
+    },
     {
       title: "Tải trọng tối đa của xe (kg)",
       field: "maxVehicleCapacity",
@@ -82,7 +86,10 @@ export default function DeliveryTripList() {
     },
     {title: 'Loại xe', field: 'vehicleProductTransportCategoryId'},
     {title: 'Mã trạng thái', field: 'statusId'},
-    {title: "Mã tài xế", field: "userLoginId"}
+    {
+      title: "Mã tài xế",
+      render: rowData => <Link to={'/driver-detail/' + rowData['driverId']}>{rowData['userLoginId']}</Link>
+    }
   ];
 
   const {deliveryPlanId} = useParams();
@@ -160,6 +167,18 @@ export default function DeliveryTripList() {
                   title="Danh sách đợt giao hàng"
                   size={1}
                 />
+              </IconButton>
+              <IconButton
+                style={{float: "right"}}
+                //onClick={() => handlePopup(true)}
+                onClick={() =>
+                  history.push(
+                    '/vehicle-not-scheduled/' + deliveryPlanId + '/list'
+                  )
+                }
+                component="span"
+              >
+                <Icon path={mdiTruckTrailer} title="Danh sách xe chưa xếp chuyến" size={1}/>
               </IconButton>
               <IconButton
                 style={{float: "right"}}
