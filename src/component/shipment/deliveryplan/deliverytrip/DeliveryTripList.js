@@ -173,7 +173,7 @@ export default function DeliveryTripList() {
                 //onClick={() => handlePopup(true)}
                 onClick={() =>
                   history.push(
-                    '/vehicle-not-scheduled/' + deliveryPlanId + '/list'
+                    '/vehicle-not-in-delivery-trips/' + deliveryPlanId
                   )
                 }
                 component="span"
