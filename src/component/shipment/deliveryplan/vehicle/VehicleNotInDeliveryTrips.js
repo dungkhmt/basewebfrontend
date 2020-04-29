@@ -38,9 +38,9 @@ export default function VehicleNotInDeliveryTrips() {
     }
 
     <MaterialTable
-      title={'Chọn xe'}
+      title={'Danh sách xe chưa được gán chuyến'}
       columns={columns}
-      options={{search: false, selection: true}}
+      options={{search: false, selection: false}}
       data={dataTable}
       icons={tableIcons}
     >
