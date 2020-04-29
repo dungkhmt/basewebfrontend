@@ -1,19 +1,18 @@
-import React, { useEffect, useState } from "react";
-import { tableIcons } from "../../../utils/iconutil";
-import MaterialTable from "material-table";
-import { useSelector, useDispatch } from "react-redux";
-import { authGet } from "../../../api";
+import React from "react";
+import {tableIcons} from "../../../utils/iconutil";
+import MaterialTable, {MTableToolbar} from "material-table";
+import {useDispatch, useSelector} from "react-redux";
+import {authGet} from "../../../api";
 
-import { useHistory, Link } from "react-router-dom";
+import {Link} from "react-router-dom";
 
 import Button from "@material-ui/core/Button";
-import  {MTableToolbar} from "material-table";
 import Grid from "@material-ui/core/Grid";
 import AddIcon from "@material-ui/icons/Add";
 
 function DriverList(props) {
 
-    const token = useSelector(state => state.auth.token);
+  const token = useSelector(state => state.auth.token);
     const dispatch = useDispatch();
 
 
@@ -76,7 +75,13 @@ function DriverList(props) {
                         authGet(
                             dispatch,
                             token,
-                            "/get-all-drivers" + "?size=" + query.pageSize + "&page=" + query.page+sortParam+filterParam
+                          "/get-page-drivers" +
+                          "?size=" +
+                          query.pageSize +
+                          "&page=" +
+                          query.page +
+                          sortParam +
+                          filterParam
                         ).then(
                             res => {
                                 console.log(res);
