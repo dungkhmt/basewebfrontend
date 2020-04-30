@@ -90,6 +90,10 @@ import {
   TransportReportByPartyCustomer
 } from "./component/report/TransportReport";
 import SolverConfigParam from "./component/shipment/solver/SolverConfigParam";
+import CreateRequestTransportContainerToWarehouse
+    from "./component/tmscontainer/requestimportfull/CreateRequestTransportContainerToWarehouse";
+import ListRequestTransportContainerToWareHouse
+    from "./component/tmscontainer/requestimportfull/ListRequestTransportContainerToWareHouse";
 
 
 function Routes(props) {// props nay tu parent transfer vao
@@ -691,6 +695,20 @@ function Routes(props) {// props nay tu parent transfer vao
           isAuthenticated={props.isAuthenticated}
           path="/portfunc/googlemap"
         />
+
+        <PrivateRouteWithLayout
+            component={CreateRequestTransportContainerToWarehouse}
+            layout={Layout}
+            isAuthenticated={props.isAuthenticated}
+            path="/create-request-transport-container-to-warehouse"
+        />
+
+        <PrivateRouteWithLayout
+            component={ListRequestTransportContainerToWareHouse}
+            layout={Layout}
+            isAuthenticated={props.isAuthenticated}
+            path="/list-request-transport-container-to-warehouse"
+            />
 
 
         <Route

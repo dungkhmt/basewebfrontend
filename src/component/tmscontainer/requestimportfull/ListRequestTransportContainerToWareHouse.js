@@ -1,38 +1,30 @@
 import React, {Component, useEffect, useState} from 'react';
-import {useDispatch, useSelector} from "react-redux";
-import {authGet, authPost} from "../../../api";
-import {failed} from "../../../action";
-import {MuiPickersUtilsProvider} from "@material-ui/pickers";
-import DateFnsUtils from "@date-io/date-fns";
-import Card from "@material-ui/core/Card";
-import {CardContent, CircularProgress} from "@material-ui/core";
-import Typography from "@material-ui/core/Typography";
-import TextField from "@material-ui/core/TextField";
-import MenuItem from "@material-ui/core/MenuItem";
-import CardActions from "@material-ui/core/CardActions";
-import Button from "@material-ui/core/Button";
-import {makeStyles} from "@material-ui/core/styles";
-import { useHistory, Link } from "react-router-dom";
-import {GoogleApiWrapper, Map, Marker} from "google-maps-react";
-import Grid from "@material-ui/core/Grid";
 import MaterialTable from "material-table";
+import {authGet} from "../../../api";
 import {tableIcons} from "../../../utils/iconutil";
+import {useDispatch, useSelector} from "react-redux";
 
-function TrailerList(props) {
+function ListRequestTransportContainerToWareHouse() {
     const token = useSelector(state => state.auth.token);
     const dispatch = useDispatch();
     const [isRequesting, setIsRequesting] = useState(false);
 
     const columns = [
-        {field: "trailerId", title: "Mã mooc "},
-        {field: "description", title: "Mô tả "}
+        {field: "customerName", title: "Tên khách hàng "},
+        {field: "facilityName", title: "Kho"},
+        {field: "address", title: "Địa chỉ"},
+        {field: "numberContainers", title: "Số container"},
+        {field: "containerType", title: "Loại container"},
+        {field: "portName", title: "Tên cảng"},
+        {field: "time", title: "Thời gian"},
     ]
+
 
 
     return(
         <div>
             <MaterialTable
-                title="Danh sách rơ mooc "
+                title="Danh sách yêu cầu vận chuyển container đầy đến kho  "
                 columns={columns}
                 options={{
                     filtering: true,
@@ -57,7 +49,7 @@ function TrailerList(props) {
                         authGet(
                             dispatch,
                             token,
-                            "/get-list-cont-trailer-page" + "?size=" + query.pageSize + "&page=" + query.page+sortParam+filterParam
+                            "/get-list-cont-request-import-full-page" + "?size=" + query.pageSize + "&page=" + query.page+sortParam+filterParam
                         ).then(
                             res => {
 
@@ -80,22 +72,8 @@ function TrailerList(props) {
                     console.log("select ",rowData);
                 }}
             />
-            <CardActions>
-                <Link to={"/trailerfunc/create"}>
-                    <Button
-                        variant="contained"
-                        color="primary"
-                    >
-                        {isRequesting ? <CircularProgress /> : "Thêm mới"}
-                    </Button>
-                </Link>
-
-
-
-            </CardActions>
         </div>
-    );
+    )
 }
 
-
-export default TrailerList;
+export default ListRequestTransportContainerToWareHouse;
