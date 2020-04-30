@@ -17,6 +17,7 @@ export default function SolverConfigParam() {
   const dispatch = useDispatch();
   const history = useHistory();
 
+  const [maxTripDistance, setMaxTripDistance] = useState(0);
   const [maxDistanceConsecutiveLocationTripAllowed, setMaxDistanceConsecutiveLocationTripAllowed] = useState(0);
   const [maxLocationsPerTripAllowed, setMaxLocationsPerTripAllowed] = useState(0);
   const [fixLoadTime, setFixLoadTime] = useState(0);
@@ -41,6 +42,7 @@ export default function SolverConfigParam() {
   async function getData() {
     let solverConfigParam = await authGet(dispatch, token, '/get-solver-config-param');
 
+    setMaxTripDistance(solverConfigParam['maxTripDistance']);
     setMaxDistanceConsecutiveLocationTripAllowed(solverConfigParam['maxDistanceConsecutiveLocationTripAllowed']);
     setMaxLocationsPerTripAllowed(solverConfigParam['maxLocationsPerTripAllowed']);
     setFixLoadTime(solverConfigParam['fixLoadTime']);
@@ -56,6 +58,7 @@ export default function SolverConfigParam() {
 
   async function handleSubmit() {
     let body = {
+      maxTripDistance,
       maxDistanceConsecutiveLocationTripAllowed,
       maxLocationsPerTripAllowed,
       fixLoadTime,
@@ -92,6 +95,11 @@ export default function SolverConfigParam() {
 
           <p/>
 
+          {textField('maxTripDistance',
+            'maxTripDistance',
+            'number',
+            maxTripDistance,
+            newValue => notNegativeFilterOnChange(newValue, setMaxTripDistance))}
           {textField('maxDistanceConsecutiveLocationTripAllowed',
             'maxDistanceConsecutiveLocationTripAllowed',
             'number',
