@@ -103,7 +103,7 @@ function DistributorDetail(props){
     }
     
     const getRetailOutletList = () => {
-        authGet(dispatch, token, "/get-all-retail-outlet").then(
+        authGet(dispatch, token, "/get-retail-outlet-candidates/" + partyId).then(
             res => {
                 setRetailOutletList(res);
                 console.log("List of retail outlet",res);    
@@ -173,20 +173,22 @@ function DistributorDetail(props){
                                     }
 
                                     authPost(dispatch, token, "/add-retail-outlet-distributor-salesman", inputModel)
-                                    getDistributorDetail()
-                                    getDistributorDetail()
-                                    setSelectedRetailOutlet({retailOutletName: ''})
-                                    setSelectedSalesman({userLoginId: ''})
-                                    
-                                    resolve()
+                                        .then(() => {
+                                            getDistributorDetail()
+                                            getRetailOutletList()
+                                            setSelectedRetailOutlet({retailOutletName: ''})
+                                            setSelectedSalesman({userLoginId: ''})
+                                        })
+                                   resolve()
                                 }),
                                 
                             onRowDelete: (oldData) =>
                                 new Promise((resolve) => {
-                                    fetch("http://localhost:8080/api/delete-retail-outlet-distributor-salesman/" + oldData.retailOutletSalesmanVendorId, requestGetOption)                                                                     
-                                    getDistributorDetail()
-                                    getDistributorDetail()
-                                    
+                                    fetch("http://localhost:8080/api/delete-retail-outlet-distributor-salesman/" + oldData.retailOutletSalesmanVendorId, requestGetOption)
+                                        .then(() => {
+                                            getDistributorDetail()
+                                            getRetailOutletList()
+                                        })                                                                                          
                                     resolve()
                                 }),
                         }}
