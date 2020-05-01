@@ -447,7 +447,7 @@ function Routes(props) {// props nay tu parent transfer vao
         component={SalesmanCreate}
         layout={Layout}
         isAuthenticated={props.isAuthenticated}
-        path="/sales/create"
+        path="/salesman/create"
       />
 
         <PrivateRouteWithLayout

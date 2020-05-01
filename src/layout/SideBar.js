@@ -381,7 +381,7 @@ export default function SideBar(props) {
                   button
                   className={classes.nested}
                   component={Link}
-                  to={process.env.PUBLIC_URL + "/sales/create"}>
+                  to={process.env.PUBLIC_URL + "/salesman/create"}>
                   <ListItemIcon>
                     <StarBorder/>
                   </ListItemIcon>
@@ -865,7 +865,10 @@ export default function SideBar(props) {
               <List component="div" disablePadding>
               
               {props.menu.has("MENU_USER_CREATE") ? (
-                <ListItem button className={classes.nested}>
+                <ListItem button className={classes.nested}
+                  component={Link}
+                  to={process.env.PUBLIC_URL + "/salesman/create"}
+                >
                   <ListItemIcon>
                     <StarBorder/>
                   </ListItemIcon>
@@ -876,7 +879,11 @@ export default function SideBar(props) {
               )}
 
               {props.menu.has("MENU_USER_LIST") ? (    
-                <ListItem button className={classes.nested}>
+                <ListItem button className={classes.nested}
+                  component={Link}
+                  to={process.env.PUBLIC_URL + "/salesman/list"}
+              
+                >
                   <ListItemIcon>
                     <StarBorder/>
                   </ListItemIcon>
