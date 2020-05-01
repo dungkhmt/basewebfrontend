@@ -57,7 +57,7 @@ function TrailerList(props) {
                         authGet(
                             dispatch,
                             token,
-                            "/get-list-cont-trailer" + "?size=" + query.pageSize + "&page=" + query.page+sortParam+filterParam
+                            "/get-list-cont-trailer-page" + "?size=" + query.pageSize + "&page=" + query.page+sortParam+filterParam
                         ).then(
                             res => {
 

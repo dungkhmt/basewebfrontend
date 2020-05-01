@@ -1370,12 +1370,28 @@ export default function SideBar(props) {
                 <ListItemText primary="DS đơn vận chuyển import empty"/>
               </ListItem>
 
-
-              <ListItem button className={classes.nested}>
+              <ListItem
+                  button
+                  className={classes.nested}
+                  component={Link}
+                  to={process.env.PUBLIC_URL + "/create-request-transport-container-to-warehouse"}
+              >
                 <ListItemIcon>
                   <StarBorder/>
                 </ListItemIcon>
-                <ListItemText primary="DS đơn vận chuyển import full"/>
+                <ListItemText primary="Thêm mới yêu cầu vận chuyển container đến kho"/>
+              </ListItem>
+
+              <ListItem
+                  button
+                  className={classes.nested}
+                  component={Link}
+                  to={process.env.PUBLIC_URL + "/list-request-transport-container-to-warehouse"}
+              >
+                <ListItemIcon>
+                  <StarBorder/>
+                </ListItemIcon>
+                <ListItemText primary="Danh sách đơn vận chuyển container đầy đến kho "/>
               </ListItem>
 
 
