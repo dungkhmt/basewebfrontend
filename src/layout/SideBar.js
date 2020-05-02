@@ -1492,20 +1492,10 @@ export default function SideBar(props) {
                     </ListItem>
 
 
-                    <ListItem button className={classes.nested}>
-                      <ListItemIcon>
-                        <StarBorder/>
-                      </ListItemIcon>
-                      <ListItemText primary="DS đơn vận chuyển export empty"/>
-                    </ListItem>
 
 
-                    <ListItem button className={classes.nested}>
-                      <ListItemIcon>
-                        <StarBorder/>
-                      </ListItemIcon>
-                      <ListItemText primary="DS đơn vận chuyển export full"/>
-                    </ListItem>
+
+
 
 
                     <ListItem button className={classes.nested}>
