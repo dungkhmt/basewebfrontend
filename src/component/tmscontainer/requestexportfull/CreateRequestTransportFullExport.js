@@ -31,7 +31,7 @@ const useStyles = makeStyles(theme => ({
         maxWidth: 300
     }
 }));
-function CreateRequestTransportContainerToWarehouse() {
+function CreateRequestTransportFullExport() {
     const token = useSelector(state => state.auth.token);
     const dispatch = useDispatch();
     const classes = useStyles();
@@ -63,7 +63,7 @@ function CreateRequestTransportContainerToWarehouse() {
             portId: port
         }
         setIsRequesting(true);
-        authPost(dispatch,token,"/create-request-import-full",data)
+        authPost(dispatch,token,"/create-request-export-full",data)
             .then(
                 res => {
                     console.log(res);
@@ -126,7 +126,7 @@ function CreateRequestTransportContainerToWarehouse() {
 
     useEffect(() =>{
         authPost(dispatch,token,"/get-list-customer",{"statusId":null})
-        //authPost(dispatch,token,"/get-list-retail-outlet",{"statusId":null})
+            //authPost(dispatch,token,"/get-list-retail-outlet",{"statusId":null})
             .then(
                 res => {
                     //console.log("GOT retail-outlet",res);
@@ -293,7 +293,7 @@ function CreateRequestTransportContainerToWarehouse() {
                                     customInput={TextField}
                                     format="#### #### #### ####"
                                     onChange={handleNumberContainerChange}
-                                    ></NumberFormat>
+                                ></NumberFormat>
 
 
 
@@ -362,7 +362,7 @@ function CreateRequestTransportContainerToWarehouse() {
                             </Typography>
 
 
-                        <br/><br/><br/><br/><br/><br/>
+                            <br/><br/><br/><br/><br/><br/>
 
 
 
@@ -380,7 +380,7 @@ function CreateRequestTransportContainerToWarehouse() {
 
 
                     <CardActions>
-                        <Link to={"/list-request-transport-container-to-warehouse"}>
+                        <Link to={"/list-request-transport-full-export"}>
                             <Button
                                 disabled={isRequesting}
                                 variant="contained"
@@ -406,4 +406,4 @@ function CreateRequestTransportContainerToWarehouse() {
     );
 }
 
-export default CreateRequestTransportContainerToWarehouse;
+export default CreateRequestTransportFullExport;

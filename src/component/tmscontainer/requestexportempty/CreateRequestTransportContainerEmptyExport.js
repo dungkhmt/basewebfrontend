@@ -16,7 +16,6 @@ import {Link} from "react-router-dom";
 import Button from "@material-ui/core/Button";
 import NumberFormat from 'react-number-format';
 
-
 const useStyles = makeStyles(theme => ({
     root: {
         padding: theme.spacing(4),
@@ -31,7 +30,8 @@ const useStyles = makeStyles(theme => ({
         maxWidth: 300
     }
 }));
-function CreateRequestTransportContainerToWarehouse() {
+
+function CreateRequestTransportContainerEmptyExport() {
     const token = useSelector(state => state.auth.token);
     const dispatch = useDispatch();
     const classes = useStyles();
@@ -51,6 +51,7 @@ function CreateRequestTransportContainerToWarehouse() {
     const [portList, setPortList] = useState([]);
 
 
+
     const handleSubmit = event => {
         const data = {
             customerId: customer,
@@ -60,10 +61,16 @@ function CreateRequestTransportContainerToWarehouse() {
             earlyDate: earlyDate,
             lateDate: lateDate,
             trailer: trailer,
-            portId: port
         }
         setIsRequesting(true);
-        authPost(dispatch,token,"/create-request-import-full",data)
+
+
+
+
+
+
+
+        authPost(dispatch,token,"/create-request-import-empty-export",data)
             .then(
                 res => {
                     console.log(res);
@@ -89,9 +96,6 @@ function CreateRequestTransportContainerToWarehouse() {
     }
 
 
-    const handlePortChange = event=>{
-        setPort(event.target.value);
-    }
 
     const handleTrailerChange = event =>{
         setTrailer(event.target.value);
@@ -126,7 +130,7 @@ function CreateRequestTransportContainerToWarehouse() {
 
     useEffect(() =>{
         authPost(dispatch,token,"/get-list-customer",{"statusId":null})
-        //authPost(dispatch,token,"/get-list-retail-outlet",{"statusId":null})
+            //authPost(dispatch,token,"/get-list-retail-outlet",{"statusId":null})
             .then(
                 res => {
                     //console.log("GOT retail-outlet",res);
@@ -223,7 +227,7 @@ function CreateRequestTransportContainerToWarehouse() {
                 <Card>
                     <CardContent>
                         <Typography variant="h5" component="h2">
-                            Thêm mới yêu cầu vận chuyển kho ra bãi
+                            Thêm mới yêu cầu vận chuyển container đến kho
                         </Typography>
 
                         <form className={classes.root} noValidate autoComplete="off">
@@ -266,34 +270,13 @@ function CreateRequestTransportContainerToWarehouse() {
                             <br/>
 
                             <Typography variant="h6" component="h4">
-                                Chọn bến cảng:
-                                <TextField
-                                    required
-                                    select
-                                    onChange={handlePortChange}
-                                >
-                                    {portList.map(c => (
-                                        <MenuItem
-                                            key={c.portId}
-                                            value={c.portId}
-                                        >
-                                            {c.portName}
-                                        </MenuItem>
-                                    ))}
-                                </TextField>
-                            </Typography>
-                            <br/>
-
-
-
-                            <Typography variant="h6" component="h4">
                                 Số container:
                                 <NumberFormat
                                     value={numberContainer}
                                     customInput={TextField}
                                     format="#### #### #### ####"
                                     onChange={handleNumberContainerChange}
-                                    ></NumberFormat>
+                                ></NumberFormat>
 
 
 
@@ -342,7 +325,7 @@ function CreateRequestTransportContainerToWarehouse() {
                             </Typography>
                             <br/>
                             <Typography variant="h6" component="h4">
-                                Chọn rơ-mooc:
+                                Chọn container:
                                 <TextField
                                     required
                                     select
@@ -362,7 +345,7 @@ function CreateRequestTransportContainerToWarehouse() {
                             </Typography>
 
 
-                        <br/><br/><br/><br/><br/><br/>
+                            <br/><br/><br/><br/><br/><br/>
 
 
 
@@ -380,7 +363,7 @@ function CreateRequestTransportContainerToWarehouse() {
 
 
                     <CardActions>
-                        <Link to={"/list-request-transport-container-to-warehouse"}>
+                        <Link to={"/list-request-transport-container-empty-export"}>
                             <Button
                                 disabled={isRequesting}
                                 variant="contained"
@@ -406,4 +389,5 @@ function CreateRequestTransportContainerToWarehouse() {
     );
 }
 
-export default CreateRequestTransportContainerToWarehouse;
+
+export default CreateRequestTransportContainerEmptyExport;

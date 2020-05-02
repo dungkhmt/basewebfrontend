@@ -90,16 +90,26 @@ import {
     TransportReportByPartyCustomer
 } from "./component/report/TransportReport";
 import SolverConfigParam from "./component/shipment/solver/SolverConfigParam";
-<<<<<<< HEAD
 import CreateRequestTransportContainerToWarehouse
     from "./component/tmscontainer/requestimportfull/CreateRequestTransportContainerToWarehouse";
 import ListRequestTransportContainerToWareHouse
     from "./component/tmscontainer/requestimportfull/ListRequestTransportContainerToWareHouse";
-=======
 import VehicleDetail from "./component/shipment/vehicle/VehicleDetail";
 import VehicleNotInDeliveryTrips from "./component/shipment/deliveryplan/vehicle/VehicleNotInDeliveryTrips";
 import DriverDetail from "./component/shipment/driver/DriverDetail";
->>>>>>> c2e5d23d7544e93b86e3e52d5bfb8888376334c4
+import CreateRequestTransportContainerEmpty
+    from "./component/tmscontainer/requestimportempty/CreateRequestTransportContainerEmpty";
+import ListRequestTransportContainerEmpty
+    from "./component/tmscontainer/requestimportempty/ListRequestTransportContainerEmpty";
+import ListRequestTransportContainerEmptyExport
+    from "./component/tmscontainer/requestexportempty/ListRequestTransportContainerEmptyExport";
+import CreateRequestTransportContainerEmptyExport
+    from "./component/tmscontainer/requestexportempty/CreateRequestTransportContainerEmptyExport";
+import CreateRequestTransportFullExport
+    from "./component/tmscontainer/requestexportfull/CreateRequestTransportFullExport";
+import ListRequestTransportFullExport
+    from "./component/tmscontainer/requestexportfull/ListRequestTransportFullExport";
+
 
 
 function Routes(props) {// props nay tu parent transfer vao
@@ -480,7 +490,6 @@ function Routes(props) {// props nay tu parent transfer vao
         path="/driver/create"
       />
 
-<<<<<<< HEAD
       <PrivateRouteWithLayout
         component={SalesmanCreate}
         layout={Layout}
@@ -744,8 +753,56 @@ function Routes(props) {// props nay tu parent transfer vao
             path="/list-request-transport-container-to-warehouse"
             />
 
+          <PrivateRouteWithLayout
+              component={CreateRequestTransportContainerEmpty}
+              layout={Layout}
+              isAuthenticated={props.isAuthenticated}
+              path="/create-request-transport-container-empty"
+          />
 
-        <Route
+
+          <PrivateRouteWithLayout
+              component={ListRequestTransportContainerEmpty}
+              layout={Layout}
+              isAuthenticated={props.isAuthenticated}
+              path="/list-request-transport-container-empty"
+          />
+
+
+          <PrivateRouteWithLayout
+              component={CreateRequestTransportContainerEmptyExport}
+              layout={Layout}
+              isAuthenticated={props.isAuthenticated}
+              path="/create-request-transport-container-empty-export"
+          />
+          <PrivateRouteWithLayout
+              component={ListRequestTransportContainerEmptyExport}
+              layout={Layout}
+              isAuthenticated={props.isAuthenticated}
+              path="/list-request-transport-container-empty-export"
+          />
+
+
+
+          <PrivateRouteWithLayout
+              component={CreateRequestTransportFullExport}
+              layout={Layout}
+              isAuthenticated={props.isAuthenticated}
+              path="/create-request-transport-full-export"
+          />
+          <PrivateRouteWithLayout
+              component={ListRequestTransportFullExport}
+              layout={Layout}
+              isAuthenticated={props.isAuthenticated}
+              path="/list-request-transport-full-export"
+          />
+
+
+
+
+
+
+          <Route
           component={SignInContainer} // props
           path="/login"               // props
         />
@@ -754,8 +811,6 @@ function Routes(props) {// props nay tu parent transfer vao
           path="/not-found"               // props
         />
         <Redirect to="/not-found"/>
-    </Switch>
-=======
           <PrivateRouteWithLayout
             component={SalesmanCreate}
             layout={Layout}
@@ -1006,6 +1061,9 @@ function Routes(props) {// props nay tu parent transfer vao
           />
 
 
+
+
+
           <Route
             component={SignInContainer} // props
             path="/login"               // props
@@ -1016,7 +1074,6 @@ function Routes(props) {// props nay tu parent transfer vao
           />
           <Redirect to="/not-found"/>
       </Switch>
->>>>>>> c2e5d23d7544e93b86e3e52d5bfb8888376334c4
   );
 }
 

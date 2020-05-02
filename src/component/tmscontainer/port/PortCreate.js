@@ -198,7 +198,7 @@ function PortCreate(props) {
 
 
                     <Typography variant="h2" component="h2" >
-                        Thêm mới bãi đầu kéo
+                        Thêm mới bến cảng 
                     </Typography>
 
 
@@ -208,7 +208,7 @@ function PortCreate(props) {
 
 
                     <Typography variant="h6" >
-                        Mã bãi: {' '}
+                        Mã bến cảng: {' '}
                     </Typography>
 
 
@@ -225,7 +225,7 @@ function PortCreate(props) {
 
                     <br/><br/>
                     <Typography variant="h6" >
-                        Tên bãi: {' '}
+                        Tên bến cảng: {' '}
                     </Typography>
 
 
