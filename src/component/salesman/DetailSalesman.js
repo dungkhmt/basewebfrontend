@@ -41,7 +41,7 @@ function DetailSalesman(props){
         {title: "Mã đại lí bán lẻ", field: "partyId"},
         {title: "Tên đại lí bán lẻ", field: "retailOutletName"},
         {title: "Địa chỉ", field: "address"},
-        {title: "Tên nhà phân phối", field: "partyDistritorName"},
+        {title: "Tên nhà phân phối", field: "partyDistributorName"},
         {title: "", render: rowData => <Button color="primary" variant="contained" onClick={() => handleDelete(rowData.retailOutletSalesmanVendorId)}>Xoa</Button> }
     ]
 

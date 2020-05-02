@@ -893,6 +893,36 @@ export default function SideBar(props) {
                 ""
               )}
 
+              {props.menu.has("MENU_USER_LIST") ? (    
+                <ListItem button className={classes.nested}
+                  component={Link}
+                  to={process.env.PUBLIC_URL + "/salesman/assign-salesman-2-distributor"}
+              
+                >
+                  <ListItemIcon>
+                    <StarBorder/>
+                  </ListItemIcon>
+                  <ListItemText primary="Phân công NVBH cho NPP"/>
+                </ListItem>
+              ):(
+                ""
+              )}
+              {props.menu.has("MENU_USER_LIST") ? (    
+                <ListItem button className={classes.nested}
+                  component={Link}
+                  to={process.env.PUBLIC_URL + "/salesman/assign-salesman-2-retail-outlet"}
+              
+                >
+                  <ListItemIcon>
+                    <StarBorder/>
+                  </ListItemIcon>
+                  <ListItemText primary="Phân công NVBH phụ trách ĐLBL"/>
+                </ListItem>
+              ):(
+                ""
+              )}
+
+
               </List>
             </Collapse>
           </div>
