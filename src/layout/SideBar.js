@@ -336,13 +336,36 @@ export default function SideBar(props) {
                     ) : (
                         ""
                     )}
+                    
                     {props.menu.has("MENU_INVOICE_LIST") ? (
-                        <ListItem button className={classes.nested}>
+                        <ListItem button className={classes.nested}
+                          component={Link}
+                          to={process.env.PUBLIC_URL + "/invoice-sales/list"}
+                        >
                           <ListItemIcon>
                             <StarBorder/>
                           </ListItemIcon>
-                          <ListItemText primary="Danh sách"/>
+                          <ListItemText primary="DS hóa đơn thu"/>
                         </ListItem>
+                      
+                      
+                      
+                    ) : (
+                        ""
+                    )}
+
+                    {props.menu.has("MENU_INVOICE_LIST") ? (
+                        <ListItem button className={classes.nested}
+                          component={Link}
+                          to={process.env.PUBLIC_URL + "/customer-payment/list"}
+                        >
+                          <ListItemIcon>
+                            <StarBorder/>
+                          </ListItemIcon>
+                          <ListItemText primary="DS KH thanh toán"/>
+                        </ListItem>                  
+                      
+                      
                     ) : (
                         ""
                     )}
