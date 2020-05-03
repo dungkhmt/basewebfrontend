@@ -111,6 +111,7 @@ import CreateRequestTransportFullExport
     from "./component/tmscontainer/requestexportfull/CreateRequestTransportFullExport";
 import ListRequestTransportFullExport
     from "./component/tmscontainer/requestexportfull/ListRequestTransportFullExport";
+import RetailOutletDetail from "./component/retailoutlet/RetailOutletDetail";
  
 
 
@@ -464,6 +465,13 @@ function Routes(props) {// props nay tu parent transfer vao
         path="/retailoutlet/list"
       />
 
+      <PrivateRouteWithLayout
+        component={RetailOutletDetail} 
+        layout={Layout}          
+        isAuthenticated={props.isAuthenticated} 
+        path="/retailoutlet/:partyId"                    
+      />
+      
       <PrivateRouteWithLayout
         component={InventoryOrderList}
         layout={Layout}
