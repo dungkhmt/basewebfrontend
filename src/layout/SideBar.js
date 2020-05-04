@@ -635,16 +635,16 @@ export default function SideBar(props) {
 
           
 
-        {props.menu.has("MENU_DISTRIBUTOR") ? (
+        {props.menu.has("MENU_TMS") ? (
           <div>
-            <ListItem button onClick={() => handleListClick(12)}>
+            <ListItem button onClick={() => handleListClick(7)}>
               <ListItemIcon>
                 <ApartmentSharpIcon/>
               </ListItemIcon>
-              <ListItemText primary="QL Nhà Phân Phối"/>
-              {openCollapse[12] ? <ExpandLess/> : <ExpandMore/>}
+              <ListItemText primary="QL chuyển phát bưu kiện"/>
+              {openCollapse[7] ? <ExpandLess/> : <ExpandMore/>}
             </ListItem>
-               <Collapse in={openCollapse[12]} timeout="auto" unmountOnExit>
+               <Collapse in={openCollapse[7]} timeout="auto" unmountOnExit>
                   <List component="div" disablePadding>
                     <ListItem
                         button
@@ -668,13 +668,13 @@ export default function SideBar(props) {
                       <ListItemIcon>
                         <StarBorder/>
                       </ListItemIcon>
-                      <ListItemText primary="Thời gian/quãng đường"/>
+                      <ListItemText primary="DS bưu cục"/>
                     </ListItem>
                     <ListItem
                         button
                         className={classes.nested}
                         component={Link}
-                        //to={process.env.PUBLIC_URL + "/shipment"}
+                        to={process.env.PUBLIC_URL + "/postoffice/list"}
                     >
                       <ListItemIcon>
                         <StarBorder/>
