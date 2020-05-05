@@ -3,14 +3,17 @@ import {useDispatch, useSelector} from "react-redux";
 import Grid from "@material-ui/core/Grid";
 import MaterialTable from "material-table";
 import {authGet} from "../../api";
-import {useParams} from "react-router-dom";
+import {Link, useParams} from "react-router-dom";
 
 export function Invoice() {
   const dispatch = useDispatch();
   const token = useSelector(state => state.auth.token);
 
   const columns = [
-    {'title': 'Mã hóa đơn', field: 'invoiceId'},
+    {
+      'title': 'Mã hóa đơn',
+      render: rowData => <Link to={'/invoice-detail/' + rowData['invoiceId']}>{rowData['invoiceId']}</Link>
+    },
     {'title': 'Ngày hóa đơn', field: 'invoiceDate'},
     {'title': 'Khách hàng', field: 'fromVendorId'},
     {'title': 'Thành tiền', field: 'amount'},
@@ -96,7 +99,10 @@ export function Payment() {
   const token = useSelector(state => state.auth.token);
 
   const columns = [
-    {'title': 'Mã thanh toán', field: 'paymentId'},
+    {
+      'title': 'Mã thanh toán',
+      render: rowData => <Link to={'/payment-application/' + rowData['paymentId']}>{rowData['paymentId']}</Link>
+    },
     {'title': 'Ngày thanh toán', field: 'effectiveDate'},
     {'title': 'Khách hàng thanh toán', field: 'fromPartyId'},
     {'title': 'Số tiền', field: 'amount'},
