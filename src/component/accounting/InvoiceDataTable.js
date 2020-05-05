@@ -59,11 +59,10 @@ export function InvoiceDetail() {
 
   const invoiceItemInfos = [
     {title: 'Mã hóa đơn', content: invoiceId},
-    {title: 'Ngày hóa đơn', content: invoiceItemDataTable ? invoiceItemDataTable['invoiceDate'] : ''},
   ];
 
-  const [invoiceItemDataTable, setInvoiceItemDataTable] = useState(null);
-  const [paymentApplicationDataTable, setPaymentApplicationDataTable] = useState(null);
+  const [invoiceItemDataTable, setInvoiceItemDataTable] = useState([]);
+  const [paymentApplicationDataTable, setPaymentApplicationDataTable] = useState([]);
 
   async function getDataTable() {
     let [invoiceItemDataTable, paymentApplicationDataTable] =
@@ -71,6 +70,8 @@ export function InvoiceDetail() {
         authGet(dispatch, token, '/get-all-payment-by-invoice-id/' + invoiceId)])
 
     setInvoiceItemDataTable(invoiceItemDataTable);
+    invoiceItemInfos.push({title: 'Ngày hóa đơn', content: invoiceItemDataTable['invoiceDate']})
+
     setPaymentApplicationDataTable(paymentApplicationDataTable);
   }
 
@@ -143,8 +144,6 @@ export function PaymentApplication() {
 
   const infos = [
     {title: 'Mã thanh toán', content: paymentId},
-    {title: 'Khách hàng', content: dataTable ? dataTable['payment']['fromCustomerId'] : ''},
-    {title: 'Ngày thanh toán', content: dataTable ? dataTable['payment']['effectiveDate'] : ''},
   ];
 
   const [dataTable, setDataTable] = useState([]);
@@ -152,6 +151,9 @@ export function PaymentApplication() {
   async function getDataTable() {
     let response = await authGet(dispatch, token, '/get-payment-detail-by-payment-id/' + paymentId);
     setDataTable(response);
+
+    infos.push({title: 'Khách hàng', content: dataTable['payment']['fromCustomerId']},
+      {title: 'Ngày thanh toán', content: dataTable['payment']['effectiveDate']});
   }
 
   useEffect(() => {
@@ -170,7 +172,7 @@ export function PaymentApplication() {
 
 function InvoiceDataTable(props) {
 
-  const {title, tableTitle, infos = [], columns = [], dataTable = []} = props;
+  const {title, tableTitle = '', infos = [], columns = [], dataTable = []} = props;
 
   return <div>
     <h2>{title}</h2>
