@@ -57,20 +57,28 @@ export function InvoiceDetail() {
     {'title': 'Thành tiền', field: 'amountApplied'},
   ];
 
-  const invoiceItemInfos = [
-    {title: 'Mã hóa đơn', content: invoiceId},
-  ];
+  const [invoiceItemInfos, setInvoiceItemInfos] = useState([
+    {title: 'Mã hóa đơn', content: invoiceId}
+  ]);
 
+  const [invoice, setInvoice] = useState({});
   const [invoiceItemDataTable, setInvoiceItemDataTable] = useState([]);
   const [paymentApplicationDataTable, setPaymentApplicationDataTable] = useState([]);
 
   async function getDataTable() {
-    let [invoiceItemDataTable, paymentApplicationDataTable] =
-      await Promise.all([authGet(dispatch, token, '/get-all-invoice-item-by-invoice-id/' + invoiceId),
+    let [invoice, invoiceItemDataTable, paymentApplicationDataTable] =
+      await Promise.all([
+        authGet(dispatch, token, '/get-invoice-by-id/' + invoiceId),
+        authGet(dispatch, token, '/get-all-invoice-item-by-invoice-id/' + invoiceId),
         authGet(dispatch, token, '/get-all-payment-by-invoice-id/' + invoiceId)])
 
+    setInvoice(invoice);
+    setInvoiceItemInfos([{title: 'Mã hóa đơn', content: invoiceId}, {
+      title: 'Ngày hóa đơn',
+      content: invoice['invoiceDate']
+    }]);
+
     setInvoiceItemDataTable(invoiceItemDataTable);
-    invoiceItemInfos.push({title: 'Ngày hóa đơn', content: invoiceItemDataTable['invoiceDate']})
 
     setPaymentApplicationDataTable(paymentApplicationDataTable);
   }
