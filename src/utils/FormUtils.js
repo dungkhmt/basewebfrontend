@@ -15,10 +15,20 @@ export const notNegativeFilterOnChange = (newValue, setValue) => {
   }
 };
 
-export function select(label, list, id, name, value, onChange) {
+export function selectValueCallback(label, list, menuItemValueCallback, selected, setSelected) {
   return <div>
     <InputLabel>{label}</InputLabel>
-    <Select value={value} onChange={event => onChange(event.target.value)}>
+    <Select value={selected} onChange={event => setSelected(event.target.value)}>
+      {list.map(e => (<MenuItem value={e}>{menuItemValueCallback(e)}</MenuItem>))}
+    </Select>
+    <p/>
+  </div>;
+}
+
+export function selectValueByIdName(label, list, id, name, selected, setSelected) {
+  return <div>
+    <InputLabel>{label}</InputLabel>
+    <Select value={selected} onChange={event => setSelected(event.target.value)}>
       {list.map(e => (<MenuItem value={e}>{e[name] + ' (' + e[id] + ')'}</MenuItem>))}
     </Select>
     <p/>

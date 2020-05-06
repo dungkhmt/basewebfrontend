@@ -55,7 +55,7 @@ export function InvoiceDetail() {
   const paymentApplicationColumns = [
     {'title': 'Mã thanh toán', field: 'paymentId'},
     {'title': 'Ngày thanh toán', field: 'effectiveDate'},
-    {'title': 'Thành tiền', field: 'amountApplied'},
+    {'title': 'Thành tiền', field: 'appliedAmount'},
   ];
 
   const [invoiceItemInfos, setInvoiceItemInfos] = useState([
@@ -143,6 +143,7 @@ export function Payment() {
 export function PaymentApplication() {
   const dispatch = useDispatch();
   const token = useSelector(state => state.auth.token);
+  const history = useHistory();
 
   const {paymentId} = useParams();
 

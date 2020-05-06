@@ -8,7 +8,7 @@ import CardActions from "@material-ui/core/CardActions";
 import Button from "@material-ui/core/Button";
 import CloudUploadIcon from "@material-ui/icons/CloudUpload";
 import {MuiPickersUtilsProvider} from "@material-ui/pickers";
-import {notNegativeIntFilterOnChange, select, textField} from "../../utils/FormUtils";
+import {notNegativeIntFilterOnChange, selectValueByIdName, textField} from "../../utils/FormUtils";
 import {authPost} from "../../api";
 
 export function PaymentCreate() {
@@ -45,7 +45,7 @@ export function PaymentCreate() {
           </Typography>
           <p/>
 
-          {select('distributor',
+          {selectValueByIdName('distributor',
             distributorList,
             'distributorCode',
             'distributorName',
