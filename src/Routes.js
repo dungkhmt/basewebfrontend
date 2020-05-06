@@ -112,6 +112,7 @@ import CreateRequestTransportFullExport
 import ListRequestTransportFullExport from "./component/tmscontainer/requestexportfull/ListRequestTransportFullExport";
 import RetailOutletDetail from "./component/retailoutlet/RetailOutletDetail";
 import {Invoice, InvoiceDetail, Payment, PaymentApplication} from "./component/accounting/InvoiceDataTable";
+import {PaymentCreate} from "./component/accounting/PaymentCreate";
 
 
 function Routes(props) {// props nay tu parent transfer vao
@@ -639,6 +640,13 @@ function Routes(props) {// props nay tu parent transfer vao
         layout={Layout}
         isAuthenticated={props.isAuthenticated}
         path="/customer-payment/list"
+      />
+
+      <PrivateRouteWithLayout
+        component={PaymentCreate}
+        layout={Layout}
+        isAuthenticated={props.isAuthenticated}
+        path="/create-payment"
       />
 
       <PrivateRouteWithLayout

@@ -1,22 +1,16 @@
-import {
-  Button,
-  Dialog,
-  DialogActions,
-  DialogTitle,
-  IconButton,
-  CircularProgress
-} from "@material-ui/core";
+import {Button, CircularProgress, Dialog, DialogActions, DialogTitle, IconButton} from "@material-ui/core";
 import Card from "@material-ui/core/Card";
 import CardContent from "@material-ui/core/CardContent";
-import { makeStyles } from "@material-ui/core/styles";
+import {makeStyles} from "@material-ui/core/styles";
 import TextField from "@material-ui/core/TextField";
 import Typography from "@material-ui/core/Typography";
 import DeleteIcon from "@material-ui/icons/Delete";
 import EditIcon from "@material-ui/icons/Edit";
-import React, { useEffect, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { useParams, useHistory } from "react-router-dom";
-import { authGet, authDelete } from "../../api";
+import React, {useEffect, useState} from "react";
+import {useDispatch, useSelector} from "react-redux";
+import {useHistory, useParams} from "react-router-dom";
+import {authDelete, authGet} from "../../api";
+
 const useStyles = makeStyles(theme => ({
   root: {
     padding: theme.spacing(4),
@@ -180,7 +174,7 @@ function UserDetail(props) {
                 InputProps={{
                   readOnly: true
                 }}
-              />re
+              />
               <TextField
                 id="userLoginId"
                 label="UserName"

@@ -1,5 +1,4 @@
 import React, {useEffect, useState} from "react";
-import TextField from "@material-ui/core/TextField";
 import {useDispatch, useSelector} from "react-redux";
 import {useHistory} from "react-router-dom";
 import DateFnsUtils from "@date-io/date-fns";
@@ -11,6 +10,7 @@ import Button from "@material-ui/core/Button";
 import CloudUploadIcon from "@material-ui/icons/CloudUpload";
 import {MuiPickersUtilsProvider} from "@material-ui/pickers";
 import {authGet, authPost} from "../../../api";
+import {notNegativeFilterOnChange, notNegativeIntFilterOnChange, textField} from "../../../utils/FormUtils";
 
 export default function SolverConfigParam() {
   const token = useSelector(state => state.auth.token);
@@ -26,18 +26,6 @@ export default function SolverConfigParam() {
   const [manualUnloadTime, setManualUnloadTime] = useState(0);
   const [palletUnloadTime, setPalletUnloadTime] = useState(0);
 
-  function textField(id, label, type, value, onChange, readOnly) {
-    return <div>
-      <TextField id={id}
-                 label={label}
-                 type={type}
-                 fullWidth={true}
-                 value={value}
-                 onChange={event => onChange(event.target.value)}
-                 InputProps={{readOnly: readOnly}}/>
-      <p/>
-    </div>;
-  }
 
   async function getData() {
     let solverConfigParam = await authGet(dispatch, token, '/get-solver-config-param');
@@ -74,16 +62,6 @@ export default function SolverConfigParam() {
     window.location.reload();
   }
 
-  const notNegativeIntFilterOnChange = (newValue, setValue) => {
-    newValue = parseInt(newValue);
-    notNegativeFilterOnChange(newValue, setValue);
-  };
-
-  const notNegativeFilterOnChange = (newValue, setValue) => {
-    if (newValue >= 0) {
-      setValue(newValue);
-    }
-  };
 
   return <div>
     <MuiPickersUtilsProvider utils={DateFnsUtils}>

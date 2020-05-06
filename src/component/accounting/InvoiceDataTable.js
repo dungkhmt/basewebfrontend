@@ -3,7 +3,8 @@ import {useDispatch, useSelector} from "react-redux";
 import Grid from "@material-ui/core/Grid";
 import MaterialTable from "material-table";
 import {authGet} from "../../api";
-import {Link, useParams} from "react-router-dom";
+import {Link, useHistory, useParams} from "react-router-dom";
+import Button from "@material-ui/core/Button";
 
 export function Invoice() {
   const dispatch = useDispatch();
@@ -106,6 +107,7 @@ export function InvoiceDetail() {
 export function Payment() {
   const dispatch = useDispatch();
   const token = useSelector(state => state.auth.token);
+  const history = useHistory();
 
   const columns = [
     {
@@ -129,6 +131,7 @@ export function Payment() {
   }, []);
 
   return <div>
+    <Button color="primary" variant="contained" onClick={() => history.push('/create-payment')}>Thêm mới</Button>
     <InvoiceDataTable
       title={'Danh sách thanh toán'}
       columns={columns}
@@ -175,8 +178,11 @@ export function PaymentApplication() {
   }, []);
 
   return <div>
+    <Button color="primary" variant="contained" onClick={() => history.push('/create-payment-application')}>
+      Thêm mới</Button>
     <InvoiceDataTable
       title={'Chi tiết thanh toán'}
+      tableTitle={'Danh sách khớp lệnh thanh toán'}
       columns={columns}
       dataTable={paymentApplications}
       infos={infos}
@@ -203,3 +209,4 @@ function InvoiceDataTable(props) {
     <MaterialTable columns={columns} data={dataTable} title={tableTitle} options={{search: false}}/>
   </div>;
 }
+

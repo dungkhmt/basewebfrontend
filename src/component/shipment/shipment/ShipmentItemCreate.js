@@ -1,5 +1,4 @@
 import React, {useEffect, useState} from "react";
-import TextField from "@material-ui/core/TextField";
 import DateFnsUtils from "@date-io/date-fns";
 import {MuiPickersUtilsProvider} from "@material-ui/pickers";
 import CardActions from "@material-ui/core/CardActions";
@@ -12,9 +11,7 @@ import Typography from "@material-ui/core/Typography";
 import {useHistory} from "react-router-dom";
 import CloudUploadIcon from "@material-ui/icons/CloudUpload";
 import {authPost} from "../../../api";
-import InputLabel from "@material-ui/core/InputLabel";
-import {Select} from "@material-ui/core";
-import MenuItem from "@material-ui/core/MenuItem";
+import {select, textField} from "../../../utils/FormUtils";
 
 
 const useStyles = makeStyles(theme => ({
@@ -126,29 +123,6 @@ export default function ShipmentItemCreate() {
   }, []);
 
   const classes = useStyles();
-
-  function textField(id, label, type, value, onChange, readOnly) {
-    return <div>
-      <TextField id={id}
-                 label={label}
-                 type={type}
-                 fullWidth={true}
-                 value={value}
-                 onChange={event => onChange(event.target.value)}
-                 InputProps={{readOnly: readOnly}}/>
-      <p/>
-    </div>;
-  }
-
-  function select(label, list, id, name, value, onChange) {
-    return <div>
-      <InputLabel>{label}</InputLabel>
-      <Select value={value} onChange={event => onChange(event.target.value)}>
-        {list.map(e => (<MenuItem value={e}>{e[name] + ' (' + e[id] + ')'}</MenuItem>))}
-      </Select>
-      <p/>
-    </div>;
-  }
 
   return <div>
     <MuiPickersUtilsProvider utils={DateFnsUtils}>
