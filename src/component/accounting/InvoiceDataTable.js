@@ -150,18 +150,24 @@ export function PaymentApplication() {
     {'title': 'Số tiền khớp lệnh', field: 'amount'},
   ];
 
-  const infos = [
+  const [infos, setInfos] = useState([
     {title: 'Mã thanh toán', content: paymentId},
-  ];
+  ]);
 
-  const [dataTable, setDataTable] = useState([]);
+  const [payment, setPayment] = useState([]);
+  const [paymentApplications, setPaymentApplications] = useState([]);
 
   async function getDataTable() {
-    let response = await authGet(dispatch, token, '/get-payment-detail-by-payment-id/' + paymentId);
-    setDataTable(response);
+    let [payment, paymentApplications] = await Promise.all([
+      authGet(dispatch, token, '/get-payment-by-id/' + paymentId),
+      authGet(dispatch, token, '/get-payment-detail-by-payment-id/' + paymentId)]);
 
-    infos.push({title: 'Khách hàng', content: dataTable['payment']['fromCustomerId']},
-      {title: 'Ngày thanh toán', content: dataTable['payment']['effectiveDate']});
+    setPayment(payment);
+    setPaymentApplications(paymentApplications);
+
+    setInfos([{title: 'Mã thanh toán', content: paymentId},
+      {title: 'Khách hàng', content: payment['fromCustomerId']},
+      {title: 'Ngày thanh toán', content: payment['effectiveDate']}])
   }
 
   useEffect(() => {
@@ -172,7 +178,7 @@ export function PaymentApplication() {
     <InvoiceDataTable
       title={'Chi tiết thanh toán'}
       columns={columns}
-      dataTable={dataTable}
+      dataTable={paymentApplications}
       infos={infos}
     />
   </div>;
