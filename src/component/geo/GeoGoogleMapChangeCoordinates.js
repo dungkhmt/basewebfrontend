@@ -195,7 +195,7 @@ function GeoGoogleMapChangeCoordinates(props) {
                 <Grid item xs={5}>
 
 
-                    <Typography variant="h2" component="h2" >
+                    <Typography variant="h5" component="h2" >
                         Chỉnh sửa vị trí
                     </Typography>
 

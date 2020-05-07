@@ -1,8 +1,8 @@
 import React from "react";
-import {Route, Switch} from "react-router-dom";
+import { Route, Switch } from "react-router-dom";
 
-import {Layout} from "./layout";
-import {Home, PrivateRouteWithLayout} from "./component";
+import { Layout } from "./layout";
+import { Home, PrivateRouteWithLayout } from "./component";
 import OrderCreate from "./component/order/OrderCreate";
 import SignInContainer from "./container/SignInContainer";
 //import ListTrackLocations from "./component/tracklocations/listtracklocations";
@@ -22,10 +22,8 @@ import DeliveryTripList from "./component/shipment/deliveryplan/deliverytrip/Del
 import ShipmentItemList from "./component/shipment/shipment/ShipmentItemList";
 import VehicleList from "./component/shipment/vehicle/VehicleList";
 import DeliveryTripCreate from "./component/shipment/deliveryplan/deliverytrip/DeliveryTripCreate";
-import DeliveryTripDetailList
-  from "./component/shipment/deliveryplan/deliverytrip/deliverytripdetail/DeliveryTripDetailList";
-import DeliveryTripDetailCreate
-  from "./component/shipment/deliveryplan/deliverytrip/deliverytripdetail/DeliveryTripDetailCreate";
+import DeliveryTripDetailList from "./component/shipment/deliveryplan/deliverytrip/deliverytripdetail/DeliveryTripDetailList";
+import DeliveryTripDetailCreate from "./component/shipment/deliveryplan/deliverytrip/deliverytripdetail/DeliveryTripDetailCreate";
 import ShipmentItemDeliveryPlanList from "./component/shipment/deliveryplan/shipmentitem/ShipmentItemDeliveryPlanList";
 import VehicleDeliveryPlanList from "./component/shipment/deliveryplan/vehicle/VehicleDeliveryPlanList";
 import ShipmentItemCreate from "./component/shipment/shipment/ShipmentItemCreate";
@@ -57,7 +55,10 @@ import InventoryOrderList from "./component/inventory/InventoryOrderList";
 import InventoryOrderDetail from "./component/inventory/InventoryOrderDetail";
 import InventoryOrderExport from "./component/inventory/InventoryOrderExport";
 import InventoryList from "./component/inventory/InventoryList";
-import {SaleReportByPartyCustomer, SaleReportByProduct} from "./component/report/SaleReport";
+import {
+  SaleReportByPartyCustomer,
+  SaleReportByProduct,
+} from "./component/report/SaleReport";
 import SaleReportByDate from "./component/reportsales/SalesReportByDate";
 
 import InventoryOrderExportList from "./component/inventory/InventoryOrderExportList";
@@ -82,41 +83,40 @@ import TrailerList from "./component/tmscontainer/trailer/TrailerList";
 import PortCreate from "./component/tmscontainer/port/PortCreate";
 import PortList from "./component/tmscontainer/port/PortList";
 import PortGoogleMap from "./component/tmscontainer/port/PortGoogleMap";
-import ShipmentItemDeliveryTripDetailList
-  from "./component/shipment/deliveryplan/shipmentitem/ShipmentItemDeliveryTripDetailList";
+import ShipmentItemDeliveryTripDetailList from "./component/shipment/deliveryplan/shipmentitem/ShipmentItemDeliveryTripDetailList";
 import NotScheduledShipmentItem from "./component/shipment/deliveryplan/deliverytrip/NotScheduledShipmentItem";
 import ProductDetail from "./component/product/detailproduct";
 import {
   TransportReportByDriver,
   TransportReportByFacility,
-  TransportReportByPartyCustomer
+  TransportReportByPartyCustomer,
 } from "./component/report/TransportReport";
 import SolverConfigParam from "./component/shipment/solver/SolverConfigParam";
-import CreateRequestTransportContainerToWarehouse
-  from "./component/tmscontainer/requestimportfull/CreateRequestTransportContainerToWarehouse";
-import ListRequestTransportContainerToWareHouse
-  from "./component/tmscontainer/requestimportfull/ListRequestTransportContainerToWareHouse";
+import CreateRequestTransportContainerToWarehouse from "./component/tmscontainer/requestimportfull/CreateRequestTransportContainerToWarehouse";
+import ListRequestTransportContainerToWareHouse from "./component/tmscontainer/requestimportfull/ListRequestTransportContainerToWareHouse";
 import VehicleDetail from "./component/shipment/vehicle/VehicleDetail";
 import VehicleNotInDeliveryTrips from "./component/shipment/deliveryplan/vehicle/VehicleNotInDeliveryTrips";
 import DriverDetail from "./component/shipment/driver/DriverDetail";
-import CreateRequestTransportContainerEmpty
-  from "./component/tmscontainer/requestimportempty/CreateRequestTransportContainerEmpty";
-import ListRequestTransportContainerEmpty
-  from "./component/tmscontainer/requestimportempty/ListRequestTransportContainerEmpty";
-import ListRequestTransportContainerEmptyExport
-  from "./component/tmscontainer/requestexportempty/ListRequestTransportContainerEmptyExport";
-import CreateRequestTransportContainerEmptyExport
-  from "./component/tmscontainer/requestexportempty/CreateRequestTransportContainerEmptyExport";
-import CreateRequestTransportFullExport
-  from "./component/tmscontainer/requestexportfull/CreateRequestTransportFullExport";
+import CreateRequestTransportContainerEmpty from "./component/tmscontainer/requestimportempty/CreateRequestTransportContainerEmpty";
+import ListRequestTransportContainerEmpty from "./component/tmscontainer/requestimportempty/ListRequestTransportContainerEmpty";
+import ListRequestTransportContainerEmptyExport from "./component/tmscontainer/requestexportempty/ListRequestTransportContainerEmptyExport";
+import CreateRequestTransportContainerEmptyExport from "./component/tmscontainer/requestexportempty/CreateRequestTransportContainerEmptyExport";
+import CreateRequestTransportFullExport from "./component/tmscontainer/requestexportfull/CreateRequestTransportFullExport";
 import ListRequestTransportFullExport from "./component/tmscontainer/requestexportfull/ListRequestTransportFullExport";
 import RetailOutletDetail from "./component/retailoutlet/RetailOutletDetail";
-import {Invoice, InvoiceDetail, Payment, PaymentApplication} from "./component/accounting/InvoiceDataTable";
-import {PaymentCreate} from "./component/accounting/PaymentCreate";
+import {
+  Invoice,
+  InvoiceDetail,
+  Payment,
+  PaymentApplication,
+} from "./component/accounting/InvoiceDataTable";
+import { PaymentCreate } from "./component/accounting/PaymentCreate";
 import PaymentApplicationCreate from "./component/accounting/PaymentApplicationCreate";
+import PostOfficeList from './component/postsystem/postoffice/PostOfficeList'
+import CreatePostOffice from './component/postsystem/postoffice/CreatePostOffice'
 
-
-function Routes(props) {// props nay tu parent transfer vao
+function Routes(props) {
+  // props nay tu parent transfer vao
   return (
     <Switch>
       <PrivateRouteWithLayout
@@ -128,275 +128,291 @@ function Routes(props) {// props nay tu parent transfer vao
       />
 
       <PrivateRouteWithLayout
-        component={ListDepartment}  //props
-        layout={Layout}          //props
+        component={ListDepartment} //props
+        layout={Layout} //props
         isAuthenticated={props.isAuthenticated} // props
         //isAuthenticated={true}
         //exact                                   // props
-        path="/departments/list"                    // props
-      />
-
-
-      <PrivateRouteWithLayout
-        component={UserCreate}  //props
-        layout={Layout}          //props
-        isAuthenticated={props.isAuthenticated} // props
-        //isAuthenticated={true}
-        //exact                                   // props
-        path="/userlogin/create"                    // props
-      />
-      <PrivateRouteWithLayout
-        component={UserList}  //props
-        layout={Layout}          //props
-        isAuthenticated={props.isAuthenticated} // props
-        //isAuthenticated={true}
-        //exact                                   // props
-        path="/userlogin/list"                    // props
+        path="/departments/list" // props
       />
 
       <PrivateRouteWithLayout
-        component={EditUser}  //props
-        layout={Layout}          //props
+        component={UserCreate} //props
+        layout={Layout} //props
         isAuthenticated={props.isAuthenticated} // props
         //isAuthenticated={true}
         //exact                                   // props
-        path="/userlogin/:partyId/edit"                    // props
+        path="/userlogin/create" // props
       />
       <PrivateRouteWithLayout
-        component={DetailUserLogin}  //props
-        layout={Layout}          //props
+        component={UserList} //props
+        layout={Layout} //props
         isAuthenticated={props.isAuthenticated} // props
         //isAuthenticated={true}
         //exact                                   // props
-        path="/userlogin/:partyId"                    // props
+        path="/userlogin/list" // props
       />
 
       <PrivateRouteWithLayout
-        component={OrderCreate}  //props
-        layout={Layout}          //props
+        component={EditUser} //props
+        layout={Layout} //props
+        isAuthenticated={props.isAuthenticated} // props
+        //isAuthenticated={true}
+        //exact                                   // props
+        path="/userlogin/:partyId/edit" // props
+      />
+      <PrivateRouteWithLayout
+        component={DetailUserLogin} //props
+        layout={Layout} //props
+        isAuthenticated={props.isAuthenticated} // props
+        //isAuthenticated={true}
+        //exact                                   // props
+        path="/userlogin/:partyId" // props
+      />
+
+      <PrivateRouteWithLayout
+        component={OrderCreate} //props
+        layout={Layout} //props
         isAuthenticated={props.isAuthenticated} // props
         //exact                                   // props
-        path="/orders/create"                    // props
+        path="/orders/create" // props
       />
 
       <PrivateRouteWithLayout
         component={OrderList}
-        layout={Layout}          //props
+        layout={Layout} //props
         isAuthenticated={props.isAuthenticated} // props
         //exact                                   // props
-        path="/orders/list"                    // props
+        path="/orders/list" // props
       />
       <PrivateRouteWithLayout
-        component={DetailOrder}  //props
-        layout={Layout}          //props
+        component={DetailOrder} //props
+        layout={Layout} //props
         isAuthenticated={props.isAuthenticated} // props
         //isAuthenticated={true}
         //exact                                   // props
-        path="/orders/:orderId"                    // props
+        path="/orders/:orderId" // props
       />
       <PrivateRouteWithLayout
         //component={ListTrackLocations}  //props
         component={TrackLocationList}
-        layout={Layout}          //props
+        layout={Layout} //props
         isAuthenticated={props.isAuthenticated} // props
         //exact                                   // props
-        path="/tracklocations/list"                    // props
+        path="/tracklocations/list" // props
       />
       <PrivateRouteWithLayout
-        component={GMapContainer}  //props
-        layout={Layout}          //props
+        component={GMapContainer} //props
+        layout={Layout} //props
         isAuthenticated={props.isAuthenticated} // props
         //exact                                   // props
-        path="/tracklocations/gismap"                    // props
+        path="/tracklocations/gismap" // props
       />
 
       <PrivateRouteWithLayout
-        component={DeliveryPlanCreate}  //props
-        layout={Layout}          //props
-        isAuthenticated={props.isAuthenticated} // props
-        //isAuthenticated={true}
-        //exact                                   // props
-        path="/delivery-plan/create"                    // props
-      />
-      <PrivateRouteWithLayout
-        component={DeliveryPlanList}  //props
-        layout={Layout}          //props
+        component={DeliveryPlanCreate} //props
+        layout={Layout} //props
         isAuthenticated={props.isAuthenticated} // props
         //isAuthenticated={true}
         //exact                                   // props
-        path="/delivery-plan-list"                    // props
+        path="/delivery-plan/create" // props
       />
-
       <PrivateRouteWithLayout
-        component={DeliveryTripList}  //props
-        layout={Layout}          //props
+        component={DeliveryPlanList} //props
+        layout={Layout} //props
         isAuthenticated={props.isAuthenticated} // props
         //isAuthenticated={true}
         //exact                                   // props
-        path="/delivery-plan/:deliveryPlanId"                    // props
+        path="/delivery-plan-list" // props
       />
 
       <PrivateRouteWithLayout
-        component={DeliveryTripDetailList}  //props
-        layout={Layout}          //props
+        component={DeliveryTripList} //props
+        layout={Layout} //props
         isAuthenticated={props.isAuthenticated} // props
         //isAuthenticated={true}
         //exact                                   // props
-        path="/delivery-trip/:deliveryTripId"                    // props
+        path="/delivery-plan/:deliveryPlanId" // props
       />
 
       <PrivateRouteWithLayout
-        component={DeliveryTripDetailCreate}  //props
-        layout={Layout}          //props
+        component={DeliveryTripDetailList} //props
+        layout={Layout} //props
         isAuthenticated={props.isAuthenticated} // props
         //isAuthenticated={true}
         //exact                                   // props
-        path="/create-delivery-trip-detail/:deliveryTripId"                    // props
+        path="/delivery-trip/:deliveryTripId" // props
       />
 
       <PrivateRouteWithLayout
-        component={ShipmentItemDeliveryPlanList}  //props
-        layout={Layout}          //props
+        component={DeliveryTripDetailCreate} //props
+        layout={Layout} //props
         isAuthenticated={props.isAuthenticated} // props
         //isAuthenticated={true}
         //exact                                   // props
-        path="/shipment-item-delivery-plan/:deliveryPlanId/list"                    // props
+        path="/create-delivery-trip-detail/:deliveryTripId" // props
       />
 
       <PrivateRouteWithLayout
-        component={ShipmentItemDeliveryPlanAdd}  //props
-        layout={Layout}          //props
+        component={ShipmentItemDeliveryPlanList} //props
+        layout={Layout} //props
         isAuthenticated={props.isAuthenticated} // props
         //isAuthenticated={true}
         //exact                                   // props
-        path="/shipment-item-delivery-plan/:deliveryPlanId/add"                    // props
+        path="/shipment-item-delivery-plan/:deliveryPlanId/list" // props
       />
 
       <PrivateRouteWithLayout
-        component={ShipmentItemList}  //props
-        layout={Layout}          //props
+        component={ShipmentItemDeliveryPlanAdd} //props
+        layout={Layout} //props
         isAuthenticated={props.isAuthenticated} // props
         //isAuthenticated={true}
-        exact                                   // props
-        path="/shipment"                    // props
+        //exact                                   // props
+        path="/shipment-item-delivery-plan/:deliveryPlanId/add" // props
       />
 
       <PrivateRouteWithLayout
-        component={VehicleList}  //props
-        layout={Layout}          //props
+        component={ShipmentItemList} //props
+        layout={Layout} //props
         isAuthenticated={props.isAuthenticated} // props
         //isAuthenticated={true}
-        exact                                   // props
-        path="/vehicle"                    // props
+        exact // props
+        path="/shipment" // props
       />
 
       <PrivateRouteWithLayout
-        component={ShipmentItemCreate}  //props
-        layout={Layout}          //props
+        component={VehicleList} //props
+        layout={Layout} //props
         isAuthenticated={props.isAuthenticated} // props
         //isAuthenticated={true}
-        exact                                   // props
-        path="/create-shipment-item"                    // props
+        exact // props
+        path="/vehicle" // props
       />
 
       <PrivateRouteWithLayout
-        component={ShipmentItemDeliveryTripDetailList}  //props
-        layout={Layout}          //props
+        component={PostOfficeList} //props
+        layout={Layout} //props
         isAuthenticated={props.isAuthenticated} // props
         //isAuthenticated={true}
-        // exact                                   // props
-        path="/shipment-item-info/:shipmentItemId"                    // props
+        exact // props
+        path="/postoffice/list"
       />
 
       <PrivateRouteWithLayout
-        component={NotScheduledShipmentItem}  //props
-        layout={Layout}          //props
+        component={CreatePostOffice} //props
+        layout={Layout} //props
         isAuthenticated={props.isAuthenticated} // props
         //isAuthenticated={true}
-        // exact                                   // props
-        path="/not-scheduled-shipment-items/:deliveryPlanId"                    // props
+        exact // props
+        path="/postoffice/create"
       />
 
       <PrivateRouteWithLayout
-        component={VehicleDeliveryPlanList}  //props
-        layout={Layout}          //props
+        component={ShipmentItemCreate} //props
+        layout={Layout} //props
         isAuthenticated={props.isAuthenticated} // props
         //isAuthenticated={true}
-        // exact                                   // props
-        path="/vehicle-delivery-plan/:deliveryPlanId/list"                    // props
+        exact // props
+        path="/create-shipment-item" // props
       />
 
       <PrivateRouteWithLayout
-        component={VehicleDeliveryPlanAdd}  //props
-        layout={Layout}          //props
-        isAuthenticated={props.isAuthenticated} // props
-        //isAuthenticated={true}
-        // exact                                   // props
-        path="/vehicle-delivery-plan/:deliveryPlanId/add"                    // props
-      />
-
-      <PrivateRouteWithLayout
-        component={DeliveryTripCreate}  //props
-        layout={Layout}          //props
+        component={ShipmentItemDeliveryTripDetailList} //props
+        layout={Layout} //props
         isAuthenticated={props.isAuthenticated} // props
         //isAuthenticated={true}
         // exact                                   // props
-        path="/create-delivery-trip/:deliveryPlanId"                    // props
-      />
-      <PrivateRouteWithLayout
-        component={SalesmanCheckinRoutesHistory}  //props
-        layout={Layout}          //props
-        isAuthenticated={props.isAuthenticated} // props
-        //isAuthenticated={true}
-        // exact                                   // props
-        path="/salesroutes/salesman-checkin-routes"                    // props
+        path="/shipment-item-info/:shipmentItemId" // props
       />
 
       <PrivateRouteWithLayout
-        component={DeliveryTripChart}  //props
-        layout={Layout}          //props
+        component={NotScheduledShipmentItem} //props
+        layout={Layout} //props
         isAuthenticated={props.isAuthenticated} // props
         //isAuthenticated={true}
         // exact                                   // props
-        path="/delivery-trip-chart/:deliveryPlanId"                    // props
+        path="/not-scheduled-shipment-items/:deliveryPlanId" // props
       />
 
       <PrivateRouteWithLayout
-        component={SolverConfigParam}  //props
-        layout={Layout}          //props
+        component={VehicleDeliveryPlanList} //props
+        layout={Layout} //props
         isAuthenticated={props.isAuthenticated} // props
         //isAuthenticated={true}
         // exact                                   // props
-        path="/solver-config-param"                    // props
+        path="/vehicle-delivery-plan/:deliveryPlanId/list" // props
       />
 
       <PrivateRouteWithLayout
-        component={VehicleDetail}  //props
-        layout={Layout}          //props
+        component={VehicleDeliveryPlanAdd} //props
+        layout={Layout} //props
         isAuthenticated={props.isAuthenticated} // props
         //isAuthenticated={true}
         // exact                                   // props
-        path="/vehicle-detail/:vehicleId"                    // props
+        path="/vehicle-delivery-plan/:deliveryPlanId/add" // props
       />
 
       <PrivateRouteWithLayout
-        component={DriverDetail}  //props
-        layout={Layout}          //props
+        component={DeliveryTripCreate} //props
+        layout={Layout} //props
         isAuthenticated={props.isAuthenticated} // props
         //isAuthenticated={true}
         // exact                                   // props
-        path="/driver-detail/:driverId"                    // props
+        path="/create-delivery-trip/:deliveryPlanId" // props
+      />
+      <PrivateRouteWithLayout
+        component={SalesmanCheckinRoutesHistory} //props
+        layout={Layout} //props
+        isAuthenticated={props.isAuthenticated} // props
+        //isAuthenticated={true}
+        // exact                                   // props
+        path="/salesroutes/salesman-checkin-routes" // props
       />
 
       <PrivateRouteWithLayout
-        component={VehicleNotInDeliveryTrips}  //props
-        layout={Layout}          //props
+        component={DeliveryTripChart} //props
+        layout={Layout} //props
         isAuthenticated={props.isAuthenticated} // props
         //isAuthenticated={true}
         // exact                                   // props
-        path="/vehicle-not-in-delivery-trips/:deliveryPlanId"                    // props
+        path="/delivery-trip-chart/:deliveryPlanId" // props
       />
 
+      <PrivateRouteWithLayout
+        component={SolverConfigParam} //props
+        layout={Layout} //props
+        isAuthenticated={props.isAuthenticated} // props
+        //isAuthenticated={true}
+        // exact                                   // props
+        path="/solver-config-param" // props
+      />
+
+      <PrivateRouteWithLayout
+        component={VehicleDetail} //props
+        layout={Layout} //props
+        isAuthenticated={props.isAuthenticated} // props
+        //isAuthenticated={true}
+        // exact                                   // props
+        path="/vehicle-detail/:vehicleId" // props
+      />
+
+      <PrivateRouteWithLayout
+        component={DriverDetail} //props
+        layout={Layout} //props
+        isAuthenticated={props.isAuthenticated} // props
+        //isAuthenticated={true}
+        // exact                                   // props
+        path="/driver-detail/:driverId" // props
+      />
+
+      <PrivateRouteWithLayout
+        component={VehicleNotInDeliveryTrips} //props
+        layout={Layout} //props
+        isAuthenticated={props.isAuthenticated} // props
+        //isAuthenticated={true}
+        // exact                                   // props
+        path="/vehicle-not-in-delivery-trips/:deliveryPlanId" // props
+      />
 
       <PrivateRouteWithLayout
         component={ProductCreate}
@@ -411,12 +427,12 @@ function Routes(props) {// props nay tu parent transfer vao
         path="/products/list"
       />
       <PrivateRouteWithLayout
-        component={ProductDetail}  //props
-        layout={Layout}          //props
+        component={ProductDetail} //props
+        layout={Layout} //props
         isAuthenticated={props.isAuthenticated} // props
         //isAuthenticated={true}
         //exact                                   // props
-        path="/product/:productId"                    // props
+        path="/product/:productId" // props
       />
 
       <PrivateRouteWithLayout
@@ -445,12 +461,12 @@ function Routes(props) {// props nay tu parent transfer vao
         path="/distributor/list"
       />
       <PrivateRouteWithLayout
-        component={DistributorDetail}  //props
-        layout={Layout}          //props
+        component={DistributorDetail} //props
+        layout={Layout} //props
         isAuthenticated={props.isAuthenticated} // props
         //isAuthenticated={true}
         //exact                                   // props
-        path="/distributor/:partyId"                    // props
+        path="/distributor/:partyId" // props
       />
       <PrivateRouteWithLayout
         component={RetailOutletCreate}
@@ -500,7 +516,6 @@ function Routes(props) {// props nay tu parent transfer vao
         path="/salesman/assign-salesman-2-retail-outlet"
       />
 
-
       <PrivateRouteWithLayout
         component={DriverList}
         layout={Layout}
@@ -529,22 +544,21 @@ function Routes(props) {// props nay tu parent transfer vao
       />
 
       <PrivateRouteWithLayout
-        component={DetailSalesman}  //props
-        layout={Layout}          //props
+        component={DetailSalesman} //props
+        layout={Layout} //props
         isAuthenticated={props.isAuthenticated} // props
         //isAuthenticated={true}
         //exact                                   // props
-        path="/salesman/:partyId"                    // props
+        path="/salesman/:partyId" // props
       />
-
 
       <Route
         component={SignInContainer} // props
-        path="/login"               // props
+        path="/login" // props
       />
       <Route
         component={error} // props
-        path="/not-found"               // props
+        path="/not-found" // props
       />
       <PrivateRouteWithLayout
         component={InventoryOrderDetail}
@@ -707,7 +721,6 @@ function Routes(props) {// props nay tu parent transfer vao
         path="/containerfunc/list"
       />
 
-
       <PrivateRouteWithLayout
         component={DepotContainerCreate}
         layout={Layout}
@@ -728,7 +741,6 @@ function Routes(props) {// props nay tu parent transfer vao
         isAuthenticated={props.isAuthenticated}
         path="/depotcontainerfunc/googlemap"
       />
-
 
       <PrivateRouteWithLayout
         component={DepotTrailerCreate}
@@ -770,7 +782,6 @@ function Routes(props) {// props nay tu parent transfer vao
         path="/depottruckfunc/googlemap"
       />
 
-
       <PrivateRouteWithLayout
         component={TrailerCreate}
         layout={Layout}
@@ -785,7 +796,6 @@ function Routes(props) {// props nay tu parent transfer vao
         path="/trailerfunc/list"
       />
 
-
       <PrivateRouteWithLayout
         component={PortCreate}
         layout={Layout}
@@ -793,14 +803,12 @@ function Routes(props) {// props nay tu parent transfer vao
         path="/portfunc/create"
       />
 
-
       <PrivateRouteWithLayout
         component={PortList}
         layout={Layout}
         isAuthenticated={props.isAuthenticated}
         path="/portfunc/list"
       />
-
 
       <PrivateRouteWithLayout
         component={PortGoogleMap}
@@ -830,14 +838,12 @@ function Routes(props) {// props nay tu parent transfer vao
         path="/create-request-transport-container-empty"
       />
 
-
       <PrivateRouteWithLayout
         component={ListRequestTransportContainerEmpty}
         layout={Layout}
         isAuthenticated={props.isAuthenticated}
         path="/list-request-transport-container-empty"
       />
-
 
       <PrivateRouteWithLayout
         component={CreateRequestTransportContainerEmptyExport}
@@ -852,7 +858,6 @@ function Routes(props) {// props nay tu parent transfer vao
         path="/list-request-transport-container-empty-export"
       />
 
-
       <PrivateRouteWithLayout
         component={CreateRequestTransportFullExport}
         layout={Layout}
@@ -865,7 +870,6 @@ function Routes(props) {// props nay tu parent transfer vao
         isAuthenticated={props.isAuthenticated}
         path="/list-request-transport-full-export"
       />
-
 
       <PrivateRouteWithLayout
         component={SalesmanCreate}
@@ -882,14 +886,13 @@ function Routes(props) {// props nay tu parent transfer vao
       />
 
       <PrivateRouteWithLayout
-        component={DetailSalesman}  //props
-        layout={Layout}          //props
+        component={DetailSalesman} //props
+        layout={Layout} //props
         isAuthenticated={props.isAuthenticated} // props
         //isAuthenticated={true}
         //exact                                   // props
-        path="/salesman/:partyId"                    // props
+        path="/salesman/:partyId" // props
       />
-
     </Switch>
   );
 }
