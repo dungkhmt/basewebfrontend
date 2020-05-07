@@ -16,7 +16,7 @@ export function Invoice() {
       render: rowData => <Link to={'/invoice-detail/' + rowData['invoiceId']}>{rowData['invoiceId']}</Link>
     },
     {'title': 'Ngày hóa đơn', field: 'invoiceDate'},
-    {'title': 'Khách hàng', field: 'fromVendorId'},
+    {'title': 'Khách hàng', field: 'toPartyCustomerId'},
     {'title': 'Thành tiền', field: 'amount'},
   ];
 
@@ -71,7 +71,7 @@ export function InvoiceDetail() {
       await Promise.all([
         authGet(dispatch, token, '/get-invoice-by-id/' + invoiceId),
         authGet(dispatch, token, '/get-all-invoice-item-by-invoice-id/' + invoiceId),
-        authGet(dispatch, token, '/get-all-payment-by-invoice-id/' + invoiceId)])
+        authGet(dispatch, token, '/get-all-payment-application-by-invoice-id/' + invoiceId)])
 
     setInvoice(invoice);
     setInvoiceItemInfos([{title: 'Mã hóa đơn', content: invoiceId}, {
@@ -97,7 +97,7 @@ export function InvoiceDetail() {
     />
 
     <InvoiceDataTable
-      title={'Danh sách thanh toán'}
+      title={'Danh sách khớp lệnh thanh toán'}
       columns={paymentApplicationColumns}
       dataTable={paymentApplicationDataTable}
     />
@@ -150,8 +150,8 @@ export function PaymentApplication() {
   const columns = [
     {'title': 'Mã khớp lệnh thanh toán', field: 'paymentId'},
     {'title': 'Ngày khớp lệnh thanh toán', field: 'effectiveDate'},
-    {'title': 'Mã hóa đơn', field: 'fromPartyId'},
-    {'title': 'Số tiền khớp lệnh', field: 'amount'},
+    {'title': 'Mã hóa đơn', field: 'invoiceId'},
+    {'title': 'Số tiền khớp lệnh', field: 'appliedAmount'},
   ];
 
   const [infos, setInfos] = useState([
@@ -164,7 +164,7 @@ export function PaymentApplication() {
   async function getDataTable() {
     let [payment, paymentApplications] = await Promise.all([
       authGet(dispatch, token, '/get-payment-by-id/' + paymentId),
-      authGet(dispatch, token, '/get-payment-detail-by-payment-id/' + paymentId)]);
+      authGet(dispatch, token, '/get-payment-application-by-payment-id/' + paymentId)]);
 
     setPayment(payment);
     setPaymentApplications(paymentApplications);
@@ -179,7 +179,8 @@ export function PaymentApplication() {
   }, []);
 
   return <div>
-    <Button color="primary" variant="contained" onClick={() => history.push('/create-payment-application')}>
+    <Button color="primary" variant="contained"
+            onClick={() => history.push('/create-payment-application/' + paymentId)}>
       Thêm mới</Button>
     <InvoiceDataTable
       title={'Chi tiết thanh toán'}

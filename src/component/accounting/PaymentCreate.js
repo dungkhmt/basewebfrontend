@@ -24,6 +24,7 @@ export function PaymentCreate() {
   async function getDistributorList() {
     let distributorList = (await authPost(dispatch, token, '/get-list-distributor', {}).then(r => r.json()))['lists'];
     setDistributorList(distributorList);
+    setSelectedDistributor(distributorList[0]);
   }
 
   useEffect(() => {

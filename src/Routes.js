@@ -668,7 +668,7 @@ function Routes(props) {
         component={PaymentApplicationCreate}
         layout={Layout}
         isAuthenticated={props.isAuthenticated}
-        path="/create-payment-application"
+        path="/create-payment-application/:paymentId"
       />
 
       <PrivateRouteWithLayout
