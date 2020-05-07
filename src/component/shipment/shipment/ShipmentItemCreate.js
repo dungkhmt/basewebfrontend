@@ -11,7 +11,7 @@ import Typography from "@material-ui/core/Typography";
 import {useHistory} from "react-router-dom";
 import CloudUploadIcon from "@material-ui/icons/CloudUpload";
 import {authPost} from "../../../api";
-import {select, textField} from "../../../utils/FormUtils";
+import {selectValueByIdName, textField} from "../../../utils/FormUtils";
 
 
 const useStyles = makeStyles(theme => ({
@@ -147,7 +147,7 @@ export default function ShipmentItemCreate() {
             }
           })}
 
-          {select('Chọn sản phẩm',
+          {selectValueByIdName('Chọn sản phẩm',
             productList,
             'productId',
             'productName',
@@ -159,20 +159,30 @@ export default function ShipmentItemCreate() {
 
           {textField("weight", "Khối lượng (kg)", undefined, weight, undefined, true)}
 
-          {select('Chọn đơn vị sản phẩm', uomList, 'uomId', 'uomId', selectedUom, setSelectedUom)}
+          {selectValueByIdName('Chọn đơn vị sản phẩm', uomList, 'uomId', 'uomId', selectedUom, setSelectedUom)}
 
 
-          {select('Chọn khách hàng', customerList, 'partyId', 'customerName', selectedCustomer, newCustomer => {
-            setSelectedCustomer(newCustomer);
-            let location = newCustomer['postalAddress'][0];
-            setLocationCode(location['locationCode']);
-            setAddress(location['address']);
-          })}
+          {selectValueByIdName('Chọn khách hàng',
+            customerList,
+            'partyId',
+            'customerName',
+            selectedCustomer,
+            newCustomer => {
+              setSelectedCustomer(newCustomer);
+              let location = newCustomer['postalAddress'][0];
+              setLocationCode(location['locationCode']);
+              setAddress(location['address']);
+            })}
 
           {textField("locationCode", "Mã địa điểm", undefined, locationCode, undefined, true)}
           {textField("address", "Địa chỉ", undefined, address, undefined, true)}
 
-          {select('Chọn kho', facilityList, 'facilityId', 'facilityName', selectedFacility, setSelectedFacility)}
+          {selectValueByIdName('Chọn kho',
+            facilityList,
+            'facilityId',
+            'facilityName',
+            selectedFacility,
+            setSelectedFacility)}
 
         </CardContent>
         <CardActions>

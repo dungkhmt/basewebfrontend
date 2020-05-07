@@ -10,17 +10,19 @@ import CloudUploadIcon from "@material-ui/icons/CloudUpload";
 import {MuiPickersUtilsProvider} from "@material-ui/pickers";
 import {notNegativeIntFilterOnChange, selectValueByIdName, textField} from "../../utils/FormUtils";
 import {authPost} from "../../api";
+import {useHistory} from "react-router";
 
 export function PaymentCreate() {
   const dispatch = useDispatch();
   const token = useSelector(state => state.auth.token);
+  const history = useHistory();
 
   const [selectedDistributor, setSelectedDistributor] = useState({});
   const [distributorList, setDistributorList] = useState([]);
   const [amount, setAmount] = useState(1);
 
   async function getDistributorList() {
-    let distributorList = (await authPost(dispatch, token, '/get-list-distributor', {}).then(r => r))['lists'];
+    let distributorList = (await authPost(dispatch, token, '/get-list-distributor', {}).then(r => r.json()))['lists'];
     setDistributorList(distributorList);
   }
 
@@ -30,10 +32,11 @@ export function PaymentCreate() {
 
   async function handleSubmit() {
     let body = {partyId: selectedDistributor['partyId'], amount};
-    let response = await authPost(dispatch, token, '/create-payment', body).then(r => r);
+    let response = await authPost(dispatch, token, '/create-payment', body).then(r => r.json());
     if (response && response['paymentId']) {
       alert('Tạo thành công, paymentId = ' + response['paymentId']);
     }
+    history.push('/customer-payment/list');
   }
 
   return <div>
