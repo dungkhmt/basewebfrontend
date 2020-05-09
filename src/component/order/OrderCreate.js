@@ -42,6 +42,7 @@ const MenuProps = {
     }
   }
 };
+
 function UserCreate(props) {
   const token = useSelector(state => state.auth.token);
   const dispatch = useDispatch();
@@ -76,8 +77,8 @@ function UserCreate(props) {
   const handleQuantityChange = event => {
     setQuantity(event.target.value);
   };
- 
-  
+
+
   const handleCancel = () => {
     //alert('Hủy');
   }
@@ -87,85 +88,79 @@ function UserCreate(props) {
     //setProducts(products.push({productId:product, quantity:quantity}));
     //products.push({productId:product, quantity:quantity});
     //console.log(products);
-    let newArray=[...orderItems];
-    newArray.push({"productId":product, "quantity":quantity});
+    let newArray = [...orderItems];
+    newArray.push({"productId": product['productId'], "productName": product['productName'], "quantity": quantity});
     setOrderItems(newArray);
   }
 
-  const inputProd = {"statusId":null};
+  const inputProd = {"statusId": null};
   useEffect(() => {
-    authPost(dispatch, token, "/get-list-product",inputProd )
-      .then(
-        res => {
-          console.log(res);
-          setIsRequesting(false);
-          if (res.status === 401) {
-            dispatch(failed());
-            throw Error("Unauthorized");
-          
-          } else if (res.status === 200) {
-            return res.json();
-          }
-        },
-        error => {
-          console.log(error);
+    authPost(dispatch, token, "/get-list-product", inputProd).then(
+      res => {
+        console.log(res);
+        setIsRequesting(false);
+        if (res.status === 401) {
+          dispatch(failed());
+          throw Error("Unauthorized");
+
+        } else if (res.status === 200) {
+          return res.json();
         }
-      )
-      .then(res => {
-        console.log('got products',res);
-        setProducts(res.products);
-        console.log(products); 
-      });
+      },
+      error => {
+        console.log(error);
+      }
+    ).then(res => {
+      console.log('got products', res);
+      setProducts(res.products);
+      console.log(products);
+    });
   }, []);
-  
+
   useEffect(() => {
-    authPost(dispatch, token, "/get-distributors-of-user-login", {"statusId": null})
-      .then(
-        res => {
-          console.log(res);
-          setIsRequesting(false);
-          if (res.status === 401) {
-            dispatch(failed());
-            throw Error("Unauthorized");
-          
-          } else if (res.status === 200) {
-            return res.json();
-          }
-        },
-        error => {
-          console.log(error);
+    authPost(dispatch, token, "/get-distributors-of-user-login", {"statusId": null}).then(
+      res => {
+        console.log(res);
+        setIsRequesting(false);
+        if (res.status === 401) {
+          dispatch(failed());
+          throw Error("Unauthorized");
+
+        } else if (res.status === 200) {
+          return res.json();
         }
-      )
-      .then(res => {
-        console.log('got distributors ',res);
-        setDistributors(res);
-        console.log(distributors); 
-      });
+      },
+      error => {
+        console.log(error);
+      }
+    ).then(res => {
+      console.log('got distributors ', res);
+      setDistributors(res);
+      console.log(distributors);
+    });
   }, []);
-  
+
   useEffect(() => {
-    authPost(dispatch, token, "/get-list-salesmans",{"statusId":null} )
-      .then(
-        res => {
-          console.log(res);
-          setIsRequesting(false);
-          if (res.status === 401) {
-            dispatch(failed());
-            throw Error("Unauthorized");
-          
-          } else if (res.status === 200) {
-            return res.json();
-          }
-        },
-        error => {
-          console.log(error);
+    authPost(dispatch, token, "/get-list-salesmans", {"statusId": null}).then(
+      res => {
+        console.log(res);
+        setIsRequesting(false);
+        if (res.status === 401) {
+          dispatch(failed());
+          throw Error("Unauthorized");
+
+        } else if (res.status === 200) {
+          return res.json();
         }
-      )
-      .then(res => {
-        console.log('got salesman ',res);
-        setSalesmans(res);
-        console.log(salesmans); 
-      });
+      },
+      error => {
+        console.log(error);
+      }
+    ).then(res => {
+      console.log('got salesman ', res);
+      setSalesmans(res);
+      console.log(salesmans);
+    });
   }, []);
 
   const handleSubmit = () => {
@@ -175,33 +170,30 @@ function UserCreate(props) {
       toCustomerId: customer,
       orderItems: orderItems
     };
-    console.log("submit order, data = ",data);
+    console.log("submit order, data = ", data);
 
     setIsRequesting(true);
-    authPost(dispatch, token, "/create-order-distributor-to-retail-outlet", data)
-      .then(
-        res => {
-          console.log(res);
-          setIsRequesting(false);
-          if (res.status === 401) {
-            dispatch(failed());
-            throw Error("Unauthorized");
-          } else if (res.status === 409) {
-            alert("User exits!!");
-          } else if (res.status === 201) {
-            return res.json();
-          }
-        },
-        error => {
-          console.log(error);
+    authPost(dispatch, token, "/create-order-distributor-to-retail-outlet", data).then(
+      res => {
+        console.log(res);
+        setIsRequesting(false);
+        if (res.status === 401) {
+          dispatch(failed());
+          throw Error("Unauthorized");
+        } else if (res.status === 409) {
+          alert("User exits!!");
+        } else if (res.status === 201) {
+          return res.json();
         }
-      )
-      .then(res => {
-        history.push("/orders/list");
-      });
+      },
+      error => {
+        console.log(error);
+      }
+    ).then(res => {
+      history.push("/orders/list");
+    });
   };
 
-  
 
   return (
     <MuiPickersUtilsProvider utils={DateFnsUtils}>
@@ -212,8 +204,8 @@ function UserCreate(props) {
           </Typography>
           <form className={classes.root} noValidate autoComplete="off">
             <div>
-                           
-            <TextField
+
+              <TextField
                 id="select-customer"
                 select
                 label="Select"
@@ -221,14 +213,14 @@ function UserCreate(props) {
                 onChange={handleCustomerChange}
                 helperText="Select customer"
               >
-                 {distributors.map(distributor => (
-                      <MenuItem
-                        key={distributor.partyId}
-                        value={distributor.partyId}
-                      >
-                        {distributor.distributorName}
-                      </MenuItem>
-                    ))}
+                {distributors.map(distributor => (
+                  <MenuItem
+                    key={distributor.partyId}
+                    value={distributor.partyId}
+                  >
+                    {distributor.distributorName}
+                  </MenuItem>
+                ))}
               </TextField>
 
               <TextField
@@ -240,13 +232,17 @@ function UserCreate(props) {
                 helperText="Select salesman"
               >
                 {salesmans.map(sm => (
-                      <MenuItem
-                        key={sm.userLoginId}
-                        value={sm.userLoginId}
-                      >
-                        {sm.partySalesman.person.lastName + ' ' + sm.partySalesman.person.middleName + ' ' + sm.partySalesman.person.firstName}
-                      </MenuItem>
-                    ))}
+                  <MenuItem
+                    key={sm.userLoginId}
+                    value={sm.userLoginId}
+                  >
+                    {sm.partySalesman.person.lastName +
+                    ' ' +
+                    sm.partySalesman.person.middleName +
+                    ' ' +
+                    sm.partySalesman.person.firstName}
+                  </MenuItem>
+                ))}
               </TextField>
 
 
@@ -266,63 +262,61 @@ function UserCreate(props) {
             </div>
 
             <div>
-            <Card>  
-            <CardContent>  
-            <TextField
-                id="select-product"
-                select
-                label="Select"
-                value={product}
-                onChange={handleProductChange}
-                helperText="Select product"
-              >
-               
-                
-                {products.map(product => (
-                      <MenuItem
-                        key={product.productId}
+              <Card>
+                <CardContent>
+                  <TextField
+                    id="select-product"
+                    select
+                    label="Select"
+                    value={product}
+                    onChange={handleProductChange}
+                    helperText="Select product"
+                  >
 
-                        value={product.productId}
+
+                    {products.map(product => (
+                      <MenuItem
+                        key={product}
+
+                        value={product}
                       >
                         {product.productName}
                       </MenuItem>
                     ))}
 
-            </TextField>
+                  </TextField>
 
-            <TextField
-                id="quantity"
-                label="Số lượng"
-                value={quantity}
-                onChange={handleQuantityChange}
-            />  
-            </CardContent>
-            <CardActions>
-            <Button
-            disabled={isRequesting}
-            variant="contained"
-            color="primary"
-            onClick={handleAddProduct}
-            >
-            Thêm SP   
-            </Button>
-            </CardActions>
+                  <TextField
+                    id="quantity"
+                    label="Số lượng"
+                    value={quantity}
+                    onChange={handleQuantityChange}
+                  />
+                </CardContent>
+                <CardActions>
+                  <Button
+                    disabled={isRequesting}
+                    variant="contained"
+                    color="primary"
+                    onClick={handleAddProduct}
+                  >
+                    Thêm SP
+                  </Button>
+                </CardActions>
 
-            <MaterialTable
-             title="Danh sách sản phẩm"
-          columns={[
-            { title: 'Tên SP', field: 'productId' },
-            { title: 'Số lượng', field: 'quantity' }
-            
-          ]}
-          data={orderItems}
-         
-            />
-            </Card>
+                <MaterialTable
+                  title="Danh sách sản phẩm"
+                  columns={[
+                    {title: 'Mã SP', field: 'productId'},
+                    {title: 'Tên SP', field: 'productName'},
+                    {title: 'Số lượng', field: 'quantity'}
+
+                  ]}
+                  data={orderItems}
+
+                />
+              </Card>
             </div>
-
-
-
 
 
           </form>
@@ -334,7 +328,7 @@ function UserCreate(props) {
             color="primary"
             onClick={handleSubmit}
           >
-            {isRequesting ? <CircularProgress /> : "Lưu"}
+            {isRequesting ? <CircularProgress/> : "Lưu"}
           </Button>
           <Button
             disabled={isRequesting}
@@ -342,7 +336,7 @@ function UserCreate(props) {
             color="primary"
             onClick={handleCancel}
           >
-            {isRequesting ? <CircularProgress /> : "Hủy"}
+            {isRequesting ? <CircularProgress/> : "Hủy"}
           </Button>
 
         </CardActions>
