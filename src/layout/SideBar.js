@@ -1564,7 +1564,80 @@ export default function SideBar(props) {
         ) : (
           ""
         )}
-      </List>
-    </Drawer>
+
+
+        <div>
+                <ListItem button onClick={() => handleListClick(19)}>
+                  <ListItemIcon>
+                    <FormatListNumberedIcon/>
+                    <AirportShuttleIcon/>
+
+                  </ListItemIcon>
+                  <ListItemText primary="Phân công giảng dạy"/>
+                  {openCollapse[19] ? <ExpandLess/> : <ExpandMore/>}
+                </ListItem>
+
+
+                <Collapse in={openCollapse[19]} timeout="auto" unmountOnExit>
+                  <List component="div" disablePadding>
+
+                    <ListItem
+                        button
+                        className={classes.nested}
+                        component={Link}
+                        to={process.env.PUBLIC_URL + ""}
+                    >
+                      <ListItemIcon>
+                        <StarBorder/>
+                      </ListItemIcon>
+                      <ListItemText primary="DS môn học"/>
+                    </ListItem>
+
+                    <ListItem
+                        button
+                        className={classes.nested}
+                        component={Link}
+                        to={process.env.PUBLIC_URL + ""}
+                    >
+                      <ListItemIcon>
+                        <StarBorder/>
+                      </ListItemIcon>
+                      <ListItemText primary="DS giáo viên"/>
+                    </ListItem>
+
+                    <ListItem
+                        button
+                        className={classes.nested}
+                        component={Link}
+                        to={process.env.PUBLIC_URL + ""}
+                    >
+                      <ListItemIcon>
+                        <StarBorder/>
+                      </ListItemIcon>
+                      <ListItemText primary="DS lớp"/>
+                    </ListItem>
+
+
+                    <ListItem
+                        button
+                        className={classes.nested}
+                        component={Link}
+                        to={process.env.PUBLIC_URL + ""}
+                    >
+                      <ListItemIcon>
+                        <StarBorder/>
+                      </ListItemIcon>
+                      <ListItemText primary="DS phân công"/>
+                    </ListItem>
+
+
+
+                  </List>
+                </Collapse>
+              </div>
+          
+
+        </List>
+      </Drawer>
   );
 }
