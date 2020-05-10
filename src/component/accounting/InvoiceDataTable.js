@@ -49,11 +49,15 @@ export function InvoiceDetail() {
   const invoiceItemColumns = [
     {'title': 'Mã chi tiết hóa đơn', field: 'invoiceItemSeqId'},
     {'title': 'Sản phẩm', field: 'productName'},
-    {'title': 'Thành tiền', field: 'amount'},
+    {'title': 'Thành tiền (VNĐ)', field: 'amount'},
+    {title: 'Mã đơn hàng', render: rowData => <Link to={'/orders/' + rowData['orderId']}>{rowData['orderId']}</Link>}
   ];
 
   const paymentApplicationColumns = [
-    {'title': 'Mã thanh toán', field: 'paymentId'},
+    {
+      'title': 'Mã thanh toán',
+      render: rowData => <Link to={'/payment-application/' + rowData['paymentId']}>{rowData['paymentId']}</Link>
+    },
     {'title': 'Ngày thanh toán', field: 'effectiveDate'},
     {'title': 'Thành tiền', field: 'appliedAmount'},
   ];
@@ -74,10 +78,14 @@ export function InvoiceDetail() {
         authGet(dispatch, token, '/get-all-payment-application-by-invoice-id/' + invoiceId)])
 
     setInvoice(invoice);
-    setInvoiceItemInfos([{title: 'Mã hóa đơn', content: invoiceId}, {
-      title: 'Ngày hóa đơn',
-      content: invoice['invoiceDate']
-    }]);
+    setInvoiceItemInfos([
+      {title: 'Mã hóa đơn', content: invoiceId},
+      {title: 'Ngày hóa đơn', content: invoice['invoiceDate']},
+      {title: 'Mã khách hàng', content: invoice['toPartyCustomerId']},
+      {title: 'Tổng tiền hóa đơn', content: invoice['amount']},
+      {title: 'Tổng tiền đã thanh toán', content: invoice['paidAmount']},
+      {title: 'Trạng thái hóa đơn', content: invoice['statusId']},
+    ]);
 
     setInvoiceItemDataTable(invoiceItemDataTable);
 
