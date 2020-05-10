@@ -115,7 +115,7 @@ export function Payment() {
       render: rowData => <Link to={'/payment-application/' + rowData['paymentId']}>{rowData['paymentId']}</Link>
     },
     {'title': 'Ngày thanh toán', field: 'effectiveDate'},
-    {'title': 'Khách hàng thanh toán', field: 'fromPartyId'},
+    {'title': 'Khách hàng thanh toán', field: 'fromCustomerId'},
     {'title': 'Số tiền', field: 'amount'},
   ];
 
@@ -187,6 +187,78 @@ export function PaymentApplication() {
       tableTitle={'Danh sách khớp lệnh thanh toán'}
       columns={columns}
       dataTable={paymentApplications}
+      infos={infos}
+    />
+  </div>;
+}
+
+export function DistributorUnpaidInvoiceList() {
+  const dispatch = useDispatch();
+  const token = useSelector(state => state.auth.token);
+
+  const columns = [
+    {
+      'title': 'Mã nhà phân phối',
+      render: rowData => <Link
+        to={'/distributor-unpaid-invoice-detail/' + rowData['partyId']}>{rowData['distributorCode']}</Link>
+    },
+    {'title': 'Khách hàng', field: 'distributorName'},
+    {'title': 'Tổng nợ', field: 'totalUnpaid'},
+  ];
+
+  const [dataTable, setDataTable] = useState([]);
+
+  async function getDataTable() {
+    let response = await authGet(dispatch, token, '/get-unpaid-invoices-group-by-distributor-id');
+    setDataTable(response);
+  }
+
+  useEffect(() => {
+    getDataTable().then(r => r);
+  }, []);
+
+  return <div>
+    <InvoiceDataTable
+      title={'Danh sách công nợ của nhà phân phối'}
+      columns={columns}
+      dataTable={dataTable}
+    />
+  </div>;
+}
+
+export function DistributorUnpaidInvoiceDetail() {
+  const dispatch = useDispatch();
+  const token = useSelector(state => state.auth.token);
+  const {partyDistributorId} = useParams();
+
+  const columns = [
+    {'title': 'Mã Hóa đơn', field: 'invoiceId'},
+    {'title': 'Ngày hóa đơn', field: 'invoiceDate'},
+    {'title': 'Tổng nợ', render: rowData => rowData['amount'] - rowData['paidAmount']},
+  ];
+
+  const [infos, setInfos] = useState([]);
+
+  const [dataTable, setDataTable] = useState([]);
+
+  async function getDataTable() {
+    let response = await authGet(dispatch, token, '/get-unpaid-invoice-by-distributor-id/' + partyDistributorId);
+    setDataTable(response);
+
+    setInfos([
+      {title: 'Nhà phân phối', content: response['distributorName']}
+    ])
+  }
+
+  useEffect(() => {
+    getDataTable().then(r => r);
+  }, []);
+
+  return <div>
+    <InvoiceDataTable
+      title={'Chi tiết công nợ của nhà phân phối'}
+      columns={columns}
+      dataTable={dataTable}
       infos={infos}
     />
   </div>;

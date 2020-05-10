@@ -366,6 +366,45 @@ export default function SideBar(props) {
               </List>
             </Collapse>
 
+            <ListItem button onClick={() => handleListClick('MENU_UNPAID_INVOICE')}>
+              <ListItemIcon>
+                <DescriptionIcon/>
+              </ListItemIcon>
+              <ListItemText primary="Báo cáo công nợ"/>
+              {openCollapse.has('MENU_UNPAID_INVOICE') ? <ExpandLess/> : <ExpandMore/>}
+            </ListItem>
+            <Collapse in={openCollapse.has('MENU_UNPAID_INVOICE')} timeout="auto" unmountOnExit>
+              <List component="div" disablePadding>
+                {
+                  <ListItem
+                    button
+                    className={classes.nested}
+                    component={Link}
+                    to={process.env.PUBLIC_URL + "/distributor-unpaid-invoice/list"}
+                  >
+                    <ListItemIcon>
+                      <StarBorder/>
+                    </ListItemIcon>
+                    <ListItemText primary="Công nợ của nhà phân phối"/>
+                  </ListItem>
+                }
+
+                {
+                  <ListItem
+                    button
+                    className={classes.nested}
+                    component={Link}
+                    to={process.env.PUBLIC_URL + "/retail-outlet-unpaid-invoice/list"}
+                  >
+                    <ListItemIcon>
+                      <StarBorder/>
+                    </ListItemIcon>
+                    <ListItemText primary="Công nợ của đại lí bán lẻ"/>
+                  </ListItem>
+                }
+              </List>
+            </Collapse>
+
           </div>
         ) : (
           ""
