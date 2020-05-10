@@ -49,7 +49,7 @@ export function InvoiceDetail() {
   const invoiceItemColumns = [
     {'title': 'Mã chi tiết hóa đơn', field: 'invoiceItemSeqId'},
     {'title': 'Sản phẩm', field: 'productName'},
-    {'title': 'Thành tiền (VNĐ)', field: 'amount'},
+    {'title': 'Thành tiền (VND)', field: 'amount'},
     {title: 'Mã đơn hàng', render: rowData => <Link to={'/orders/' + rowData['orderId']}>{rowData['orderId']}</Link>}
   ];
 
@@ -156,10 +156,13 @@ export function PaymentApplication() {
   const {paymentId} = useParams();
 
   const columns = [
-    {'title': 'Mã khớp lệnh thanh toán', field: 'paymentId'},
+    {'title': 'Mã khớp lệnh thanh toán', field: 'paymentApplicationId'},
     {'title': 'Ngày khớp lệnh thanh toán', field: 'effectiveDate'},
-    {'title': 'Mã hóa đơn', field: 'invoiceId'},
-    {'title': 'Số tiền khớp lệnh', field: 'appliedAmount'},
+    {
+      'title': 'Mã hóa đơn',
+      render: rowData => <Link to={'/invoice-detail/' + rowData['invoiceId']}>{rowData['invoiceId']}</Link>
+    },
+    {'title': 'Số tiền khớp lệnh (VND)', field: 'appliedAmount'},
   ];
 
   const [infos, setInfos] = useState([
@@ -177,9 +180,13 @@ export function PaymentApplication() {
     setPayment(payment);
     setPaymentApplications(paymentApplications);
 
-    setInfos([{title: 'Mã thanh toán', content: paymentId},
+    setInfos([
+      {title: 'Mã thanh toán', content: paymentId},
       {title: 'Khách hàng', content: payment['fromCustomerId']},
-      {title: 'Ngày thanh toán', content: payment['effectiveDate']}])
+      {title: 'Ngày thanh toán', content: payment['effectiveDate']},
+      {title: 'Số tiền thanh toán', content: payment['amount']},
+      {title: 'Số tiền còn lại', content: payment['amount'] - payment['appliedAmount']},
+    ])
   }
 
   useEffect(() => {
