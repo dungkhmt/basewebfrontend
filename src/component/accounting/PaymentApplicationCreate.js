@@ -83,7 +83,7 @@ export default function PaymentApplicationCreate() {
     )}
 
     {textField('amount', 'Số tiền thanh toán', 'number', amount, newAmount => {
-      if (newAmount > 0 && newAmount < Math.max(payment['amount'] - payment['appliedAmount'],
+      if (newAmount > 0 && newAmount <= Math.min(payment['amount'] - payment['appliedAmount'],
         selectedInvoice['amount'] - selectedInvoice['paidAmount'])) {
         setAmount(newAmount);
       }
