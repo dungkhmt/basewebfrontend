@@ -81,7 +81,7 @@ export function InvoiceDetail() {
     setInvoiceItemInfos([
       {title: 'Mã hóa đơn', content: invoiceId},
       {title: 'Ngày hóa đơn', content: invoice['invoiceDate']},
-      {title: 'Mã khách hàng', content: invoice['toPartyCustomerId']},
+      {title: 'Tên khách hàng', content: invoice['toPartyCustomerName']},
       {title: 'Tổng tiền hóa đơn', content: invoice['amount']},
       {title: 'Tổng tiền đã thanh toán', content: invoice['paidAmount']},
       {title: 'Trạng thái hóa đơn', content: invoice['statusId']},
@@ -182,7 +182,7 @@ export function PaymentApplication() {
 
     setInfos([
       {title: 'Mã thanh toán', content: paymentId},
-      {title: 'Khách hàng', content: payment['fromCustomerId']},
+      {title: 'Tên khách hàng', content: payment['fromCustomerName']},
       {title: 'Ngày thanh toán', content: payment['effectiveDate']},
       {title: 'Số tiền thanh toán', content: payment['amount']},
       {title: 'Số tiền còn lại', content: payment['amount'] - payment['appliedAmount']},
