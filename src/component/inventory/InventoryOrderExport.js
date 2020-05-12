@@ -124,7 +124,7 @@ export default function InventoryOrderExport() {
 
   function handleSubmit() {
     let body = {
-      inventoryItems: selectedRows.map(rowData => ({
+      inventoryItems: selectedRows.filter(rowData => selectedQuantity[rowData['orderItemSeqId']] > 0).map(rowData => ({
         productId: rowData['productId'],
         facilityId: selectedFacility,
         quantity: selectedQuantity[rowData['orderItemSeqId']],
