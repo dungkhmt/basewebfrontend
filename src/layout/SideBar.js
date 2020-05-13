@@ -505,7 +505,8 @@ export default function SideBar(props) {
             <Collapse in={openCollapse.has('MENU_WAREHOUSE')} timeout="auto" unmountOnExit>
               <List component="div" disablePadding>
                 {props.menu.has("MENU_WAREHOUSE_IMPORT") ? (
-                  <ListItem button className={classes.nested}>
+                  <ListItem button className={classes.nested} component={Link}
+                            to={process.env.PUBLIC_URL + '/inventory/import'}>
                     <ListItemIcon>
                       <StarBorder/>
                     </ListItemIcon>

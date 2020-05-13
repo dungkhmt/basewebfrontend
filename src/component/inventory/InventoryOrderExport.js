@@ -87,10 +87,9 @@ export default function InventoryOrderExport() {
 
   function getDataTable() {
     let body = {orderId, facilityId: selectedFacility};
-    authPost(dispatch, token, '/get-inventory-order-detail', body).then(value => value.json()).
-      then(response => {
-        setDataTable(response);
-      }).catch(console.log);
+    authPost(dispatch, token, '/get-inventory-order-detail', body).then(value => value.json()).then(response => {
+      setDataTable(response);
+    }).catch(console.log);
   }
 
   const [facilityList, setFacilityList] = useState([]);
