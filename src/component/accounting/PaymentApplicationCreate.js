@@ -1,22 +1,23 @@
-import { TextField } from "@material-ui/core";
+import {TextField} from "@material-ui/core";
 import Button from "@material-ui/core/Button";
 import Grid from "@material-ui/core/Grid";
 import IconButton from "@material-ui/core/IconButton";
 import InputAdornment from "@material-ui/core/InputAdornment";
 import CloudUploadIcon from "@material-ui/icons/CloudUpload";
 import SelectAllIcon from "@material-ui/icons/SelectAll";
-import React, { useEffect, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { useHistory, useParams } from "react-router-dom";
-import { authGet, authPost } from "../../api";
-import { selectValueCallback, textField } from "../../utils/FormUtils";
+import React, {useEffect, useState} from "react";
+import {useDispatch, useSelector} from "react-redux";
+import {useHistory, useParams} from "react-router-dom";
+import {authGet, authPost} from "../../api";
+import {selectValueCallback, textField} from "../../utils/FormUtils";
 import InvoicePopup from "./InvoicePopup";
+
 export default function PaymentApplicationCreate() {
   const dispatch = useDispatch();
   const token = useSelector((state) => state.auth.token);
   const history = useHistory();
 
-  const { paymentId } = useParams();
+  const {paymentId} = useParams();
 
   const [infos, setInfos] = useState([]);
 
@@ -32,6 +33,7 @@ export default function PaymentApplicationCreate() {
   const openInvoicePopup = () => {
     setPopupInvoice(true);
   };
+
   async function getAllUnpaidInvoices() {
     let [invoices, payment] = await Promise.all([
       authGet(dispatch, token, "/get-all-unpaid-invoices"),
@@ -42,10 +44,10 @@ export default function PaymentApplicationCreate() {
     setPayment(payment);
 
     setInfos([
-      { title: "Mã thanh toán", content: payment["paymentId"] },
-      { title: "Khách hàng", content: payment["fromCustomerId"] },
-      { title: "Ngày thanh toán", content: payment["effectiveDate"] },
-      { title: "Giá trị", content: payment["amount"] },
+      {title: "Mã thanh toán", content: payment["paymentId"]},
+      {title: "Khách hàng", content: payment["fromCustomerId"]},
+      {title: "Ngày thanh toán", content: payment["effectiveDate"]},
+      {title: "Giá trị", content: payment["amount"]},
       {
         title: "Số tiền còn lại",
         content: payment["amount"] - payment["appliedAmount"],
@@ -74,7 +76,7 @@ export default function PaymentApplicationCreate() {
     if (response && response["paymentApplicationId"]) {
       alert(
         "Tạo thành công mã khớp lệnh thanh toán: " +
-          response["paymentApplicationId"]
+        response["paymentApplicationId"]
       );
     }
     history.push("/payment-application/" + paymentId);
@@ -82,17 +84,17 @@ export default function PaymentApplicationCreate() {
 
   return (
     <div>
-      <InvoicePopup open={popupInvoice} handleClose={handleCloseInvoicePopup} />
+      <InvoicePopup open={popupInvoice} handleClose={handleCloseInvoicePopup}/>
       <h2>Khớp lệnh thanh toán</h2>
       <Grid container spacing={3}>
         <Grid
           item
           xs={8}
-          style={{ textAlign: "left", padding: "0px 30px 20px 30px" }}
+          style={{textAlign: "left", padding: "0px 30px 20px 30px"}}
         >
           {infos.map((value) => (
             <div>
-              <b>{value["title"] + ": "} </b> {value["content"]} <p />
+              <b>{value["title"] + ": "} </b> {value["content"]} <p/>
             </div>
           ))}
         </Grid>
@@ -104,22 +106,22 @@ export default function PaymentApplicationCreate() {
             textAlign: "right",
             padding: "0px 50px 10px 30px",
           }}
-        ></Grid>
+        />
       </Grid>
-      {selectValueCallback(
-        "Chọn hóa đơn",
-        invoices,
-        (e) =>
-          e["invoiceId"] +
-          " (Chưa thanh toán " +
-          (e["amount"] - e["paidAmount"]) +
-          ")",
-        selectedInvoice,
-        (newValue) => {
-          setSelectedInvoice(newValue);
-          setAmount(1);
-        }
-      )}
+      {/*{selectValueCallback(*/}
+      {/*  "Chọn hóa đơn",*/}
+      {/*  invoices,*/}
+      {/*  (e) =>*/}
+      {/*    e["invoiceId"] +*/}
+      {/*    " (Chưa thanh toán " +*/}
+      {/*    (e["amount"] - e["paidAmount"]) +*/}
+      {/*    ")",*/}
+      {/*  selectedInvoice,*/}
+      {/*  (newValue) => {*/}
+      {/*    setSelectedInvoice(newValue);*/}
+      {/*    setAmount(1);*/}
+      {/*  }*/}
+      {/*)}*/}
       <TextField
         label="Invoice Code"
         id="invoice-input"
@@ -128,29 +130,25 @@ export default function PaymentApplicationCreate() {
             <InputAdornment position="end">
               <IconButton onClick={openInvoicePopup}>
                 {popupInvoice ? (
-                  <SelectAllIcon color="disabled" />
+                  <SelectAllIcon color="disabled"/>
                 ) : (
-                  <SelectAllIcon color="primary" />
+                  <SelectAllIcon color="primary"/>
                 )}
               </IconButton>
             </InputAdornment>
           ),
         }}
       />
+      <p/>
       {textField(
         "amount",
         "Số tiền thanh toán",
         "number",
         amount,
         (newAmount) => {
-          if (
-            newAmount > 0 &&
-            newAmount <=
-              Math.min(
-                payment["amount"] - payment["appliedAmount"],
-                selectedInvoice["amount"] - selectedInvoice["paidAmount"]
-              )
-          ) {
+          if (newAmount > 0 && newAmount <= Math.min(
+            payment["amount"] - payment["appliedAmount"],
+            selectedInvoice["amount"] - selectedInvoice["paidAmount"])) {
             setAmount(newAmount);
           }
         }
@@ -159,7 +157,7 @@ export default function PaymentApplicationCreate() {
       <Button
         variant="contained"
         color="primary"
-        startIcon={<CloudUploadIcon />}
+        startIcon={<CloudUploadIcon/>}
         onClick={handleSubmit}
       >
         Save

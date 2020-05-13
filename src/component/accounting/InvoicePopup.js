@@ -31,7 +31,7 @@ export default function InvoicePopup(props) {
   const handleInvoiceIdFilterChange = (event) => {
     setInvoiceIdFilter(event.target.value);
   };
-  const url = "/get-all-unpaid-invoices";
+  const url = "/get-page-unpaid-invoices";
   const handleToPartyCustomerIdFilterChange = (event) => {
     setToPartyCustomerIdFilter(event.target.value);
   };
