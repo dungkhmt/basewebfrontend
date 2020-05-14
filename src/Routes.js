@@ -124,6 +124,7 @@ import PaymentApplicationCreate from "./component/accounting/PaymentApplicationC
 import PostOfficeList from './component/postsystem/postoffice/PostOfficeList'
 import CreatePostOffice from './component/postsystem/postoffice/CreatePostOffice'
 import InventoryImport from "./component/inventory/InventoryImport";
+import ProductPriceCreate from "./component/product/ProductPriceCreate";
 
 function Routes(props) {
   // props nay tu parent transfer vao
@@ -435,6 +436,12 @@ function Routes(props) {
         layout={Layout}
         isAuthenticated={props.isAuthenticated}
         path="/products/list"
+      />
+      <PrivateRouteWithLayout
+        component={ProductPriceCreate}
+        layout={Layout}
+        isAuthenticated={props.isAuthenticated}
+        path="/create-product-price/:productId"
       />
       <PrivateRouteWithLayout
         component={ProductDetail} //props
