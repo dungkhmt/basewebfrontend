@@ -1,8 +1,15 @@
-import { Grid, IconButton, InputAdornment, Paper, TextField, Typography } from "@material-ui/core";
+import {
+  Grid,
+  IconButton,
+  InputAdornment,
+  Paper,
+  TextField,
+  Typography,
+} from "@material-ui/core";
 import Dialog from "@material-ui/core/Dialog";
 import { makeStyles } from "@material-ui/core/styles";
 import KeyboardArrowRightIcon from "@material-ui/icons/KeyboardArrowRight";
-import SearchRoundedIcon from '@material-ui/icons/SearchRounded';
+import SearchRoundedIcon from "@material-ui/icons/SearchRounded";
 import MaterialTable from "material-table";
 import { default as React, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
@@ -25,7 +32,7 @@ export default function InvoicePopup(props) {
   const tableRef = React.createRef();
   const dispatch = useDispatch();
   const token = useSelector((state) => state.auth.token);
-  const [filtering, setFiltering] = useState("aaaa");
+
   const [invoiceIdFilter, setInvoiceIdFilter] = useState("");
   const [toPartyCustomerIdFilter, setToPartyCustomerIdFilter] = useState("");
   const handleInvoiceIdFilterChange = (event) => {
@@ -61,8 +68,8 @@ export default function InvoicePopup(props) {
       open={props.open}
       PaperProps={{
         style: {
-          backgroundColor: 'transparent',
-          boxShadow: 'none',
+          backgroundColor: "transparent",
+          boxShadow: "none",
         },
       }}
     >
@@ -103,7 +110,7 @@ export default function InvoicePopup(props) {
               }}
             />
 
-            <IconButton  onClick={()=>tableRef.current.onQueryChange() }>
+            <IconButton onClick={() => tableRef.current.onQueryChange()}>
               <SearchRoundedIcon color="primary" />
             </IconButton>
           </Paper>
@@ -139,7 +146,7 @@ export default function InvoicePopup(props) {
                     filterParam
                 ).then((res) => {
                   resolve({
-                    data: res,
+                    data: res.content,
                     page: res.number,
                     totalCount: res.totalElements,
                   });
@@ -148,7 +155,10 @@ export default function InvoicePopup(props) {
             }
             title={""}
             options={{ search: false }}
-            
+            onRowClick={(event, rowData) => {
+              props.updateSelectedInvoice(rowData);
+              props.handleClose();
+            }}
           />
         </Grid>
       </Grid>

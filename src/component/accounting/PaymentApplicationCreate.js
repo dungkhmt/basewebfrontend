@@ -84,7 +84,7 @@ export default function PaymentApplicationCreate() {
 
   return (
     <div>
-      <InvoicePopup open={popupInvoice} handleClose={handleCloseInvoicePopup}/>
+      <InvoicePopup open={popupInvoice} handleClose={handleCloseInvoicePopup} updateSelectedInvoice={setSelectedInvoice}/>
       <h2>Khớp lệnh thanh toán</h2>
       <Grid container spacing={3}>
         <Grid
@@ -125,6 +125,10 @@ export default function PaymentApplicationCreate() {
       <TextField
         label="Invoice Code"
         id="invoice-input"
+        defaultValue=""
+        value={selectedInvoice!=null? selectedInvoice.invoiceId:""}
+        disabled
+        InputLabelProps={{ shrink: true }}
         InputProps={{
           endAdornment: (
             <InputAdornment position="end">
