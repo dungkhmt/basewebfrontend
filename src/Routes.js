@@ -125,6 +125,8 @@ import PostOfficeList from './component/postsystem/postoffice/PostOfficeList'
 import CreatePostOffice from './component/postsystem/postoffice/CreatePostOffice'
 import InventoryImport from "./component/inventory/InventoryImport";
 import ProductPriceCreate from "./component/product/ProductPriceCreate";
+import SalesRoutesPlanning from "./component/salesroutes/SalesRoutesPlanning";
+import SalesRoutesPlanningPeriod from "./component/salesroutes/SalesRoutesPlanningPeriod"
 
 function Routes(props) {
   // props nay tu parent transfer vao
@@ -371,6 +373,21 @@ function Routes(props) {
         // exact                                   // props
         path="/create-delivery-trip/:deliveryPlanId" // props
       />
+      
+      <PrivateRouteWithLayout
+        component={SalesRoutesPlanning} 
+        layout={Layout}
+        isAuthenticated={props.isAuthenticated}                             
+        path="/salesroutes/planning" 
+      />
+
+      <PrivateRouteWithLayout
+        component={SalesRoutesPlanningPeriod} 
+        layout={Layout}
+        isAuthenticated={props.isAuthenticated}                             
+        path="/salesroutes/planning-period/:periodCode" 
+      />
+
       <PrivateRouteWithLayout
         component={SalesmanCheckinRoutesHistory} //props
         layout={Layout} //props

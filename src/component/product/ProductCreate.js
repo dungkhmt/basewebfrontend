@@ -67,7 +67,7 @@ function ProductCreate(props) {
     setQuantityUomId(event.target.value);
   };
   const uploadFile = async (files) => {
-    setContentIds([]);
+    let contentIds = [];
     for (const file of files) {
       const data = new FormData();
       data.append("file", file);
@@ -89,6 +89,7 @@ function ProductCreate(props) {
         contentIds.push(res);
       });
     }
+    setContentIds(contentIds);
   };
   const handleSubmit = (event) => {
     const data = {
