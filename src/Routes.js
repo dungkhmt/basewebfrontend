@@ -114,6 +114,8 @@ import { PaymentCreate } from "./component/accounting/PaymentCreate";
 import PaymentApplicationCreate from "./component/accounting/PaymentApplicationCreate";
 import PostOfficeList from './component/postsystem/postoffice/PostOfficeList'
 import CreatePostOffice from './component/postsystem/postoffice/CreatePostOffice'
+import SalesRoutesPlanning from './component/salesroutes/SalesRoutesPlanning'
+import SalesRoutesPlanningPeriod from './component/salesroutes/SalesRoutesPlanningPeriod'
 
 function Routes(props) {
   // props nay tu parent transfer vao
@@ -360,6 +362,21 @@ function Routes(props) {
         // exact                                   // props
         path="/create-delivery-trip/:deliveryPlanId" // props
       />
+      
+      <PrivateRouteWithLayout
+        component={SalesRoutesPlanning} 
+        layout={Layout}
+        isAuthenticated={props.isAuthenticated}                             
+        path="/salesroutes/planning" 
+      />
+
+      <PrivateRouteWithLayout
+        component={SalesRoutesPlanningPeriod} 
+        layout={Layout}
+        isAuthenticated={props.isAuthenticated}                             
+        path="/salesroutes/planning-period/:periodCode" 
+      />
+
       <PrivateRouteWithLayout
         component={SalesmanCheckinRoutesHistory} //props
         layout={Layout} //props
