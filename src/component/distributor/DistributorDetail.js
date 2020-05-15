@@ -2,13 +2,12 @@ import React, { useEffect, useState, Fragment} from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
 import { authGet, authPost} from "../../api";
-import { Button, TextField, MenuItem} from "@material-ui/core";
-import { Link as RouterLink } from 'react-router-dom';
+import { TextField, MenuItem} from "@material-ui/core";
 import Toolbar from "@material-ui/core/Toolbar";
 import Card from "@material-ui/core/Card";
 import CardContent from "@material-ui/core/CardContent";
 
-import MaterialTable, { MTableToolbar } from "material-table";
+import MaterialTable from "material-table";
 import {tableIcons} from "../../utils/iconutil";
 
 function DistributorDetail(props){
@@ -33,7 +32,7 @@ function DistributorDetail(props){
             title: "Đại lý bán lẻ",
               
             editComponent: () => (  <TextField
-                                        id="1"
+                                        id="retailOutletName"
                                         select
                                         value={selectedRetailOutlet.retailOutletName}
                                         label="Đại lý bán lẻ"                                        
@@ -56,7 +55,7 @@ function DistributorDetail(props){
             field:"salesmanName", 
             title: "Nhân viên bán hàng",
             editComponent: () => (  <TextField
-                                        id="2"
+                                        id="salesmanName"
                                         select
                                         value={selectedSalesman.userLoginId}
                                         label="Nhân viên bán hàng"                                        
