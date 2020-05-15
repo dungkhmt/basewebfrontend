@@ -1,3 +1,4 @@
+
 import Collapse from "@material-ui/core/Collapse";
 import Divider from "@material-ui/core/Divider";
 import Drawer from "@material-ui/core/Drawer";
@@ -497,6 +498,97 @@ export default function SideBar(props) {
         ) : (
           ""
         )}
+
+          <div>
+            <ListItem button onClick={() => handleListClick('MENU_SUPPLIER')}>
+              <ListItemIcon>
+                <HomeSharpIcon/>
+              </ListItemIcon>
+              <ListItemText primary="QL nhà cung câp"/>
+              {openCollapse.has('MENU_SUPPLIER') ? <ExpandLess/> : <ExpandMore/>}
+            </ListItem>
+            <Collapse in={openCollapse.has('MENU_SUPPLIER')} timeout="auto" unmountOnExit>
+              <List component="div" disablePadding>
+                
+                  <ListItem button className={classes.nested} component={Link}
+                            to={process.env.PUBLIC_URL + '/supplier/list'}>
+                    <ListItemIcon>
+                      <StarBorder/>
+                    </ListItemIcon>
+                    <ListItemText primary="DS nhà cung cấp"/>
+                  </ListItem>
+                
+
+                  <ListItem button className={classes.nested} component={Link}
+                    component={Link}
+                    to={process.env.PUBLIC_URL + "/supplier/create"}
+                  >
+                    <ListItemIcon>
+                      <StarBorder/>
+                    </ListItemIcon>
+                    <ListItemText primary="Tạo mới nhà cung cấp"/>
+                  </ListItem>          
+
+              </List>
+            </Collapse>
+          </div>
+
+          <div>
+            <ListItem button onClick={() => handleListClick('MENU_PURCHASE_ORDER')}>
+              <ListItemIcon>
+                <HomeSharpIcon/>
+              </ListItemIcon>
+              <ListItemText primary="Mua hàng"/>
+              {openCollapse.has('MENU_PURCHASE_ORDER') ? <ExpandLess/> : <ExpandMore/>}
+            </ListItem>
+            <Collapse in={openCollapse.has('MENU_PURCHASE_ORDER')} timeout="auto" unmountOnExit>
+              <List component="div" disablePadding>
+                
+                  <ListItem button className={classes.nested} component={Link}
+                            to={process.env.PUBLIC_URL + '/purchase-order/list'}>
+                    <ListItemIcon>
+                      <StarBorder/>
+                    </ListItemIcon>
+                    <ListItemText primary="DS đơn mua"/>
+                  </ListItem>
+                
+
+                  <ListItem button className={classes.nested} component={Link}
+                    component={Link}
+                    to={process.env.PUBLIC_URL + "/purchase-order/create"}
+                  >
+                    <ListItemIcon>
+                      <StarBorder/>
+                    </ListItemIcon>
+                    <ListItemText primary="Tạo mới đơn mua"/>
+                  </ListItem>          
+
+              </List>
+            </Collapse>
+          </div>
+
+          <div>
+            <ListItem button onClick={() => handleListClick('MENU_PRODUCT_PRICE_SUPPLIER')}>
+              <ListItemIcon>
+                <HomeSharpIcon/>
+              </ListItemIcon>
+              <ListItemText primary="Giá Mua hàng"/>
+              {openCollapse.has('MENU_PRODUCT_PRICE_SUPPLIER') ? <ExpandLess/> : <ExpandMore/>}
+            </ListItem>
+            <Collapse in={openCollapse.has('MENU_PRODUCT_PRICE_SUPPLIER')} timeout="auto" unmountOnExit>
+              <List component="div" disablePadding>
+                
+                  <ListItem button className={classes.nested} component={Link}
+                            to={process.env.PUBLIC_URL + '/product-price-supplier/list'}>
+                    <ListItemIcon>
+                      <StarBorder/>
+                    </ListItemIcon>
+                    <ListItemText primary="DS giá mua"/>
+                  </ListItem>
+              </List>
+            </Collapse>
+          </div>
+
 
         {props.menu.has("MENU_WAREHOUSE") ? (
           <div>

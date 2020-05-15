@@ -81,7 +81,7 @@ function SalesRoutesPlan(){
         setCreationDialogOpen(false);
         setFromDate(new Date())
         setToDate(new Date())
-        };
+    };
     
     const onClickSaveButton = data => {
         
