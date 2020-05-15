@@ -128,6 +128,8 @@ import ProductPriceCreate from "./component/product/ProductPriceCreate";
 import NumberFormatTextField from "./utils/NumberFormatTextField";
 import SalesRoutesPlanning from "./component/salesroutes/SalesRoutesPlanning";
 import SalesRoutesPlanningPeriod from "./component/salesroutes/SalesRoutesPlanningPeriod"
+import SupplierList from "./component/supplier/SupplierList";
+import SupplierCreate from "./component/supplier/SupplierCreate";
 
 function Routes(props) {
   // props nay tu parent transfer vao
@@ -959,6 +961,24 @@ function Routes(props) {
         //exact                                   // props
         path="/number-format-text-field-test" // props
       />
+
+      <PrivateRouteWithLayout
+        component={SupplierList} //props
+        layout={Layout} //props
+        isAuthenticated={props.isAuthenticated} // props
+        //isAuthenticated={true}
+        //exact                                   // props
+        path="/supplier/list" // props
+      />
+
+        <PrivateRouteWithLayout
+          component={SupplierCreate} //props
+          layout={Layout} //props
+          isAuthenticated={props.isAuthenticated} // props
+          //isAuthenticated={true}
+          //exact                                   // props
+          path="/supplier/create" // props
+        />
 
     </Switch>
   );

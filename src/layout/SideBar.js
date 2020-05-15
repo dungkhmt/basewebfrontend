@@ -498,7 +498,7 @@ export default function SideBar(props) {
             <ListItemIcon>
               <HomeSharpIcon/>
             </ListItemIcon>
-            <ListItemText primary="QL nhà cung câp"/>
+            <ListItemText primary="QL nhà cung cấp"/>
             {openCollapse.has('MENU_SUPPLIER') ? <ExpandLess/> : <ExpandMore/>}
           </ListItem>
           <Collapse in={openCollapse.has('MENU_SUPPLIER')} timeout="auto" unmountOnExit>
