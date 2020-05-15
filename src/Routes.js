@@ -1,8 +1,8 @@
 import React from "react";
-import { Route, Switch } from "react-router-dom";
+import {Route, Switch} from "react-router-dom";
 
-import { Layout } from "./layout";
-import { Home, PrivateRouteWithLayout } from "./component";
+import {Layout} from "./layout";
+import {Home, PrivateRouteWithLayout} from "./component";
 import OrderCreate from "./component/order/OrderCreate";
 import SignInContainer from "./container/SignInContainer";
 //import ListTrackLocations from "./component/tracklocations/listtracklocations";
@@ -22,8 +22,10 @@ import DeliveryTripList from "./component/shipment/deliveryplan/deliverytrip/Del
 import ShipmentItemList from "./component/shipment/shipment/ShipmentItemList";
 import VehicleList from "./component/shipment/vehicle/VehicleList";
 import DeliveryTripCreate from "./component/shipment/deliveryplan/deliverytrip/DeliveryTripCreate";
-import DeliveryTripDetailList from "./component/shipment/deliveryplan/deliverytrip/deliverytripdetail/DeliveryTripDetailList";
-import DeliveryTripDetailCreate from "./component/shipment/deliveryplan/deliverytrip/deliverytripdetail/DeliveryTripDetailCreate";
+import DeliveryTripDetailList
+  from "./component/shipment/deliveryplan/deliverytrip/deliverytripdetail/DeliveryTripDetailList";
+import DeliveryTripDetailCreate
+  from "./component/shipment/deliveryplan/deliverytrip/deliverytripdetail/DeliveryTripDetailCreate";
 import ShipmentItemDeliveryPlanList from "./component/shipment/deliveryplan/shipmentitem/ShipmentItemDeliveryPlanList";
 import VehicleDeliveryPlanList from "./component/shipment/deliveryplan/vehicle/VehicleDeliveryPlanList";
 import ShipmentItemCreate from "./component/shipment/shipment/ShipmentItemCreate";
@@ -55,10 +57,7 @@ import InventoryOrderList from "./component/inventory/InventoryOrderList";
 import InventoryOrderDetail from "./component/inventory/InventoryOrderDetail";
 import InventoryOrderExport from "./component/inventory/InventoryOrderExport";
 import InventoryList from "./component/inventory/InventoryList";
-import {
-  SaleReportByPartyCustomer,
-  SaleReportByProduct,
-} from "./component/report/SaleReport";
+import {SaleReportByPartyCustomer, SaleReportByProduct,} from "./component/report/SaleReport";
 import SaleReportByDate from "./component/reportsales/SalesReportByDate";
 
 import InventoryOrderExportList from "./component/inventory/InventoryOrderExportList";
@@ -83,7 +82,8 @@ import TrailerList from "./component/tmscontainer/trailer/TrailerList";
 import PortCreate from "./component/tmscontainer/port/PortCreate";
 import PortList from "./component/tmscontainer/port/PortList";
 import PortGoogleMap from "./component/tmscontainer/port/PortGoogleMap";
-import ShipmentItemDeliveryTripDetailList from "./component/shipment/deliveryplan/shipmentitem/ShipmentItemDeliveryTripDetailList";
+import ShipmentItemDeliveryTripDetailList
+  from "./component/shipment/deliveryplan/shipmentitem/ShipmentItemDeliveryTripDetailList";
 import NotScheduledShipmentItem from "./component/shipment/deliveryplan/deliverytrip/NotScheduledShipmentItem";
 import ProductDetail from "./component/product/detailproduct";
 import {
@@ -92,30 +92,41 @@ import {
   TransportReportByPartyCustomer,
 } from "./component/report/TransportReport";
 import SolverConfigParam from "./component/shipment/solver/SolverConfigParam";
-import CreateRequestTransportContainerToWarehouse from "./component/tmscontainer/requestimportfull/CreateRequestTransportContainerToWarehouse";
-import ListRequestTransportContainerToWareHouse from "./component/tmscontainer/requestimportfull/ListRequestTransportContainerToWareHouse";
+import CreateRequestTransportContainerToWarehouse
+  from "./component/tmscontainer/requestimportfull/CreateRequestTransportContainerToWarehouse";
+import ListRequestTransportContainerToWareHouse
+  from "./component/tmscontainer/requestimportfull/ListRequestTransportContainerToWareHouse";
 import VehicleDetail from "./component/shipment/vehicle/VehicleDetail";
 import VehicleNotInDeliveryTrips from "./component/shipment/deliveryplan/vehicle/VehicleNotInDeliveryTrips";
 import DriverDetail from "./component/shipment/driver/DriverDetail";
-import CreateRequestTransportContainerEmpty from "./component/tmscontainer/requestimportempty/CreateRequestTransportContainerEmpty";
-import ListRequestTransportContainerEmpty from "./component/tmscontainer/requestimportempty/ListRequestTransportContainerEmpty";
-import ListRequestTransportContainerEmptyExport from "./component/tmscontainer/requestexportempty/ListRequestTransportContainerEmptyExport";
-import CreateRequestTransportContainerEmptyExport from "./component/tmscontainer/requestexportempty/CreateRequestTransportContainerEmptyExport";
-import CreateRequestTransportFullExport from "./component/tmscontainer/requestexportfull/CreateRequestTransportFullExport";
+import CreateRequestTransportContainerEmpty
+  from "./component/tmscontainer/requestimportempty/CreateRequestTransportContainerEmpty";
+import ListRequestTransportContainerEmpty
+  from "./component/tmscontainer/requestimportempty/ListRequestTransportContainerEmpty";
+import ListRequestTransportContainerEmptyExport
+  from "./component/tmscontainer/requestexportempty/ListRequestTransportContainerEmptyExport";
+import CreateRequestTransportContainerEmptyExport
+  from "./component/tmscontainer/requestexportempty/CreateRequestTransportContainerEmptyExport";
+import CreateRequestTransportFullExport
+  from "./component/tmscontainer/requestexportfull/CreateRequestTransportFullExport";
 import ListRequestTransportFullExport from "./component/tmscontainer/requestexportfull/ListRequestTransportFullExport";
 import RetailOutletDetail from "./component/retailoutlet/RetailOutletDetail";
 import {
+  DistributorUnpaidInvoiceDetail,
+  DistributorUnpaidInvoiceList,
   Invoice,
   InvoiceDetail,
   Payment,
   PaymentApplication,
 } from "./component/accounting/InvoiceDataTable";
-import { PaymentCreate } from "./component/accounting/PaymentCreate";
+import {PaymentCreate} from "./component/accounting/PaymentCreate";
 import PaymentApplicationCreate from "./component/accounting/PaymentApplicationCreate";
 import PostOfficeList from './component/postsystem/postoffice/PostOfficeList'
 import CreatePostOffice from './component/postsystem/postoffice/CreatePostOffice'
-import SalesRoutesPlanning from './component/salesroutes/SalesRoutesPlanning'
-import SalesRoutesPlanningPeriod from './component/salesroutes/SalesRoutesPlanningPeriod'
+import InventoryImport from "./component/inventory/InventoryImport";
+import ProductPriceCreate from "./component/product/ProductPriceCreate";
+import SalesRoutesPlanning from "./component/salesroutes/SalesRoutesPlanning";
+import SalesRoutesPlanningPeriod from "./component/salesroutes/SalesRoutesPlanningPeriod"
 
 function Routes(props) {
   // props nay tu parent transfer vao
@@ -444,6 +455,12 @@ function Routes(props) {
         path="/products/list"
       />
       <PrivateRouteWithLayout
+        component={ProductPriceCreate}
+        layout={Layout}
+        isAuthenticated={props.isAuthenticated}
+        path="/create-product-price/:productId"
+      />
+      <PrivateRouteWithLayout
         component={ProductDetail} //props
         layout={Layout} //props
         isAuthenticated={props.isAuthenticated} // props
@@ -606,6 +623,13 @@ function Routes(props) {
       />
 
       <PrivateRouteWithLayout
+        component={InventoryImport}
+        layout={Layout}
+        isAuthenticated={props.isAuthenticated}
+        path="/inventory/import"
+      />
+
+      <PrivateRouteWithLayout
         component={SaleReportByProduct}
         layout={Layout}
         isAuthenticated={props.isAuthenticated}
@@ -693,6 +717,20 @@ function Routes(props) {
         layout={Layout}
         isAuthenticated={props.isAuthenticated}
         path="/payment-application/:paymentId"
+      />
+
+      <PrivateRouteWithLayout
+        component={DistributorUnpaidInvoiceList}
+        layout={Layout}
+        isAuthenticated={props.isAuthenticated}
+        path="/distributor-unpaid-invoice/list"
+      />
+
+      <PrivateRouteWithLayout
+        component={DistributorUnpaidInvoiceDetail}
+        layout={Layout}
+        isAuthenticated={props.isAuthenticated}
+        path="/distributor-unpaid-invoice-detail/:partyDistributorId"
       />
 
       {/*end*/}

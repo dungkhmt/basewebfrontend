@@ -87,10 +87,9 @@ export default function InventoryOrderExport() {
 
   function getDataTable() {
     let body = {orderId, facilityId: selectedFacility};
-    authPost(dispatch, token, '/get-inventory-order-detail', body).then(value => value.json()).
-      then(response => {
-        setDataTable(response);
-      }).catch(console.log);
+    authPost(dispatch, token, '/get-inventory-order-detail', body).then(value => value.json()).then(response => {
+      setDataTable(response);
+    }).catch(console.log);
   }
 
   const [facilityList, setFacilityList] = useState([]);
@@ -124,7 +123,7 @@ export default function InventoryOrderExport() {
 
   function handleSubmit() {
     let body = {
-      inventoryItems: selectedRows.map(rowData => ({
+      inventoryItems: selectedRows.filter(rowData => selectedQuantity[rowData['orderItemSeqId']] > 0).map(rowData => ({
         productId: rowData['productId'],
         facilityId: selectedFacility,
         quantity: selectedQuantity[rowData['orderItemSeqId']],

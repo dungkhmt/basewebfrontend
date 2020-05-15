@@ -52,17 +52,17 @@ function OrderList(props){
           new Promise((resolve, reject) => {
             console.log(query);
             let sortParam="";
-            if(query.orderBy!==undefined){
-              sortParam="&sort="+query.orderBy.field+','+query.orderDirection;
-            }
+            // if(query.orderBy!==undefined){
+            //   sortParam="&sort="+query.orderBy.field+','+query.orderDirection;
+            // }
             let filterParam="";
-            if(query.filters.length>0){
-                let filter=query.filters;
-                filter.forEach(v=>{
-                  filterParam=v.column.field+"="+v.value+"&"
-                })
-                filterParam="&"+filterParam.substring(0,filterParam.length-1);
-            }
+            // if(query.filters.length>0){
+            //     let filter=query.filters;
+            //     filter.forEach(v=>{
+            //       filterParam=v.column.field+"="+v.value+"&"
+            //     })
+            //     filterParam="&"+filterParam.substring(0,filterParam.length-1);
+            // }
   
             authGet(
               dispatch,

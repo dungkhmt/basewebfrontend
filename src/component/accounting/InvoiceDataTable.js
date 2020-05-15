@@ -49,11 +49,15 @@ export function InvoiceDetail() {
   const invoiceItemColumns = [
     {'title': 'Mã chi tiết hóa đơn', field: 'invoiceItemSeqId'},
     {'title': 'Sản phẩm', field: 'productName'},
-    {'title': 'Thành tiền', field: 'amount'},
+    {'title': 'Thành tiền (VND)', field: 'amount'},
+    {title: 'Mã đơn hàng', render: rowData => <Link to={'/orders/' + rowData['orderId']}>{rowData['orderId']}</Link>}
   ];
 
   const paymentApplicationColumns = [
-    {'title': 'Mã thanh toán', field: 'paymentId'},
+    {
+      'title': 'Mã thanh toán',
+      render: rowData => <Link to={'/payment-application/' + rowData['paymentId']}>{rowData['paymentId']}</Link>
+    },
     {'title': 'Ngày thanh toán', field: 'effectiveDate'},
     {'title': 'Thành tiền', field: 'appliedAmount'},
   ];
@@ -74,10 +78,14 @@ export function InvoiceDetail() {
         authGet(dispatch, token, '/get-all-payment-application-by-invoice-id/' + invoiceId)])
 
     setInvoice(invoice);
-    setInvoiceItemInfos([{title: 'Mã hóa đơn', content: invoiceId}, {
-      title: 'Ngày hóa đơn',
-      content: invoice['invoiceDate']
-    }]);
+    setInvoiceItemInfos([
+      {title: 'Mã hóa đơn', content: invoiceId},
+      {title: 'Ngày hóa đơn', content: invoice['invoiceDate']},
+      {title: 'Tên khách hàng', content: invoice['toPartyCustomerName']},
+      {title: 'Tổng tiền hóa đơn', content: invoice['amount']},
+      {title: 'Tổng tiền đã thanh toán', content: invoice['paidAmount']},
+      {title: 'Trạng thái hóa đơn', content: invoice['statusId']},
+    ]);
 
     setInvoiceItemDataTable(invoiceItemDataTable);
 
@@ -115,7 +123,7 @@ export function Payment() {
       render: rowData => <Link to={'/payment-application/' + rowData['paymentId']}>{rowData['paymentId']}</Link>
     },
     {'title': 'Ngày thanh toán', field: 'effectiveDate'},
-    {'title': 'Khách hàng thanh toán', field: 'fromPartyId'},
+    {'title': 'Khách hàng thanh toán', field: 'fromCustomerId'},
     {'title': 'Số tiền', field: 'amount'},
   ];
 
@@ -148,10 +156,13 @@ export function PaymentApplication() {
   const {paymentId} = useParams();
 
   const columns = [
-    {'title': 'Mã khớp lệnh thanh toán', field: 'paymentId'},
+    {'title': 'Mã khớp lệnh thanh toán', field: 'paymentApplicationId'},
     {'title': 'Ngày khớp lệnh thanh toán', field: 'effectiveDate'},
-    {'title': 'Mã hóa đơn', field: 'invoiceId'},
-    {'title': 'Số tiền khớp lệnh', field: 'appliedAmount'},
+    {
+      'title': 'Mã hóa đơn',
+      render: rowData => <Link to={'/invoice-detail/' + rowData['invoiceId']}>{rowData['invoiceId']}</Link>
+    },
+    {'title': 'Số tiền khớp lệnh (VND)', field: 'appliedAmount'},
   ];
 
   const [infos, setInfos] = useState([
@@ -169,9 +180,13 @@ export function PaymentApplication() {
     setPayment(payment);
     setPaymentApplications(paymentApplications);
 
-    setInfos([{title: 'Mã thanh toán', content: paymentId},
-      {title: 'Khách hàng', content: payment['fromCustomerId']},
-      {title: 'Ngày thanh toán', content: payment['effectiveDate']}])
+    setInfos([
+      {title: 'Mã thanh toán', content: paymentId},
+      {title: 'Tên khách hàng', content: payment['fromCustomerName']},
+      {title: 'Ngày thanh toán', content: payment['effectiveDate']},
+      {title: 'Số tiền thanh toán', content: payment['amount']},
+      {title: 'Số tiền còn lại', content: payment['amount'] - payment['appliedAmount']},
+    ])
   }
 
   useEffect(() => {
@@ -187,6 +202,78 @@ export function PaymentApplication() {
       tableTitle={'Danh sách khớp lệnh thanh toán'}
       columns={columns}
       dataTable={paymentApplications}
+      infos={infos}
+    />
+  </div>;
+}
+
+export function DistributorUnpaidInvoiceList() {
+  const dispatch = useDispatch();
+  const token = useSelector(state => state.auth.token);
+
+  const columns = [
+    {
+      'title': 'Mã nhà phân phối',
+      render: rowData => <Link
+        to={'/distributor-unpaid-invoice-detail/' + rowData['partyId']}>{rowData['distributorCode']}</Link>
+    },
+    {'title': 'Khách hàng', field: 'distributorName'},
+    {'title': 'Tổng nợ', field: 'totalUnpaid'},
+  ];
+
+  const [dataTable, setDataTable] = useState([]);
+
+  async function getDataTable() {
+    let response = await authGet(dispatch, token, '/get-unpaid-invoices-group-by-distributor-id');
+    setDataTable(response);
+  }
+
+  useEffect(() => {
+    getDataTable().then(r => r);
+  }, []);
+
+  return <div>
+    <InvoiceDataTable
+      title={'Danh sách công nợ của nhà phân phối'}
+      columns={columns}
+      dataTable={dataTable}
+    />
+  </div>;
+}
+
+export function DistributorUnpaidInvoiceDetail() {
+  const dispatch = useDispatch();
+  const token = useSelector(state => state.auth.token);
+  const {partyDistributorId} = useParams();
+
+  const columns = [
+    {'title': 'Mã Hóa đơn', field: 'invoiceId'},
+    {'title': 'Ngày hóa đơn', field: 'invoiceDate'},
+    {'title': 'Tổng nợ', render: rowData => rowData['amount'] - rowData['paidAmount']},
+  ];
+
+  const [infos, setInfos] = useState([]);
+
+  const [dataTable, setDataTable] = useState([]);
+
+  async function getDataTable() {
+    let response = await authGet(dispatch, token, '/get-unpaid-invoice-by-distributor-id/' + partyDistributorId);
+    setDataTable(response);
+
+    setInfos([
+      {title: 'Nhà phân phối', content: response['distributorName']}
+    ])
+  }
+
+  useEffect(() => {
+    getDataTable().then(r => r);
+  }, []);
+
+  return <div>
+    <InvoiceDataTable
+      title={'Chi tiết công nợ của nhà phân phối'}
+      columns={columns}
+      dataTable={dataTable}
       infos={infos}
     />
   </div>;
