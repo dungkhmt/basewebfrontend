@@ -452,7 +452,12 @@ export default function SideBar(props) {
                   <ListItemText primary="Danh sách khách hàng"/>
                 </ListItem>
 
-                <ListItem button className={classes.nested}>
+                <ListItem 
+                  button className={classes.nested}
+                  className={classes.nested}
+                  component={Link}
+                  to={process.env.PUBLIC_URL + "/salesroutes/planning"}
+                >
                   <ListItemIcon>
                     <StarBorder/>
                   </ListItemIcon>
