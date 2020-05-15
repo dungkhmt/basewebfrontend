@@ -3,14 +3,16 @@ import {Select} from "@material-ui/core";
 import MenuItem from "@material-ui/core/MenuItem";
 import React from "react";
 import TextField from "@material-ui/core/TextField";
+import {NumberFormatCustom} from "./NumberFormatTextField";
 
 export const notNegativeIntFilterOnChange = (newValue, setValue) => {
-  newValue = parseInt(newValue);
-  notNegativeFilterOnChange(newValue, setValue);
+  if (parseInt(newValue.replace('/[.,]/g', '')) >= 0) {
+    setValue(newValue);
+  }
 };
 
 export const notNegativeFilterOnChange = (newValue, setValue) => {
-  if (newValue >= 0) {
+  if (parseFloat(newValue.replace('/[.,]/g', '')) >= 0) {
     setValue(newValue);
   }
 };
@@ -44,6 +46,20 @@ export function textField(id, label, type, value, onChange, readOnly) {
                value={value}
                onChange={event => onChange(event.target.value)}
                InputProps={{readOnly: readOnly}}/>
+    <p/>
+  </div>;
+}
+
+export function textFieldNumberFormat(id, label, value, onChange) {
+  return <div>
+    <TextField
+      id={id}
+      label={label}
+      fullWidth={true}
+      value={value}
+      onChange={event => onChange(event.target.value)}
+      InputProps={{inputComponent: NumberFormatCustom}}
+    />
     <p/>
   </div>;
 }

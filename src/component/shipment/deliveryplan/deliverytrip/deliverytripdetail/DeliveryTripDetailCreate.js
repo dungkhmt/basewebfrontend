@@ -18,6 +18,7 @@ import MaterialTable from "material-table";
 import {useParams} from "react-router";
 import Grid from "@material-ui/core/Grid";
 import ArrowBackIosIcon from "@material-ui/icons/ArrowBackIos";
+import {NumberFormatCustom} from "../../../../../utils/NumberFormatTextField";
 
 
 const useStyles = makeStyles(theme => ({
@@ -60,7 +61,6 @@ export default function DeliveryTripDetailCreate() {
       render: rowData => <TextField
         id="quantity"
         // label="Số lượng"
-        type="number"
         className={classes.textField}
         InputLabelProps={{
           shrink: true,
@@ -69,7 +69,8 @@ export default function DeliveryTripDetailCreate() {
         inputProps={selectedIdSet.has(rowData['shipmentItemId']) ? {
           min: "1",
           max: "" + rowData['quantity'],
-          step: "1"
+          step: "1",
+          inputComponent: NumberFormatCustom,
         } : {readOnly: true}}
         value={orElse(selectedQuantity[rowData['shipmentItemId']], 0)}
         onChange={event => {

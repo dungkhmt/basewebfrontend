@@ -2,7 +2,7 @@ import React, {useEffect, useState} from "react";
 import Grid from "@material-ui/core/Grid";
 import {authGet, authPost} from "../../api";
 import {useDispatch, useSelector} from "react-redux";
-import {selectValueByIdName, textField} from "../../utils/FormUtils";
+import {selectValueByIdName, textField, textFieldNumberFormat} from "../../utils/FormUtils";
 import AddIcon from "@material-ui/icons/Add";
 import Button from "@material-ui/core/Button";
 import MaterialTable from "material-table";
@@ -83,7 +83,11 @@ export default function InventoryImport() {
           setSelectedProduct)}
       </Grid>
       <Grid item xs={4}>
-        {textField('quantity', 'Chọn số lượng', 'number', quantity, setQuantity)}
+        {textFieldNumberFormat('quantity', 'Chọn số lượng', quantity, newValue => {
+          if (parseInt(newValue.replace('/[.,]/g', '')) > 0) {
+            setQuantity(newValue);
+          }
+        })}
       </Grid>
 
       <Grid item xs={4}>

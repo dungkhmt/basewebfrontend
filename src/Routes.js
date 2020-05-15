@@ -125,6 +125,7 @@ import PostOfficeList from './component/postsystem/postoffice/PostOfficeList'
 import CreatePostOffice from './component/postsystem/postoffice/CreatePostOffice'
 import InventoryImport from "./component/inventory/InventoryImport";
 import ProductPriceCreate from "./component/product/ProductPriceCreate";
+import NumberFormatTextField from "./utils/NumberFormatTextField";
 import SalesRoutesPlanning from "./component/salesroutes/SalesRoutesPlanning";
 import SalesRoutesPlanningPeriod from "./component/salesroutes/SalesRoutesPlanningPeriod"
 
@@ -373,19 +374,19 @@ function Routes(props) {
         // exact                                   // props
         path="/create-delivery-trip/:deliveryPlanId" // props
       />
-      
+
       <PrivateRouteWithLayout
-        component={SalesRoutesPlanning} 
+        component={SalesRoutesPlanning}
         layout={Layout}
-        isAuthenticated={props.isAuthenticated}                             
-        path="/salesroutes/planning" 
+        isAuthenticated={props.isAuthenticated}
+        path="/salesroutes/planning"
       />
 
       <PrivateRouteWithLayout
-        component={SalesRoutesPlanningPeriod} 
+        component={SalesRoutesPlanningPeriod}
         layout={Layout}
-        isAuthenticated={props.isAuthenticated}                             
-        path="/salesroutes/planning-period/:periodCode" 
+        isAuthenticated={props.isAuthenticated}
+        path="/salesroutes/planning-period/:periodCode"
       />
 
       <PrivateRouteWithLayout
@@ -948,6 +949,17 @@ function Routes(props) {
         //exact                                   // props
         path="/salesman/:partyId" // props
       />
+
+      {/*number format test*/}
+      <PrivateRouteWithLayout
+        component={NumberFormatTextField} //props
+        layout={Layout} //props
+        isAuthenticated={props.isAuthenticated} // props
+        //isAuthenticated={true}
+        //exact                                   // props
+        path="/number-format-text-field-test" // props
+      />
+
     </Switch>
   );
 }

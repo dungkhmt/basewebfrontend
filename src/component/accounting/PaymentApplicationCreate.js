@@ -9,7 +9,7 @@ import React, {useEffect, useState} from "react";
 import {useDispatch, useSelector} from "react-redux";
 import {useHistory, useParams} from "react-router-dom";
 import {authGet, authPost} from "../../api";
-import {selectValueCallback, textField} from "../../utils/FormUtils";
+import {selectValueCallback, textField, textFieldNumberFormat} from "../../utils/FormUtils";
 import InvoicePopup from "./InvoicePopup";
 
 export default function PaymentApplicationCreate() {
@@ -144,10 +144,9 @@ export default function PaymentApplicationCreate() {
         }}
       />
       <p/>
-      {textField(
+      {textFieldNumberFormat(
         "amount",
         "Số tiền thanh toán",
-        "number",
         amount,
         (newAmount) => {
           if (newAmount > 0 && newAmount <= Math.min(
