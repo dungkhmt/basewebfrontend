@@ -62,7 +62,7 @@ export default function ProductPriceSupplier() {
     if (productPriceSupplier && productPriceSupplier['productPriceSupplierId']) {
       alert('Đã thiết lập thành công giá, productPriceSupplierId = ' + productPriceSupplier['productPriceSupplierId']);
     }
-    window.location.reload();
+    await getProductPriceSupplierList();
   }
 
   return (<div>
