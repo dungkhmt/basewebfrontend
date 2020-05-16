@@ -10,7 +10,12 @@ import Button from "@material-ui/core/Button";
 import CloudUploadIcon from "@material-ui/icons/CloudUpload";
 import {MuiPickersUtilsProvider} from "@material-ui/pickers";
 import {authGet, authPost} from "../../../api";
-import {notNegativeFilterOnChange, notNegativeIntFilterOnChange, textField} from "../../../utils/FormUtils";
+import {
+  notNegativeFilterOnChange,
+  notNegativeIntFilterOnChange,
+  textField,
+  textFieldNumberFormat
+} from "../../../utils/FormUtils";
 
 export default function SolverConfigParam() {
   const token = useSelector(state => state.auth.token);
@@ -73,44 +78,36 @@ export default function SolverConfigParam() {
 
           <p/>
 
-          {textField('maxTripDistance',
+          {textFieldNumberFormat('maxTripDistance',
             'maxTripDistance',
-            'number',
             maxTripDistance,
             newValue => notNegativeFilterOnChange(newValue, setMaxTripDistance))}
-          {textField('maxDistanceConsecutiveLocationTripAllowed',
+          {textFieldNumberFormat('maxDistanceConsecutiveLocationTripAllowed',
             'maxDistanceConsecutiveLocationTripAllowed',
-            'number',
             maxDistanceConsecutiveLocationTripAllowed,
             newValue => notNegativeFilterOnChange(newValue, setMaxDistanceConsecutiveLocationTripAllowed))}
-          {textField('maxLocationsPerTripAllowed',
+          {textFieldNumberFormat('maxLocationsPerTripAllowed',
             'maxLocationsPerTripAllowed',
-            'number',
             maxLocationsPerTripAllowed,
             newValue => notNegativeIntFilterOnChange(newValue, setMaxLocationsPerTripAllowed))}
-          {textField('fixLoadTime',
+          {textFieldNumberFormat('fixLoadTime',
             'fixLoadTime',
-            'number',
             fixLoadTime,
             newValue => notNegativeIntFilterOnChange(newValue, setFixLoadTime))}
-          {textField('fixUnloadTime',
+          {textFieldNumberFormat('fixUnloadTime',
             'fixUnloadTime',
-            'number',
             fixUnloadTime,
             newValue => notNegativeIntFilterOnChange(newValue, setFixUnloadTime))}
-          {textField('loadRate',
+          {textFieldNumberFormat('loadRate',
             'loadRate',
-            'number',
             loadRate,
             newValue => notNegativeFilterOnChange(newValue, setLoadRate))}
-          {textField('manualUnloadTime',
+          {textFieldNumberFormat('manualUnloadTime',
             'manualUnloadTime',
-            'number',
             manualUnloadTime,
             newValue => notNegativeFilterOnChange(newValue, setManualUnloadTime))}
-          {textField('palletUnloadTime',
+          {textFieldNumberFormat('palletUnloadTime',
             'palletUnloadTime',
-            'number',
             palletUnloadTime,
             newValue => notNegativeFilterOnChange(newValue, setPalletUnloadTime))}
 

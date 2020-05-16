@@ -11,7 +11,7 @@ import Typography from "@material-ui/core/Typography";
 import {useHistory} from "react-router-dom";
 import CloudUploadIcon from "@material-ui/icons/CloudUpload";
 import {authPost} from "../../../api";
-import {selectValueByIdName, textField} from "../../../utils/FormUtils";
+import {selectValueByIdName, textField, textFieldNumberFormat} from "../../../utils/FormUtils";
 
 
 const useStyles = makeStyles(theme => ({
@@ -135,13 +135,13 @@ export default function ShipmentItemCreate() {
           <p/>
 
           {textField("orderId", "Mã đơn hàng", "search", orderId, setOrderId)}
-          {textField("quantity", "Số lượng", "number", quantity, newValue => {
+          {textFieldNumberFormat("quantity", "Số lượng", quantity, newValue => {
             if (newValue > 0) {
               setQuantity(newValue);
               setWeight(selectedProduct['weight'] * newValue);
             }
           })}
-          {textField("pallet", "Số lượng pallet", "number", pallet, newValue => {
+          {textFieldNumberFormat("pallet", "Số lượng pallet", pallet, newValue => {
             if (newValue >= 0) {
               setPallet(newValue);
             }

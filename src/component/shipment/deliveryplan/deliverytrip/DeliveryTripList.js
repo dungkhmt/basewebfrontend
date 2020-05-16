@@ -28,6 +28,7 @@ import Dialog from "@material-ui/core/Dialog";
 import DialogContent from "@material-ui/core/DialogContent";
 import DialogActions from "@material-ui/core/DialogActions";
 import DialogTitle from "@material-ui/core/DialogTitle";
+import {textFieldNumberFormat} from "../../../../utils/FormUtils";
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -396,16 +397,15 @@ export default function DeliveryTripList() {
       <Dialog open={solverOptionOpen} maxWidth={'sm'} fullWidth={true} onClose={() => setSolverOptionOpen(false)}>
         <DialogTitle>Tùy chọn bộ giải</DialogTitle>
         <DialogContent>
-          <TextField label={'Giới hạn thời gian chạy:'} required={true} type={'number'}
-                     value={solverTimeLimit} onChange={event => {
-            let newValue = event.target.value;
-            if (newValue <= 0) {
-              newValue = 1;
-            } else if (newValue > 10000) {
-              newValue = 10000;
+          {textFieldNumberFormat('timeLimit', 'Giới hạn thời gian chạy:', solverTimeLimit, newValue => {
+            let newValueNumber = parseInt(newValue);
+            if (newValueNumber <= 0) {
+              newValue = '1';
+            } else if (newValueNumber > 10000) {
+              newValue = '10000';
             }
             setSolverTimeLimit(newValue);
-          }}/>
+          })}
         </DialogContent>
         <DialogActions>
           <Button variant={"contained"} onClick={() => {
