@@ -141,22 +141,30 @@ function SalesRoutesPlan(){
                             search: false,
                             actionsColumnIndex: -1
                         }}
-                        components={{
-                            Toolbar: props => (
-                                <div>
-                                    <MTableToolbar {...props} />
-                                    <MuiThemeProvider>
-                                    <IconButton
-                                                disableTouchRipple='true'
-                                                onClick={() => setCreationDialogOpen(true)}
-                                                style={{marginLeft: 10}}
-                                            >
-                                                <AddBoxIcon fontSize="large"/>
-                                            </IconButton>
-                                    </MuiThemeProvider>                                    
-                                </div>
-                            ),
-                        }}
+                        actions={[
+                            {
+                              icon: 'add',
+                              tooltip: 'Add User',
+                              isFreeAction: true,
+                              onClick: () => setCreationDialogOpen(true)
+                            }
+                          ]}
+                        // components={{
+                        //     Toolbar: props => (
+                        //         <div>
+                        //             <MTableToolbar {...props} />
+                        //             <MuiThemeProvider>
+                        //             <IconButton
+                        //                         disableTouchRipple='true'
+                        //                         onClick={() => setCreationDialogOpen(true)}
+                        //                         style={{marginLeft: 10}}
+                        //                     >
+                        //                         <AddBoxIcon fontSize="large"/>
+                        //                     </IconButton>
+                        //             </MuiThemeProvider>                                    
+                        //         </div>
+                        //     ),
+                        // }}
             />
             
             <Dialog open={creationDialogOpen} onClose={onDialogClose}>
