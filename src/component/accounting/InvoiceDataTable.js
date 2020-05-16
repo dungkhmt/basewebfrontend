@@ -16,7 +16,7 @@ export function Invoice() {
       render: rowData => <Link to={'/invoice-detail/' + rowData['invoiceId']}>{rowData['invoiceId']}</Link>
     },
     {'title': 'Ngày hóa đơn', field: 'invoiceDate'},
-    {'title': 'Khách hàng', field: 'toPartyCustomerId'},
+    {'title': 'Tên khách hàng', field: 'toPartyCustomerName'},
     {'title': 'Thành tiền', field: 'amount'},
   ];
 
