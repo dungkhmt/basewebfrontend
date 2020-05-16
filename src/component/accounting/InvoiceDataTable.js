@@ -43,6 +43,7 @@ export function Invoice() {
 export function InvoiceDetail() {
   const dispatch = useDispatch();
   const token = useSelector(state => state.auth.token);
+  const history = useHistory();
 
   const {invoiceId} = useParams();
 
@@ -102,6 +103,11 @@ export function InvoiceDetail() {
       columns={invoiceItemColumns}
       dataTable={invoiceItemDataTable}
       infos={invoiceItemInfos}
+      actions={invoiceId && (invoice['amount'] - invoice['paidAmount'] > 0) ? [(
+        <Button color={"primary"} variant={"contained"}
+                onClick={() => history.push('/quick-create-payment-application/' + invoiceId)}>
+          Thanh toán
+        </Button>)] : []}
     />
 
     <InvoiceDataTable
@@ -281,7 +287,7 @@ export function DistributorUnpaidInvoiceDetail() {
 
 function InvoiceDataTable(props) {
 
-  const {title, tableTitle = '', infos = [], columns = [], dataTable = []} = props;
+  const {title, tableTitle = '', infos = [], actions = [], columns = [], dataTable = []} = props;
 
   return <div>
     <h2>{title}</h2>
@@ -293,6 +299,7 @@ function InvoiceDataTable(props) {
       </Grid>
       <Grid item xs={4}
             style={{verticalAlign: 'text-bottom', textAlign: 'right', padding: '0px 50px 10px 30px'}}>
+        {actions.map(value => <div>{value}</div>)}
       </Grid>
     </Grid>
     <MaterialTable columns={columns} data={dataTable} title={tableTitle} options={{search: false}}/>

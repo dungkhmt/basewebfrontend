@@ -130,6 +130,7 @@ import SalesRoutesPlanning from "./component/salesroutes/SalesRoutesPlanning";
 import SalesRoutesPlanningPeriod from "./component/salesroutes/SalesRoutesPlanningPeriod"
 import SupplierList from "./component/supplier/SupplierList";
 import SupplierCreate from "./component/supplier/SupplierCreate";
+import QuickInvoicePayment from "./component/accounting/QuickInvoicePayment";
 
 function Routes(props) {
   // props nay tu parent transfer vao
@@ -716,6 +717,13 @@ function Routes(props) {
       />
 
       <PrivateRouteWithLayout
+        component={QuickInvoicePayment}
+        layout={Layout}
+        isAuthenticated={props.isAuthenticated}
+        path="/quick-create-payment-application/:invoiceId"
+      />
+
+      <PrivateRouteWithLayout
         component={PaymentApplication}
         layout={Layout}
         isAuthenticated={props.isAuthenticated}
@@ -971,14 +979,14 @@ function Routes(props) {
         path="/supplier/list" // props
       />
 
-        <PrivateRouteWithLayout
-          component={SupplierCreate} //props
-          layout={Layout} //props
-          isAuthenticated={props.isAuthenticated} // props
-          //isAuthenticated={true}
-          //exact                                   // props
-          path="/supplier/create" // props
-        />
+      <PrivateRouteWithLayout
+        component={SupplierCreate} //props
+        layout={Layout} //props
+        isAuthenticated={props.isAuthenticated} // props
+        //isAuthenticated={true}
+        //exact                                   // props
+        path="/supplier/create" // props
+      />
 
     </Switch>
   );
