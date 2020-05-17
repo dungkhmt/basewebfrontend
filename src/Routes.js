@@ -132,16 +132,18 @@ import SupplierList from "./component/supplier/SupplierList";
 import SupplierCreate from "./component/supplier/SupplierCreate";
 import QuickInvoicePayment from "./component/accounting/QuickInvoicePayment";
 import ProductPriceSupplier from "./component/supplier/ProductPriceSupplier";
+import PurchaseOrderList from "./component/order/PurchaseOrderList";
+import PurchaseOrderCreate from "./component/order/PurchaseOrderCreate";
 
 function Routes(props) {
-  // props nay tu parent transfer vao
-  return (
-    <Switch>
-      <PrivateRouteWithLayout
-        component={Home}
-        layout={Layout}
-        isAuthenticated={props.isAuthenticated}
-        exact
+    // props nay tu parent transfer vao
+    return (
+      <Switch>
+          <PrivateRouteWithLayout
+            component={Home}
+            layout={Layout}
+            isAuthenticated={props.isAuthenticated}
+            exact
         path="/"
       />
 
@@ -989,16 +991,34 @@ function Routes(props) {
           path="/supplier/create" // props
         />
 
-        <PrivateRouteWithLayout
-          component={ProductPriceSupplier} //props
-          layout={Layout} //props
-          isAuthenticated={props.isAuthenticated} // props
-          //isAuthenticated={true}
-          //exact                                   // props
-          path="/product-price-supplier/list" // props
-        />
+          <PrivateRouteWithLayout
+            component={ProductPriceSupplier} //props
+            layout={Layout} //props
+            isAuthenticated={props.isAuthenticated} // props
+            //isAuthenticated={true}
+            //exact                                   // props
+            path="/product-price-supplier/list" // props
+          />
 
-    </Switch>
+          <PrivateRouteWithLayout
+            component={PurchaseOrderList} //props
+            layout={Layout} //props
+            isAuthenticated={props.isAuthenticated} // props
+            //isAuthenticated={true}
+            //exact                                   // props
+            path="/purchase-order/list" // props
+          />
+
+          <PrivateRouteWithLayout
+            component={PurchaseOrderCreate} //props
+            layout={Layout} //props
+            isAuthenticated={props.isAuthenticated} // props
+            //isAuthenticated={true}
+            //exact                                   // props
+            path="/purchase-order/create/:supplierPartyId" // props
+          />
+
+      </Switch>
   );
 }
 

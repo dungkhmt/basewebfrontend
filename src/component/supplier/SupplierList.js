@@ -14,6 +14,13 @@ export default function SupplierList() {
   const columns = [
     {title: 'Mã nhà cung cấp', field: 'supplierCode'},
     {title: 'Tên nhà cung cấp', field: 'supplierName'},
+    {
+      title: '',
+      render: rowData => <Button color={"primary"} variant={"outlined"}
+                                 onClick={() => history.push('/purchase-order/create/' + rowData['partyId'])}>
+        Tạo đơn hàng
+      </Button>
+    }
   ];
 
   const [supplierList, setSupplierList] = useState([]);

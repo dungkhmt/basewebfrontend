@@ -549,12 +549,12 @@ export default function SideBar(props) {
 
               <ListItem button className={classes.nested} component={Link}
                         component={Link}
-                        to={process.env.PUBLIC_URL + "/purchase-order/create"}
+                        to={process.env.PUBLIC_URL + "/supplier/list"}
               >
                 <ListItemIcon>
                   <StarBorder/>
                 </ListItemIcon>
-                <ListItemText primary="Tạo mới đơn mua"/>
+                <ListItemText primary="DS nhà cung cấp"/>
               </ListItem>
 
             </List>
