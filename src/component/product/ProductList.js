@@ -6,7 +6,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 import { authGet, authGetImg } from "../../api";
 import { tableIcons } from "../../utils/iconutil";
-import {Box, Grid, Paper, Table} from "@material-ui/core";
+import {Box, Grid, Paper, Table, Button} from "@material-ui/core";
 import { makeStyles } from '@material-ui/core/styles';
 import clsx from 'clsx';
 import Card from '@material-ui/core/Card';
@@ -24,6 +24,13 @@ import ShareIcon from '@material-ui/icons/Share';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import MoreVertIcon from '@material-ui/icons/MoreVert';
 import { Container } from '@material-ui/core/Container';
+import NavigateNextIcon from '@material-ui/icons/NavigateNext';
+import NavigateBeforeIcon from '@material-ui/icons/NavigateBefore';
+import FirstPageIcon from '@material-ui/icons/FirstPage';
+import LastPageIcon from '@material-ui/icons/LastPage';
+import MenuItem from "@material-ui/core/MenuItem";
+import TextField from "@material-ui/core/TextField";
+
 
 
 function arrayBufferToBase64(buffer) {
@@ -40,6 +47,7 @@ function arrayBufferToBase64(buffer) {
 const useStyles = makeStyles((theme) => ({
   root: {
     maxWidth: 345,
+    maxHeight: 345
   },
   media: {
     height: 0,
@@ -62,17 +70,25 @@ const useStyles = makeStyles((theme) => ({
 
 
 
+
+
+
+
 function ProductList(props) {
   const token = useSelector((state) => state.auth.token);
   const dispatch = useDispatch();
   const [productList, setProductList] =  useState([]);
-  const [page, setPage] =  useState(new Number(0));
-  const [listPageSize, setListPageSize] =  useState([10,20,30]);
-  const [pageSize, setPageSize] =  useState(new Number(10));
+  const [page, setPage] =  useState(0);
+  const [listPageSize, setListPageSize] =  useState([4,8,12]);
+  const [pageSize, setPageSize] =  useState(new Number(4));
   const [listImg, setListImg] =  useState([]);
   const classes = useStyles();
-
+  const [totalPage, setTotalPage] = useState();
+  const [totalElements, setTotalElements] = useState();
+  const [change, setChange] = useState(false);
   useEffect(() => {
+
+
     authGet(
       dispatch,
       token,
@@ -81,84 +97,56 @@ function ProductList(props) {
         (res) => {
 
           setProductList(res.content);
-          console.log("productList",res.content);
+
+
+          if(res.totalElements % pageSize != 0){
+            setTotalPage(Math.floor(res.totalElements/pageSize));
+          }else{
+            setTotalPage(Math.floor(res.totalElements/pageSize-1));
+          }
+
         }
       )
-  },[]);
+  },[page+pageSize]);
+
+  const handlePageSizeChange = event =>{
+
+    if("" +(event.target.value - pageSize) != "0"){
+      setPageSize(event.target.value);
+      setPage(0);
+
+    }
+
+  }
 
 
-  // useEffect(() => {
-  //   let alFetch = [];
-  //   for(const p of productList){
+  const handleNevigateBeforeButton = ()=>{
+    if(page > 0){
+      setPage(page-1);
+    }
+  }
 
-  //     if(p.avatarUrl !== undefined){
-  //       alFetch.push(
-  //         authGetImg(dispatch, token, p.avatarUrl).then(
-  //           (res) => {
-  //             console.log("resaaaa ", res);
-  //             //console.log("res.arrayBuffer() ", res.arrayBuffer());
-  //             return res.arrayBuffer();
-  //           },
-  //           (error) =>{
-  //             console.log(error);
-  //           }
+  const handleNevigateNextButton = ()=>{
 
-  //         ).then((p) =>{
-  //           console.log("p ", p);
-  //           let base64Flag = "data:image/jpeg;base64,";
-  //           let imageStr = arrayBufferToBase64(p);
-  //           return base64Flag + imageStr;
-  //         })
-  //       );
+    if(page < totalPage){
+      setPage(page+1);
+    }
 
+  }
 
-
-  //     }
-
-
-  //   }
-  //   Promise.all(alFetch).then(
-  //     (res) => {
-  //       console.log("image", res)
-  //       setListImg(res);
-
-  //     }
-  //   )
-  // },[productList])
-
-
-
-  // const doc = new jsPDF({
-  //   unit: "pt",
-  //   orientation: "p",
-  //   //lineHeight: 1.2
-  // });
-
-
-
-  // const columns = [
-  //   {
-  //     field: "productId",
-  //     title: "Id",
-  //     render: (rowData) => (
-  //       <Link to={"/product/" + rowData.productId}>{rowData.productId}</Link>
-  //     ),
-  //   },
-  //   { field: "productName", title: "Name" },
-  //   { field: "productTypeDescription", title: "Type" },
-  //   { field: "uomDescription", title: "Uom" },
-  // ];
-
-  // const handleSubmit = () => {
-  //   doc.save("products.pdf");
-  // };
+  const handleFirstPageButton = () =>{
+    setPage(0);
+  }
+  const handleLastPageButton = () => {
+    setPage(totalPage);
+  }
 
   return (
 
     <div>
 
 
-      <Grid container spacing={12}>
+      <Grid container spacing={12} >
         {productList.map((p) => (
           <Grid item xs={3}>
             <Card className={classes.root}>
@@ -192,9 +180,131 @@ function ProductList(props) {
               </CardContent>
             </Card>
           </Grid>
+
         ))}
 
       </Grid>
+      <br></br>
+
+      <Grid container spacing={12}>
+        <Grid item xs={3}>
+
+        </Grid>
+        <Grid item xs={1.5}>
+
+
+
+
+          <Button
+            variant="contained"
+            color="primary"
+            onClick={handleFirstPageButton}
+          >
+            <FirstPageIcon></FirstPageIcon>
+          </Button>
+
+          <Button
+            variant="contained"
+            color="primary"
+            onClick={handleNevigateBeforeButton}
+          >
+            <NavigateBeforeIcon></NavigateBeforeIcon>
+          </Button>
+
+
+
+
+
+
+
+
+
+
+
+        </Grid>
+
+
+
+
+
+
+        <Grid item xs={1}>
+            <Typography variant="h5">
+                {" "}page {page+1} of {totalPage+1}
+            </Typography>
+
+        </Grid>
+
+
+
+
+
+
+
+
+        <Grid item xs={1.5}>
+
+          <Button
+              variant="contained"
+              color="primary"
+              onClick={handleNevigateNextButton}
+              >
+                <NavigateNextIcon></NavigateNextIcon>
+
+          </Button>
+
+          <Button
+              variant="contained"
+              color="primary"
+              onClick={handleLastPageButton}
+              >
+                <LastPageIcon></LastPageIcon>
+
+          </Button>
+
+
+
+
+        </Grid>
+        <Grid item xs={1}>
+        <Typography variant="h5">
+                {" "}page size
+            </Typography>
+        </Grid>
+
+        <Grid item xs={1}>
+          <Button
+                variant="contained"
+                color="#f0f8ff"
+          >
+            <TextField
+              value={pageSize}
+              onChange={handlePageSizeChange}
+              select
+            >
+              {listPageSize.map(p =>(
+                <MenuItem value={p} key={p}>
+                    {p}
+                </MenuItem>
+              ))}
+
+            </TextField>
+
+          </Button>
+
+
+        </Grid>
+
+
+
+
+
+
+      </Grid>
+
+
+
+
 
 
 
