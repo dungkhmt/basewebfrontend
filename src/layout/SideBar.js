@@ -457,14 +457,19 @@ export default function SideBar(props) {
                   button className={classes.nested}
                   className={classes.nested}
                   component={Link}
-                  to={process.env.PUBLIC_URL + "/salesroutes/planning"}
+                  to={process.env.PUBLIC_URL + "/salesroutes/plan"}
                 >
                   <ListItemIcon>
                     <StarBorder/>
                   </ListItemIcon>
                   <ListItemText primary="Kế hoạch tuyến"/>
                 </ListItem>
-                <ListItem button className={classes.nested}>
+                <ListItem 
+                  button 
+                  className={classes.nested}
+                  component={Link}
+                  to={process.env.PUBLIC_URL + "/salesroutes/configs"}
+                >
                   <ListItemIcon>
                     <StarBorder/>
                   </ListItemIcon>

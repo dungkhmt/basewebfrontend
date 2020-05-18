@@ -126,8 +126,12 @@ import CreatePostOffice from './component/postsystem/postoffice/CreatePostOffice
 import InventoryImport from "./component/inventory/InventoryImport";
 import ProductPriceCreate from "./component/product/ProductPriceCreate";
 import NumberFormatTextField from "./utils/NumberFormatTextField";
-import SalesRoutesPlanning from "./component/salesroutes/SalesRoutesPlanning";
-import SalesRoutesPlanningPeriod from "./component/salesroutes/SalesRoutesPlanningPeriod"
+import Plan from "./component/salesroutes/Plan";
+import PlanPeriod from "./component/salesroutes/PlanPeriod";
+import ListSalesman from "./component/salesroutes/ListSalesman";
+import SalesRouteDetail from "./component/salesroutes/SalesRouteDetail"
+import SalesRouteConfig from './component/salesroutes/SalesRouteConfig'
+import SalesmanDetail from "./component/salesroutes/SalesmanDetail"
 import SupplierList from "./component/supplier/SupplierList";
 import SupplierCreate from "./component/supplier/SupplierCreate";
 
@@ -378,17 +382,50 @@ function Routes(props) {
       />
 
       <PrivateRouteWithLayout
-        component={SalesRoutesPlanning}
+        component={Plan}
         layout={Layout}
         isAuthenticated={props.isAuthenticated}
-        path="/salesroutes/planning"
+        exact
+        path="/salesroutes/plan"
       />
 
       <PrivateRouteWithLayout
-        component={SalesRoutesPlanningPeriod}
+        component={PlanPeriod}
         layout={Layout}
         isAuthenticated={props.isAuthenticated}
-        path="/salesroutes/planning-period/:periodCode"
+        exact
+        path="/salesroutes/plan/period/:id"
+      />
+
+      <PrivateRouteWithLayout
+        component={SalesRouteDetail}
+        layout={Layout}
+        isAuthenticated={props.isAuthenticated}
+        exact
+        path="/salesroutes/plan/period/detail/:id"
+      />
+
+      <PrivateRouteWithLayout
+        component={SalesRouteConfig}
+        layout={Layout}
+        isAuthenticated={props.isAuthenticated}
+        path="/salesroutes/configs"
+      />
+
+      <PrivateRouteWithLayout
+        component={ListSalesman}
+        layout={Layout}
+        isAuthenticated={props.isAuthenticated}
+        exact
+        path="/salesroutes/salesman/list"
+      />
+
+    <PrivateRouteWithLayout
+        component={SalesmanDetail}
+        layout={Layout}
+        isAuthenticated={props.isAuthenticated}
+        exact
+        path="/salesroutes/salesman/detail/:id"
       />
 
       <PrivateRouteWithLayout
