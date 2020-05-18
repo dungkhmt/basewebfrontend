@@ -2,28 +2,30 @@ import React, {useEffect, useState} from "react";
 import Grid from "@material-ui/core/Grid";
 import {authGet, authPost} from "../../api";
 import {useDispatch, useSelector} from "react-redux";
-import {selectValueByIdName, textField, textFieldNumberFormat} from "../../utils/FormUtils";
+import {selectValueByIdName, textFieldNumberFormat} from "../../utils/FormUtils";
 import AddIcon from "@material-ui/icons/Add";
 import Button from "@material-ui/core/Button";
 import MaterialTable from "material-table";
-import {useHistory} from "react-router-dom";
+import {useHistory, useParams} from "react-router-dom";
 
-export default function InventoryImport() {
+export default function PurchaseOrderCreate() {
   const dispatch = useDispatch();
   const token = useSelector(state => state.auth.token);
   const history = useHistory();
 
-  const [facilityList, setFacilityList] = useState([]);
-  const [selectedFacility, setSelectedFacility] = useState({});
+  const {supplierPartyId} = useParams();
 
-  async function getAllFacility() {
-    let response = await authGet(dispatch, token, '/facility/all');
-    setFacilityList(response);
-    setSelectedFacility(response[0]);
-  }
+  const [supplier, setSupplier] = useState({});
 
   const [selectedProduct, setSelectedProduct] = useState({});
   const [productList, setProductList] = useState([]);
+
+  const [unitPrices, setUnitPrices] = useState({});
+
+  async function getSupplier() {
+    let supplier = await authGet(dispatch, token, '/get-supplier-by-id/' + supplierPartyId);
+    setSupplier(supplier);
+  }
 
   async function getProductList() {
     let response = await authPost(dispatch, token, '/get-list-product', {}).then(r => r.json());
@@ -31,17 +33,33 @@ export default function InventoryImport() {
     setSelectedProduct(response['products'][0]);
   }
 
+  async function getUnitPrices() {
+    let productPriceSuppliers = await authGet(dispatch, token,
+      '/get-all-product-price-supplier-by-supplier/' + supplierPartyId);
+
+    let unitPrices = {};
+
+    productPriceSuppliers.forEach(productPriceSupplier => unitPrices[productPriceSupplier['productId']] = productPriceSupplier['unitPrice']);
+
+    setUnitPrices(unitPrices);
+  }
+
   const [quantity, setQuantity] = useState(1);
 
   useEffect(() => {
-    Promise.all([getAllFacility(), getProductList()]).then(r => r);
+    Promise.all([getSupplier(), getProductList(), getUnitPrices()]).then(r => r);
   }, []);
 
   const [selectedProductList,] = useState([]);
   const [, rerender] = useState([]);
 
   function handleAdd() {
-    selectedProductList.push(Object.assign({quantity}, selectedProduct));
+    selectedProductList.push(Object.assign({
+        quantity,
+        unitPrice: unitPrices[selectedProduct['productId']],
+        price: unitPrices[selectedProduct['productId']] * quantity
+      },
+      selectedProduct));
     rerender([]);
   }
 
@@ -49,27 +67,26 @@ export default function InventoryImport() {
     {title: 'Mã Sản phẩm', field: 'productId'},
     {title: 'Tên sản phẩm', field: 'productName'},
     {title: 'Số lượng', field: 'quantity'},
+    {title: 'Đơn giá', field: 'unitPrice'},
+    {title: 'Thành tiền', field: 'price'},
   ];
 
   async function handleSubmit() {
     let body = {
-      inventoryItems: selectedProductList.map(value => ({
-        productId: value['productId'],
-        facilityId: selectedFacility['facilityId'],
-        quantityOnHandTotal: value['quantity']
-      }))
+      supplierPartyId,
+      productQuantities: selectedProductList
     };
-    let response = await authPost(dispatch, token, '/import-inventory-items', body).then(r => r.json());
-    if (response === 'ok') {
-      alert('Import successful');
+    let response = await authPost(dispatch, token, '/create-purchase-order', body).then(r => r.json());
+    if (response) {
+      alert('Tạo thành công');
     }
-    history.push('/inventory/list');
+    history.push('/purchase-order/list');
   }
 
   return <div>
-    <h2>Tạo mới nhập kho</h2>
+    <h2>Danh sách đơn mua</h2>
 
-    {selectValueByIdName('Chọn kho', facilityList, 'facilityId', 'facilityName', selectedFacility, setSelectedFacility)}
+    {supplier && supplier['supplierName'] ? <div><b>Nhà cung cấp: </b>{supplier['supplierName']}</div> : ''}
 
     <p/>
 
@@ -99,7 +116,7 @@ export default function InventoryImport() {
                    title={'Danh sách sản phẩm đã chọn'}/>
 
     <Button color={'primary'} variant={'contained'} onClick={handleSubmit}>Lưu</Button>
-    <Button color={'secondary'} variant={'contained'} onClick={() => history.push('/inventory/list')}>Hủy</Button>
+    <Button color={'secondary'} variant={'contained'} onClick={() => history.push('/purchase-order/list')}>Hủy</Button>
 
   </div>;
 }

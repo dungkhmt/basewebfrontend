@@ -17,6 +17,7 @@ import {useHistory} from "react-router-dom";
 
 import {useDispatch, useSelector} from "react-redux";
 import {CircularProgress} from "@material-ui/core";
+import {NumberFormatCustom} from "../../utils/NumberFormatTextField";
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -291,6 +292,9 @@ function UserCreate(props) {
                     label="Số lượng"
                     value={quantity}
                     onChange={handleQuantityChange}
+                    InputProps={{
+                      inputComponent: NumberFormatCustom,
+                    }}
                   />
                 </CardContent>
                 <CardActions>

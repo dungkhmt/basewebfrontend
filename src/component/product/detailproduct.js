@@ -61,6 +61,10 @@ function ProductDetail(props) {
     authGet(dispatch, token, '/get-product-price-history/' + productId).then(r => setPriceList(r));
 
   }, []);
+
+
+
+
   useEffect(() => {
     let alFetch = [];
     if (data.contentUrls !== undefined) {
@@ -149,6 +153,7 @@ function ProductDetail(props) {
               Images
             </Typography>
             {img.map((i, index) => (
+
               <img key={index} src={i} width="30%" height="30%"/>
             ))}
           </Paper>

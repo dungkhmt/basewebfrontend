@@ -10,6 +10,7 @@ import {Select} from "@material-ui/core";
 import MenuItem from "@material-ui/core/MenuItem";
 import TextField from "@material-ui/core/TextField";
 import {makeStyles} from "@material-ui/core/styles";
+import {NumberFormatCustom} from "../../utils/NumberFormatTextField";
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -56,7 +57,6 @@ export default function InventoryOrderExport() {
       render: rowData => <TextField
         id="quantity"
         // label="Số lượng"
-        type="number"
         className={classes.textField}
         InputLabelProps={{
           shrink: true,
@@ -65,7 +65,8 @@ export default function InventoryOrderExport() {
         inputProps={selectedIdSet.has(rowData['orderItemSeqId']) ? {
           min: "1",
           max: "" + Math.min(rowData['quantity'], rowData['inventoryQuantity']),
-          step: "1"
+          step: "1",
+          inputComponent: NumberFormatCustom,
         } : {readOnly: true}}
         value={orElse(selectedQuantity[rowData['orderItemSeqId']], 0)}
         onChange={event => {

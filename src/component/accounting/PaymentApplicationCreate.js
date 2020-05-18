@@ -9,7 +9,7 @@ import React, {useEffect, useState} from "react";
 import {useDispatch, useSelector} from "react-redux";
 import {useHistory, useParams} from "react-router-dom";
 import {authGet, authPost} from "../../api";
-import {selectValueCallback, textField} from "../../utils/FormUtils";
+import {textFieldNumberFormat} from "../../utils/FormUtils";
 import InvoicePopup from "./InvoicePopup";
 
 export default function PaymentApplicationCreate() {
@@ -84,7 +84,8 @@ export default function PaymentApplicationCreate() {
 
   return (
     <div>
-      <InvoicePopup open={popupInvoice} handleClose={handleCloseInvoicePopup} updateSelectedInvoice={setSelectedInvoice}/>
+      <InvoicePopup open={popupInvoice} handleClose={handleCloseInvoicePopup}
+                    updateSelectedInvoice={setSelectedInvoice}/>
       <h2>Khớp lệnh thanh toán</h2>
       <Grid container spacing={3}>
         <Grid
@@ -126,9 +127,9 @@ export default function PaymentApplicationCreate() {
         label="Invoice Code"
         id="invoice-input"
         defaultValue=""
-        value={selectedInvoice!=null? selectedInvoice.invoiceId:""}
+        value={selectedInvoice != null ? selectedInvoice.invoiceId : ""}
         disabled
-        InputLabelProps={{ shrink: true }}
+        InputLabelProps={{shrink: true}}
         InputProps={{
           endAdornment: (
             <InputAdornment position="end">
@@ -144,10 +145,9 @@ export default function PaymentApplicationCreate() {
         }}
       />
       <p/>
-      {textField(
+      {textFieldNumberFormat(
         "amount",
         "Số tiền thanh toán",
-        "number",
         amount,
         (newAmount) => {
           if (newAmount > 0 && newAmount <= Math.min(

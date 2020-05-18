@@ -3,7 +3,7 @@ import {useDispatch, useSelector} from "react-redux";
 import {useHistory, useParams} from "react-router-dom";
 import {authGet, authPost} from "../../api";
 import Button from "@material-ui/core/Button";
-import {textField} from "../../utils/FormUtils";
+import {textField, textFieldNumberFormat} from "../../utils/FormUtils";
 import {dateFromThru, getDateFromNowPlus, toFormattedDateTime} from "../../utils/dateutils";
 
 export default function ProductPriceCreate() {
@@ -43,9 +43,8 @@ export default function ProductPriceCreate() {
     <p><b>Mã sản phẩm: </b> {productId}</p>
     <p><b>Tên sản phẩm: </b> {product ? product['productName'] : ''}</p>
     <p>{dateFromThru(fromDate, thruDate, setFromDate, setThruDate)}</p>
-    <p>{textField('price', 'Giá bán', 'number', price, newPrice => {
-      newPrice = parseInt(newPrice);
-      if (newPrice > 0) {
+    <p>{textFieldNumberFormat('price', 'Giá bán', price, newPrice => {
+      if (parseInt(newPrice) > 0) {
         setPrice(newPrice);
       }
     })}</p>
