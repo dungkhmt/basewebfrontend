@@ -138,6 +138,12 @@ import ListSalesman from "./component/salesroutes/ListSalesman";
 import SalesRouteDetail from "./component/salesroutes/SalesRouteDetail"
 import SalesRouteConfig from './component/salesroutes/SalesRouteConfig'
 import SalesmanDetail from "./component/salesroutes/SalesmanDetail"
+import ProductEdit from "./component/product/ProductEdit";
+import SetPrimaryImg from "./component/product/SetPrimaryImg"
+
+
+
+
 
 function Routes(props) {
     // props nay tu parent transfer vao
@@ -492,6 +498,21 @@ function Routes(props) {
         isAuthenticated={props.isAuthenticated}
         path="/products/create"
       />
+
+      <PrivateRouteWithLayout
+        component={SetPrimaryImg}
+        layout={Layout}
+        isAuthenticated={props.isAuthenticated}
+        path="/set-product-primary-img/:productId"
+        />
+
+      <PrivateRouteWithLayout
+        component={ProductEdit}
+        layout={Layout}
+        isAuthenticated={props.isAuthenticated}
+        path="/product-edit/:productId"
+      />
+
       <PrivateRouteWithLayout
         component={ProductList}
         layout={Layout}
