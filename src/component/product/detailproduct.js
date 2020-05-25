@@ -6,13 +6,12 @@ import TableRow from "@material-ui/core/TableRow";
 import Typography from "@material-ui/core/Typography";
 import React, {useEffect, useState} from "react";
 import {useDispatch, useSelector} from "react-redux";
-import {useParams} from "react-router-dom";
-import {authGet, authGetImg, authPost} from "../../api";
+import {Link, useParams} from "react-router-dom";
+import {authGet, authGetImg} from "../../api";
 import MaterialTable from "material-table";
 import Button from "@material-ui/core/Button";
 import {useHistory} from "react-router";
 import CardActions from '@material-ui/core/CardActions';
-import { Link } from "react-router-dom";
 
 
 const useStyles = makeStyles((theme) => ({
@@ -66,8 +65,6 @@ function ProductDetail(props) {
   }, []);
 
 
-
-
   useEffect(() => {
     let alFetch = [];
     if (data.contentUrls !== undefined) {
@@ -98,7 +95,7 @@ function ProductDetail(props) {
   return (
     <div>
       <CardActions>
-        <Link to={"/product-edit/"+productId}>
+        <Link to={"/product-edit/" + productId}>
           <Button
             variant="contained"
             color="primary"
@@ -107,7 +104,6 @@ function ProductDetail(props) {
           </Button>
         </Link>
       </CardActions>
-
 
 
       <Grid container spacing={3}>
