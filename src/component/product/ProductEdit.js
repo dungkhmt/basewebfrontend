@@ -24,18 +24,18 @@ function ProductEdit(props){
     const [data, setData] = useState({});
     const [img, setImg] = useState([]);
 
-  //   useEffect(() => {
-  //       authGet(dispatch, token, "/get-product-for-edit/" + productId).then(
-  //         (res) => {
-  //           console.log("res", res);
-  //           setData(res);
-  //         },
-  //         (error) => {
-  //           setData([]);
-  //         }
-  //       );
+    useEffect(() => {
+        authGet(dispatch, token, "/get-product-for-edit/" + productId).then(
+          (res) => {
+            console.log("res", res);
+            setData(res);
+          },
+          (error) => {
+            setData([]);
+          }
+        );
 
-  //     }, []);
+      }, []);
 
 
 
