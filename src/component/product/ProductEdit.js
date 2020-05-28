@@ -1,11 +1,7 @@
-import React, {useEffect, useState} from "react";
+import React, {useState} from "react";
 import {useDispatch, useSelector} from "react-redux";
-import {authPost, authPostMultiPart, authGet, authGetImg} from "../../api";
-import TextField from "@material-ui/core/TextField";
-import {useParams} from "react-router-dom";
-import { Button } from "@material-ui/core";
-import { useHistory, Link } from "react-router-dom";
-
+import {Link, useParams} from "react-router-dom";
+import {Button} from "@material-ui/core";
 
 
 function arrayBufferToBase64(buffer) {
@@ -17,12 +13,12 @@ function arrayBufferToBase64(buffer) {
   return window.btoa(binary);
 }
 
-function ProductEdit(props){
-    const {productId} = useParams();
-    const token = useSelector((state) => state.auth.token);
-    const dispatch = useDispatch();
-    const [data, setData] = useState({});
-    const [img, setImg] = useState([]);
+function ProductEdit(props) {
+  const {productId} = useParams();
+  const token = useSelector((state) => state.auth.token);
+  const dispatch = useDispatch();
+  const [data, setData] = useState({});
+  const [img, setImg] = useState([]);
 
     useEffect(() => {
         authGet(dispatch, token, "/get-product-for-edit/" + productId).then(
@@ -36,7 +32,6 @@ function ProductEdit(props){
         );
 
       }, []);
-
 
 
   // useEffect(() => {
@@ -65,22 +60,22 @@ function ProductEdit(props){
   // }, [data]);
 
 
-
-    return(
-        <div>
-          <Link to={"/set-product-primary-img/"+productId}>
-            <Button
-              variant="contained"
-              color="primary"
-            >
-              Thay đổi ảnh hiển thị
-            </Button>
-          </Link>
-
-
-        </div>
+  return (
+    <div>
+      <Link to={"/set-product-primary-img/" + productId}>
+        <Button
+          variant="contained"
+          color="primary"
+        >
+          Thay đổi ảnh hiển thị
+        </Button>
+      </Link>
 
 
-    );
+    </div>
+
+
+  );
 }
+
 export default ProductEdit;

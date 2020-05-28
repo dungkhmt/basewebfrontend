@@ -3,7 +3,7 @@ import {useDispatch, useSelector} from "react-redux";
 import {useHistory, useParams} from "react-router-dom";
 import {authGet, authPost} from "../../api";
 import Button from "@material-ui/core/Button";
-import {textField, textFieldNumberFormat} from "../../utils/FormUtils";
+import {textFieldNumberFormat} from "../../utils/FormUtils";
 import {dateFromThru, getDateFromNowPlus, toFormattedDateTime} from "../../utils/dateutils";
 
 export default function ProductPriceCreate() {

@@ -17,7 +17,7 @@ export function Invoice() {
     },
     {'title': 'Ngày hóa đơn', field: 'invoiceDate'},
     {'title': 'Tên khách hàng', field: 'toPartyCustomerName'},
-    {'title': 'Thành tiền', field: 'amount'},
+    {'title': 'Thành tiền (VND)', field: 'amount'},
   ];
 
   const [dataTable, setDataTable] = useState([]);
