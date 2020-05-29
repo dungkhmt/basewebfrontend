@@ -139,6 +139,11 @@ import SalesRouteDetail from "./component/salesroutes/SalesRouteDetail"
 import SalesRouteConfig from './component/salesroutes/SalesRouteConfig'
 import SalesmanDetail from "./component/salesroutes/SalesmanDetail"
 
+import CoursesList from './component/education/CoursesList'
+import ClassesList from './component/education/ClassesList'
+import TeachersList from './component/education/TeachersList'
+import AssignmentList from './component/education/AssignmentList'
+
 function Routes(props) {
     // props nay tu parent transfer vao
     return (
@@ -1053,6 +1058,42 @@ function Routes(props) {
             //isAuthenticated={true}
             //exact                                   // props
             path="/purchase-order/create/:supplierPartyId" // props
+          />
+
+          <PrivateRouteWithLayout
+            component={CoursesList} //props
+            layout={Layout} //props
+            isAuthenticated={props.isAuthenticated} // props
+            //isAuthenticated={true}
+            //exact                                   // props
+            path="/edu/courses-list" // props
+          />
+
+          <PrivateRouteWithLayout
+            component={TeachersList} //props
+            layout={Layout} //props
+            isAuthenticated={props.isAuthenticated} // props
+            //isAuthenticated={true}
+            //exact                                   // props
+            path="/edu/teachers-list" // props
+          />
+
+          <PrivateRouteWithLayout
+            component={ClassesList} //props
+            layout={Layout} //props
+            isAuthenticated={props.isAuthenticated} // props
+            //isAuthenticated={true}
+            //exact                                   // props
+            path="/edu/classes-list" // props
+          />
+
+          <PrivateRouteWithLayout
+            component={AssignmentList} //props
+            layout={Layout} //props
+            isAuthenticated={props.isAuthenticated} // props
+            //isAuthenticated={true}
+            //exact                                   // props
+            path="/edu/assignment" // props
           />
 
       </Switch>
