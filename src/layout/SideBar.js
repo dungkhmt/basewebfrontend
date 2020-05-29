@@ -452,8 +452,8 @@ export default function SideBar(props) {
                   <ListItemText primary="Danh sách khách hàng"/>
                 </ListItem>
 
-                <ListItem 
-                  button className={classes.nested}
+                <ListItem
+                  button
                   className={classes.nested}
                   component={Link}
                   to={process.env.PUBLIC_URL + "/salesroutes/plan"}
@@ -463,8 +463,8 @@ export default function SideBar(props) {
                   </ListItemIcon>
                   <ListItemText primary="Kế hoạch tuyến"/>
                 </ListItem>
-                <ListItem 
-                  button 
+                <ListItem
+                  button
                   className={classes.nested}
                   component={Link}
                   to={process.env.PUBLIC_URL + "/salesroutes/configs"}
@@ -523,7 +523,7 @@ export default function SideBar(props) {
               </ListItem>
 
 
-              <ListItem button className={classes.nested} component={Link}
+              <ListItem button className={classes.nested}
                         component={Link}
                         to={process.env.PUBLIC_URL + "/supplier/create"}
               >
@@ -557,7 +557,7 @@ export default function SideBar(props) {
               </ListItem>
 
 
-              <ListItem button className={classes.nested} component={Link}
+              <ListItem button className={classes.nested}
                         component={Link}
                         to={process.env.PUBLIC_URL + "/supplier/list"}
               >
