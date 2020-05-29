@@ -140,6 +140,7 @@ import SalesRouteConfig from './component/salesroutes/SalesRouteConfig'
 import SalesmanDetail from "./component/salesroutes/SalesmanDetail"
 import ProductEdit from "./component/product/ProductEdit";
 import SetPrimaryImg from "./component/product/SetPrimaryImg"
+import AddProductImg from "./component/product/AddProductImg";
 
 
 function Routes(props) {
@@ -494,6 +495,14 @@ function Routes(props) {
         layout={Layout}
         isAuthenticated={props.isAuthenticated}
         path="/products/create"
+      />
+
+
+      <PrivateRouteWithLayout
+        component={AddProductImg}
+        layout={Layout}
+        isAuthenticated={props.isAuthenticated}
+        path="/product-add-img/:productId"
       />
 
       <PrivateRouteWithLayout
