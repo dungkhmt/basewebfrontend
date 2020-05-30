@@ -1,20 +1,14 @@
-import {
-  Grid,
-  IconButton,
-  InputAdornment,
-  Paper,
-  TextField,
-  Typography,
-} from "@material-ui/core";
+import {Grid, IconButton, InputAdornment, Paper, TextField, Typography,} from "@material-ui/core";
 import Dialog from "@material-ui/core/Dialog";
-import { makeStyles } from "@material-ui/core/styles";
+import {makeStyles} from "@material-ui/core/styles";
 import KeyboardArrowRightIcon from "@material-ui/icons/KeyboardArrowRight";
 import SearchRoundedIcon from "@material-ui/icons/SearchRounded";
 import MaterialTable from "material-table";
-import { default as React, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { Link } from "react-router-dom";
-import { authGet } from "../../api";
+import {default as React, useState} from "react";
+import {useDispatch, useSelector} from "react-redux";
+import {Link} from "react-router-dom";
+import {authGet} from "../../api";
+
 const useStyles = makeStyles((theme) => ({
   root: {
     flexGrow: 1,
@@ -51,9 +45,9 @@ export default function InvoicePopup(props) {
         </Link>
       ),
     },
-    { title: "Ngày hóa đơn", field: "invoiceDate" },
-    { title: "Khách hàng", field: "toPartyCustomerId" },
-    { title: "Thành tiền", field: "amount" },
+    {title: "Ngày hóa đơn", field: "invoiceDate"},
+    {title: "Khách hàng", field: "toPartyCustomerId"},
+    {title: "Thành tiền", field: "amount"},
   ];
 
   // const handleUpdateFilter = () => {
@@ -89,7 +83,7 @@ export default function InvoicePopup(props) {
               InputProps={{
                 startAdornment: (
                   <InputAdornment position="start">
-                    <KeyboardArrowRightIcon />
+                    <KeyboardArrowRightIcon/>
                   </InputAdornment>
                 ),
               }}
@@ -104,14 +98,14 @@ export default function InvoicePopup(props) {
               InputProps={{
                 startAdornment: (
                   <InputAdornment position="start">
-                    <KeyboardArrowRightIcon />
+                    <KeyboardArrowRightIcon/>
                   </InputAdornment>
                 ),
               }}
             />
 
             <IconButton onClick={() => tableRef.current.onQueryChange()}>
-              <SearchRoundedIcon color="primary" />
+              <SearchRoundedIcon color="primary"/>
             </IconButton>
           </Paper>
         </Grid>
@@ -138,12 +132,12 @@ export default function InvoicePopup(props) {
                   dispatch,
                   token,
                   url +
-                    "?size=" +
-                    query.pageSize +
-                    "&page=" +
-                    query.page +
-                    sortParam +
-                    filterParam
+                  "?size=" +
+                  query.pageSize +
+                  "&page=" +
+                  query.page +
+                  sortParam +
+                  filterParam
                 ).then((res) => {
                   resolve({
                     data: res.content,
@@ -154,7 +148,7 @@ export default function InvoicePopup(props) {
               })
             }
             title={""}
-            options={{ search: false }}
+            options={{search: false}}
             onRowClick={(event, rowData) => {
               props.updateSelectedInvoice(rowData);
               props.handleClose();

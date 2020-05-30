@@ -3,27 +3,24 @@ import Button from "@material-ui/core/Button";
 import Card from "@material-ui/core/Card";
 import CardActions from "@material-ui/core/CardActions";
 import CardContent from "@material-ui/core/CardContent";
-import { makeStyles } from "@material-ui/core/styles";
+import {makeStyles} from "@material-ui/core/styles";
 import TextField from "@material-ui/core/TextField";
 import Typography from "@material-ui/core/Typography";
 import InputLabel from "@material-ui/core/InputLabel";
 import MenuItem from "@material-ui/core/MenuItem";
-import FormHelperText from "@material-ui/core/FormHelperText";
 import FormControl from "@material-ui/core/FormControl";
 import Select from "@material-ui/core/Select";
 import Input from "@material-ui/core/Input";
 
-import { failed } from "../../action/Auth";
-import {
-  KeyboardDatePicker,
-  MuiPickersUtilsProvider
-} from "@material-ui/pickers";
-import React, {useEffect, useState } from "react";
-import { useHistory } from "react-router-dom";
-import { authPost, authGet } from "../../api";
-import { API_URL } from "../../config/config";
-import { useDispatch, useSelector } from "react-redux";
-import { CircularProgress } from "@material-ui/core";
+import {failed} from "../../action/Auth";
+import {KeyboardDatePicker, MuiPickersUtilsProvider} from "@material-ui/pickers";
+import React, {useEffect, useState} from "react";
+import {useHistory} from "react-router-dom";
+import {authPost} from "../../api";
+import {API_URL} from "../../config/config";
+import {useDispatch, useSelector} from "react-redux";
+import {CircularProgress} from "@material-ui/core";
+
 const useStyles = makeStyles(theme => ({
   root: {
     padding: theme.spacing(4),
@@ -48,6 +45,7 @@ const MenuProps = {
     }
   }
 };
+
 function UserCreate(props) {
   const token = useSelector(state => state.auth.token);
   const dispatch = useDispatch();
@@ -71,29 +69,30 @@ function UserCreate(props) {
 
   const classes = useStyles();
 
-  function getSecurityGroups(){
+  function getSecurityGroups() {
     fetch(
-      API_URL + '/get-security-groups', 
+      API_URL + '/get-security-groups',
       {
         method: 'GET',
-        headers: { 'Content-Type': 'application/json',"X-Auth-Token": token}
+        headers: {'Content-Type': 'application/json', "X-Auth-Token": token}
       }
     ).then(response => response.json())
-        .then(response =>{
-			console.log(response);
-			let arr = [];
-			response.forEach(d => {
-				arr.push(d);
-			});
-            setSecurityGroups(arr);
-            //console.log('getDepartmentList = ',departments);
-        });    
+      .then(response => {
+        console.log(response);
+        let arr = [];
+        response.forEach(d => {
+          arr.push(d);
+        });
+        setSecurityGroups(arr);
+        //console.log('getDepartmentList = ',departments);
+      });
   }
-  useEffect( () =>{
+
+  useEffect(() => {
     //let lst = authGet(dispatch, token,"/get-security-groups");
     //console.log(lst);
     getSecurityGroups();
-  },[]);
+  }, []);
 
   const handleUserNameChange = event => {
     setUserName(event.target.value);
@@ -250,21 +249,20 @@ function UserCreate(props) {
                   multiple
                   value={roles}
                   onChange={handleRoleChange}
-                  input={<Input />}
+                  input={<Input/>}
                   MenuProps={MenuProps}
                 >
 
-                {securityGroups.map(s => (
-                  <MenuItem 
-                    key={s.groupId}
-                    value={s.groupId}
-                  >
-                    {s.description}
-                  </MenuItem>
-                ))}
+                  {securityGroups.map(s => (
+                    <MenuItem
+                      key={s.groupId}
+                      value={s.groupId}
+                    >
+                      {s.description}
+                    </MenuItem>
+                  ))}
 
-                  
-                  
+
                 </Select>
               </FormControl>
             </div>
@@ -277,7 +275,7 @@ function UserCreate(props) {
             color="primary"
             onClick={handleSubmit}
           >
-            {isRequesting ? <CircularProgress /> : "Save"}
+            {isRequesting ? <CircularProgress/> : "Save"}
           </Button>
         </CardActions>
       </Card>

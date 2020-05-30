@@ -95,14 +95,28 @@ function ProductDetail(props) {
   return (
     <div>
       <CardActions>
-        <Link to={"/product-edit/" + productId}>
+
+
+        <Link to={"/set-product-primary-img/" + productId}>
           <Button
             variant="contained"
             color="primary"
           >
-            Thay đổi thông tin sản phẩm
+            Thay đổi ảnh hiển thị
           </Button>
         </Link>
+
+
+        <Link to={"/product-add-img/" + productId}>
+          <Button
+            variant="contained"
+            color="primary"
+          >
+            Thêm ảnh hiện thị cho sản phẩm
+          </Button>
+        </Link>
+
+
       </CardActions>
 
 

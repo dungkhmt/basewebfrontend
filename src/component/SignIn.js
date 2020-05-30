@@ -1,5 +1,4 @@
-import React, { useState } from "react";
-import Avatar from "@material-ui/core/Avatar";
+import React, {useState} from "react";
 import Button from "@material-ui/core/Button";
 import CssBaseline from "@material-ui/core/CssBaseline";
 import TextField from "@material-ui/core/TextField";
@@ -8,24 +7,22 @@ import Checkbox from "@material-ui/core/Checkbox";
 import Link from "@material-ui/core/Link";
 import Grid from "@material-ui/core/Grid";
 import Box from "@material-ui/core/Box";
-import LockOutlinedIcon from "@material-ui/icons/LockOutlined";
 import Typography from "@material-ui/core/Typography";
-import { makeStyles } from "@material-ui/core/styles";
+import {makeStyles} from "@material-ui/core/styles";
 import Container from "@material-ui/core/Container";
-import { useDispatch } from "react-redux";
 //import { login } from "../action";
-import { Redirect } from "react-router";
+import {Redirect} from "react-router";
 import CircularProgress from "@material-ui/core/CircularProgress";
 
 function Copyright() {
   return (
     <Typography variant="body2" color="textSecondary" align="center">
       {"Copyright © "}
-      
+
       <Link color="inherit" href="">
-        D 
+        D
       </Link>{" "}
-      
+
       {new Date().getFullYear()}
       {"."}
     </Typography>
@@ -77,13 +74,13 @@ export default function SignIn(props) {
     props.requestLogin(userName, password);
   };
   if (props.isAuthenticated === true)
-    return <Redirect to={{ pathname: "/", state: { from: props.location } }} />;
+    return <Redirect to={{pathname: "/", state: {from: props.location}}}/>;
   else
     return (
       <Container component="main" maxWidth="xs">
-        <CssBaseline />
+        <CssBaseline/>
         <div className={classes.paper}>
-         
+
           <img
             //alt="Hust"
             //className={classes.avatar}
@@ -117,21 +114,21 @@ export default function SignIn(props) {
               autoComplete="current-password"
             />
             <FormControlLabel
-              control={<Checkbox value="remember" color="primary" />}
+              control={<Checkbox value="remember" color="primary"/>}
               label="Remember me"
             />
             {props.isRequesting === true ? (
               <Button
-              disabled={true}
-              type="submit"
-              fullWidth
-              variant="contained"
-              color="primary"
-              className={classes.submit}
-            >
-              <CircularProgress /> Sign In
-            </Button>
-              
+                disabled={true}
+                type="submit"
+                fullWidth
+                variant="contained"
+                color="primary"
+                className={classes.submit}
+              >
+                <CircularProgress/> Sign In
+              </Button>
+
             ) : (
               <Button
                 type="submit"
@@ -158,7 +155,7 @@ export default function SignIn(props) {
           </form>
         </div>
         <Box mt={8}>
-          <Copyright />
+          <Copyright/>
         </Box>
       </Container>
     );

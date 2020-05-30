@@ -1728,7 +1728,7 @@ export default function SideBar(props) {
                 button
                 className={classes.nested}
                 component={Link}
-                to={process.env.PUBLIC_URL + ""}
+                to={process.env.PUBLIC_URL + "/edu/courses-list"}
               >
                 <ListItemIcon>
                   <StarBorder/>
@@ -1740,7 +1740,7 @@ export default function SideBar(props) {
                 button
                 className={classes.nested}
                 component={Link}
-                to={process.env.PUBLIC_URL + ""}
+                to={process.env.PUBLIC_URL + "/edu/teachers-list"}
               >
                 <ListItemIcon>
                   <StarBorder/>
@@ -1752,7 +1752,7 @@ export default function SideBar(props) {
                 button
                 className={classes.nested}
                 component={Link}
-                to={process.env.PUBLIC_URL + ""}
+                to={process.env.PUBLIC_URL + "/edu/classes-list"}
               >
                 <ListItemIcon>
                   <StarBorder/>
@@ -1765,7 +1765,7 @@ export default function SideBar(props) {
                 button
                 className={classes.nested}
                 component={Link}
-                to={process.env.PUBLIC_URL + ""}
+                to={process.env.PUBLIC_URL + "/edu/assignment"}
               >
                 <ListItemIcon>
                   <StarBorder/>

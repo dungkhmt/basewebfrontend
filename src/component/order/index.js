@@ -1,1 +1,1 @@
-export { default as OrderCreate } from "./OrderCreate";
+export {default as OrderCreate} from "./OrderCreate";

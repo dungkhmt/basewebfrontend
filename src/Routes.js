@@ -140,7 +140,13 @@ import SalesRouteConfig from './component/salesroutes/SalesRouteConfig'
 import SalesmanDetail from "./component/salesroutes/SalesmanDetail"
 import ProductEdit from "./component/product/ProductEdit";
 import SetPrimaryImg from "./component/product/SetPrimaryImg"
+import AddProductImg from "./component/product/AddProductImg";
 
+
+import CoursesList from './component/education/CoursesList'
+import ClassesList from './component/education/ClassesList'
+import TeachersList from './component/education/TeachersList'
+import AssignmentList from './component/education/AssignmentList'
 
 function Routes(props) {
   // props nay tu parent transfer vao
@@ -494,6 +500,14 @@ function Routes(props) {
         layout={Layout}
         isAuthenticated={props.isAuthenticated}
         path="/products/create"
+      />
+
+
+      <PrivateRouteWithLayout
+        component={AddProductImg}
+        layout={Layout}
+        isAuthenticated={props.isAuthenticated}
+        path="/product-add-img/:productId"
       />
 
       <PrivateRouteWithLayout
@@ -1035,6 +1049,78 @@ function Routes(props) {
         //isAuthenticated={true}
         //exact                                   // props
         path="/supplier/list" // props
+      />
+
+      <PrivateRouteWithLayout
+        component={SupplierCreate} //props
+        layout={Layout} //props
+        isAuthenticated={props.isAuthenticated} // props
+        //isAuthenticated={true}
+        //exact                                   // props
+        path="/supplier/create" // props
+      />
+
+      <PrivateRouteWithLayout
+        component={ProductPriceSupplier} //props
+        layout={Layout} //props
+        isAuthenticated={props.isAuthenticated} // props
+        //isAuthenticated={true}
+        //exact                                   // props
+        path="/product-price-supplier/list" // props
+      />
+
+      <PrivateRouteWithLayout
+        component={PurchaseOrderList} //props
+        layout={Layout} //props
+        isAuthenticated={props.isAuthenticated} // props
+        //isAuthenticated={true}
+        //exact                                   // props
+        path="/purchase-order/list" // props
+      />
+
+      <PrivateRouteWithLayout
+        component={PurchaseOrderCreate} //props
+        layout={Layout} //props
+        isAuthenticated={props.isAuthenticated} // props
+        //isAuthenticated={true}
+        //exact                                   // props
+        path="/purchase-order/create/:supplierPartyId" // props
+      />
+
+      <PrivateRouteWithLayout
+        component={CoursesList} //props
+        layout={Layout} //props
+        isAuthenticated={props.isAuthenticated} // props
+        //isAuthenticated={true}
+        //exact                                   // props
+        path="/edu/courses-list" // props
+      />
+
+      <PrivateRouteWithLayout
+        component={TeachersList} //props
+        layout={Layout} //props
+        isAuthenticated={props.isAuthenticated} // props
+        //isAuthenticated={true}
+        //exact                                   // props
+        path="/edu/teachers-list" // props
+      />
+
+      <PrivateRouteWithLayout
+        component={ClassesList} //props
+        layout={Layout} //props
+        isAuthenticated={props.isAuthenticated} // props
+        //isAuthenticated={true}
+        //exact                                   // props
+        path="/edu/classes-list" // props
+      />
+
+      <PrivateRouteWithLayout
+        component={AssignmentList} //props
+        layout={Layout} //props
+        isAuthenticated={props.isAuthenticated} // props
+        //isAuthenticated={true}
+        //exact                                   // props
+        path="/edu/assignment" // props
       />
 
       <PrivateRouteWithLayout

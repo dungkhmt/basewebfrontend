@@ -4,12 +4,13 @@ import "./index.css";
 import App from "./App";
 import * as serviceWorker from "./serviceWorker";
 import appReducer from "./reducers";
-import { createStore, applyMiddleware } from "redux";
+import {applyMiddleware, createStore} from "redux";
 import thunkMiddleware from "redux-thunk";
-import { Provider } from "react-redux";
-import { composeWithDevTools } from "redux-devtools-extension";
-import { createLogger } from "redux-logger";
+import {Provider} from "react-redux";
+import {composeWithDevTools} from "redux-devtools-extension";
+import {createLogger} from "redux-logger";
 import {LOGOUT_SUCCESS} from "./action/Auth"
+
 const loggerMiddleware = createLogger();
 let middleware = [
   thunkMiddleware // lets us dispatch() functions
@@ -17,24 +18,26 @@ let middleware = [
 if (process.env.NODE_ENV !== "production") {
   middleware = [...middleware, loggerMiddleware]; // neat middleware that logs actions
 }
-var startState={};
-if( localStorage.getItem('TOKEN')!==null){
+var startState = {};
+if (localStorage.getItem('TOKEN') !== null) {
   startState = {
     auth: {
       token: localStorage.getItem('TOKEN'),
       isAuthenticated: true
-  }};
+    }
+  };
 } else {
   startState = {
     auth: {
       token: null,
       isAuthenticated: false
-  }};
-};
+    }
+  };
+}
 
 
 const rootReducer = (state, action) => {
-  if (action.type === LOGOUT_SUCCESS ) {
+  if (action.type === LOGOUT_SUCCESS) {
     state = undefined
   }
 
@@ -50,13 +53,13 @@ const store = createStore(
   ),
 );
 
-store.subscribe(() =>{
+store.subscribe(() => {
   localStorage.setItem('TOKEN', store.getState().auth.token);
 });
 
 ReactDOM.render(
   <Provider store={store}>
-    <App />
+    <App/>
   </Provider>,
   document.getElementById("root")
 );

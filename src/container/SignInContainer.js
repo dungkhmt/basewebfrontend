@@ -1,5 +1,5 @@
-import { connect } from "react-redux";
-import { login } from "../action";
+import {connect} from "react-redux";
+import {login} from "../action";
 import SignIn from "../component/SignIn";
 
 const mapStateToProps = state1 => ({ // query de lay ra
@@ -11,7 +11,7 @@ const mapDispatchToProps = dispatch => ({
   requestLogin: (username, password) => dispatch(login(username, password))  // truyen action login thanh props login, create action
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(SignIn); 
+export default connect(mapStateToProps, mapDispatchToProps)(SignIn);
 // truyen vao props mapStateToProps vao component SignIn, trong component nay co the access 
 // props.isAuthenticated va props.isRequesting
 // state1.auth duoc dinh nghia trong reducers.auth

@@ -64,10 +64,10 @@ function ProductList(props) {
   const [productList, setProductList] = useState([]);
   const [page, setPage] = useState(0);
   const [listPageSize, setListPageSize] = useState([4, 8, 12]);
-  const [pageSize, setPageSize] = useState(new Number(4));
+  const [pageSize, setPageSize] = useState(Number(4));
   const [listImg, setListImg] = useState([]);
   const classes = useStyles();
-  const [totalPage, setTotalPage] = useState(new Number(1));
+  const [totalPage, setTotalPage] = useState(Number(1));
   const [totalElements, setTotalElements] = useState();
   const [change, setChange] = useState(false);
   useEffect(() => {

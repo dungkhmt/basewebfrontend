@@ -20,9 +20,10 @@ const useStyles = makeStyles(theme => ({
     }
   }
 }));
+
 function UserDetail(props) {
   const history = useHistory();
-  const { partyId } = useParams();
+  const {partyId} = useParams();
   const token = useSelector(state => state.auth.token);
   const dispatch = useDispatch();
   const [data, setData] = useState({});
@@ -54,9 +55,9 @@ function UserDetail(props) {
     setIsWaiting(true);
     authDelete(dispatch, token, "/users/" + partyId).then(
       res => {
-        if(res===true){
-        setOpenPopup(false);
-        history.push("/userlogin/list");
+        if (res === true) {
+          setOpenPopup(false);
+          history.push("/userlogin/list");
         }
       },
       error => {
@@ -87,7 +88,7 @@ function UserDetail(props) {
             onClick={() => deleteUser()}
             color="secondary"
           >
-            {isWaiting ? <CircularProgress color="secondary"/> : "Yes"  }
+            {isWaiting ? <CircularProgress color="secondary"/> : "Yes"}
           </Button>
           <Button
             disabled={isWaiting}
@@ -105,7 +106,7 @@ function UserDetail(props) {
             Detail User {data.userLoginId}
             {canDelete ? (
               <IconButton
-                style={{ float: "right" }}
+                style={{float: "right"}}
                 onClick={() => handlePopup(true)}
                 aria-label="Delete"
                 component="span"
@@ -117,7 +118,7 @@ function UserDetail(props) {
             )}
             {canEdit ? (
               <IconButton
-                style={{ float: "right" }}
+                style={{float: "right"}}
                 onClick={() => history.push("/userlogin/" + partyId + "/edit")}
                 aria-label="Edit"
                 component="span"
