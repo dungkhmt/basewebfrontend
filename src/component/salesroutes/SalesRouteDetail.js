@@ -1,21 +1,20 @@
 import React, { useEffect, useState} from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { authGet } from "../../api";
-import { useParams } from 'react-router-dom'
 
-import MaterialTable, { MTableToolbar } from "material-table";
+import MaterialTable from "material-table";
 import {tableIcons} from "../../utils/iconutil";
-import { Typography, Card, CardContent, Box } from "@material-ui/core";
+import { Typography, Card, CardContent } from "@material-ui/core";
 import { MuiThemeProvider } from "material-ui/styles";
 
 function SalesRouteDetail(props){ 
-    const { id } = useParams()
+    const id = props.location.state.salesRoutePlanningPeriodId
     const token = useSelector((state) => state.auth.token);
     const dispatch = useDispatch();
 
     // table
     const [data, setData] = useState([]);
-    const [periodDetail, setPeriodDetail] = useState({})
+    const [] = useState({})
     const columns = [
         {
             field:"salesmanName", 
@@ -47,20 +46,7 @@ function SalesRouteDetail(props){
             .then(res => setData(res))
     }
 
-    const getPlanPeriodDetail = () => {
-        authGet(dispatch, token, "/get-plan-period-detail/" + id)
-            .then(res => {
-                let fromdate = new Date(res.fromDate)
-                let todate = new Date(res.toDate)
-                setPeriodDetail({
-                    fromDate: fromdate.getDate() + "/" + (fromdate.getMonth() + 1) + "/" + fromdate.getFullYear(),
-                    toDate: todate.getDate() + "/" + (todate.getMonth() + 1) + "/" + todate.getFullYear()
-                })
-            })
-    }
-
     useEffect(() => {
-        getPlanPeriodDetail()
         getSalesRouteDetailOfPlanPeriod()
     }, [])
 
@@ -79,7 +65,9 @@ function SalesRouteDetail(props){
                             variant='subtitle1' 
                             style={{marginLeft: 24}}
                         >
-                            Giai đoạn làm tuyến: SalesRoute {periodDetail.fromDate} - {periodDetail.toDate}
+                            Giai đoạn làm tuyến: SalesRoute 
+                            {" " + props.location.state.fromDate} đến 
+                            {" " + props.location.state.toDate}
                         </Typography>
                         <br/>
                         <MaterialTable

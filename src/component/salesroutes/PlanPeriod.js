@@ -2,40 +2,30 @@ import React, { useEffect, useState} from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useForm } from 'react-hook-form'
 import { authPost, authGet } from "../../api";
-import { useHistory, Link as RouterLink, useParams } from 'react-router-dom'
-
+import { useHistory, Link, useParams } from 'react-router-dom'
+import moment from "moment"
 import MaterialTable, { MTableToolbar } from "material-table";
 import {tableIcons} from "../../utils/iconutil";
 import { Typography, Card, CardContent, Box } from "@material-ui/core";
-import { useSnackbar } from "notistack";
 import { IconButton, Toolbar } from "material-ui";
 import { MuiThemeProvider } from "material-ui/styles";
 import { FcViewDetails, FcRadarPlot } from 'react-icons/fc';
 import { RiMenuAddLine } from 'react-icons/ri'
 import { IconContext } from "react-icons/lib/cjs";
+import SelectSalesmanDialog from './SelectSalesmanDialog'
 
 function PlanPeriod(props){ 
     const history = useHistory()
-    const {id} = useParams()
+    const id = props.location.state.salesRoutePlanningPeriodId
     const token = useSelector((state) => state.auth.token);
     const dispatch = useDispatch();
-    
-    // Modal
-    const [creationDialogOpen, setCreationDialogOpen] = useState(false)
-    const [fromDate, setFromDate] = useState(new Date())
-    const [toDate, setToDate] = useState(new Date())
-    const {register, handleSubmit} = useForm()
-    
-    // Snackbar
-    const {enqueueSnackbar} = useSnackbar()
-    const anchorOrigin= {
-        vertical: 'bottom',
-        horizontal: 'right',
-    }
 
-    // table
+    // Select Salesman Modal
+    const [salesmans, setSalesmans] = useState([])
+    const [dialogOpen, setDialogOpen] = useState(false);
+
+    // Table
     const [data, setData] = useState([]);
-    const [periodDetail, setPeriodDetail] = useState({})
     const columns = [
         {
             field:"retailOutletCode", 
@@ -75,32 +65,81 @@ function PlanPeriod(props){
 
     const getSalesroutesConfigRetailOutlets = () => {
         authGet(dispatch, token, "/get-sales-route-config-retail-outlets/" + id)
-            .then(res => setData(res))
-    }
-
-    const getPlanPeriodDetail = () => {
-        authGet(dispatch, token, "/get-plan-period-detail/" + id)
             .then(res => {
-                let fromdate = new Date(res.fromDate)
-                let todate = new Date(res.toDate)
-                setPeriodDetail({
-                    fromDate: fromdate.getDate() + "/" + (fromdate.getMonth() + 1) + "/" + fromdate.getFullYear(),
-                    toDate: todate.getDate() + "/" + (todate.getMonth() + 1) + "/" + todate.getFullYear()
-                })
+                // Filter salesman
+                // Solution 1: use map
+                const output = [];
+                const map = new Map();
+                
+                for (const item of res) {
+                    if(!map.has(item.salesmanName)){
+                        map.set(item.salesmanName, true);    // set any value to Map, 
+                        output.push({
+                            salesmanName: item.salesmanName,
+                            partySalesmanId: item.partySalesmanId
+                        });
+                    }
+                }
+
+                setSalesmans(output)
+
+                // Solution 2: use filter method
+                // setSalesmans( res.filter((saleman, index, self) => (
+                //     index === self.findIndex(s => (s.salesmanName === saleman.salesmanName)     
+                // ))))
+
+                // Solution 3: use third-party library: ramda,...
+
+                console.log(res)
+                setData(res)
             })
     }
 
     const onClickDetailButton = () => {
-        history.push("/salesroutes/plan/period/detail/" + id)
+        history.push({
+            pathname: "/salesroutes/plan/period/detail",
+            state: {"salesRoutePlanningPeriodId": id,
+                    "fromDate": props.location.state.fromDate,
+                    "toDate": props.location.state.toDate
+            }
+        })
     }
 
-    const onCLickGenerateSalesRouteDetailButton = () => {
-        authPost(dispatch, token, "/generate-sales-route-detail", {})
-        history.push("/salesroutes/plan/period/detail/" + id)
+    const onClickGSRDButton = () => {
+        setDialogOpen(true)
     }
+
+    const onClickCreatButton = () => {
+        history.push({
+            pathname: "/salesroutes/plan/period/add/visit-confirguration",
+            state: {"salesRoutePlanningPeriodId": id,
+                    "fromDate": props.location.state.fromDate,
+                    "toDate": props.location.state.toDate
+            }
+        })
+    }
+
+    const handleDialogClose = partySalesmanId => {
+        setDialogOpen(false);
+
+        if (partySalesmanId !== undefined) {
+            authPost(
+                dispatch, 
+                token, 
+                "/generate-sales-route-detail", 
+                {
+                    partySalesmanId: partySalesmanId,
+                    salesRoutePlanningPeriodId: id
+                }
+            )
+                .then(res => res.json())
+                    .then(() => {
+                        onClickDetailButton()
+                    })
+        }
+      };
 
     useEffect(() => {
-        getPlanPeriodDetail()
         getSalesroutesConfigRetailOutlets()
     }, [])
 
@@ -119,7 +158,9 @@ function PlanPeriod(props){
                             variant='subtitle1' 
                             style={{marginLeft: 24}}
                         >
-                            Giai đoạn làm tuyến: SalesRoute {periodDetail.fromDate} - {periodDetail.toDate}
+                            Giai đoạn làm tuyến: SalesRoute 
+                            {" " + props.location.state.fromDate} đến 
+                            {" " + props.location.state.toDate}
                         </Typography>
                         <br/>
                         <MaterialTable
@@ -175,21 +216,25 @@ function PlanPeriod(props){
                                                                     </IconContext.Provider>}
                                                         size='medium'
                                                         tooltip='Sinh chi tiết tuyến'
-                                                        onClick={onCLickGenerateSalesRouteDetailButton}
+                                                        onClick={onClickGSRDButton}
                                                     />
                                                     <IconButton 
                                                         children={  <IconContext.Provider>
                                                                         <RiMenuAddLine style={{fontSize: 24}}/>
                                                                     </IconContext.Provider>}
-                                                        component={RouterLink}
-                                                        to="/salesroutes/"
                                                         size='medium'
                                                         tooltip='Thêm mới'
+                                                        onClick={onClickCreatButton}
                                                     />
                                                 </Box>                                                                
                                         </div>
                                     )
                                 }}
+                            />
+                            <SelectSalesmanDialog 
+                                items={salesmans}
+                                open={dialogOpen} 
+                                onClose={handleDialogClose}
                             />
                     </CardContent>
                 </Card>

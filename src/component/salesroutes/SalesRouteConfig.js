@@ -5,7 +5,6 @@ import { authPost } from "../../api";
 
 import MaterialTable, { MTableToolbar } from "material-table";
 import {tableIcons} from "../../utils/iconutil";
-import { useSnackbar } from "notistack";
 import { MuiThemeProvider } from "material-ui/styles";
 import { RiMenuAddLine } from 'react-icons/ri'
 import { IconContext } from "react-icons/lib/cjs";
@@ -29,13 +28,6 @@ function SalesRouteConfig(){
     // Modal
     const [creationDialogOpen, setCreationDialogOpen] = useState(false)
     const {register, handleSubmit} = useForm()
-    
-    // Snackbar
-    const {enqueueSnackbar} = useSnackbar()
-    const anchorOrigin= {
-        vertical: 'bottom',
-        horizontal: 'right',
-    }
 
     // Table
     const [data, setData] = useState([{}]);
@@ -78,11 +70,11 @@ function SalesRouteConfig(){
         
         setCreationDialogOpen(false)
         
-        enqueueSnackbar("Đang xử lý...", {
-            variant: "info",
-            anchorOrigin: anchorOrigin,
-            autoHideDuration: 2000
-        })
+        // enqueueSnackbar("Đang xử lý...", {
+        //     variant: "info",
+        //     anchorOrigin: anchorOrigin,
+        //     autoHideDuration: 2000
+        // })
 
         authPost(
             dispatch,
@@ -105,11 +97,11 @@ function SalesRouteConfig(){
                         variant = "error"
                     }
                     
-                    enqueueSnackbar(message, {
-                        variant: variant,
-                        anchorOrigin: anchorOrigin,
-                        autoHideDuration: 2000
-                    })
+                    // enqueueSnackbar(message, {
+                    //     variant: variant,
+                    //     anchorOrigin: anchorOrigin,
+                    //     autoHideDuration: 2000
+                    // })
 
                     getListSalesRouteConfig()
                 })
@@ -150,14 +142,21 @@ function SalesRouteConfig(){
                                                 justifyContent='flex-end'
                                                 width='98%'
                                             >
-                                                <IconButton
+                                                <Button
+                                                    variant='contained'
+                                                    color='primary'
+                                                    onClick={() => setCreationDialogOpen(true)}
+                                                >
+                                                    Thêm mới
+                                                </Button>
+                                                {/* <IconButton
                                                     children={  <IconContext.Provider>
                                                                     <RiMenuAddLine style={{fontSize: 24}}/>
                                                                 </IconContext.Provider>}
                                                     size='medium'
                                                     tooltip='Thêm mới'
                                                     onClick={() => setCreationDialogOpen(true)}
-                                                />
+                                                /> */}
                                             </Box>                                                                
                                     </div>
                                 )

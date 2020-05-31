@@ -1,18 +1,21 @@
-import React, { useEffect, useState} from "react";
+import React, { useEffect, useState, forwardRef} from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useForm } from 'react-hook-form'
 import { authPost } from "../../api";
 import {Link} from 'react-router-dom'
-import 'moment'
+import moment from 'moment'
 import MomentUtils from '@date-io/moment'
 import { Save, Cancel } from '@material-ui/icons';
-import { useSnackbar } from "notistack";
 import { IconButton, Card } from "material-ui";
 import { MuiThemeProvider } from "material-ui/styles";
 import { RiMenuAddLine } from 'react-icons/ri'
 import { IconContext } from "react-icons/lib/cjs";
 import MaterialTable, { MTableToolbar } from "material-table";
+import { toast } from 'react-toastify';
 import {tableIcons} from "../../utils/iconutil";
+import { GiInfo } from 'react-icons/gi'
+import { FiCheckCircle } from 'react-icons/fi'
+import { MdCancel } from 'react-icons/md'
 import {
     MuiPickersUtilsProvider,
     KeyboardDatePicker,
@@ -25,8 +28,11 @@ import {
     DialogContent, 
     DialogTitle, 
     Box, 
-    CardContent } 
+    CardContent,
+    Slide } 
 from "@material-ui/core";
+
+// const Transition = forwardRef((props, ref) => <Slide direction="down" ref={ref} {...props}/>);
 
 function Plan(){
     const token = useSelector((state) => state.auth.token);
@@ -39,19 +45,49 @@ function Plan(){
     const {register, handleSubmit} = useForm()
     
     // Snackbar
-    const {enqueueSnackbar} = useSnackbar()
-    const anchorOrigin= {
-        vertical: 'bottom',
-        horizontal: 'right',
-    }
-
+    const toastId = React.useRef(null);
+    const notify = () => toastId.current = toast.info(  <Box display='flex' alignItems='center'>
+                                                            <IconContext.Provider>
+                                                                <GiInfo size={20} style={{marginRight: '5px'}}/>
+                                                            </IconContext.Provider>
+                                                            Đang xử lý...                                                              
+                                                        </Box>, 
+                                                      { position: "bottom-right",
+                                                        autoClose: false,
+                                                        pauseOnHover: true,
+                                                        draggable: true,
+                                                        progress: undefined,
+    });
+    const updateNotification = (type, message, status) => toast.update( toastId.current, 
+                                                          { type: type,
+                                                            autoClose: 2000,
+                                                            render: <Box display='flex' alignItems='center'> 
+                                                                        <IconContext.Provider>
+                                                                            {status?<FiCheckCircle size={20} style={{marginRight: '5px'}}/>:
+                                                                                    <MdCancel size={20} style={{marginRight: '5px'}}/>}
+                                                                        </IconContext.Provider>
+                                                                        {message}                                                              
+                                                                    </Box>                                                                                                                                                                          
+    })
+    
     // Table
     const [plans, setPlans] = useState([{}]);
     const columns = [
         {
             field:"salesRoutePlanningPeriodId", 
             title: "Mã giai đoạn",
-            render: rowData => <Link to={'/salesroutes/plan/period/' + rowData['salesRoutePlanningPeriodId']}>{rowData['salesRoutePlanningPeriodId']}</Link>
+            render: rowData => 
+            <Link 
+                to={{
+                    pathname: '/salesroutes/plan/period',
+                    state: {'salesRoutePlanningPeriodId': rowData['salesRoutePlanningPeriodId'],
+                            'fromDate': rowData['fromDate'],
+                            'toDate': rowData['toDate']
+                    }
+                }}
+            >
+                {rowData['salesRoutePlanningPeriodId']}
+            </Link>
         },
         {
             field:"description", 
@@ -60,12 +96,10 @@ function Plan(){
         {
             field:"fromDate", 
             title: "Ngày bắt đầu",
-            type: 'date'
         },
         {
             field:"toDate", 
             title: "Ngày kết thúc",
-            type: 'date'
         }
     ]
 
@@ -76,14 +110,12 @@ function Plan(){
                     for(let i=0; i<res.length; i++) {
                         res[i] = {
                             ...res[i], 
-                            "fromDate": new Date(res[i].fromDate), 
-                            "toDate": new Date(res[i].toDate)}
+                            "fromDate": moment(res[i].fromDate).format('YYYY-MM-DD'),
+                            "toDate": moment(res[i].toDate).format('YYYY-MM-DD') 
+                        }   
                     }
                     
-                    setPlans(res);        
-                    },
-                    error => {
-                        setPlans([{}])
+                    setPlans(res); 
                 }
           );
     }
@@ -97,13 +129,8 @@ function Plan(){
     const onClickSaveButton = data => {
         
         setCreationDialogOpen(false)
-        
-        enqueueSnackbar("Đang xử lý...", {
-            variant: "info",
-            anchorOrigin: anchorOrigin,
-            autoHideDuration: 2000
-        })
-        
+        notify()
+
         authPost(
             dispatch,
             token,
@@ -115,23 +142,21 @@ function Plan(){
             })
             .then(res => res.json())    
                 .then(res => {
-                    let variant;
+                    let type;
                     let message;
+                    let status;
                     
                     if (res["status"]===undefined) {
                         message = "Đã thêm"
-                        variant = "success"
+                        type = toast.TYPE.SUCCESS
+                        status = true
                     } else {
-                        message = "Đã xảy ra lỗi :(("
-                        variant = "error"
+                        message = "Rất tiếc! Đã xảy ra lỗi :(("
+                        type = toast.TYPE.ERROR
+                        status = false
                     }
                     
-                    enqueueSnackbar(message, {
-                        variant: variant,
-                        anchorOrigin: anchorOrigin,
-                        autoHideDuration: 2000
-                    })
-
+                    setTimeout(() => updateNotification(type, message, status), 2000)
                     getListSalesRoutePlanningPeriod()
                 })
     }
@@ -164,21 +189,32 @@ function Plan(){
                                                 justifyContent='flex-end'
                                                 width='98%'
                                             >
-                                                <IconButton
+                                                <Button
+                                                    variant='contained'
+                                                    color='primary'
+                                                    onClick={() => setCreationDialogOpen(true)}
+                                                >
+                                                    Thêm mới
+                                                </Button>
+                                                {/* <IconButton
                                                     children={  <IconContext.Provider>
                                                                     <RiMenuAddLine style={{fontSize: 24}}/>
                                                                 </IconContext.Provider>}
                                                     size='medium'
                                                     tooltip='Thêm mới'
                                                     onClick={() => setCreationDialogOpen(true)}
-                                                />
+                                                /> */}
                                             </Box>  
                                         </MuiThemeProvider>                                    
                                     </div>
                                 ),
                             }}
                         />
-                        <Dialog open={creationDialogOpen} onClose={onDialogClose}>
+                        <Dialog 
+                            open={creationDialogOpen} 
+                            onClose={onDialogClose} 
+                            // TransitionComponent={Transition}
+                        >
                             <DialogTitle>Thêm mới kế hoạch tuyến bán hàng</DialogTitle>
                             <form onSubmit={handleSubmit(onClickSaveButton)}>
                                 <DialogContent>
@@ -243,7 +279,6 @@ function Plan(){
                     </CardContent>
                 </Card>
            </MuiThemeProvider>
-           
         </div>
     );
 }
