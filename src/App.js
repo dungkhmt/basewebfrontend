@@ -23,7 +23,6 @@ class App extends Component {
               draggable
               pauseOnHover
             />
-          <Routes isAuthenticated={this.props.isAuthenticated}/>
         </Router>
     );
   }
