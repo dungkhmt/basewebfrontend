@@ -1,9 +1,9 @@
-import React, { useEffect, useState} from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { useForm } from 'react-hook-form'
-import { authPost } from "../../api";
+import React, {useEffect, useState} from "react";
+import {useDispatch, useSelector} from "react-redux";
+import {useForm} from 'react-hook-form'
+import {authPost} from "../../api";
 
-import MaterialTable, { MTableToolbar } from "material-table";
+import MaterialTable, {MTableToolbar} from "material-table";
 import {tableIcons} from "../../utils/iconutil";
 import { MuiThemeProvider } from "material-ui/styles";
 import { RiMenuAddLine } from 'react-icons/ri'
@@ -22,45 +22,45 @@ from "@material-ui/core";
 import { Save, Cancel } from '@material-ui/icons';
 
 function SalesRouteConfig(){
-    const token = useSelector((state) => state.auth.token);
-    const dispatch = useDispatch();
-    
-    // Modal
-    const [creationDialogOpen, setCreationDialogOpen] = useState(false)
-    const {register, handleSubmit} = useForm()
+  const token = useSelector((state) => state.auth.token);
+  const dispatch = useDispatch();
+  
+  // Modal
+  const [creationDialogOpen, setCreationDialogOpen] = useState(false)
+  const {register, handleSubmit} = useForm()
 
-    // Table
-    const [data, setData] = useState([{}]);
-    const columns = [
-        {
-            field:"salesRouteConfigId", 
-            title: "Mã cấu hình",
-        },
-        {
-            field:"days", 
-            title: "Ngày",
-        },
-        {
-            field:"repeatWeek", 
-            title: "Lặp tuần"
-        }
-    ]
-
-    // Functions
-    const getListSalesRouteConfig = () => {
-        authPost(dispatch, token, "/get-list-sales-route-config", {"statusId": null})
-            .then(res => res.json())    
-                .then(res => {
-                        for(let i=0; i<res.length;i++) {
-                            res[i] = {
-                                "salesRouteConfigId": res[i].salesRouteConfigId,
-                                "days": res[i].days,
-                                "repeatWeek": res[i].repeatWeek
-                            }
-                        }
-                        setData(res)
-                    })
+  // Table
+  const [data, setData] = useState([{}]);
+  const columns = [
+    {
+      field: "salesRouteConfigId",
+      title: "Mã cấu hình",
+    },
+    {
+      field: "days",
+      title: "Ngày",
+    },
+    {
+      field: "repeatWeek",
+      title: "Lặp tuần"
     }
+  ]
+
+  // Functions
+  const getListSalesRouteConfig = () => {
+    authPost(dispatch, token, "/get-list-sales-route-config", {"statusId": null})
+      .then(res => res.json())
+      .then(res => {
+        for (let i = 0; i < res.length; i++) {
+          res[i] = {
+            "salesRouteConfigId": res[i].salesRouteConfigId,
+            "days": res[i].days,
+            "repeatWeek": res[i].repeatWeek
+          }
+        }
+        setData(res)
+      })
+  }
 
     const onDialogClose = () => {
         setCreationDialogOpen(false);
@@ -108,10 +108,10 @@ function SalesRouteConfig(){
     }
 
     useEffect(() => {
-        getListSalesRouteConfig()
+      getListSalesRouteConfig()
     }, [])
 
-    return(
+    return (
         <div>
            <MuiThemeProvider>
                 <Card>

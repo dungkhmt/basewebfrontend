@@ -1,17 +1,17 @@
 import AppBar from "@material-ui/core/AppBar";
 import CssBaseline from "@material-ui/core/CssBaseline";
 import IconButton from "@material-ui/core/IconButton";
-import { makeStyles } from "@material-ui/core/styles";
+import {makeStyles} from "@material-ui/core/styles";
 import Toolbar from "@material-ui/core/Toolbar";
 import Typography from "@material-ui/core/Typography";
 import MenuIcon from "@material-ui/icons/Menu";
 import clsx from "clsx";
-import React, { useEffect } from "react";
-import { connect } from "react-redux";
-import { getMenu, logout } from "../action";
+import React, {useEffect} from "react";
+import {connect} from "react-redux";
+import {getMenu, logout} from "../action";
 import SideBar from "./SideBar";
-import Button from "@material-ui/core/Button";
 import ExitToAppIcon from "@material-ui/icons/ExitToApp";
+
 const drawerWidth = 340;
 
 const useStyles = makeStyles(theme => ({
@@ -84,7 +84,7 @@ const useStyles = makeStyles(theme => ({
 }));
 
 function Layout(props) {
-  const { children } = props;
+  const {children} = props;
   const classes = useStyles();
 
   const [open, setOpen] = React.useState(false);
@@ -106,7 +106,7 @@ function Layout(props) {
 
   return (
     <div className={classes.root}>
-      <CssBaseline />
+      <CssBaseline/>
       <AppBar
         position="fixed"
         className={clsx(classes.appBar, {
@@ -123,7 +123,7 @@ function Layout(props) {
               [classes.hide]: open
             })}
           >
-            <MenuIcon />
+            <MenuIcon/>
           </IconButton>
           <Typography variant="h6" noWrap>
             Quản lý chuỗi cung ứng
@@ -144,12 +144,13 @@ function Layout(props) {
         menu={props.menu}
       />
       <main className={classes.content}>
-        <div className={classes.toolbar} />
+        <div className={classes.toolbar}/>
         {children}
       </main>
     </div>
   );
 }
+
 const mapStateToProps = state => ({
   menu: state.menu.menu,
   isMenuGot: state.menu.isMenuGot

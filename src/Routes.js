@@ -23,9 +23,9 @@ import ShipmentItemList from "./component/shipment/shipment/ShipmentItemList";
 import VehicleList from "./component/shipment/vehicle/VehicleList";
 import DeliveryTripCreate from "./component/shipment/deliveryplan/deliverytrip/DeliveryTripCreate";
 import DeliveryTripDetailList
-    from "./component/shipment/deliveryplan/deliverytrip/deliverytripdetail/DeliveryTripDetailList";
+  from "./component/shipment/deliveryplan/deliverytrip/deliverytripdetail/DeliveryTripDetailList";
 import DeliveryTripDetailCreate
-    from "./component/shipment/deliveryplan/deliverytrip/deliverytripdetail/DeliveryTripDetailCreate";
+  from "./component/shipment/deliveryplan/deliverytrip/deliverytripdetail/DeliveryTripDetailCreate";
 import ShipmentItemDeliveryPlanList from "./component/shipment/deliveryplan/shipmentitem/ShipmentItemDeliveryPlanList";
 import VehicleDeliveryPlanList from "./component/shipment/deliveryplan/vehicle/VehicleDeliveryPlanList";
 import ShipmentItemCreate from "./component/shipment/shipment/ShipmentItemCreate";
@@ -83,41 +83,41 @@ import PortCreate from "./component/tmscontainer/port/PortCreate";
 import PortList from "./component/tmscontainer/port/PortList";
 import PortGoogleMap from "./component/tmscontainer/port/PortGoogleMap";
 import ShipmentItemDeliveryTripDetailList
-    from "./component/shipment/deliveryplan/shipmentitem/ShipmentItemDeliveryTripDetailList";
+  from "./component/shipment/deliveryplan/shipmentitem/ShipmentItemDeliveryTripDetailList";
 import NotScheduledShipmentItem from "./component/shipment/deliveryplan/deliverytrip/NotScheduledShipmentItem";
 import ProductDetail from "./component/product/detailproduct";
 import {
-    TransportReportByDriver,
-    TransportReportByFacility,
-    TransportReportByPartyCustomer,
+  TransportReportByDriver,
+  TransportReportByFacility,
+  TransportReportByPartyCustomer,
 } from "./component/report/TransportReport";
 import SolverConfigParam from "./component/shipment/solver/SolverConfigParam";
 import CreateRequestTransportContainerToWarehouse
-    from "./component/tmscontainer/requestimportfull/CreateRequestTransportContainerToWarehouse";
+  from "./component/tmscontainer/requestimportfull/CreateRequestTransportContainerToWarehouse";
 import ListRequestTransportContainerToWareHouse
-    from "./component/tmscontainer/requestimportfull/ListRequestTransportContainerToWareHouse";
+  from "./component/tmscontainer/requestimportfull/ListRequestTransportContainerToWareHouse";
 import VehicleDetail from "./component/shipment/vehicle/VehicleDetail";
 import VehicleNotInDeliveryTrips from "./component/shipment/deliveryplan/vehicle/VehicleNotInDeliveryTrips";
 import DriverDetail from "./component/shipment/driver/DriverDetail";
 import CreateRequestTransportContainerEmpty
-    from "./component/tmscontainer/requestimportempty/CreateRequestTransportContainerEmpty";
+  from "./component/tmscontainer/requestimportempty/CreateRequestTransportContainerEmpty";
 import ListRequestTransportContainerEmpty
-    from "./component/tmscontainer/requestimportempty/ListRequestTransportContainerEmpty";
+  from "./component/tmscontainer/requestimportempty/ListRequestTransportContainerEmpty";
 import ListRequestTransportContainerEmptyExport
-    from "./component/tmscontainer/requestexportempty/ListRequestTransportContainerEmptyExport";
+  from "./component/tmscontainer/requestexportempty/ListRequestTransportContainerEmptyExport";
 import CreateRequestTransportContainerEmptyExport
-    from "./component/tmscontainer/requestexportempty/CreateRequestTransportContainerEmptyExport";
+  from "./component/tmscontainer/requestexportempty/CreateRequestTransportContainerEmptyExport";
 import CreateRequestTransportFullExport
-    from "./component/tmscontainer/requestexportfull/CreateRequestTransportFullExport";
+  from "./component/tmscontainer/requestexportfull/CreateRequestTransportFullExport";
 import ListRequestTransportFullExport from "./component/tmscontainer/requestexportfull/ListRequestTransportFullExport";
 import RetailOutletDetail from "./component/retailoutlet/RetailOutletDetail";
 import {
-    DistributorUnpaidInvoiceDetail,
-    DistributorUnpaidInvoiceList,
-    Invoice,
-    InvoiceDetail,
-    Payment,
-    PaymentApplication,
+  DistributorUnpaidInvoiceDetail,
+  DistributorUnpaidInvoiceList,
+  Invoice,
+  InvoiceDetail,
+  Payment,
+  PaymentApplication,
 } from "./component/accounting/InvoiceDataTable";
 import {PaymentCreate} from "./component/accounting/PaymentCreate";
 import PaymentApplicationCreate from "./component/accounting/PaymentApplicationCreate";
@@ -138,17 +138,26 @@ import ListSalesman from "./component/salesroutes/ListSalesman";
 import SalesRouteDetail from "./component/salesroutes/SalesRouteDetail"
 import SalesRouteConfig from './component/salesroutes/SalesRouteConfig'
 import SalesmanDetail from "./component/salesroutes/SalesmanDetail"
+import ProductEdit from "./component/product/ProductEdit";
+import SetPrimaryImg from "./component/product/SetPrimaryImg"
+import AddProductImg from "./component/product/AddProductImg";
+
+
+import CoursesList from './component/education/CoursesList'
+import ClassesList from './component/education/ClassesList'
+import TeachersList from './component/education/TeachersList'
+import AssignmentList from './component/education/AssignmentList'
 import AddVisitConfirguration from "./component/salesroutes/AddVisitConfirguration";
 
 function Routes(props) {
-    // props nay tu parent transfer vao
-    return (
-      <Switch>
-          <PrivateRouteWithLayout
-            component={Home}
-            layout={Layout}
-            isAuthenticated={props.isAuthenticated}
-            exact
+  // props nay tu parent transfer vao
+  return (
+    <Switch>
+      <PrivateRouteWithLayout
+        component={Home}
+        layout={Layout}
+        isAuthenticated={props.isAuthenticated}
+        exact
         path="/"
       />
 
@@ -216,7 +225,7 @@ function Routes(props) {
         isAuthenticated={props.isAuthenticated} // props
         //isAuthenticated={true}
         //exact                                   // props
-        path="/orders/:orderId" // props
+        path="/orders/detail/:orderId" // props
       />
       <PrivateRouteWithLayout
         //component={ListTrackLocations}  //props
@@ -433,7 +442,7 @@ function Routes(props) {
         path="/salesroutes/salesman/list"
       />
 
-    <PrivateRouteWithLayout
+      <PrivateRouteWithLayout
         component={SalesmanDetail}
         layout={Layout}
         isAuthenticated={props.isAuthenticated}
@@ -501,6 +510,29 @@ function Routes(props) {
         isAuthenticated={props.isAuthenticated}
         path="/products/create"
       />
+
+
+      <PrivateRouteWithLayout
+        component={AddProductImg}
+        layout={Layout}
+        isAuthenticated={props.isAuthenticated}
+        path="/product-add-img/:productId"
+      />
+
+      <PrivateRouteWithLayout
+        component={SetPrimaryImg}
+        layout={Layout}
+        isAuthenticated={props.isAuthenticated}
+        path="/set-product-primary-img/:productId"
+      />
+
+      <PrivateRouteWithLayout
+        component={ProductEdit}
+        layout={Layout}
+        isAuthenticated={props.isAuthenticated}
+        path="/product-edit/:productId"
+      />
+
       <PrivateRouteWithLayout
         component={ProductList}
         layout={Layout}
@@ -1028,43 +1060,115 @@ function Routes(props) {
         path="/supplier/list" // props
       />
 
-        <PrivateRouteWithLayout
-          component={SupplierCreate} //props
-          layout={Layout} //props
-          isAuthenticated={props.isAuthenticated} // props
-          //isAuthenticated={true}
-          //exact                                   // props
-          path="/supplier/create" // props
-        />
+      <PrivateRouteWithLayout
+        component={SupplierCreate} //props
+        layout={Layout} //props
+        isAuthenticated={props.isAuthenticated} // props
+        //isAuthenticated={true}
+        //exact                                   // props
+        path="/supplier/create" // props
+      />
 
-          <PrivateRouteWithLayout
-            component={ProductPriceSupplier} //props
-            layout={Layout} //props
-            isAuthenticated={props.isAuthenticated} // props
-            //isAuthenticated={true}
-            //exact                                   // props
-            path="/product-price-supplier/list" // props
-          />
+      <PrivateRouteWithLayout
+        component={ProductPriceSupplier} //props
+        layout={Layout} //props
+        isAuthenticated={props.isAuthenticated} // props
+        //isAuthenticated={true}
+        //exact                                   // props
+        path="/product-price-supplier/list" // props
+      />
 
-          <PrivateRouteWithLayout
-            component={PurchaseOrderList} //props
-            layout={Layout} //props
-            isAuthenticated={props.isAuthenticated} // props
-            //isAuthenticated={true}
-            //exact                                   // props
-            path="/purchase-order/list" // props
-          />
+      <PrivateRouteWithLayout
+        component={PurchaseOrderList} //props
+        layout={Layout} //props
+        isAuthenticated={props.isAuthenticated} // props
+        //isAuthenticated={true}
+        //exact                                   // props
+        path="/purchase-order/list" // props
+      />
 
-          <PrivateRouteWithLayout
-            component={PurchaseOrderCreate} //props
-            layout={Layout} //props
-            isAuthenticated={props.isAuthenticated} // props
-            //isAuthenticated={true}
-            //exact                                   // props
-            path="/purchase-order/create/:supplierPartyId" // props
-          />
+      <PrivateRouteWithLayout
+        component={PurchaseOrderCreate} //props
+        layout={Layout} //props
+        isAuthenticated={props.isAuthenticated} // props
+        //isAuthenticated={true}
+        //exact                                   // props
+        path="/purchase-order/create/:supplierPartyId" // props
+      />
 
-      </Switch>
+      <PrivateRouteWithLayout
+        component={CoursesList} //props
+        layout={Layout} //props
+        isAuthenticated={props.isAuthenticated} // props
+        //isAuthenticated={true}
+        //exact                                   // props
+        path="/edu/courses-list" // props
+      />
+
+      <PrivateRouteWithLayout
+        component={TeachersList} //props
+        layout={Layout} //props
+        isAuthenticated={props.isAuthenticated} // props
+        //isAuthenticated={true}
+        //exact                                   // props
+        path="/edu/teachers-list" // props
+      />
+
+      <PrivateRouteWithLayout
+        component={ClassesList} //props
+        layout={Layout} //props
+        isAuthenticated={props.isAuthenticated} // props
+        //isAuthenticated={true}
+        //exact                                   // props
+        path="/edu/classes-list" // props
+      />
+
+      <PrivateRouteWithLayout
+        component={AssignmentList} //props
+        layout={Layout} //props
+        isAuthenticated={props.isAuthenticated} // props
+        //isAuthenticated={true}
+        //exact                                   // props
+        path="/edu/assignment" // props
+      />
+
+      <PrivateRouteWithLayout
+        component={SupplierCreate} //props
+        layout={Layout} //props
+        isAuthenticated={props.isAuthenticated} // props
+        //isAuthenticated={true}
+        //exact                                   // props
+        path="/supplier/create" // props
+      />
+
+      <PrivateRouteWithLayout
+        component={ProductPriceSupplier} //props
+        layout={Layout} //props
+        isAuthenticated={props.isAuthenticated} // props
+        //isAuthenticated={true}
+        //exact                                   // props
+        path="/product-price-supplier/list" // props
+      />
+
+      <PrivateRouteWithLayout
+        component={PurchaseOrderList} //props
+        layout={Layout} //props
+        isAuthenticated={props.isAuthenticated} // props
+        //isAuthenticated={true}
+        //exact                                   // props
+        path="/purchase-order/list" // props
+      />
+
+      <PrivateRouteWithLayout
+        component={PurchaseOrderCreate} //props
+        layout={Layout} //props
+        isAuthenticated={props.isAuthenticated} // props
+        //isAuthenticated={true}
+        //exact                                   // props
+        path="/purchase-order/create/:supplierPartyId" // props
+      />
+
+    </Switch>
   );
 }
 

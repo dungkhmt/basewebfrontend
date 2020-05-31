@@ -2,7 +2,7 @@ import React, {useEffect, useState} from "react";
 import Grid from "@material-ui/core/Grid";
 import {authGet, authPost} from "../../api";
 import {useDispatch, useSelector} from "react-redux";
-import {selectValueByIdName, textField, textFieldNumberFormat} from "../../utils/FormUtils";
+import {selectValueByIdName, textFieldNumberFormat} from "../../utils/FormUtils";
 import AddIcon from "@material-ui/icons/Add";
 import Button from "@material-ui/core/Button";
 import MaterialTable from "material-table";

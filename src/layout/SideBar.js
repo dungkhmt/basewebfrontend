@@ -452,8 +452,8 @@ export default function SideBar(props) {
                   <ListItemText primary="Danh sách khách hàng"/>
                 </ListItem>
 
-                <ListItem 
-                  button className={classes.nested}
+                <ListItem
+                  button
                   className={classes.nested}
                   component={Link}
                   to={process.env.PUBLIC_URL + "/salesroutes/plan"}
@@ -463,8 +463,8 @@ export default function SideBar(props) {
                   </ListItemIcon>
                   <ListItemText primary="Kế hoạch tuyến"/>
                 </ListItem>
-                <ListItem 
-                  button 
+                <ListItem
+                  button
                   className={classes.nested}
                   component={Link}
                   to={process.env.PUBLIC_URL + "/salesroutes/configs"}
@@ -523,7 +523,7 @@ export default function SideBar(props) {
               </ListItem>
 
 
-              <ListItem button className={classes.nested} component={Link}
+              <ListItem button className={classes.nested}
                         component={Link}
                         to={process.env.PUBLIC_URL + "/supplier/create"}
               >
@@ -557,7 +557,7 @@ export default function SideBar(props) {
               </ListItem>
 
 
-              <ListItem button className={classes.nested} component={Link}
+              <ListItem button className={classes.nested}
                         component={Link}
                         to={process.env.PUBLIC_URL + "/supplier/list"}
               >
@@ -1728,7 +1728,7 @@ export default function SideBar(props) {
                 button
                 className={classes.nested}
                 component={Link}
-                to={process.env.PUBLIC_URL + ""}
+                to={process.env.PUBLIC_URL + "/edu/courses-list"}
               >
                 <ListItemIcon>
                   <StarBorder/>
@@ -1740,7 +1740,7 @@ export default function SideBar(props) {
                 button
                 className={classes.nested}
                 component={Link}
-                to={process.env.PUBLIC_URL + ""}
+                to={process.env.PUBLIC_URL + "/edu/teachers-list"}
               >
                 <ListItemIcon>
                   <StarBorder/>
@@ -1752,7 +1752,7 @@ export default function SideBar(props) {
                 button
                 className={classes.nested}
                 component={Link}
-                to={process.env.PUBLIC_URL + ""}
+                to={process.env.PUBLIC_URL + "/edu/classes-list"}
               >
                 <ListItemIcon>
                   <StarBorder/>
@@ -1765,7 +1765,7 @@ export default function SideBar(props) {
                 button
                 className={classes.nested}
                 component={Link}
-                to={process.env.PUBLIC_URL + ""}
+                to={process.env.PUBLIC_URL + "/edu/assignment"}
               >
                 <ListItemIcon>
                   <StarBorder/>

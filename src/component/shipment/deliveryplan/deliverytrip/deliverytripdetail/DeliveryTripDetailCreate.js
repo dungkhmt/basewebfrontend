@@ -100,19 +100,17 @@ export default function DeliveryTripDetailCreate() {
       deliveryQuantity: selectedQuantity[shipmentItem['shipmentItemId']]
     }));
     console.log(body);
-    authPost(dispatch, token, '/create-delivery-trip-detail/' + deliveryTripId, body).
-      then(response => response.json()).
-      then(
-        response => {
-          if (typeof response === 'number') {
-            alert('Đã thêm vào chuyến cho ' + response + ' đơn hàng');
-            console.log(response);
-            // browserHistory.goBack();
-            history.push(process.env.PUBLIC_URL + "/delivery-trip/" + deliveryTripId)
-          }
-        },
-        error => console.log(error)
-      )
+    authPost(dispatch, token, '/create-delivery-trip-detail/' + deliveryTripId, body).then(response => response.json()).then(
+      response => {
+        if (typeof response === 'number') {
+          alert('Đã thêm vào chuyến cho ' + response + ' đơn hàng');
+          console.log(response);
+          // browserHistory.goBack();
+          history.push(process.env.PUBLIC_URL + "/delivery-trip/" + deliveryTripId)
+        }
+      },
+      error => console.log(error)
+    )
   };
 
   const classes = useStyles();
@@ -154,12 +152,9 @@ export default function DeliveryTripDetailCreate() {
       shipmentItemId: shipmentItem['shipmentItemId'],
       deliveryQuantity: selectedQuantity[shipmentItem['shipmentItemId']]
     }));
-    authPost(dispatch, token, '/delivery-trip/' + deliveryTripId + '/capacity-info', body).
-      then(response => response.json()).
-      then(response => {
-        setTripCapacityInfo(response);
-      }).
-      catch(console.log);
+    authPost(dispatch, token, '/delivery-trip/' + deliveryTripId + '/capacity-info', body).then(response => response.json()).then(response => {
+      setTripCapacityInfo(response);
+    }).catch(console.log);
   }
 
   useEffect(() => {

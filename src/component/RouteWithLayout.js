@@ -1,8 +1,8 @@
 import React from "react";
-import { Route } from "react-router-dom";
+import {Route} from "react-router-dom";
 
 function RouteWithLayout(props) {
-  const { layout: Layout, component: Component, ...rest } = props;
+  const {layout: Layout, component: Component, ...rest} = props;
 
   return (
     <Route

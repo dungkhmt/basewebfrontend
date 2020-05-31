@@ -1,13 +1,14 @@
 import React from "react";
-import { Route, Redirect } from "react-router-dom";
+import {Redirect, Route} from "react-router-dom";
+
 //import PrivateRoute from "../common/PrivateRoute";
 
 function PrivateRouteWithLayout({
-  component: Component,
-  layout: Layout,
-  isAuthenticated,
-  ...rest
-}) {
+                                  component: Component,
+                                  layout: Layout,
+                                  isAuthenticated,
+                                  ...rest
+                                }) {
   return (
     <Route
       {...rest}
@@ -18,7 +19,7 @@ function PrivateRouteWithLayout({
           </Layout>
         ) : (
           <Redirect
-            to={{ pathname: "/login", state: { from: props.location } }}
+            to={{pathname: "/login", state: {from: props.location}}}
           />
         )
       }

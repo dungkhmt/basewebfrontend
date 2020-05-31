@@ -115,17 +115,16 @@ export default function DeliveryTripDetailList() {
 
   async function getDriverInfo() {
     Promise.all([authGet(dispatch, token, '/get-all-drivers'),
-      authGet(dispatch, token, '/get-driver-in-delivery-trip/' + deliveryTripId)]).
-      then(([driverList, selectedDriver]) => {
-        setDriverList(driverList);
+      authGet(dispatch, token, '/get-driver-in-delivery-trip/' + deliveryTripId)]).then(([driverList, selectedDriver]) => {
+      setDriverList(driverList);
 
-        let partyId = selectedDriver['partyId'];
-        if (!partyId) {
-          setSelectedDriver('unSelected');
-        } else {
-          setSelectedDriver(partyId);
-        }
-      })
+      let partyId = selectedDriver['partyId'];
+      if (!partyId) {
+        setSelectedDriver('unSelected');
+      } else {
+        setSelectedDriver(partyId);
+      }
+    })
   }
 
   useEffect(() => {

@@ -1,5 +1,6 @@
-import { failed } from "./action/Auth";
-import { API_URL } from "./config/config";
+import {failed} from "./action/Auth";
+import {API_URL} from "./config/config";
+
 export const authPost = (dispatch, token, url, body) => {
   return fetch(API_URL + url, {
     method: "POST",

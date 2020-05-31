@@ -1,22 +1,26 @@
-import React, { useEffect, useState } from "react";
-import { tableIcons } from "../../utils/iconutil";
+import React from "react";
+import {tableIcons} from "../../utils/iconutil";
 import MaterialTable from "material-table";
-import { useSelector, useDispatch } from "react-redux";
-import { authGet } from "../../api";
+import {useDispatch, useSelector} from "react-redux";
+import {authGet} from "../../api";
 
-import { useHistory, Link } from "react-router-dom";
+import {Link, useHistory} from "react-router-dom";
 
 export default function UserList() {
   const dispatch = useDispatch();
   const history = useHistory();
   const token = useSelector(state => state.auth.token);
   const columns = [
-    { title: "Full Name", field: "fullName" },
-    { title: "Status", field: "status", lookup: { 'PARTY_ENABLED': 'PARTY_ENABLED', 'PARTY_DISABLED': 'PARTY_DISABLED' }},
-    { title: "Type", field: "partyType"},
-    { title: "Created Date", field: "createdDate", type:'date' },
-    { title: "User Name", field: "userLoginId",  render: rowData => <Link to={"/userlogin/"+rowData.partyId} >{rowData.userLoginId}</Link>},
-    { title: "Party Code", field: "partyCode" },
+    {title: "Full Name", field: "fullName"},
+    {title: "Status", field: "status", lookup: {'PARTY_ENABLED': 'PARTY_ENABLED', 'PARTY_DISABLED': 'PARTY_DISABLED'}},
+    {title: "Type", field: "partyType"},
+    {title: "Created Date", field: "createdDate", type: 'date'},
+    {
+      title: "User Name",
+      field: "userLoginId",
+      render: rowData => <Link to={"/userlogin/" + rowData.partyId}>{rowData.userLoginId}</Link>
+    },
+    {title: "Party Code", field: "partyCode"},
 
   ];
   return (
@@ -30,11 +34,11 @@ export default function UserList() {
       data={query =>
         new Promise((resolve, reject) => {
           console.log(query);
-          let sortParam="";
-          if(query.orderBy!==undefined){
-            sortParam="&sort="+query.orderBy.field+','+query.orderDirection;
+          let sortParam = "";
+          if (query.orderBy !== undefined) {
+            sortParam = "&sort=" + query.orderBy.field + ',' + query.orderDirection;
           }
-          let filterParam="";
+          let filterParam = "";
           //if(query.filters.length>0){
           //    let filter=query.filters;
           //    filter.forEach(v=>{
@@ -46,7 +50,7 @@ export default function UserList() {
           authGet(
             dispatch,
             token,
-            "/users" + "?size=" + query.pageSize + "&page=" + query.page+sortParam+ filterParam
+            "/users" + "?size=" + query.pageSize + "&page=" + query.page + sortParam + filterParam
           ).then(
             res => {
               resolve({
@@ -62,7 +66,7 @@ export default function UserList() {
         })
       }
       icons={tableIcons}
-      
+
     />
   );
 }

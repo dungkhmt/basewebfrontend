@@ -8,12 +8,7 @@ import CardActions from "@material-ui/core/CardActions";
 import Button from "@material-ui/core/Button";
 import CloudUploadIcon from "@material-ui/icons/CloudUpload";
 import {MuiPickersUtilsProvider} from "@material-ui/pickers";
-import {
-  notNegativeIntFilterOnChange,
-  selectValueByIdName,
-  textField,
-  textFieldNumberFormat
-} from "../../utils/FormUtils";
+import {notNegativeIntFilterOnChange, selectValueByIdName, textFieldNumberFormat} from "../../utils/FormUtils";
 import {authPost} from "../../api";
 import {useHistory} from "react-router";
 

@@ -1,54 +1,53 @@
-
-import React, { useEffect, useState } from "react";
+import React, {useEffect, useState} from "react";
 import MaterialTable from "material-table";
 import {useDispatch, useSelector} from "react-redux";
-import {authGet, authPost} from "../../api";
-import { API_URL } from "../../config/config";
+import {API_URL} from "../../config/config";
 
-function ListDepartment(props){
+function ListDepartment(props) {
 
-    const dispatch = useDispatch();
-    const token = useSelector(state => state.auth.token);
+  const dispatch = useDispatch();
+  const token = useSelector(state => state.auth.token);
 
-    const [departments, setDepartments] = useState([]);
-	
-	const columns = [
-		{field:'departmentId',title:'ID phòng ban'},
-		{field:'departmentName',title:'Tên phòng ban'}
-    ];
-    const requestOptionsGet = {
-        method: 'GET',
-        headers: { 'Content-Type': 'application/json',"X-Auth-Token": token}
-    };
+  const [departments, setDepartments] = useState([]);
 
-    function getDepartmentList(){
-        //console.log("getDepartmentList....");
-        fetch(API_URL + '/get-all-departments', requestOptionsGet)
-        .then(response => response.json())
-        .then(response =>{
-			console.log(response);
-			let arr = [];
-			response.forEach(d => {
-				arr.push(d);
-			});
-            setDepartments(arr);
-            //console.log('getDepartmentList = ',departments);
-        });      
-    }
-    useEffect(() => {
-        getDepartmentList();
-    }, []);
+  const columns = [
+    {field: 'departmentId', title: 'ID phòng ban'},
+    {field: 'departmentName', title: 'Tên phòng ban'}
+  ];
+  const requestOptionsGet = {
+    method: 'GET',
+    headers: {'Content-Type': 'application/json', "X-Auth-Token": token}
+  };
 
-    return (
-        <div>
-            <MaterialTable 
-                options={{search: true}} title={"Danh sách phòng ban"} 
-                columns={columns}
-                data={departments}
-            />
-        </div>
+  function getDepartmentList() {
+    //console.log("getDepartmentList....");
+    fetch(API_URL + '/get-all-departments', requestOptionsGet)
+      .then(response => response.json())
+      .then(response => {
+        console.log(response);
+        let arr = [];
+        response.forEach(d => {
+          arr.push(d);
+        });
+        setDepartments(arr);
+        //console.log('getDepartmentList = ',departments);
+      });
+  }
 
-    );
+  useEffect(() => {
+    getDepartmentList();
+  }, []);
+
+  return (
+    <div>
+      <MaterialTable
+        options={{search: true}} title={"Danh sách phòng ban"}
+        columns={columns}
+        data={departments}
+      />
+    </div>
+
+  );
 }
 
 export default ListDepartment;
