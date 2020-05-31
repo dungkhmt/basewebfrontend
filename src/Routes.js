@@ -224,7 +224,7 @@ function Routes(props) {
         isAuthenticated={props.isAuthenticated} // props
         //isAuthenticated={true}
         //exact                                   // props
-        path="/orders/:orderId" // props
+        path="/orders/detail/:orderId" // props
       />
       <PrivateRouteWithLayout
         //component={ListTrackLocations}  //props

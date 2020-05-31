@@ -19,7 +19,7 @@ function OrderList(props) {
     {
       title: "orderId",
       field: "orderId",
-      render: rowData => <Link to={"/orders/" + rowData.orderId}>{rowData.orderId}</Link>
+      render: rowData => <Link to={"/orders/detail/" + rowData.orderId}>{rowData.orderId}</Link>
     },
     {title: "order date", field: "orderDate", defaultSort: "desc", type: "datetime"},
     {title: "salesman", field: "salesmanName"},
