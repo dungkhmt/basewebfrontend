@@ -138,6 +138,7 @@ import ListSalesman from "./component/salesroutes/ListSalesman";
 import SalesRouteDetail from "./component/salesroutes/SalesRouteDetail"
 import SalesRouteConfig from './component/salesroutes/SalesRouteConfig'
 import SalesmanDetail from "./component/salesroutes/SalesmanDetail"
+import AddVisitConfirguration from "./component/salesroutes/AddVisitConfirguration";
 
 function Routes(props) {
     // props nay tu parent transfer vao
@@ -385,7 +386,7 @@ function Routes(props) {
         path="/create-delivery-trip/:deliveryPlanId" // props
       />
 
-<PrivateRouteWithLayout
+      <PrivateRouteWithLayout
         component={Plan}
         layout={Layout}
         isAuthenticated={props.isAuthenticated}
@@ -398,7 +399,15 @@ function Routes(props) {
         layout={Layout}
         isAuthenticated={props.isAuthenticated}
         exact
-        path="/salesroutes/plan/period/:id"
+        path="/salesroutes/plan/period"
+      />
+
+      <PrivateRouteWithLayout
+        component={AddVisitConfirguration}
+        layout={Layout}
+        isAuthenticated={props.isAuthenticated}
+        exact
+        path="/salesroutes/plan/period/add/visit-confirguration"
       />
 
       <PrivateRouteWithLayout
@@ -406,7 +415,7 @@ function Routes(props) {
         layout={Layout}
         isAuthenticated={props.isAuthenticated}
         exact
-        path="/salesroutes/plan/period/detail/:id"
+        path="/salesroutes/plan/period/detail"
       />
 
       <PrivateRouteWithLayout
