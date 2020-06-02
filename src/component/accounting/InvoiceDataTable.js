@@ -51,7 +51,10 @@ export function InvoiceDetail() {
     {'title': 'Mã chi tiết hóa đơn', field: 'invoiceItemSeqId'},
     {'title': 'Sản phẩm', field: 'productName'},
     {'title': 'Thành tiền (VND)', field: 'amount'},
-    {title: 'Mã đơn hàng', render: rowData => <Link to={'/orders/' + rowData['orderId']}>{rowData['orderId']}</Link>}
+    {
+      title: 'Mã đơn hàng',
+      render: rowData => <Link to={'/orders/detail/' + rowData['orderId']}>{rowData['orderId']}</Link>
+    }
   ];
 
   const paymentApplicationColumns = [
