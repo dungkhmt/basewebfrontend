@@ -20,88 +20,100 @@ import {
     DialogTitle } 
 from "@material-ui/core";
 import { Save, Cancel } from '@material-ui/icons';
+import SelectWeekdays from "./SelectWeekdays";
+import { processingNoti, updateSuccessNoti, updateErrorNoti } from "./Notification";
+import {object, array, string} from 'yup'
+import { DevTool } from "react-hook-form-devtools";
 
 function SalesRouteConfig(){
-  const token = useSelector((state) => state.auth.token);
-  const dispatch = useDispatch();
-  
-  // Modal
-  const [creationDialogOpen, setCreationDialogOpen] = useState(false)
-  const {register, handleSubmit} = useForm()
+    const token = useSelector((state) => state.auth.token);
+    const dispatch = useDispatch();
+    
+    // Modal
+    const [creationDialogOpen, setCreationDialogOpen] = useState(false)
+    
+    // Form
+    const schema = object().shape({
+        days: array().min(1, "Vui lòng chọn ít nhất một mục"),
+        repeatWeek: string().required("Vui lòng điền vào trường này")
+    });
+    
+    const {register, handleSubmit, control, errors, reset} = useForm({
+        defaultValues: {
+            days: []
+        },
+        validationSchema: schema
+    })
+    
+    // Snackbar
+    const toastId = React.useRef(null);
 
-  // Table
-  const [data, setData] = useState([{}]);
-  const columns = [
-    {
-      field: "salesRouteConfigId",
-      title: "Mã cấu hình",
-    },
-    {
-      field: "days",
-      title: "Ngày",
-    },
-    {
-      field: "repeatWeek",
-      title: "Lặp tuần"
-    }
-  ]
-
-  // Functions
-  const getListSalesRouteConfig = () => {
-    authPost(dispatch, token, "/get-list-sales-route-config", {"statusId": null})
-      .then(res => res.json())
-      .then(res => {
-        for (let i = 0; i < res.length; i++) {
-          res[i] = {
-            "salesRouteConfigId": res[i].salesRouteConfigId,
-            "days": res[i].days,
-            "repeatWeek": res[i].repeatWeek
-          }
+    // Table
+    const [data, setData] = useState([{}]);
+    const columns = [
+        {
+            field: "salesRouteConfigId",
+            title: "Mã cấu hình",
+        },
+        {
+            field: "days",
+            title: "Ngày",
+        },
+        {
+            field: "repeatWeek",
+            title: "Lặp tuần"
         }
-        setData(res)
-      })
-  }
+    ]
+
+    // Functions
+    const getListSalesRouteConfig = () => {
+        authPost(dispatch, token, "/get-list-sales-route-config", {"statusId": null})
+            .then(res => res.json())
+                .then(res => {
+                    for (let i = 0; i < res.length; i++) {
+                        res[i] = {
+                            "salesRouteConfigId": res[i].salesRouteConfigId,
+                            "days": res[i].days,
+                            "repeatWeek": res[i].repeatWeek
+                        }
+                    }
+                    
+                    setData(res)
+                })
+    }
 
     const onDialogClose = () => {
         setCreationDialogOpen(false);
+        reset({days: []})
     };
     
     const onClickSaveButton = data => {
-        
         setCreationDialogOpen(false)
-        
-        // enqueueSnackbar("Đang xử lý...", {
-        //     variant: "info",
-        //     anchorOrigin: anchorOrigin,
-        //     autoHideDuration: 2000
-        // })
+        processingNoti(toastId)
+
+        data.days.sort((a, b) => a-b)
+        let days = data.days[0].toString()
+
+        for(let i=1; i<data.days.length; i++) {
+            days += ", " + data.days[i]
+        }
 
         authPost(
             dispatch,
             token,
             "/create-sales-route-config",
             {
-                "days": data["Days"],
-                "repeatWeek": data["RepeatWeek"]
-            })
+                "days": days,
+                "repeatWeek": data["repeatWeek"]
+            }
+        )
             .then(res => res.json())    
                 .then(res => {
-                    let variant;
-                    let message;
-                    
                     if (res["status"]===undefined) {
-                        message = "Đã thêm"
-                        variant = "success"
+                        updateSuccessNoti(toastId, "Đã thêm")
                     } else {
-                        message = "Đã xảy ra lỗi :(("
-                        variant = "error"
+                        updateErrorNoti(toastId, "Rất tiếc! Đã xảy ra lỗi :((")
                     }
-                    
-                    // enqueueSnackbar(message, {
-                    //     variant: variant,
-                    //     anchorOrigin: anchorOrigin,
-                    //     autoHideDuration: 2000
-                    // })
 
                     getListSalesRouteConfig()
                 })
@@ -162,11 +174,11 @@ function SalesRouteConfig(){
                                 )
                             }}
                         />
-                        <Dialog open={creationDialogOpen} onClose={onDialogClose}>
+                        <Dialog open={creationDialogOpen} onClose={onDialogClose} >
                             <DialogTitle>Thêm mới cấu hình viếng thăm</DialogTitle>
                             <form onSubmit={handleSubmit(onClickSaveButton)}>
-                                <DialogContent>
-                                    <TextField
+                                <DialogContent style={{width: '330px'}}>
+                                    {/* <TextField
                                         required
                                         multiline
                                         margin="normal"
@@ -174,14 +186,16 @@ function SalesRouteConfig(){
                                         name="Days"
                                         inputRef={register({required: true})}
                                         fullWidth
-                                    />
+                                    /> */}
+                                    <SelectWeekdays errors={errors} control={control} />
                                     <TextField
-                                        required
+                                        error={!!errors.repeatWeek}
                                         multiline
                                         margin="normal"
                                         label="Lặp tuần"
-                                        name="RepeatWeek"
-                                        inputRef={register({required: true})}
+                                        name="repeatWeek"
+                                        helperText={errors.repeatWeek?.message}
+                                        inputRef={register}
                                         fullWidth
                                     />
                                 </DialogContent>
@@ -207,7 +221,8 @@ function SalesRouteConfig(){
                                     </Button>
                                 </DialogActions>
                             </form>
-                        </Dialog> 
+                        </Dialog>
+                        <DevTool control={control} />
                     </CardContent>
                 </Card>
            </MuiThemeProvider>
