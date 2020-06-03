@@ -50,17 +50,19 @@ export default function PurchaseOrderCreate() {
     Promise.all([getSupplier(), getProductList(), getUnitPrices()]).then(r => r);
   }, []);
 
-  const [selectedProductList,] = useState([]);
+  const [selectedProductList, setSelectedProductList] = useState([]);
   const [, rerender] = useState([]);
 
   function handleAdd() {
-    selectedProductList.push(Object.assign({
+    let selectedProductNewList = [...selectedProductList];
+    selectedProductNewList.push(Object.assign({
         quantity,
         unitPrice: unitPrices[selectedProduct['productId']],
         price: unitPrices[selectedProduct['productId']] * quantity
       },
       selectedProduct));
     rerender([]);
+    setSelectedProductList(selectedProductNewList);
   }
 
   const columns = [

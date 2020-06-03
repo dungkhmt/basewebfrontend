@@ -1159,14 +1159,6 @@ function Routes(props) {
         path="/purchase-order/list" // props
       />
 
-      <PrivateRouteWithLayout
-        component={PurchaseOrderCreate} //props
-        layout={Layout} //props
-        isAuthenticated={props.isAuthenticated} // props
-        //isAuthenticated={true}
-        //exact                                   // props
-        path="/purchase-order/create/:supplierPartyId" // props
-      />
 
     </Switch>
   );
