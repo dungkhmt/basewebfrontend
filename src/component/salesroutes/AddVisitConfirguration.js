@@ -17,6 +17,7 @@ import { Box } from '@material-ui/core';
 import { IconContext } from 'react-icons/lib/cjs';
 import { MdCancel } from 'react-icons/md';
 import { CircularProgress } from 'material-ui';
+import { errorNoti } from './Notification';
 
 function AddVisitConfirguration(props) {
     const history = useHistory()
@@ -175,21 +176,7 @@ function AddVisitConfirguration(props) {
                         toast.dismiss()
                         history.goBack()
                     } else {
-                        // errorNotification()
-                        toast.error(<Box display='flex' alignItems='center'> 
-                                        <IconContext.Provider>
-                                            <MdCancel size={20} style={{marginRight: '5px'}}/>
-                                        </IconContext.Provider>
-                                        Rất tiếc! Đã xảy ra lỗi :((                                                             
-                                    </Box>, 
-                                    { 
-                                        position: "bottom-right",
-                                        autoClose: 2000,
-                                        pauseOnHover: true,
-                                        draggable: true,
-                                        progress: undefined,
-                                    }
-    );
+                        errorNoti()
                     }
                 })    
     }
