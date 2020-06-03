@@ -31,6 +31,7 @@ import {
     CardContent,
     Slide } 
 from "@material-ui/core";
+import { processingNoti, updateSuccessNoti, updateErrorNoti } from "./Notification";
 
 // const Transition = forwardRef((props, ref) => <Slide direction="down" ref={ref} {...props}/>);
 
@@ -46,29 +47,6 @@ function Plan(){
     
     // Snackbar
     const toastId = React.useRef(null);
-    const notify = () => toastId.current = toast.info(  <Box display='flex' alignItems='center'>
-                                                            <IconContext.Provider>
-                                                                <GiInfo size={20} style={{marginRight: '5px'}}/>
-                                                            </IconContext.Provider>
-                                                            Đang xử lý...                                                              
-                                                        </Box>, 
-                                                      { position: "bottom-right",
-                                                        autoClose: false,
-                                                        pauseOnHover: true,
-                                                        draggable: true,
-                                                        progress: undefined,
-    });
-    const updateNotification = (type, message, status) => toast.update( toastId.current, 
-                                                          { type: type,
-                                                            autoClose: 2000,
-                                                            render: <Box display='flex' alignItems='center'> 
-                                                                        <IconContext.Provider>
-                                                                            {status?<FiCheckCircle size={20} style={{marginRight: '5px'}}/>:
-                                                                                    <MdCancel size={20} style={{marginRight: '5px'}}/>}
-                                                                        </IconContext.Provider>
-                                                                        {message}                                                              
-                                                                    </Box>                                                                                                                                                                          
-    })
     
     // Table
     const [plans, setPlans] = useState([{}]);
@@ -129,7 +107,7 @@ function Plan(){
     const onClickSaveButton = data => {
         
         setCreationDialogOpen(false)
-        notify()
+        processingNoti(toastId)
 
         authPost(
             dispatch,
@@ -142,21 +120,12 @@ function Plan(){
             })
             .then(res => res.json())    
                 .then(res => {
-                    let type;
-                    let message;
-                    let status;
-                    
                     if (res["status"]===undefined) {
-                        message = "Đã thêm"
-                        type = toast.TYPE.SUCCESS
-                        status = true
+                        updateSuccessNoti(toastId, "Đã thêm")
                     } else {
-                        message = "Rất tiếc! Đã xảy ra lỗi :(("
-                        type = toast.TYPE.ERROR
-                        status = false
+                        updateErrorNoti(toastId, "Rất tiếc! Đã xảy ra lỗi :((")
                     }
                     
-                    setTimeout(() => updateNotification(type, message, status), 2000)
                     getListSalesRoutePlanningPeriod()
                 })
     }
