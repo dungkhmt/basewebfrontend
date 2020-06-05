@@ -148,6 +148,8 @@ import ClassesList from './component/education/ClassesList'
 import TeachersList from './component/education/TeachersList'
 import AssignmentList from './component/education/AssignmentList'
 import AddVisitConfirguration from "./component/salesroutes/AddVisitConfirguration";
+import Register from "./component/userregister/Register";
+import Approve from "./component/userregister/Approve";
 
 function Routes(props) {
   // props nay tu parent transfer vao
@@ -185,6 +187,22 @@ function Routes(props) {
         //isAuthenticated={true}
         //exact                                   // props
         path="/userlogin/list" // props
+      />
+      <PrivateRouteWithLayout
+        component={Register} //props
+        layout={Layout} //props
+        isAuthenticated={props.isAuthenticated} // props
+        //isAuthenticated={true}
+        //exact                                   // props
+        path="/user/register" // props
+      />
+      <PrivateRouteWithLayout
+        component={Approve} //props
+        layout={Layout} //props
+        isAuthenticated={props.isAuthenticated} // props
+        //isAuthenticated={true}
+        //exact                                   // props
+        path="/user/approve-register" // props
       />
 
       <PrivateRouteWithLayout
