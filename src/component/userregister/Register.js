@@ -1,13 +1,10 @@
 import React, {useState} from "react";
 import {textField} from "../../utils/FormUtils";
 import Button from "@material-ui/core/Button";
-import {useDispatch, useSelector} from "react-redux";
+import {API_URL} from "../../config/config";
 import {useHistory} from "react-router-dom";
-import {authPost} from "../../api";
 
 export default function Register() {
-  const dispatch = useDispatch();
-  const token = useSelector(state => state.auth.token);
   const history = useHistory();
 
   const [userLoginId, setUserLoginId] = useState('');
@@ -28,36 +25,39 @@ export default function Register() {
     return re.test(String(email).toLowerCase());
   }
 
-  function verifyEmail() {
-    return verify(email, isValidEmail, 'Hãy nhập một email hợp lệ!');
-  }
-
   async function handleSubmit() {
     let notEmptyCheck = e => e !== '';
     let errorMessage = 'Vui lòng nhập đầy đủ các trường trước khi đăng ký';
     if (
       verify(userLoginId, notEmptyCheck, errorMessage) &&
       verify(password, notEmptyCheck, errorMessage) &&
-      verifyEmail() &&
+      verify(email, isValidEmail, 'Hãy nhập một email hợp lệ!') &&
       verify(fullName, notEmptyCheck, errorMessage)) {
 
-      let userRegister = await authPost(dispatch, token, '/user/register/', {
+      let body = {
         userLoginId,
         password,
         email,
         fullName
+      };
+      let userRegister = await fetch(API_URL + '/user/register/', {
+        method: "POST",
+        headers: {
+          "content-type": "application/json",
+        },
+        body: JSON.stringify(body),
       }).then(r => r.json());
 
       if (userRegister && userRegister['userLoginId']) {
         alert('Đăng ký thành công người dùng ' + userLoginId + ', người dùng đang chờ được phê duyệt.');
-        window.location.reload();
+        history.push('/login')
       } else {
         alert('Đăng ký thất bại, tên người dùng ' + userLoginId + ' có thể đã được sử dụng!');
       }
     }
   }
 
-  return (<div>
+  return (<div style={{marginLeft: '20px'}}>
     <h2>Đăng ký</h2>
 
     {textField('userLoginId', 'Tên đăng nhập', 'search', userLoginId, setUserLoginId)}

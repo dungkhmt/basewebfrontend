@@ -257,21 +257,6 @@ export default function SideBar(props) {
                   ""
                 )}
 
-                {props.menu.has("MENU_USER_CREATE") ? (
-                  <ListItem
-                    button
-                    className={classes.nested}
-                    component={Link}
-                    to={process.env.PUBLIC_URL + "/user/register"}
-                  >
-                    <ListItemIcon>
-                      <StarBorder/>
-                    </ListItemIcon>
-                    <ListItemText primary="Đăng ký"/>
-                  </ListItem>
-                ) : (
-                  ""
-                )}
                 {props.menu.has("MENU_USER_LIST") ? (
                   <ListItem
                     button

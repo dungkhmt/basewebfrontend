@@ -188,10 +188,9 @@ function Routes(props) {
         //exact                                   // props
         path="/userlogin/list" // props
       />
-      <PrivateRouteWithLayout
+      <Route
         component={Register} //props
         layout={Layout} //props
-        isAuthenticated={props.isAuthenticated} // props
         //isAuthenticated={true}
         //exact                                   // props
         path="/user/register" // props

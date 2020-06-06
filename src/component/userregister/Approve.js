@@ -39,7 +39,7 @@ export default function Approve() {
               Đã phê duyệt
             </Button> :
             <Button color={'primary'} variant={'contained'} onClick={() => handleApprove(rowData['userLoginId'])}>
-              Chấp nhận
+              Phê duyệt
             </Button>
     }
   ];
