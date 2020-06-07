@@ -52,7 +52,7 @@ export default function Register() {
         alert('Đăng ký thành công người dùng ' + userLoginId + ', người dùng đang chờ được phê duyệt.');
         history.push('/login')
       } else {
-        alert('Đăng ký thất bại, tên người dùng ' + userLoginId + ' có thể đã được sử dụng!');
+        alert('Đăng ký thất bại, tên người dùng ' + userLoginId + ' hoặc địa chỉ email ' + email + ' có thể đã được sử dụng!');
       }
     }
   }
