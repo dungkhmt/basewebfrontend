@@ -3,6 +3,7 @@ import {textField} from "../../utils/FormUtils";
 import Button from "@material-ui/core/Button";
 import {API_URL} from "../../config/config";
 import {useHistory} from "react-router-dom";
+import AlertDialog from "../../utils/AlertDialog";
 
 export default function Register() {
   const history = useHistory();
@@ -12,9 +13,28 @@ export default function Register() {
   const [email, setEmail] = useState('');
   const [fullName, setFullName] = useState('');
 
+  /*
+   * BEGIN: Alert Dialog
+   */
+  const [alertTitle, setAlertTitle] = useState('');
+  const [alertMessage, setAlertMessage] = useState('');
+  const [openAlert, setOpenAlert] = useState(false);
+  const [alertCallback, setAlertCallback] = useState({});
+
+  function showAlert(title = '', message = '', callback = {}) {
+    setAlertTitle(title);
+    setAlertMessage(message);
+    setAlertCallback(callback);
+    setOpenAlert(true);
+  }
+
+  /*
+   * END: Alert Dialog
+   */
+
   function verify(field, conditional, errorMessage) {
     if (!conditional(field)) {
-      alert(errorMessage);
+      showAlert('Đã có lỗi xảy ra', errorMessage);
       return false;
     }
     return true;
@@ -27,12 +47,12 @@ export default function Register() {
 
   async function handleSubmit() {
     let notEmptyCheck = e => e !== '';
-    let errorMessage = 'Vui lòng nhập đầy đủ các trường trước khi đăng ký';
+    let emptyErrorMessage = 'Vui lòng nhập đầy đủ các trường trước khi đăng ký';
     if (
-      verify(userLoginId, notEmptyCheck, errorMessage) &&
-      verify(password, notEmptyCheck, errorMessage) &&
+      verify(userLoginId, notEmptyCheck, emptyErrorMessage) &&
+      verify(password, notEmptyCheck, emptyErrorMessage) &&
       verify(email, isValidEmail, 'Hãy nhập một email hợp lệ!') &&
-      verify(fullName, notEmptyCheck, errorMessage)) {
+      verify(fullName, notEmptyCheck, emptyErrorMessage)) {
 
       let body = {
         userLoginId,
@@ -49,10 +69,11 @@ export default function Register() {
       }).then(r => r.json());
 
       if (userRegister && userRegister['userLoginId']) {
-        alert('Đăng ký thành công người dùng ' + userLoginId + ', người dùng đang chờ được phê duyệt.');
-        history.push('/login')
+        showAlert('Đăng ký thành công', 'Đăng ký thành công người dùng ' + userLoginId + ', người dùng đang chờ được phê duyệt.',
+          ({OK: () => history.push('/login')})
+        );
       } else {
-        alert('Đăng ký thất bại, tên người dùng ' + userLoginId + ' hoặc địa chỉ email ' + email + ' có thể đã được sử dụng!');
+        showAlert('Đăng ký thất bại', 'Đăng ký thất bại, tên người dùng ' + userLoginId + ' hoặc địa chỉ email ' + email + ' có thể đã được sử dụng!');
       }
     }
   }
@@ -64,6 +85,14 @@ export default function Register() {
     {textField('password', 'Mật khẩu', 'password', password, setPassword)}
     {textField('email', 'Địa chỉ email', 'search', email, setEmail)}
     {textField('fullName', 'Tên đầy đủ', 'search', fullName, setFullName)}
+
+    <AlertDialog
+      title={alertTitle}
+      message={alertMessage}
+      open={openAlert}
+      setOpen={setOpenAlert}
+      afterShowCallback={alertCallback}
+    />
 
     <Button variant="contained" color="primary" onClick={handleSubmit}>
       Đăng ký
