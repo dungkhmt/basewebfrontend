@@ -83,7 +83,7 @@ function ProductList(props) {
           setProductList(res.content);
 
 
-          if (res.totalElements % pageSize != 0) {
+          if (res.totalElements % pageSize !== 0) {
             setTotalPage(Math.floor(res.totalElements / pageSize));
           } else {
             setTotalPage(Math.floor(res.totalElements / pageSize - 1));
@@ -95,7 +95,7 @@ function ProductList(props) {
 
   const handlePageSizeChange = event => {
 
-    if ("" + (event.target.value - pageSize) != "0") {
+    if ("" + (event.target.value - pageSize) !== "0") {
       setPageSize(event.target.value);
       setPage(0);
 
@@ -138,7 +138,7 @@ function ProductList(props) {
                 <CardHeader
                   avatar={
                     <Avatar aria-label="recipe" className={classes.avatar}>
-                      R
+                      {/*R*/}
                     </Avatar>
                   }
                   action={
