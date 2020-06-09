@@ -11,14 +11,14 @@ from "@material-ui/core";
 // Snackbar
 
 
-export const processingNoti = toastId => toastId.current = toast.info(  <Box display='flex' alignItems='center'>
+export const processingNoti = (toastId, autoClose) => toastId.current = toast.info(  <Box display='flex' alignItems='center'>
                                                         <IconContext.Provider>
                                                             <GiInfo size={20} style={{marginRight: '5px'}}/>
                                                         </IconContext.Provider>
                                                         Đang xử lý...                                                              
                                                     </Box>, 
                                                   { position: "bottom-right",
-                                                    autoClose: false,
+                                                    autoClose: autoClose,
                                                     pauseOnHover: true,
                                                     draggable: true,
                                                     progress: undefined,
