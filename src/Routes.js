@@ -132,11 +132,11 @@ import QuickInvoicePayment from "./component/accounting/QuickInvoicePayment";
 import ProductPriceSupplier from "./component/supplier/ProductPriceSupplier";
 import PurchaseOrderList from "./component/order/PurchaseOrderList";
 import PurchaseOrderCreate from "./component/order/PurchaseOrderCreate";
-import Plan from "./component/salesroutes/Plan";
-import PlanPeriod from "./component/salesroutes/PlanPeriod";
+import Plan from "./component/salesroutes/salesrouteplan/Plan";
+import PlanPeriod from "./component/salesroutes/salesrouteplan/PlanPeriod";
 import ListSalesman from "./component/salesroutes/ListSalesman";
-import SalesRouteDetail from "./component/salesroutes/SalesRouteDetail"
-import SalesRouteConfig from './component/salesroutes/SalesRouteConfig'
+import SalesRouteDetail from "./component/salesroutes/salesroutedatail/SalesRouteDetail"
+import SalesRouteConfig from "./component/salesroutes/salesrouteconfig/SalesRouteConfig"
 import SalesmanDetail from "./component/salesroutes/SalesmanDetail"
 import ProductEdit from "./component/product/ProductEdit";
 import SetPrimaryImg from "./component/product/SetPrimaryImg"
@@ -147,7 +147,9 @@ import CoursesList from './component/education/CoursesList'
 import ClassesList from './component/education/ClassesList'
 import TeachersList from './component/education/TeachersList'
 import AssignmentList from './component/education/AssignmentList'
-import AddVisitConfirguration from "./component/salesroutes/AddVisitConfirguration";
+import AddVisitConfirguration from "./component/salesroutes/salesrouteplan/AddVisitConfirguration";
+import EditVisitConfirguration from "./component/salesroutes/salesrouteplan/EditVisitConfiguration";
+import AddSalesRouteConfig from "./component/salesroutes/salesrouteconfig/AddSalesRouteConfig";
 
 function Routes(props) {
   // props nay tu parent transfer vao
@@ -420,6 +422,14 @@ function Routes(props) {
       />
 
       <PrivateRouteWithLayout
+        component={EditVisitConfirguration}
+        layout={Layout}
+        isAuthenticated={props.isAuthenticated}
+        exact
+        path="/salesroutes/plan/period/edit/visit-confirguration"
+      />
+
+      <PrivateRouteWithLayout
         component={SalesRouteDetail}
         layout={Layout}
         isAuthenticated={props.isAuthenticated}
@@ -431,7 +441,16 @@ function Routes(props) {
         component={SalesRouteConfig}
         layout={Layout}
         isAuthenticated={props.isAuthenticated}
+        exact
         path="/salesroutes/configs"
+      />
+
+      <PrivateRouteWithLayout
+        component={AddSalesRouteConfig}
+        layout={Layout}
+        isAuthenticated={props.isAuthenticated}
+        exact
+        path="/salesroutes/configs/create-new"
       />
 
       <PrivateRouteWithLayout
