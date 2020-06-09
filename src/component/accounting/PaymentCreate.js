@@ -11,6 +11,7 @@ import {MuiPickersUtilsProvider} from "@material-ui/pickers";
 import {notNegativeIntFilterOnChange, selectValueByIdName, textFieldNumberFormat} from "../../utils/FormUtils";
 import {authPost} from "../../api";
 import {useHistory} from "react-router";
+import AlertDialog from "../../utils/AlertDialog";
 
 export function PaymentCreate() {
   const dispatch = useDispatch();
@@ -20,6 +21,25 @@ export function PaymentCreate() {
   const [selectedDistributor, setSelectedDistributor] = useState({});
   const [distributorList, setDistributorList] = useState([]);
   const [amount, setAmount] = useState(1);
+
+  /*
+  * BEGIN: Alert Dialog
+  */
+  const [alertTitle, setAlertTitle] = useState('');
+  const [alertMessage, setAlertMessage] = useState('');
+  const [openAlert, setOpenAlert] = useState(false);
+  const [alertCallback, setAlertCallback] = useState({});
+
+  function showAlert(title = '', message = '', callback = {}) {
+    setAlertTitle(title);
+    setAlertMessage(message);
+    setAlertCallback(callback);
+    setOpenAlert(true);
+  }
+
+  /*
+   * END: Alert Dialog
+   */
 
   async function getDistributorList() {
     let distributorList = (await authPost(dispatch, token, '/get-list-distributor', {}).then(r => r.json()))['lists'];
@@ -35,9 +55,11 @@ export function PaymentCreate() {
     let body = {partyId: selectedDistributor['partyId'], amount};
     let response = await authPost(dispatch, token, '/create-payment', body).then(r => r.json());
     if (response && response['paymentId']) {
-      alert('Tạo thành công, paymentId = ' + response['paymentId']);
+      showAlert('Thành công', 'Tạo thành công, paymentId = ' + response['paymentId'],
+        ({OK: () => history.push('/customer-payment/list')}));
+    } else {
+      history.push('/customer-payment/list');
     }
-    history.push('/customer-payment/list');
   }
 
   return <div>
@@ -70,5 +92,13 @@ export function PaymentCreate() {
         </CardActions>
       </Card>
     </MuiPickersUtilsProvider>
+
+    <AlertDialog
+      title={alertTitle}
+      message={alertMessage}
+      open={openAlert}
+      setOpen={setOpenAlert}
+      afterShowCallback={alertCallback}
+    />
   </div>;
 }

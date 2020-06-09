@@ -1,4 +1,4 @@
-import React from "react";
+import React, {useEffect, useState} from "react";
 import {useDispatch, useSelector} from "react-redux";
 import {authGet} from "../../api";
 import MaterialTable from "material-table";
@@ -15,6 +15,17 @@ function CustomerList(props) {
     {field: 'customerName', title: 'Customer Name'}
   ];
 
+  const [customerList, setCustomerList] = useState([]);
+
+  async function getDataTable() {
+    let customerList = await authGet(dispatch, token, `/customers`);
+    setCustomerList(customerList);
+  }
+
+  useEffect(() => {
+    getDataTable().then(r => r);
+  }, []);
+
   return (
     <MaterialTable
       title="Danh sách khách hàng"
@@ -23,40 +34,7 @@ function CustomerList(props) {
         filtering: true,
         search: false
       }}
-      data={query =>
-        new Promise((resolve, reject) => {
-          console.log(query);
-          let sortParam = "";
-          if (query.orderBy !== undefined) {
-            sortParam = "&sort=" + query.orderBy.field + ',' + query.orderDirection;
-          }
-          let filterParam = "";
-          if (query.filters.length > 0) {
-            let filter = query.filters;
-            filter.forEach(v => {
-              filterParam = v.column.field + "=" + v.value + "&"
-            })
-            filterParam = "&" + filterParam.substring(0, filterParam.length - 1);
-          }
-
-          authGet(
-            dispatch,
-            token,
-            "/customers" + "?size=" + query.pageSize + "&page=" + query.page + sortParam + filterParam
-          ).then(
-            res => {
-              resolve({
-                data: res.content,
-                page: res.number,
-                totalCount: res.totalElements
-              });
-            },
-            error => {
-              console.log("error");
-            }
-          );
-        })
-      }
+      data={customerList}
       icons={tableIcons}
       onRowClick={(event, rowData) => {
         console.log("select ", rowData);

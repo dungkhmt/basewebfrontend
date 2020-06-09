@@ -94,7 +94,7 @@ export default function InventoryOrderExportList() {
     <MaterialTable
       title={"Danh sách xuất kho"}
       columns={columns}
-      options={{search: false, selection: true}}
+      options={{search: false, selection: false}}
       components={components}
       data={dataTable}
       icons={tableIcons}

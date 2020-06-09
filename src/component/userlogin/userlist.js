@@ -1,27 +1,35 @@
-import React from "react";
-import {tableIcons} from "../../utils/iconutil";
 import MaterialTable from "material-table";
-import {useDispatch, useSelector} from "react-redux";
-import {authGet} from "../../api";
+import React from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { Link, useHistory } from "react-router-dom";
+import { authGet } from "../../api";
+import { tableIcons } from "../../utils/iconutil";
 
-import {Link, useHistory} from "react-router-dom";
 
 export default function UserList() {
   const dispatch = useDispatch();
   const history = useHistory();
-  const token = useSelector(state => state.auth.token);
+  const token = useSelector((state) => state.auth.token);
   const columns = [
-    {title: "Full Name", field: "fullName"},
-    {title: "Status", field: "status", lookup: {'PARTY_ENABLED': 'PARTY_ENABLED', 'PARTY_DISABLED': 'PARTY_DISABLED'}},
-    {title: "Type", field: "partyType"},
-    {title: "Created Date", field: "createdDate", type: 'date'},
+    { title: "Full Name", field: "fullName" },
+    {
+      title: "Status",
+      field: "status",
+      lookup: {
+        PARTY_ENABLED: "PARTY_ENABLED",
+        PARTY_DISABLED: "PARTY_DISABLED",
+      },
+    },
+    { title: "Type", field: "partyType" },
+    { title: "Created Date", field: "createdDate", type: "date" },
     {
       title: "User Name",
       field: "userLoginId",
-      render: rowData => <Link to={"/userlogin/" + rowData.partyId}>{rowData.userLoginId}</Link>
+      render: (rowData) => (
+        <Link to={"/userlogin/" + rowData.partyId}>{rowData.userLoginId}</Link>
+      ),
     },
-    {title: "Party Code", field: "partyCode"},
-
+    { title: "Party Code", field: "partyCode" },
   ];
   return (
     <MaterialTable
@@ -29,14 +37,15 @@ export default function UserList() {
       columns={columns}
       options={{
         //filtering: true,
-        search: true
+        search: true,
       }}
-      data={query =>
+      data={(query) =>
         new Promise((resolve, reject) => {
           console.log(query);
           let sortParam = "";
           if (query.orderBy !== undefined) {
-            sortParam = "&sort=" + query.orderBy.field + ',' + query.orderDirection;
+            sortParam =
+              "&sort=" + query.orderBy.field + "," + query.orderDirection;
           }
           let filterParam = "";
           //if(query.filters.length>0){
@@ -50,23 +59,33 @@ export default function UserList() {
           authGet(
             dispatch,
             token,
-            "/users" + "?size=" + query.pageSize + "&page=" + query.page + sortParam + filterParam
+            "/users" +
+              "?size=" +
+              query.pageSize +
+              "&page=" +
+              query.page +
+              sortParam +
+              filterParam
           ).then(
-            res => {
-              resolve({
-                data: res.content,
-                page: res.number,
-                totalCount: res.totalElements
-              });
+            (res) => {
+              console.log(res);
+              if (res !== undefined && res !== null)
+                resolve({
+                  data: res.content,
+                  page: res.number,
+                  totalCount: res.totalElements,
+                });
+              else reject();
             },
-            error => {
+            (error) => {
               console.log("error");
+
+              reject();
             }
           );
         })
       }
       icons={tableIcons}
-
     />
   );
 }

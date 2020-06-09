@@ -256,6 +256,22 @@ export default function SideBar(props) {
                 ) : (
                   ""
                 )}
+
+                {props.menu.has("MENU_USER_LIST") ? (
+                  <ListItem
+                    button
+                    className={classes.nested}
+                    component={Link}
+                    to={process.env.PUBLIC_URL + "/user/approve-register"}
+                  >
+                    <ListItemIcon>
+                      <StarBorder/>
+                    </ListItemIcon>
+                    <ListItemText primary="Phê duyệt"/>
+                  </ListItem>
+                ) : (
+                  ""
+                )}
               </List>
             </Collapse>
           </div>

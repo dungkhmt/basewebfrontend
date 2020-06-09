@@ -19,6 +19,7 @@ import {useParams} from "react-router";
 import Grid from "@material-ui/core/Grid";
 import ArrowBackIosIcon from "@material-ui/icons/ArrowBackIos";
 import {NumberFormatCustom} from "../../../../../utils/NumberFormatTextField";
+import AlertDialog from "../../../../../utils/AlertDialog";
 
 
 const useStyles = makeStyles(theme => ({
@@ -47,6 +48,24 @@ export default function DeliveryTripDetailCreate() {
   const history = useHistory();
   const [, rerender] = useState([]);
 
+  /*
+   * BEGIN: Alert Dialog
+   */
+  const [alertTitle, setAlertTitle] = useState('');
+  const [alertMessage, setAlertMessage] = useState('');
+  const [openAlert, setOpenAlert] = useState(false);
+  const [alertCallback, setAlertCallback] = useState({});
+
+  function showAlert(title = '', message = '', callback = {}) {
+    setAlertTitle(title);
+    setAlertMessage(message);
+    setAlertCallback(callback);
+    setOpenAlert(true);
+  }
+
+  /*
+   * END: Alert Dialog
+   */
 
   const columns = [
     {title: "Mã đơn hàng", field: "shipmentItemId"},
@@ -103,10 +122,10 @@ export default function DeliveryTripDetailCreate() {
     authPost(dispatch, token, '/create-delivery-trip-detail/' + deliveryTripId, body).then(response => response.json()).then(
       response => {
         if (typeof response === 'number') {
-          alert('Đã thêm vào chuyến cho ' + response + ' đơn hàng');
+          showAlert('Thành công', 'Đã thêm vào chuyến cho ' + response + ' đơn hàng',
+            ({OK: () => history.push(process.env.PUBLIC_URL + "/delivery-trip/" + deliveryTripId)}));
           console.log(response);
           // browserHistory.goBack();
-          history.push(process.env.PUBLIC_URL + "/delivery-trip/" + deliveryTripId)
         }
       },
       error => console.log(error)
@@ -240,6 +259,13 @@ export default function DeliveryTripDetailCreate() {
       </Card>
     </MuiPickersUtilsProvider>
 
+    <AlertDialog
+      title={alertTitle}
+      message={alertMessage}
+      open={openAlert}
+      setOpen={setOpenAlert}
+      afterShowCallback={alertCallback}
+    />
 
   </div>
 }

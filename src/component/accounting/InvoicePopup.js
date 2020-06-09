@@ -1,13 +1,21 @@
-import {Grid, IconButton, InputAdornment, Paper, TextField, Typography,} from "@material-ui/core";
+import {
+  Button,
+  Grid,
+  IconButton,
+  InputAdornment,
+  Paper,
+  TextField,
+  Typography,
+} from "@material-ui/core";
 import Dialog from "@material-ui/core/Dialog";
-import {makeStyles} from "@material-ui/core/styles";
+import { makeStyles } from "@material-ui/core/styles";
 import KeyboardArrowRightIcon from "@material-ui/icons/KeyboardArrowRight";
 import SearchRoundedIcon from "@material-ui/icons/SearchRounded";
 import MaterialTable from "material-table";
-import {default as React, useState} from "react";
-import {useDispatch, useSelector} from "react-redux";
-import {Link} from "react-router-dom";
-import {authGet} from "../../api";
+import { default as React, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { Link } from "react-router-dom";
+import { authGet } from "../../api";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -28,13 +36,15 @@ export default function InvoicePopup(props) {
   const token = useSelector((state) => state.auth.token);
 
   const [invoiceIdFilter, setInvoiceIdFilter] = useState("");
-  const [toPartyCustomerIdFilter, setToPartyCustomerIdFilter] = useState("");
+  const [toPartyCustomerNameFilter, setToPartyCustomerNameFilter] = useState(
+    ""
+  );
   const handleInvoiceIdFilterChange = (event) => {
     setInvoiceIdFilter(event.target.value);
   };
   const url = "/get-page-unpaid-invoices";
-  const handleToPartyCustomerIdFilterChange = (event) => {
-    setToPartyCustomerIdFilter(event.target.value);
+  const handleToPartyCustomerNameFilterChange = (event) => {
+    setToPartyCustomerNameFilter(event.target.value);
   };
   const columns = [
     {
@@ -45,9 +55,25 @@ export default function InvoicePopup(props) {
         </Link>
       ),
     },
-    {title: "Ngày hóa đơn", field: "invoiceDate"},
-    {title: "Khách hàng", field: "toPartyCustomerId"},
-    {title: "Thành tiền", field: "amount"},
+    { title: "Ngày hóa đơn", field: "invoiceDate" },
+    { title: "Khách hàng", field: "toPartyCustomerName" },
+    { title: "Thành tiền", field: "amount" },
+    {
+      field: "select",
+      title: "",
+      render: (rowData) => (
+        <Button
+          color="primary"
+          variant="contained"
+          onClick={() => {
+            props.updateSelectedInvoice(rowData);
+            props.handleClose();
+          }}
+        >
+          Chọn
+        </Button>
+      ),
+    },
   ];
 
   // const handleUpdateFilter = () => {
@@ -83,29 +109,29 @@ export default function InvoicePopup(props) {
               InputProps={{
                 startAdornment: (
                   <InputAdornment position="start">
-                    <KeyboardArrowRightIcon/>
+                    <KeyboardArrowRightIcon />
                   </InputAdornment>
                 ),
               }}
             />
             <TextField
               id="customer-search"
-              label="with Customer Code"
+              label="with Customer Name"
               variant="outlined"
               size="small"
-              value={toPartyCustomerIdFilter}
-              onChange={handleToPartyCustomerIdFilterChange}
+              value={toPartyCustomerNameFilter}
+              onChange={handleToPartyCustomerNameFilterChange}
               InputProps={{
                 startAdornment: (
                   <InputAdornment position="start">
-                    <KeyboardArrowRightIcon/>
+                    <KeyboardArrowRightIcon />
                   </InputAdornment>
                 ),
               }}
             />
 
             <IconButton onClick={() => tableRef.current.onQueryChange()}>
-              <SearchRoundedIcon color="primary"/>
+              <SearchRoundedIcon color="primary" />
             </IconButton>
           </Paper>
         </Grid>
@@ -119,12 +145,12 @@ export default function InvoicePopup(props) {
                 let filterParam = "";
                 if (invoiceIdFilter !== "")
                   filterParam = "invoiceId:" + invoiceIdFilter;
-                if (toPartyCustomerIdFilter !== "") {
+                if (toPartyCustomerNameFilter !== "") {
                   if (filterParam !== "") filterParam += ",";
                   filterParam =
                     filterParam +
                     "toPartyCustomerId:" +
-                    toPartyCustomerIdFilter;
+                    toPartyCustomerNameFilter;
                 }
                 if (filterParam !== "")
                   filterParam = "&filtering=" + filterParam;
@@ -132,23 +158,32 @@ export default function InvoicePopup(props) {
                   dispatch,
                   token,
                   url +
-                  "?size=" +
-                  query.pageSize +
-                  "&page=" +
-                  query.page +
-                  sortParam +
-                  filterParam
-                ).then((res) => {
-                  resolve({
-                    data: res.content,
-                    page: res.number,
-                    totalCount: res.totalElements,
-                  });
-                });
+                    "?size=" +
+                    query.pageSize +
+                    "&page=" +
+                    query.page +
+                    sortParam +
+                    filterParam
+                ).then(
+                  (res) => {
+                    console.log(res);
+                    if (res !== undefined && res !== null)
+                      resolve({
+                        data: res.content,
+                        page: res.number,
+                        totalCount: res.totalElements,
+                      });
+                    else reject();
+                  },
+                  (error) => {
+                    console.log("error");
+                    reject();
+                  }
+                );
               })
             }
             title={""}
-            options={{search: false}}
+            options={{ search: false }}
             onRowClick={(event, rowData) => {
               props.updateSelectedInvoice(rowData);
               props.handleClose();

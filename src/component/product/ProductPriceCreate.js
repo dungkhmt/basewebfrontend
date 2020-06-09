@@ -5,6 +5,7 @@ import {authGet, authPost} from "../../api";
 import Button from "@material-ui/core/Button";
 import {textFieldNumberFormat} from "../../utils/FormUtils";
 import {dateFromThru, getDateFromNowPlus, toFormattedDateTime} from "../../utils/dateutils";
+import AlertDialog from "../../utils/AlertDialog";
 
 export default function ProductPriceCreate() {
   const dispatch = useDispatch();
@@ -19,6 +20,25 @@ export default function ProductPriceCreate() {
   const [thruDate, setThruDate] = useState(getDateFromNowPlus(1, 0, 0));
   const [price, setPrice] = useState(1);
 
+  /*
+ * BEGIN: Alert Dialog
+ */
+  const [alertTitle, setAlertTitle] = useState('');
+  const [alertMessage, setAlertMessage] = useState('');
+  const [openAlert, setOpenAlert] = useState(false);
+  const [alertCallback, setAlertCallback] = useState({});
+
+  function showAlert(title = '', message = '', callback = {}) {
+    setAlertTitle(title);
+    setAlertMessage(message);
+    setAlertCallback(callback);
+    setOpenAlert(true);
+  }
+
+  /*
+   * END: Alert Dialog
+   */
+
   async function getProduct() {
     let product = await authGet(dispatch, token, '/product/' + productId);
     setProduct(product);
@@ -32,9 +52,11 @@ export default function ProductPriceCreate() {
     let body = {productId, fromDate: toFormattedDateTime(fromDate), thruDate: toFormattedDateTime(thruDate), price};
     let response = await authPost(dispatch, token, '/set-product-price', body).then(r => r.json());
     if (response && response['productPriceId']) {
-      alert('Đã tạo thành công giá với mã: ' + response['productPriceId']);
+      showAlert('Thành công', 'Đã tạo thành công giá với mã: ' + response['productPriceId'],
+        ({OK: () => history.push('/product/' + productId)}));
+    } else {
+      history.push('/product/' + productId);
     }
-    history.push('/product/' + productId);
   }
 
   return (<div>
@@ -52,5 +74,12 @@ export default function ProductPriceCreate() {
     <Button color={'primary'} variant={'contained'} onClick={handleSubmit}>Lưu</Button>
     <Button color={'secondary'} variant={'contained'} onClick={() => history.push('/product/' + productId)}>Hủy</Button>
 
+    <AlertDialog
+      title={alertTitle}
+      message={alertMessage}
+      open={openAlert}
+      setOpen={setOpenAlert}
+      afterShowCallback={alertCallback}
+    />
   </div>);
 }

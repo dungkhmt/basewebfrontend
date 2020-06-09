@@ -73,7 +73,7 @@ export default function InventoryList() {
     <MaterialTable
       title={"Danh sách tồn kho"}
       columns={columns}
-      options={{search: false}}
+      options={{search: true}}
       components={components}
       data={dataTable}
       icons={tableIcons}
