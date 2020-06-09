@@ -107,7 +107,7 @@ function Plan(){
     const onClickSaveButton = data => {
         
         setCreationDialogOpen(false)
-        processingNoti(toastId)
+        processingNoti(toastId, false)
 
         authPost(
             dispatch,
