@@ -18,6 +18,7 @@ import { processingNoti, updateSuccessNoti, updateErrorNoti } from "../Notificat
 import {object, array, string} from 'yup'
 import { DevTool } from "react-hook-form-devtools";
 import { useHistory } from "react-router";
+import { toast } from "react-toastify";
 
 function AddSalesRouteConfig(){
     const history = useHistory()
@@ -64,7 +65,7 @@ function AddSalesRouteConfig(){
     
     const onClickSaveButton = data => {
         
-        processingNoti(toastId)
+        processingNoti(toastId, false)
 
         data.days.sort((a, b) => a-b)
         let days = data.days[0].toString()
@@ -78,6 +79,7 @@ function AddSalesRouteConfig(){
             token,
             "/create-sales-route-config",
             {
+                "visitFrequencyId": data["frequency"],
                 "days": days,
                 "repeatWeek": data["repeatWeek"]
             }
@@ -86,11 +88,10 @@ function AddSalesRouteConfig(){
                 .then(res => {
                     if (res["status"]===undefined) {
                         updateSuccessNoti(toastId, "Đã thêm")
+                        history.goBack()
                     } else {
                         updateErrorNoti(toastId, "Rất tiếc! Đã xảy ra lỗi :((")
-                    }
-
-                    
+                    }                
                 })
     }
 
