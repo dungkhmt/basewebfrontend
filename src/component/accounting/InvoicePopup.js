@@ -1,4 +1,12 @@
-import { Button, Grid, IconButton, InputAdornment, Paper, TextField, Typography } from "@material-ui/core";
+import {
+  Button,
+  Grid,
+  IconButton,
+  InputAdornment,
+  Paper,
+  TextField,
+  Typography,
+} from "@material-ui/core";
 import Dialog from "@material-ui/core/Dialog";
 import { makeStyles } from "@material-ui/core/styles";
 import KeyboardArrowRightIcon from "@material-ui/icons/KeyboardArrowRight";
@@ -156,13 +164,22 @@ export default function InvoicePopup(props) {
                     query.page +
                     sortParam +
                     filterParam
-                ).then((res) => {
-                  resolve({
-                    data: res.content,
-                    page: res.number,
-                    totalCount: res.totalElements,
-                  });
-                });
+                ).then(
+                  (res) => {
+                    console.log(res);
+                    if (res !== undefined && res !== null)
+                      resolve({
+                        data: res.content,
+                        page: res.number,
+                        totalCount: res.totalElements,
+                      });
+                    else reject();
+                  },
+                  (error) => {
+                    console.log("error");
+                    reject();
+                  }
+                );
               })
             }
             title={""}
