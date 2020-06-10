@@ -15,25 +15,24 @@ from "@material-ui/core";
 import { Save, Cancel } from '@material-ui/icons';
 import SelectWeekdays from "./SelectWeekdays";
 import { processingNoti, updateSuccessNoti, updateErrorNoti } from "../Notification";
-import {object, array, string} from 'yup'
+import {object, array, string, mixed} from 'yup'
 import { DevTool } from "react-hook-form-devtools";
 import { useHistory } from "react-router";
-import { toast } from "react-toastify";
 
 function AddSalesRouteConfig(){
     const history = useHistory()
     const token = useSelector((state) => state.auth.token);
     const dispatch = useDispatch();
-    
+
     // Form
     const [frequencies, setFrequencies] = useState([])
-    const schema = object().shape({
-        frequency: string().required("Vui lòng chọn một mục"),
-        days: array().min(1, "Vui lòng chọn ít nhất một mục"),
-        repeatWeek: string().required("Vui lòng điền vào trường này")
+    const schema = object({
+        frequency: string().required("Trường này được yêu cầu"),
+        days: array().min(1, "Trường này được yêu cầu"),
+        repeatWeek: string().required("Trường này được yêu cầu")
     });
     
-    const {register, handleSubmit, control, errors, getValues} = useForm({
+    const {register, handleSubmit, control, errors, setError, getValues} = useForm({
         defaultValues: {
             days: []
         },
@@ -64,35 +63,41 @@ function AddSalesRouteConfig(){
     };
     
     const onClickSaveButton = data => {
+        let char = data['frequency'].slice(2, 3)
+        char = (char === 'W')?1:Number(char)
         
-        processingNoti(toastId, false)
+        if (data.days.length !== char) {
+            setError('days', 'length', `Vui lòng chọn đúng ${char} mục`)
+        } else {
+            processingNoti(toastId, false)
 
-        data.days.sort((a, b) => a-b)
-        let days = data.days[0].toString()
+            data.days.sort((a, b) => a-b)
+            let days = data.days[0].toString()
 
-        for(let i=1; i<data.days.length; i++) {
-            days += ", " + data.days[i]
-        }
-
-        authPost(
-            dispatch,
-            token,
-            "/create-sales-route-config",
-            {
-                "visitFrequencyId": data["frequency"],
-                "days": days,
-                "repeatWeek": data["repeatWeek"]
+            for(let i=1; i<data.days.length; i++) {
+                days += ", " + data.days[i]
             }
-        )
-            .then(res => res.json())    
-                .then(res => {
-                    if (res["status"]===undefined) {
-                        updateSuccessNoti(toastId, "Đã thêm")
-                        history.goBack()
-                    } else {
-                        updateErrorNoti(toastId, "Rất tiếc! Đã xảy ra lỗi :((")
-                    }                
-                })
+
+            authPost(
+                dispatch,
+                token,
+                "/create-sales-route-config",
+                {
+                    "visitFrequencyId": data["frequency"],
+                    "days": days,
+                    "repeatWeek": data["repeatWeek"]
+                }
+            )
+                .then(res => res.json())    
+                    .then(res => {
+                        if (res["status"]===undefined) {
+                            updateSuccessNoti(toastId, "Đã thêm")
+                            history.goBack()
+                        } else {
+                            updateErrorNoti(toastId, "Rất tiếc! Đã xảy ra lỗi :((")
+                        }                
+                    })
+        }           
     }
 
     useEffect(() => {
@@ -151,7 +156,7 @@ function AddSalesRouteConfig(){
                                 error={!!errors.repeatWeek}
                                 multiline
                                 margin="normal"
-                                label="Lặp tuần"
+                                label="Lặp tuần*"
                                 name="repeatWeek"
                                 helperText={errors.repeatWeek?.message}
                                 inputRef={register}
