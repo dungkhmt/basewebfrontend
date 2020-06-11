@@ -49,8 +49,10 @@ export const authGet = (dispatch, token, url) => {
   }).then(
     (res) => {
       if (!res.ok) {
-        if(res.status===401)
+        if(res.status===401){
           dispatch(failed());
+          throw Error();
+        }
         else {
           dispatch(error(res.status))
           console.log(res.json())
