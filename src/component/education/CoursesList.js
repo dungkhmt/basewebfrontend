@@ -1,16 +1,16 @@
 import React, { useEffect } from "react";
-import XLSX from "xlsx";
 import Button from "@material-ui/core/Button";
 import MaterialTable from "material-table";
 import { Typography } from "@material-ui/core";
-import { useDispatch, useSelector } from "react-redux";
-import { authPost } from "../../api";
+import { useSelector } from "react-redux";
+import { API_URL } from "../../config/config";
 
-export default function CoursesList(props) {
+export default function CourseList(props) {
   const token = useSelector((state) => state.auth.token);
-  const dispatch = useDispatch();
   const fileInput = React.createRef();
-  const [teachers, setTeachers] = React.useState([]);
+  const [courses, setCourses] = React.useState([]);
+
+  const [file, setFile] = React.useState();
 
   const columns = [
     { title: "Mã học phần", field: "courseId" },
@@ -23,22 +23,37 @@ export default function CoursesList(props) {
   };
 
   const onSaveHandler = (event) => {
-    authPost(dispatch, token, "/edu/save-courses", JSON.stringify(teachers));
+    var formData = new FormData();
+    formData.append("file", file);
+    fetch(API_URL + "/edu/upload/course-for-teacher", {
+      method: 'POST',
+      headers: {"X-Auth-Token": token},
+      body: formData
+    }).then(
+      (res) => {
+        if (res.ok) {
+          console.log(res.data);
+          alert("File uploaded successfully.");
+        }
+      }
+    );
   };
 
   const fileHandler = (event) => {
-    var reader = new FileReader();
-    reader.readAsArrayBuffer(event.target.files[0]);
-    reader.onload = function (event) {
-      var data = new Uint8Array(reader.result);
-      var workbook = XLSX.read(data, { type: "array" });
-      var sheet = workbook.Sheets[workbook.SheetNames[0]];
-      var result = XLSX.utils.sheet_to_json(sheet);
-
-      setTeachers(result);
-      console.log(teachers);
-    };
+    setFile(event.target.files[0]);
   };
+
+  useEffect(() => {
+    fetch(API_URL + "/edu/get-all-courses", {
+      method: "GET",
+      headers: { "Content-Type": "application/json", "X-Auth-Token": token },
+    })
+      .then((response) => response.json())
+      .then((response) => {
+        console.log(response);
+        setCourses(response);
+      });
+  }, [])
 
   return (
     <div>
@@ -54,6 +69,7 @@ export default function CoursesList(props) {
         </Button>
         <input
           type="file"
+          enctype='multipart/form-data'
           hidden
           onChange={fileHandler}
           ref={fileInput}
@@ -62,13 +78,13 @@ export default function CoursesList(props) {
           }}
         ></input>
       </form>
-      {teachers.length > 0 && (
+      {courses.length > 0 && (
         <div>
           {
             <MaterialTable
               title="Danh sách học phần"
               columns={columns}
-              data={teachers}
+              data={courses}
             />
           }
         </div>

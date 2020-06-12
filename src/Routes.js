@@ -146,6 +146,7 @@ import CoursesList from './component/education/CoursesList'
 import ClassesList from './component/education/ClassesList'
 import TeachersList from './component/education/TeachersList'
 import AssignmentList from './component/education/AssignmentList'
+import BCASolver from './component/education/BCASolver'
 
 function Routes(props) {
   // props nay tu parent transfer vao
@@ -1112,6 +1113,15 @@ function Routes(props) {
             //isAuthenticated={true}
             //exact                                   // props
             path="/edu/assignment" // props
+          />
+
+          <PrivateRouteWithLayout
+            component={BCASolver} //props
+            layout={Layout} //props
+            isAuthenticated={props.isAuthenticated} // props
+            //isAuthenticated={true}
+            //exact                                   // props
+            path="/edu/solve" // props
           />
 
       <PrivateRouteWithLayout

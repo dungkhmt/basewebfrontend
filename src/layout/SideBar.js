@@ -1773,6 +1773,18 @@ export default function SideBar(props) {
                 <ListItemText primary="DS phân công"/>
               </ListItem>
 
+              <ListItem
+                button
+                className={classes.nested}
+                component={Link}
+                to={process.env.PUBLIC_URL + "/edu/solve"}
+              >
+                <ListItemIcon>
+                  <StarBorder/>
+                </ListItemIcon>
+                <ListItemText primary="Tiến hành phân công"/>
+              </ListItem>
+
 
             </List>
           </Collapse>
