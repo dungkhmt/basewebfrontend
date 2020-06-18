@@ -337,3 +337,30 @@ Get date based revenue
 	
 	curl --header "Content-Type: application/json" -v POST http://localhost:8080/api/get-report-date-based-revenue -u admin:123 -d '{"fromDate":"2020-03-01 00:00:00","thruDate":"2020-03-31 00:00:00"}'	
 ------------
+Upload file
+$ curl --header "Content-Type: multipart/form-data" -v POST http://localhost:8080/api/class/exercises/upload -u admin:123 -F "file=@package.json"
+
+
+------------
+MAINTENANCE
+Xóa dữ liệu hoạt động
+
+curl --location --request GET 'http://localhost:8080/api/delete-order-shipment-invoice-delivery-trip-payment' \
+--header 'Authorization: Basic YWRtaW46MTIz' \
+--data-raw ''
+
+curl --location --request GET 'http://sscm.dailyopt.ai/api/delete-order-shipment-invoice-delivery-trip-payment' \
+--header 'Authorization: Basic YWRtaW46MTIz' \
+--data-raw ''
+
+---------------------------------------
+Xóa các đơn hàng trong 1 khoảng thời gian và các bản ghi dẫn xuất từ nó
+
+curl --location --request POST 'http://localhost:8080/api/delete-all-orders' \
+--header 'Authorization: Basic YWRtaW46MTIz' \
+--header 'Content-Type: application/json' \
+--data-raw '{
+    "fromDate": "2020-05-30 11:14:02",
+    "toDate": "2020-05-30 11:14:04"
+}'
+
