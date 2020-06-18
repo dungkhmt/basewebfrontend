@@ -11,6 +11,7 @@ import {connect} from "react-redux";
 import {getMenu, logout} from "../action";
 import SideBar from "./SideBar";
 import ExitToAppIcon from "@material-ui/icons/ExitToApp";
+import { LayoutBreadcrumbs } from "./LayoutBreadcrumbs";
 
 const drawerWidth = 340;
 
@@ -145,6 +146,7 @@ function Layout(props) {
       />
       <main className={classes.content}>
         <div className={classes.toolbar}/>
+        <LayoutBreadcrumbs/>
         {children}
       </main>
     </div>

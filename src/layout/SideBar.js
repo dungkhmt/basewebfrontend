@@ -13,9 +13,10 @@ import ChevronRightIcon from "@material-ui/icons/ChevronRight";
 import ExpandLess from "@material-ui/icons/ExpandLess";
 import ExpandMore from "@material-ui/icons/ExpandMore";
 import clsx from "clsx";
-import React from "react";
+import React, { useEffect } from "react";
 import { Link } from "react-router-dom";
 import { menuIconMap, MENU_LIST } from "../config/menuconfig";
+import { useSelector } from "react-redux";
 
 const drawerWidth = 340;
 const useStyles = makeStyles((theme) => ({
@@ -85,14 +86,40 @@ export default function SideBar(props) {
   const open = props.open;
   const handleDrawerClose = props.handleDrawerClose;
   const theme = useTheme();
+
+  const selectedFunction = useSelector((state) => state.menu.selectedFunction);
   const classes = useStyles();
-  const [openCollapse, setOpenCollapse] = React.useState(new Set()); // thiet lap 4 menu TO
+  const [openCollapse, setOpenCollapse] = React.useState(new Set());
+  const handleOpenCollapseMenu = (id) => {
+    let newCollapse = new Set(openCollapse);
+    if (!newCollapse.has(id)) {
+      newCollapse.add(id);
+      setOpenCollapse(newCollapse);
+    }
+  };
   const handleListClick = (id) => {
     let newCollapse = new Set(openCollapse);
     if (newCollapse.has(id)) newCollapse.delete(id);
     else newCollapse.add(id);
     setOpenCollapse(newCollapse);
   };
+
+  useEffect(() => {
+    if (selectedFunction !== null)
+      if (
+        selectedFunction.parent !== null &&
+        selectedFunction.parent !== undefined
+      ) {
+        handleOpenCollapseMenu(selectedFunction.parent.id);
+
+        if (
+          selectedFunction.parent.parent !== null &&
+          selectedFunction.parent.parent !== undefined
+        ) {
+          handleOpenCollapseMenu(selectedFunction.parent.partent.id);
+        }
+      }
+  }, [selectedFunction]);
   // const logo = require('../favicon.ico');
 
   return (
@@ -127,6 +154,7 @@ export default function SideBar(props) {
         menu={props.menu}
         handleListClick={handleListClick}
         iconMap={menuIconMap}
+        selectedFunction={selectedFunction}
       />
     </Drawer>
   );
@@ -140,6 +168,7 @@ function ListMenuItem(props) {
       menu={props.menu}
       handleListClick={props.handleListClick}
       iconMap={props.iconMap}
+      selectedFunction={props.selectedFunction}
     />
   ));
   return (
@@ -183,6 +212,7 @@ function MenuItem(props) {
             openCollapse={props.openCollapse}
             menu={props.menu}
             handleListClick={props.handleListClick}
+            selectedFunction={props.selectedFunction}
           />
         </Collapse>
       </div>
@@ -194,6 +224,12 @@ function MenuItem(props) {
           button
           className={classes.nested}
           component={Link}
+          selected={
+            props.selectedFunction !== null
+              ? props.config.id === props.selectedFunction.id ||
+                props.config.path === props.selectedFunction.path
+              : false
+          }
           to={process.env.PUBLIC_URL + props.config.path}
         >
           {icon}

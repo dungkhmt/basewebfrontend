@@ -349,6 +349,9 @@ curl --location --request GET 'http://localhost:8080/api/delete-order-shipment-i
 --header 'Authorization: Basic YWRtaW46MTIz' \
 --data-raw ''
 
+
+Xóa dữ liệu hoạt động
+
 curl --location --request GET 'http://sscm.dailyopt.ai/api/delete-order-shipment-invoice-delivery-trip-payment' \
 --header 'Authorization: Basic YWRtaW46MTIz' \
 --data-raw ''
@@ -364,3 +367,31 @@ curl --location --request POST 'http://localhost:8080/api/delete-all-orders' \
     "toDate": "2020-05-30 11:14:04"
 }'
 
+-----------------
+Tạo dữ liệu danh sách kho
+
+curl --location --request POST 'http://localhost:8080/api/create-facilities' \
+--header 'Authorization: Basic YWRtaW46MTIz' \
+--header 'Content-Type: application/json' \
+--data-raw '[
+    {
+        "facilityId": "TPF",
+        "facilityName": "Vinamilk 4",
+        "address": "145/11, Khu Pho 5 Pham Van Thuan, Tam Hiep, Thanh pho Bien Hoa, Dong Nai, Vietnam"
+    },
+    {
+        "facilityId": "SGF",
+        "facilityName": "Kho cua Vinamilk",
+        "address": "32 Dang Van Bi, phuong Truong Tho, quan Thu Duc, HCM"
+    },
+    {
+        "facilityId": "TNF",
+        "facilityName": "Nha may sua bot Vinamilk",
+        "address": "So 9 Dai lo Tu Do, KCN VSIP1, Thuan An, Binh Dương, Vietnam"
+    },
+    {
+        "facilityId": "TRF",
+        "facilityName": "Vinamilk Bien Hoa",
+        "address": "145/11, Khu Pho 5 Pham Van Thuan, Tam Hiep, Thanh pho Bien Hoa, Dong Nai, Vietnam"
+    }
+]'
