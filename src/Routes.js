@@ -144,6 +144,8 @@ import { mapPathMenu } from "./config/menuconfig";
 import { updateSelectedFuction } from "./action";
 import { useDispatch } from "react-redux";
 import { useEffect } from "react";
+import ChangePassword from "./component/userlogin/changepassword";
+import PrivateRoute from "./common/PrivateRoute";
 
 function Routes(props) {
   const location = useLocation();
@@ -206,7 +208,11 @@ function Routes(props) {
         //exact                                   // props
         path="/user/approve-register" // props
       />
-
+      <PrivateRoute
+        component={ChangePassword} 
+        isAuthenticated={props.isAuthenticated}
+        path="/userlogin/change-password/:username" 
+      />
       <PrivateRouteWithLayout
         component={EditUser} //props
         layout={Layout} //props

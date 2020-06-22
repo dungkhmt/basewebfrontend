@@ -12,6 +12,7 @@ import {getMenu, logout} from "../action";
 import SideBar from "./SideBar";
 import ExitToAppIcon from "@material-ui/icons/ExitToApp";
 import { LayoutBreadcrumbs } from "./LayoutBreadcrumbs";
+import AccountButton from "./account/AccountButton";
 
 const drawerWidth = 340;
 
@@ -130,12 +131,7 @@ function Layout(props) {
             Quản lý chuỗi cung ứng
           </Typography>
           <span className={classes.toolbarButtons}>
-            <IconButton color="inherit">
-              <ExitToAppIcon
-                onClick={handleLogout}
-                align="right"
-              ></ExitToAppIcon>
-            </IconButton>
+            <AccountButton handleLogout={handleLogout}/> 
           </span>
         </Toolbar>
       </AppBar>
