@@ -3,7 +3,7 @@ import React, {useEffect, useState} from "react";
 import {useDispatch, useSelector} from "react-redux";
 import {Link} from "react-router-dom";
 import {authGet} from "../../api";
-import {Button, Grid} from "@material-ui/core";
+import {Grid} from "@material-ui/core";
 import {makeStyles} from '@material-ui/core/styles';
 import Card from '@material-ui/core/Card';
 import CardHeader from '@material-ui/core/CardHeader';
@@ -14,24 +14,17 @@ import Typography from '@material-ui/core/Typography';
 import {red} from '@material-ui/core/colors';
 import MoreVertIcon from '@material-ui/icons/MoreVert';
 import {Container} from '@material-ui/core/Container';
-import NavigateNextIcon from '@material-ui/icons/NavigateNext';
-import NavigateBeforeIcon from '@material-ui/icons/NavigateBefore';
-import FirstPageIcon from '@material-ui/icons/FirstPage';
-import LastPageIcon from '@material-ui/icons/LastPage';
-import MenuItem from "@material-ui/core/MenuItem";
-import TextField from "@material-ui/core/TextField";
-
+import TablePagination from "@material-ui/core/TablePagination";
 
 function arrayBufferToBase64(buffer) {
-  var binary = "";
-  var bytes = [].slice.call(new Uint8Array(buffer));
+  let binary = "";
+  let bytes = [].slice.call(new Uint8Array(buffer));
 
   bytes.forEach((b) => (binary += String.fromCharCode(b)));
   console.log("binary", window.btoa(binary));
 
   return window.btoa(binary);
 }
-
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -57,78 +50,67 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-
 function ProductList(props) {
   const token = useSelector((state) => state.auth.token);
   const dispatch = useDispatch();
   const [productList, setProductList] = useState([]);
   const [page, setPage] = useState(0);
-  const [listPageSize, setListPageSize] = useState([4, 8, 12]);
-  const [pageSize, setPageSize] = useState(Number(4));
-  const [listImg, setListImg] = useState([]);
+  // const [listPageSize, setListPageSize] = useState([4, 8, 12]);
+  const [pageSize, setPageSize] = useState(4);
+  // const [listImg, setListImg] = useState([]);
   const classes = useStyles();
-  const [totalPage, setTotalPage] = useState(Number(1));
+  // const [totalPage, setTotalPage] = useState(1);
   const [totalElements, setTotalElements] = useState();
-  const [change, setChange] = useState(false);
+  // const [change, setChange] = useState(false);
+
   useEffect(() => {
-
-
     authGet(
       dispatch,
       token,
-      "/get-list-product-with-define-page" + "?size=" + pageSize + "&page=" + page)
+      "/get-list-product-with-define-page?size=" + pageSize + "&page=" + page)
       .then(
-        (res) => {
+        response => {
+          setProductList(response.content);
+          setTotalElements(response['totalElements'])
 
-          setProductList(res.content);
-
-
-          if (res.totalElements % pageSize !== 0) {
-            setTotalPage(Math.floor(res.totalElements / pageSize));
-          } else {
-            setTotalPage(Math.floor(res.totalElements / pageSize - 1));
-          }
-
+          // if (res.totalElements % pageSize !== 0) {
+          // setTotalPage(Math.floor(res.totalElements / pageSize));
+          // } else {
+          // setTotalPage(Math.floor(res.totalElements / pageSize - 1));
+          // }
         }
       )
-  }, [page + pageSize]);
+  }, [page, pageSize]);
 
-  const handlePageSizeChange = event => {
-
-    if ("" + (event.target.value - pageSize) !== "0") {
-      setPageSize(event.target.value);
-      setPage(0);
-
-    }
-
-  }
-
-
-  const handleNevigateBeforeButton = () => {
-    if (page > 0) {
-      setPage(page - 1);
-    }
-  }
-
-  const handleNevigateNextButton = () => {
-
-    if (page < totalPage) {
-      setPage(page + 1);
-    }
-
-  }
-
-  const handleFirstPageButton = () => {
-    setPage(0);
-  }
-  const handleLastPageButton = () => {
-    setPage(totalPage);
-  }
+  // const handlePageSizeChange = event => {
+  //   if ("" + (event.target.value - pageSize) !== "0") {
+  //     setPageSize(event.target.value);
+  //     setPage(0);
+  //   }
+  // }
+  //
+  // const handleNavigateBeforeButton = () => {
+  //   if (page > 0) {
+  //     setPage(page - 1);
+  //   }
+  // }
+  //
+  // const handleNavigateNextButton = () => {
+  //   if (page < totalPage) {
+  //     setPage(page + 1);
+  //   }
+  // }
+  //
+  // const handleFirstPageButton = () => {
+  //   setPage(0);
+  // }
+  //
+  // const handleLastPageButton = () => {
+  //   setPage(totalPage);
+  // }
 
   return (
-
     <div>
-
 
       <Grid container spacing={12}>
         {productList.map((p) => (
@@ -152,8 +134,6 @@ function ProductList(props) {
                 />
                 <img src={p.avatar} width="100%" height="100%"/>
               </Link>
-
-
               <CardContent>
                 <Typography>
                   {p.weight + " " + p.uomDescription}
@@ -167,119 +147,102 @@ function ProductList(props) {
       </Grid>
       <br></br>
 
-      <Grid container spacing={12}>
-        <Grid item xs={3}>
+      <TablePagination
+        component="div"
+        count={totalElements}
+        page={page}
+        onChangePage={(e, p) => setPage(p)}
+        rowsPerPage={pageSize}
+        onChangeRowsPerPage={e => {
+          setPageSize(parseInt(e.target.value, 10));
+          setPage(0);
+        }}
+        rowsPerPageOptions={[4, 16, 32, 64]}
+      />
 
-        </Grid>
-        <Grid item xs={1.5}>
+      {/*<Grid container spacing={12}>*/}
+      {/*  <Grid item xs={3}>*/}
 
+      {/*  </Grid>*/}
+      {/*  <Grid item xs={1.5}>*/}
 
-          <Button
-            variant="contained"
-            color="primary"
-            onClick={handleFirstPageButton}
-          >
-            <FirstPageIcon></FirstPageIcon>
-          </Button>
+      {/*    <Button*/}
+      {/*      variant="contained"*/}
+      {/*      color="primary"*/}
+      {/*      onClick={handleFirstPageButton}*/}
+      {/*    >*/}
+      {/*      <FirstPageIcon></FirstPageIcon>*/}
+      {/*    </Button>*/}
 
-          <Button
-            variant="contained"
-            color="primary"
-            onClick={handleNevigateBeforeButton}
-          >
-            <NavigateBeforeIcon></NavigateBeforeIcon>
-          </Button>
+      {/*    <Button*/}
+      {/*      variant="contained"*/}
+      {/*      color="primary"*/}
+      {/*      onClick={handleNavigateBeforeButton}*/}
+      {/*    >*/}
+      {/*      <NavigateBeforeIcon></NavigateBeforeIcon>*/}
+      {/*    </Button>*/}
 
+      {/*  </Grid>*/}
 
-        </Grid>
+      {/*  <Grid item xs={1}>*/}
+      {/*    <Typography variant="h5">*/}
+      {/*      {" "}page {page + 1} of {totalPage + 1}*/}
+      {/*    </Typography>*/}
 
+      {/*  </Grid>*/}
 
-        <Grid item xs={1}>
-          <Typography variant="h5">
-            {" "}page {page + 1} of {totalPage + 1}
-          </Typography>
+      {/*  <Grid item xs={1.5}>*/}
 
-        </Grid>
+      {/*    <Button*/}
+      {/*      variant="contained"*/}
+      {/*      color="primary"*/}
+      {/*      onClick={handleNavigateNextButton}*/}
+      {/*    >*/}
+      {/*      <NavigateNextIcon></NavigateNextIcon>*/}
 
+      {/*    </Button>*/}
 
-        <Grid item xs={1.5}>
+      {/*    <Button*/}
+      {/*      variant="contained"*/}
+      {/*      color="primary"*/}
+      {/*      onClick={handleLastPageButton}*/}
+      {/*    >*/}
+      {/*      <LastPageIcon></LastPageIcon>*/}
 
-          <Button
-            variant="contained"
-            color="primary"
-            onClick={handleNevigateNextButton}
-          >
-            <NavigateNextIcon></NavigateNextIcon>
+      {/*    </Button>*/}
 
-          </Button>
+      {/*  </Grid>*/}
+      {/*  <Grid item xs={1}>*/}
+      {/*    <Typography variant="h5">*/}
+      {/*      {" "}page size*/}
+      {/*    </Typography>*/}
+      {/*  </Grid>*/}
 
-          <Button
-            variant="contained"
-            color="primary"
-            onClick={handleLastPageButton}
-          >
-            <LastPageIcon></LastPageIcon>
+      {/*  <Grid item xs={1}>*/}
+      {/*    <Button*/}
+      {/*      variant="contained"*/}
+      {/*      color="#f0f8ff"*/}
+      {/*    >*/}
+      {/*      <TextField*/}
+      {/*        value={pageSize}*/}
+      {/*        onChange={handlePageSizeChange}*/}
+      {/*        select*/}
+      {/*      >*/}
+      {/*        {listPageSize.map(p => (*/}
+      {/*          <MenuItem value={p} key={p}>*/}
+      {/*            {p}*/}
+      {/*          </MenuItem>*/}
+      {/*        ))}*/}
 
-          </Button>
+      {/*      </TextField>*/}
 
+      {/*    </Button>*/}
 
-        </Grid>
-        <Grid item xs={1}>
-          <Typography variant="h5">
-            {" "}page size
-          </Typography>
-        </Grid>
+      {/*  </Grid>*/}
 
-        <Grid item xs={1}>
-          <Button
-            variant="contained"
-            color="#f0f8ff"
-          >
-            <TextField
-              value={pageSize}
-              onChange={handlePageSizeChange}
-              select
-            >
-              {listPageSize.map(p => (
-                <MenuItem value={p} key={p}>
-                  {p}
-                </MenuItem>
-              ))}
-
-            </TextField>
-
-          </Button>
-
-
-        </Grid>
-
-
-      </Grid>
-
+      {/*</Grid>*/}
 
     </div>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
     // <div>
     //   <MaterialTable
