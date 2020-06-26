@@ -47,12 +47,14 @@ function SalesRouteDetail(props) {
     if (props.location.state === undefined) {
       authGet(dispatch, token, "/get-plan-period-detail/current").then(
         (res) => {
-          getSalesRouteDetailOfPlanPeriod(res.salesRoutePlanningPeriodId);
+          if (res.salesRoutePlanningPeriodId !== null) {
+            getSalesRouteDetailOfPlanPeriod(res.salesRoutePlanningPeriodId);
 
-          setPlanPeriodDetail({
-            fromDate: moment(res.fromDate).format("YYYY-MM-DD"),
-            toDate: moment(res.toDate).format("YYYY-MM-DD"),
-          });
+            setPlanPeriodDetail({
+              fromDate: moment(res.fromDate).format("YYYY-MM-DD"),
+              toDate: moment(res.toDate).format("YYYY-MM-DD"),
+            });
+          }
         }
       );
     } else {
