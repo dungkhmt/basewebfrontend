@@ -40,9 +40,9 @@ export default function AssignmentList(props) {
     { title: "Tên học phần", field: "courseName" },
     { title: "Loại lớp", field: "classType" },
     { title: "Số tín chỉ", field: "credit" },
-    { title: "Ca học", field: "sessionId" },
     { title: "Tên giảng viên", field: "teacherName" },
     { title: "Email", field: "email" },
+    { title: "Ca học", field: "sessionId" },
   ];
 
   const semesterChange = (event) => {
@@ -72,7 +72,7 @@ export default function AssignmentList(props) {
   useEffect(() => {
     fetch(API_URL + "/edu/get-all-semester", {
       method: "GET",
-      headers: { "Content-Type": "application/json", "X-Auth-Token": token },
+      headers: {"Content-Type": "application/json", "X-Auth-Token": token},
     })
       .then((response) => response.json())
       .then((response) => {
@@ -112,9 +112,9 @@ export default function AssignmentList(props) {
       "Tên học phần": item.courseName,
       "Loại lớp": item.classType,
       "Số tín chỉ": item.credit,
-      "Ca học": item.sessionId,
       "Tên giảng viên": item.teacherName,
-      Email: item.email,
+      "Email": item.email,
+      "Ca học": item.sessionId,
     }));
 
     var sheet = XLSX.utils.json_to_sheet(data);

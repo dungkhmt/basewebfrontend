@@ -4,6 +4,7 @@ import {useHistory, useParams} from "react-router-dom";
 import {authGet, authPost} from "../../api";
 import {textFieldNumberFormat} from "../../utils/FormUtils";
 import Button from "@material-ui/core/Button";
+import AlertDialog from "../../utils/AlertDialog";
 
 export default function QuickInvoicePayment() {
   const dispatch = useDispatch();
@@ -14,6 +15,25 @@ export default function QuickInvoicePayment() {
 
   const [invoice, setInvoice] = useState({});
   const [amount, setAmount] = useState(1);
+
+  /*
+ * BEGIN: Alert Dialog
+ */
+  const [alertTitle, setAlertTitle] = useState('');
+  const [alertMessage, setAlertMessage] = useState('');
+  const [openAlert, setOpenAlert] = useState(false);
+  const [alertCallback, setAlertCallback] = useState({});
+
+  function showAlert(title = '', message = '', callback = {}) {
+    setAlertTitle(title);
+    setAlertMessage(message);
+    setAlertCallback(callback);
+    setOpenAlert(true);
+  }
+
+  /*
+   * END: Alert Dialog
+   */
 
   async function getInvoice() {
     let invoice = await authGet(dispatch, token, '/get-invoice-by-id/' + invoiceId);
@@ -30,9 +50,11 @@ export default function QuickInvoicePayment() {
     let body = {invoiceId, amount};
     let response = await authPost(dispatch, token, '/create-payment-application', body).then(r => r.json())
     if (response && response['paymentApplicationId']) {
-      alert('Đã tạo khớp lệnh thanh toán thành công, paymentApplicationId = ' + response['paymentApplicationId']);
+      showAlert('Thành công', 'Đã tạo khớp lệnh thanh toán thành công, paymentApplicationId = ' + response['paymentApplicationId'],
+        ({OK: () => history.push('/invoice-detail/' + invoiceId)}));
+    } else {
+      history.push('/invoice-detail/' + invoiceId);
     }
-    history.push('/invoice-detail/' + invoiceId);
   }
 
   return (<div>
@@ -46,5 +68,13 @@ export default function QuickInvoicePayment() {
     <Button color={'primary'} variant={'contained'} onClick={handleSubmit}>Xác nhận</Button>
     <Button color={'secondary'} variant={'contained'}
             onClick={() => history.push('/invoice-detail/' + invoiceId)}>Hủy</Button>
+
+    <AlertDialog
+      title={alertTitle}
+      message={alertMessage}
+      open={openAlert}
+      setOpen={setOpenAlert}
+      afterShowCallback={alertCallback}
+    />
   </div>);
 }

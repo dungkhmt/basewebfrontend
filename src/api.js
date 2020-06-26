@@ -1,5 +1,7 @@
-import { failed } from "./action/Auth";
-import { API_URL } from "./config/config";
+import {failed} from "./action/Auth";
+import {API_URL} from "./config/config";
+import { error } from "./action";
+
 export const authPost = (dispatch, token, url, body) => {
   return fetch(API_URL + url, {
     method: "POST",
@@ -47,8 +49,16 @@ export const authGet = (dispatch, token, url) => {
   }).then(
     (res) => {
       if (!res.ok) {
-        dispatch(failed());
-        throw Error("Unauthorized");
+        if(res.status===401){
+          dispatch(failed());
+          throw Error();
+        }
+        else {
+          dispatch(error(res.status))
+          console.log(res.json())
+          throw Error();
+        }
+          return null;
       }
       return res.json();
     },

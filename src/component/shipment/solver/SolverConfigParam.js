@@ -10,12 +10,7 @@ import Button from "@material-ui/core/Button";
 import CloudUploadIcon from "@material-ui/icons/CloudUpload";
 import {MuiPickersUtilsProvider} from "@material-ui/pickers";
 import {authGet, authPost} from "../../../api";
-import {
-  notNegativeFilterOnChange,
-  notNegativeIntFilterOnChange,
-  textField,
-  textFieldNumberFormat
-} from "../../../utils/FormUtils";
+import {notNegativeFilterOnChange, notNegativeIntFilterOnChange, textFieldNumberFormat} from "../../../utils/FormUtils";
 
 export default function SolverConfigParam() {
   const token = useSelector(state => state.auth.token);

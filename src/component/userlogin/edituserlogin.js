@@ -3,27 +3,25 @@ import {
   CardActions,
   CircularProgress,
   FormControl,
-  InputLabel,
-  Select,
   Input,
-  MenuItem
+  InputLabel,
+  MenuItem,
+  Select
 } from "@material-ui/core";
 import Card from "@material-ui/core/Card";
 import CardContent from "@material-ui/core/CardContent";
-import { makeStyles } from "@material-ui/core/styles";
+import {makeStyles} from "@material-ui/core/styles";
 import TextField from "@material-ui/core/TextField";
 import Typography from "@material-ui/core/Typography";
-import React, { useEffect, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { useParams, useHistory } from "react-router-dom";
-import { failed } from "../../action";
-import { authGet, authPut } from "../../api";
-import {
-  KeyboardDatePicker,
-  MuiPickersUtilsProvider
-} from "@material-ui/pickers";
-import { API_URL } from "../../config/config";
+import React, {useEffect, useState} from "react";
+import {useDispatch, useSelector} from "react-redux";
+import {useHistory, useParams} from "react-router-dom";
+import {failed} from "../../action";
+import {authGet, authPut} from "../../api";
+import {KeyboardDatePicker, MuiPickersUtilsProvider} from "@material-ui/pickers";
+import {API_URL} from "../../config/config";
 import DateFnsUtils from "@date-io/date-fns";
+
 const useStyles = makeStyles(theme => ({
   root: {
     padding: theme.spacing(4),
@@ -48,9 +46,10 @@ const MenuProps = {
     }
   }
 };
+
 function EditUser(props) {
   const history = useHistory();
-  const { partyId } = useParams();
+  const {partyId} = useParams();
   const token = useSelector(state => state.auth.token);
   const dispatch = useDispatch();
   const classes = useStyles();
@@ -71,29 +70,30 @@ function EditUser(props) {
   };
   const [isRequesting, setIsRequesting] = useState(false);
 
-  function getSecurityGroups(){
+  function getSecurityGroups() {
     fetch(
-      API_URL + '/get-security-groups', 
+      API_URL + '/get-security-groups',
       {
         method: 'GET',
-        headers: { 'Content-Type': 'application/json',"X-Auth-Token": token}
+        headers: {'Content-Type': 'application/json', "X-Auth-Token": token}
       }
     ).then(response => response.json())
-        .then(response =>{
-			console.log(response);
-			let arr = [];
-			response.forEach(d => {
-				arr.push(d);
-			});
-            setSecurityGroups(arr);
-            //console.log('getDepartmentList = ',departments);
-        });    
+      .then(response => {
+        console.log(response);
+        let arr = [];
+        response.forEach(d => {
+          arr.push(d);
+        });
+        setSecurityGroups(arr);
+        //console.log('getDepartmentList = ',departments);
+      });
   }
-  useEffect( () =>{
+
+  useEffect(() => {
     //let lst = authGet(dispatch, token,"/get-security-groups");
     //console.log(lst);
     getSecurityGroups();
-  },[]);
+  }, []);
 
   const handleLastNameChange = event => {
     setLastName(event.target.value);
@@ -114,10 +114,9 @@ function EditUser(props) {
     setPartyCode(event.target.value);
   };
 
-  
 
   const handleRoleChange = event => {
-    
+
     setRoles(event.target.value);
   };
   const handleSubmit = () => {
@@ -160,7 +159,8 @@ function EditUser(props) {
         setUserName(res.userLoginId);
         setRoles(res.roles);
       },
-      error => {}
+      error => {
+      }
     );
   }, []);
 
@@ -232,17 +232,17 @@ function EditUser(props) {
                   multiple
                   value={roles}
                   onChange={handleRoleChange}
-                  input={<Input />}
+                  input={<Input/>}
                   MenuProps={MenuProps}
                 >
                   {securityGroups.map(s => (
-                  <MenuItem 
-                    key={s.groupId}
-                    value={s.groupId}
-                  >
-                    {s.description}
-                  </MenuItem>
-                ))}
+                    <MenuItem
+                      key={s.groupId}
+                      value={s.groupId}
+                    >
+                      {s.description}
+                    </MenuItem>
+                  ))}
 
                 </Select>
               </FormControl>
@@ -256,7 +256,7 @@ function EditUser(props) {
             color="primary"
             onClick={handleSubmit}
           >
-            {isRequesting ? <CircularProgress /> : "Save"}
+            {isRequesting ? <CircularProgress/> : "Save"}
           </Button>
         </CardActions>
       </Card>

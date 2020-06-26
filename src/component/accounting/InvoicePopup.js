@@ -1,4 +1,5 @@
 import {
+  Button,
   Grid,
   IconButton,
   InputAdornment,
@@ -15,6 +16,7 @@ import { default as React, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 import { authGet } from "../../api";
+
 const useStyles = makeStyles((theme) => ({
   root: {
     flexGrow: 1,
@@ -34,13 +36,15 @@ export default function InvoicePopup(props) {
   const token = useSelector((state) => state.auth.token);
 
   const [invoiceIdFilter, setInvoiceIdFilter] = useState("");
-  const [toPartyCustomerIdFilter, setToPartyCustomerIdFilter] = useState("");
+  const [toPartyCustomerNameFilter, setToPartyCustomerNameFilter] = useState(
+    ""
+  );
   const handleInvoiceIdFilterChange = (event) => {
     setInvoiceIdFilter(event.target.value);
   };
   const url = "/get-page-unpaid-invoices";
-  const handleToPartyCustomerIdFilterChange = (event) => {
-    setToPartyCustomerIdFilter(event.target.value);
+  const handleToPartyCustomerNameFilterChange = (event) => {
+    setToPartyCustomerNameFilter(event.target.value);
   };
   const columns = [
     {
@@ -52,8 +56,24 @@ export default function InvoicePopup(props) {
       ),
     },
     { title: "Ngày hóa đơn", field: "invoiceDate" },
-    { title: "Khách hàng", field: "toPartyCustomerId" },
+    { title: "Khách hàng", field: "toPartyCustomerName" },
     { title: "Thành tiền", field: "amount" },
+    {
+      field: "select",
+      title: "",
+      render: (rowData) => (
+        <Button
+          color="primary"
+          variant="contained"
+          onClick={() => {
+            props.updateSelectedInvoice(rowData);
+            props.handleClose();
+          }}
+        >
+          Chọn
+        </Button>
+      ),
+    },
   ];
 
   // const handleUpdateFilter = () => {
@@ -96,11 +116,11 @@ export default function InvoicePopup(props) {
             />
             <TextField
               id="customer-search"
-              label="with Customer Code"
+              label="with Customer Name"
               variant="outlined"
               size="small"
-              value={toPartyCustomerIdFilter}
-              onChange={handleToPartyCustomerIdFilterChange}
+              value={toPartyCustomerNameFilter}
+              onChange={handleToPartyCustomerNameFilterChange}
               InputProps={{
                 startAdornment: (
                   <InputAdornment position="start">
@@ -125,12 +145,12 @@ export default function InvoicePopup(props) {
                 let filterParam = "";
                 if (invoiceIdFilter !== "")
                   filterParam = "invoiceId:" + invoiceIdFilter;
-                if (toPartyCustomerIdFilter !== "") {
+                if (toPartyCustomerNameFilter !== "") {
                   if (filterParam !== "") filterParam += ",";
                   filterParam =
                     filterParam +
                     "toPartyCustomerId:" +
-                    toPartyCustomerIdFilter;
+                    toPartyCustomerNameFilter;
                 }
                 if (filterParam !== "")
                   filterParam = "&filtering=" + filterParam;
@@ -144,13 +164,22 @@ export default function InvoicePopup(props) {
                     query.page +
                     sortParam +
                     filterParam
-                ).then((res) => {
-                  resolve({
-                    data: res.content,
-                    page: res.number,
-                    totalCount: res.totalElements,
-                  });
-                });
+                ).then(
+                  (res) => {
+                    console.log(res);
+                    if (res !== undefined && res !== null)
+                      resolve({
+                        data: res.content,
+                        page: res.number,
+                        totalCount: res.totalElements,
+                      });
+                    else reject();
+                  },
+                  (error) => {
+                    console.log("error");
+                    reject();
+                  }
+                );
               })
             }
             title={""}

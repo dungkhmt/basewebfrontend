@@ -1,4 +1,4 @@
-import { API_URL } from "../config/config";
+import {API_URL} from "../config/config";
 import base64 from "base-64";
 
 export const LOGIN_REQUESTING = "LOGIN_REQUESTING";
@@ -7,12 +7,12 @@ export const LOGOUT_SUCCESS = "LOGOUT_SUCCESS";
 export const LOGIN_FAILURE = "LOGIN_FAILURE";
 
 
-export const logout = ()=> {
-  return (dispatch,getState) => {
+export const logout = () => {
+  return (dispatch, getState) => {
     dispatch(requesting()); // create a action
     const headers = new Headers();
 
-    
+
     headers.append("Content-Type", "application/json");
     headers.append("X-Auth-Token", getState().auth.token);
 
@@ -38,8 +38,8 @@ export const logout = ()=> {
           dispatch(failed());
         }
       );
-  };    
-  
+  };
+
 }
 
 export const login = (username, password) => {
@@ -90,17 +90,16 @@ export const failed = () => {
     type: LOGIN_FAILURE
   };
 };
-const success  = token => {// token la tham so cua ham success
+const success = token => {// token la tham so cua ham success
 //function success(token){   
   return {
     type: LOGIN_SUCCESS,
     token: token
   };
 };
-const logoutsuccess  = token => {// token la tham so cua ham success
+const logoutsuccess = token => {// token la tham so cua ham success
   //function success(token){   
-    return {
-      type: LOGOUT_SUCCESS
-    };
+  return {
+    type: LOGOUT_SUCCESS
   };
-  
+};

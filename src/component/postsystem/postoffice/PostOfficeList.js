@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from "react";
-import { makeStyles } from "@material-ui/core/styles";
+import React, {useEffect, useState} from "react";
+import {makeStyles} from "@material-ui/core/styles";
 import Paper from "@material-ui/core/Paper";
 import Typography from "@material-ui/core/Typography";
 import TableContainer from "@material-ui/core/TableContainer";
@@ -9,21 +9,21 @@ import TableBody from "@material-ui/core/TableBody";
 import TableCell from "@material-ui/core/TableCell";
 import TableRow from "@material-ui/core/TableRow";
 import TablePagination from "@material-ui/core/TablePagination";
-import { useSelector } from "react-redux";
+import {useSelector} from "react-redux";
 import IconButton from "@material-ui/core/IconButton";
 import DeleteIcon from "@material-ui/icons/Delete";
 import Button from "@material-ui/core/Button";
 import Dialog from "@material-ui/core/Dialog";
 import DialogActions from "@material-ui/core/DialogActions";
 import DialogTitle from "@material-ui/core/DialogTitle";
-import { DialogContent } from "@material-ui/core";
-import { API_URL } from "../../../config/config";
-import { Link } from "react-router-dom";
+import {DialogContent} from "@material-ui/core";
+import {API_URL} from "../../../config/config";
+import {Link} from "react-router-dom";
 
 const columns = [
-  { label: "Mã bưu cục", id: "postOfficeId", minWidth: 150 },
-  { label: "Tên bưu cục", id: "postOfficeName", minWidth: 200 },
-  { label: "Địa chỉ", id: "postalAddress", minWidth: 150 },
+  {label: "Mã bưu cục", id: "postOfficeId", minWidth: 150},
+  {label: "Tên bưu cục", id: "postOfficeName", minWidth: 200},
+  {label: "Địa chỉ", id: "postalAddress", minWidth: 150},
   {
     label: "Cấp bưu cục",
     id: "postOfficeLevel",
@@ -87,7 +87,7 @@ export default function PostOfficeList(props) {
         to={"/postoffice/create"}
         variant="contained"
         color="primary"
-        style={{ margin: 10, float: "right" }}
+        style={{margin: 10, float: "right"}}
       >
         Thêm mới
       </Button>
@@ -99,7 +99,7 @@ export default function PostOfficeList(props) {
                 <TableCell
                   key={column.id}
                   align={column.align}
-                  style={{ minWidth: column.minWidth }}
+                  style={{minWidth: column.minWidth}}
                 >
                   {column.label}
                 </TableCell>
@@ -146,7 +146,7 @@ export default function PostOfficeList(props) {
       </TableContainer>
       <TablePagination
         labelRowsPerPage="Số hàng"
-        rowsPerPageOptions={[10, 20, 50, { value: -1, label: "Tất cả" }]}
+        rowsPerPageOptions={[10, 20, 50, {value: -1, label: "Tất cả"}]}
         component="div"
         count={data.length}
         rowsPerPage={rowsPerPage}
@@ -191,7 +191,7 @@ function DeleteButton(props) {
         align="right"
         onClick={handleDeleteClick}
       >
-        <DeleteIcon />
+        <DeleteIcon/>
       </IconButton>
       <Dialog open={open} onClose={handleCancel}>
         <DialogTitle>{"Xóa bưu cục?"}</DialogTitle>

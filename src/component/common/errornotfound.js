@@ -1,6 +1,6 @@
 import React from 'react';
-import { makeStyles } from '@material-ui/core/styles';
-import { Grid, Typography } from '@material-ui/core';
+import {makeStyles} from '@material-ui/core/styles';
+import {Grid, Typography} from '@material-ui/core';
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -35,12 +35,12 @@ const NotFound = () => {
         >
           <div className={classes.content}>
             <Typography variant="h1">
-              Error: There are some thing wrong here. 
+              Error: Page Not found .
             </Typography>
             <Typography variant="subtitle2">
-              Please try  again and check the internet connection.
+              Please try again and make sure that the URL is correct.
             </Typography>
-           
+
           </div>
         </Grid>
       </Grid>

@@ -21,40 +21,40 @@ const useStyles = makeStyles({
 function ListUserLogins(props) {
   const classes = useStyles();
   const [data, setData] = useState([]);
-    const history = useHistory(); // HOOK moc cau
+  const history = useHistory(); // HOOK moc cau
 
-    const viewDetailUserLogin = (username) => {
-      //alert('viewDetailUserLogin');
-      history.push("/userlogin/detail/"+username); // truyen tham so
+  const viewDetailUserLogin = (username) => {
+    //alert('viewDetailUserLogin');
+    history.push("/userlogin/detail/" + username); // truyen tham so
 
-    }
-    useEffect(() => {
-        console.log("ListUserLogin , useEffect");
-          console.log(props.isUpdate);
-          const headers = new Headers();
-  
-          //headers.append("Accept", "application/json");
-      
-          headers.append("X-Auth-Token", props.token);
-      fetch(`${API_URL}/get-list-user-logins`, {
-        method: "GET",
-        headers: headers
-      })
-            .then(res => res.json())
-            .then(
-              res => {
-                  setData(res);
-              },
-              error => {
-                  setData([]);
-              }
-            );
-        },[props.isUpdate]);
+  }
+  useEffect(() => {
+    console.log("ListUserLogin , useEffect");
+    console.log(props.isUpdate);
+    const headers = new Headers();
 
-    return (
-        <TableContainer component={Paper}>
-            <Table className={classes.table} size ="small" aria-label="a dense table">
-            <TableHead>
+    //headers.append("Accept", "application/json");
+
+    headers.append("X-Auth-Token", props.token);
+    fetch(`${API_URL}/get-list-user-logins`, {
+      method: "GET",
+      headers: headers
+    })
+      .then(res => res.json())
+      .then(
+        res => {
+          setData(res);
+        },
+        error => {
+          setData([]);
+        }
+      );
+  }, [props.isUpdate]);
+
+  return (
+    <TableContainer component={Paper}>
+      <Table className={classes.table} size="small" aria-label="a dense table">
+        <TableHead>
           <TableRow>
             <TableCell>Party</TableCell>
             <TableCell align="right">UserName</TableCell>
@@ -70,22 +70,22 @@ function ListUserLogins(props) {
               <TableCell align="right"><a href="/tracklocations/list">{row.userName}</a></TableCell>
               <TableCell align="right">{row.partyId}</TableCell>
               <TableCell align="right">
-                <Button variant="contained" color="secondary" onClick={() =>viewDetailUserLogin(row.userName)}>
+                <Button variant="contained" color="secondary" onClick={() => viewDetailUserLogin(row.userName)}>
                   Chi tiết
                 </Button>
               </TableCell>
             </TableRow>
           ))}
         </TableBody>
-            </Table>
-        </TableContainer>
-    );
+      </Table>
+    </TableContainer>
+  );
 }
 
-  const mapStateToProps = state => ({
-    token: state.auth.token
-  });
-  
-  const mapDispatchToProps = dispatch => ({});
-  
-  export default connect(mapStateToProps, mapDispatchToProps)(ListUserLogins);
+const mapStateToProps = state => ({
+  token: state.auth.token
+});
+
+const mapDispatchToProps = dispatch => ({});
+
+export default connect(mapStateToProps, mapDispatchToProps)(ListUserLogins);

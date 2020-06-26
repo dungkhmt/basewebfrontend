@@ -13,101 +13,101 @@ import AddIcon from "@material-ui/icons/Add";
 function DriverList(props) {
 
   const token = useSelector(state => state.auth.token);
-    const dispatch = useDispatch();
+  const dispatch = useDispatch();
 
 
-    const columns = [
-        {title: "Mã Tài xế", field:"partyId", render: rowData => <Link to={"/driver/"+rowData.partyId}>{rowData.partyId}</Link>},
-        {title: "Tên Tài xế", field:"fullName"}
-        
-    ]
+  const columns = [
+    {
+      title: "Mã Tài xế",
+      field: "partyId",
+      render: rowData => <Link to={"/driver/" + rowData.partyId}>{rowData.partyId}</Link>
+    },
+    {title: "Tên Tài xế", field: "fullName"}
+
+  ]
 
 
+  return (
 
+    <div>
+      <MaterialTable
+        title="Danh sách tài xế"
+        columns={columns}
+        options={{
+          filtering: false,
+          search: false
+        }}
 
+        components={{
+          Toolbar: props => (
+            <div>
+              <MTableToolbar {...props} />
+              <Grid container spacing={3}>
+                <Grid item xs={8} style={{textAlign: 'left', padding: '0px 30px 20px 30px'}}>
+                </Grid>
+                <Grid item xs={4}
+                      style={{verticalAlign: 'text-bottom', textAlign: 'right', padding: '0px 50px 10px 30px'}}>
+                  <Link to={'/driver/create'}>
+                    <Button color={'primary'} variant={'contained'} startIcon={<AddIcon/>}> Thêm mới </Button>
+                  </Link>
+                </Grid>
+              </Grid>
+            </div>
+          )
+        }}
 
+        data={query =>
+          new Promise((resolve, reject) => {
+            console.log(query);
+            let sortParam = "";
+            if (query.orderBy !== undefined) {
+              sortParam = "&sort=" + query.orderBy.field + ',' + query.orderDirection;
+            }
+            let filterParam = "";
+            if (query.filters.length > 0) {
+              let filter = query.filters;
+              filter.forEach(v => {
+                filterParam = v.column.field + "=" + v.value + "&"
+              })
+              filterParam = "&" + filterParam.substring(0, filterParam.length - 1);
+            }
 
-    return (
+            authGet(
+              dispatch,
+              token,
+              "/get-page-drivers" +
+              "?size=" +
+              query.pageSize +
+              "&page=" +
+              query.page +
+              sortParam +
+              filterParam
+            ).then(
+              res => {
+                console.log(res);
 
-        <div>
-            <MaterialTable
-                title="Danh sách tài xế"
-                columns={columns}
-                options={{
-                    filtering: false,
-                    search: false
-                }}
+                resolve({
+                  data: res.content,
+                  page: res.number,
+                  totalCount: res.totalElements
 
-                components={{
-                    Toolbar: props => (
-                      <div>
-                        <MTableToolbar {...props} />
-                        <Grid container spacing={3}>
-                          <Grid item xs={8} style={{textAlign: 'left', padding: '0px 30px 20px 30px'}}>
-                          </Grid>
-                          <Grid item xs={4}
-                                style={{verticalAlign: 'text-bottom', textAlign: 'right', padding: '0px 50px 10px 30px'}}>
-                            <Link to={'/driver/create'}>
-                              <Button color={'primary'} variant={'contained'} startIcon={<AddIcon/>}> Thêm mới </Button>
-                            </Link>
-                          </Grid>
-                        </Grid>
-                      </div>
-                    )
-                  }}
-                  
-                data={query =>
-                    new Promise((resolve, reject) => {
-                        console.log(query);
-                        let sortParam="";
-                        if(query.orderBy!==undefined){
-                            sortParam="&sort="+query.orderBy.field+','+query.orderDirection;
-                        }
-                        let filterParam="";
-                        if(query.filters.length>0){
-                            let filter=query.filters;
-                            filter.forEach(v=>{
-                                filterParam=v.column.field+"="+v.value+"&"
-                            })
-                            filterParam="&"+filterParam.substring(0,filterParam.length-1);
-                        }
+                });
 
-                        authGet(
-                            dispatch,
-                            token,
-                          "/get-page-drivers" +
-                          "?size=" +
-                          query.pageSize +
-                          "&page=" +
-                          query.page +
-                          sortParam +
-                          filterParam
-                        ).then(
-                            res => {
-                                console.log(res);
+              },
+              error => {
+                console.log("error");
+              }
+            );
+          })
+        }
+        icons={tableIcons}
+        onRowClick={(event, rowData) => {
+          console.log("select ", rowData);
+        }}
+      />
+    </div>
 
-                                resolve({
-                                    data: res.content,
-                                    page: res.number,
-                                    totalCount: res.totalElements
-
-                                });
-
-                            },
-                            error => {
-                                console.log("error");
-                            }
-                        );
-                    })
-                }
-                icons={tableIcons}
-                onRowClick={(event    , rowData) => {
-                    console.log("select ",rowData);
-                }}
-            />
-        </div>
-
-    );
+  );
 }
 
 

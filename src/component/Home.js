@@ -60,10 +60,9 @@ export default function Home(props) {
   };
 
 
-
-  function getRevenueDateRecent(){
+  function getRevenueDateRecent() {
     console.log("getRevenueDateRecent");
-    authPost(dispatch, token, '/report-date-based-revenue-recent', {"nbDays":15}
+    authPost(dispatch, token, '/report-date-based-revenue-recent', {"nbDays": 15}
     ).then(
       response => response.json()
     ).then(response => {
@@ -82,11 +81,12 @@ export default function Home(props) {
       //dataVehicleDistance.datasets[0].data = distance;
       //console.log('dataVehicleDistance.vehicle = ', dataVehicleDistance.labels);
       //console.log('dataVehicleDistance.distance = ', dataVehicleDistance.datasets[0].data);
-      console.log('revenue = ',revenue);
+      console.log('revenue = ', revenue);
     }).catch(console.log);
 
 
   }
+
   function getVehicleDistance() {
     console.log("getVehicleDistance");
     authPost(dispatch, token, '/statistic-vehicle-distance', {"fromDate": "", "thruDate": ""}

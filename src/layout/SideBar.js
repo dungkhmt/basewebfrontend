@@ -256,6 +256,22 @@ export default function SideBar(props) {
                 ) : (
                   ""
                 )}
+
+                {props.menu.has("MENU_USER_LIST") ? (
+                  <ListItem
+                    button
+                    className={classes.nested}
+                    component={Link}
+                    to={process.env.PUBLIC_URL + "/user/approve-register"}
+                  >
+                    <ListItemIcon>
+                      <StarBorder/>
+                    </ListItemIcon>
+                    <ListItemText primary="Phê duyệt"/>
+                  </ListItem>
+                ) : (
+                  ""
+                )}
               </List>
             </Collapse>
           </div>
@@ -475,7 +491,12 @@ export default function SideBar(props) {
                   <ListItemText primary="Cấu hình tuyến"/>
                 </ListItem>
 
-                <ListItem button className={classes.nested}>
+                <ListItem 
+                  button 
+                  className={classes.nested}
+                  component={Link}
+                  to={process.env.PUBLIC_URL + "/salesroutes/plan/period/detail"}
+                >
                   <ListItemIcon>
                     <StarBorder/>
                   </ListItemIcon>
@@ -1724,7 +1745,7 @@ export default function SideBar(props) {
           <Collapse in={openCollapse.has('MENU_TEACHING_ASSIGNMENT')} timeout="auto" unmountOnExit>
             <List component="div" disablePadding>
 
-              <ListItem
+            <ListItem
                 button
                 className={classes.nested}
                 component={Link}

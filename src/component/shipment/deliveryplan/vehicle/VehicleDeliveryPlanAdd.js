@@ -48,8 +48,7 @@ export default function VehicleDeliveryPlanAdd() {
   const [dataTable, setDataTable] = useState();
 
   function getDataTable() {
-    authGet(dispatch, token, "/vehicle-not-in-delivery-plan/" + deliveryPlanId + '/all').
-      then(response => setDataTable(response));
+    authGet(dispatch, token, "/vehicle-not-in-delivery-plan/" + deliveryPlanId + '/all').then(response => setDataTable(response));
   }
 
   useEffect(() => getDataTable(), []);

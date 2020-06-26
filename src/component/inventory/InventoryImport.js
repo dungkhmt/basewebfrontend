@@ -2,11 +2,12 @@ import React, {useEffect, useState} from "react";
 import Grid from "@material-ui/core/Grid";
 import {authGet, authPost} from "../../api";
 import {useDispatch, useSelector} from "react-redux";
-import {selectValueByIdName, textField, textFieldNumberFormat} from "../../utils/FormUtils";
+import {selectValueByIdName, textFieldNumberFormat} from "../../utils/FormUtils";
 import AddIcon from "@material-ui/icons/Add";
 import Button from "@material-ui/core/Button";
 import MaterialTable from "material-table";
 import {useHistory} from "react-router-dom";
+import {currencyFormat} from "../../utils/NumberFormat";
 
 export default function InventoryImport() {
   const dispatch = useDispatch();
@@ -32,16 +33,19 @@ export default function InventoryImport() {
   }
 
   const [quantity, setQuantity] = useState(1);
+  const [unitCost, setUnitCost] = useState(1);
 
   useEffect(() => {
     Promise.all([getAllFacility(), getProductList()]).then(r => r);
   }, []);
 
-  const [selectedProductList,] = useState([]);
+  const [selectedProductList, setSelectedProductList] = useState([]);
   const [, rerender] = useState([]);
 
   function handleAdd() {
-    selectedProductList.push(Object.assign({quantity}, selectedProduct));
+    let selectedProductNewList = [...selectedProductList];
+    selectedProductNewList.push(Object.assign({quantity, cost: unitCost * quantity, unitCost}, selectedProduct));
+    setSelectedProductList(selectedProductNewList);
     rerender([]);
   }
 
@@ -49,6 +53,7 @@ export default function InventoryImport() {
     {title: 'Mã Sản phẩm', field: 'productId'},
     {title: 'Tên sản phẩm', field: 'productName'},
     {title: 'Số lượng', field: 'quantity'},
+    {title: 'Thành tiền', render: rowData => currencyFormat(rowData['cost'])},
   ];
 
   async function handleSubmit() {
@@ -56,7 +61,8 @@ export default function InventoryImport() {
       inventoryItems: selectedProductList.map(value => ({
         productId: value['productId'],
         facilityId: selectedFacility['facilityId'],
-        quantityOnHandTotal: value['quantity']
+        quantityOnHandTotal: value['quantity'],
+        unitCost: value['unitCost'],
       }))
     };
     let response = await authPost(dispatch, token, '/import-inventory-items', body).then(r => r.json());
@@ -74,7 +80,7 @@ export default function InventoryImport() {
     <p/>
 
     <Grid container spacing={3}>
-      <Grid item xs={4}>
+      <Grid item xs={3}>
         {selectValueByIdName('Chọn sản phẩm',
           productList,
           'productId',
@@ -82,15 +88,22 @@ export default function InventoryImport() {
           selectedProduct,
           setSelectedProduct)}
       </Grid>
-      <Grid item xs={4}>
+      <Grid item xs={3}>
         {textFieldNumberFormat('quantity', 'Chọn số lượng', quantity, newValue => {
           if (parseInt(newValue.replace('/[.,]/g', '')) > 0) {
             setQuantity(newValue);
           }
         })}
       </Grid>
+      <Grid item xs={3}>
+        {textFieldNumberFormat('cost', 'Giá nhập kho', unitCost, newValue => {
+          if (parseInt(newValue.replace('/[.,]/g', '')) > 0) {
+            setUnitCost(newValue);
+          }
+        })}
+      </Grid>
 
-      <Grid item xs={4}>
+      <Grid item xs={3}>
         <Button color={'primary'} variant={'contained'} startIcon={<AddIcon/>} onClick={handleAdd}>Thêm mới</Button>
       </Grid>
     </Grid>

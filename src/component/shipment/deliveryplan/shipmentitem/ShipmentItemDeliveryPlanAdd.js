@@ -7,6 +7,7 @@ import {tableIcons} from "../../../../utils/iconutil";
 import CloudUploadIcon from "@material-ui/icons/CloudUpload";
 import {Link, useHistory, useParams} from "react-router-dom";
 import ArrowBackIosIcon from "@material-ui/icons/ArrowBackIos";
+import CircularProgress from "@material-ui/core/CircularProgress";
 
 export default function ShipmentItemDeliveryPlanAdd() {
   const dispatch = useDispatch();
@@ -49,15 +50,20 @@ export default function ShipmentItemDeliveryPlanAdd() {
     ).catch(console.log);
   }
 
-  const [dataTable, setDataTable] = useState();
+  const [waiting, setWaiting] = useState(false);
+  const [dataTable, setDataTable] = useState([]);
 
-  function getDataTable() {
-    //authGet(dispatch, token, "/shipment-item-not-in-delivery-plan/" + deliveryPlanId + '/all').
-    authGet(dispatch, token, "/shipment-item-of-user-login-not-in-delivery-plan/" + deliveryPlanId + '/all').
-      then(response => setDataTable(response));
+  async function getDataTable() {
+    setWaiting(true);
+    let response = await authGet(dispatch, token, "/shipment-item-of-user-login-not-in-delivery-plan/" + deliveryPlanId + '/all');
+    setWaiting(false);
+
+    setDataTable(response);
   }
 
-  useEffect(() => getDataTable(), []);
+  useEffect(() => {
+    getDataTable().then(r => r);
+  }, []);
 
   return <div>
     {
@@ -66,19 +72,25 @@ export default function ShipmentItemDeliveryPlanAdd() {
           Back</Button>
       </Link>
     }
-    <MaterialTable
-      title={'Chọn đơn hàng'}
-      columns={columns}
-      options={{search: false, selection: true}}
-      data={dataTable}
-      icons={tableIcons}
-      onSelectionChange={rows => handleSelectRow(rows)}
-    >
-    </MaterialTable>
-    <Button
-      color={'primary'} variant={'contained'} startIcon={<CloudUploadIcon/>}
-      onClick={() => handleSubmit()}>
-      Save
-    </Button>
+    <p/>
+    {
+      waiting ? <CircularProgress color={'secondary'}/> :
+        <div>
+          <MaterialTable
+            title={'Chọn đơn hàng'}
+            columns={columns}
+            options={{search: false, selection: true}}
+            data={dataTable}
+            icons={tableIcons}
+            onSelectionChange={rows => handleSelectRow(rows)}
+          >
+          </MaterialTable>
+          <Button
+            color={'primary'} variant={'contained'} startIcon={<CloudUploadIcon/>}
+            onClick={() => handleSubmit()}>
+            Save
+          </Button>
+        </div>
+    }
   </div>;
 }

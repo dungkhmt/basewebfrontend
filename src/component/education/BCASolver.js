@@ -1,9 +1,16 @@
 import React, { useState } from "react";
 import { makeStyles } from "@material-ui/core/styles";
-import { Card, Typography, Button, TextField } from "@material-ui/core";
+import {
+  Card,
+  Typography,
+  Button,
+  TextField,
+  CardContent,
+} from "@material-ui/core";
 import { useSelector } from "react-redux";
 import { API_URL } from "../../config/config";
 import CircularProgress from "@material-ui/core/CircularProgress";
+import MaterialTable from "material-table";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -14,6 +21,16 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
+const columns = [
+  { title: "Mã lớp", field: "classId" },
+  { title: "Mã học phần", field: "courseId" },
+  { title: "Tên lớp", field: "className" },
+  { title: "Loại lớp", field: "classType" },
+  { title: "Ca học", field: "sessionId" },
+  { title: "Bộ môn", field: "departmentId" },
+  { title: "Học kì", field: "semesterId" },
+];
+
 export default function BCASolver(props) {
   const classes = useStyles();
   const token = useSelector((state) => state.auth.token);
@@ -23,6 +40,8 @@ export default function BCASolver(props) {
   const [classFile, setClassFile] = React.useState();
   const [teacherFile, setTeacherFile] = React.useState();
   const [progressing, setProgressing] = React.useState(false);
+  const [executed, setExecuted] = React.useState(false);
+  const [exeResult, setExeResult] = React.useState({});
 
   const openClassFileBrowser = () => {
     classFileInput.current.click();
@@ -88,12 +107,15 @@ export default function BCASolver(props) {
     fetch(API_URL + "/edu/execute-class-teacher-assignment/" + semester, {
       method: "GET",
       headers: { "X-Auth-Token": token },
-    }).then((res) => {
-      if (res.ok) {
+    })
+      .then((res) => res.json())
+      .then((res) => {
         setProgressing(false);
         alert("Successfully executing.");
-      }
-    });
+        console.log(res);
+        setExecuted(true);
+        setExeResult(res);
+      });
   };
 
   return (
@@ -164,6 +186,41 @@ export default function BCASolver(props) {
             {progressing ? <CircularProgress /> : "Phân công"}
           </Button>
         </div>
+        {executed && (
+          <CardContent>
+            {exeResult.classesNo >= exeResult.sucessNo && (
+              <MaterialTable
+                title={
+                  <div>
+                    <div>
+                      <Typography>
+                        Số lượng lớp tải lên: {" " + exeResult.classesNo}
+                      </Typography>
+                    </div>
+                    <div>
+                      <Typography>
+                        Số lượng lớp được phân công: {" " + exeResult.sucessNo}
+                      </Typography>
+                    </div>
+                    <div>
+                      <Typography>
+                        Tỷ lệ phân công thành công:{" "}
+                        {" " + exeResult.sucessRate * 100 + "%"}
+                      </Typography>
+                    </div>
+                    <div>
+                      <Typography>
+                        Danh sách các lớp chưa được phân công:
+                      </Typography>
+                    </div>
+                  </div>
+                }
+                columns={columns}
+                data={exeResult.exception}
+              />
+            )}
+          </CardContent>
+        )}
       </Card>
     </div>
   );

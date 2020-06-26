@@ -14,10 +14,16 @@ export default function SupplierCreate() {
   const [supplierCode, setSupplierCode] = useState('');
 
   async function handleSubmit() {
+    if (supplierCode === '' || supplierName === '') {
+      alert('Nhập đầy đủ mã nhà cung cấp và tên nhà cung cấp rồi thử lại.');
+      return;
+    }
     let body = {supplierCode, supplierName};
     let supplier = await authPost(dispatch, token, '/create-supplier', body).then(r => r.json());
     if (supplier && supplier['partyId']) {
       alert('Đã tạo thành công nhà cung cấp với mã partyId = ' + supplier['partyId']);
+    } else {
+      alert('Tạo không thành công, có thể do mã nhà cung cấp đã tồn tại.');
     }
     history.push('/supplier/list/');
   }
