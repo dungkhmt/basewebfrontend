@@ -225,7 +225,7 @@ export const MENU_LIST = [
       },
       {
         id: "",
-        path: "",
+        path: "/salesroutes/plan/period/detail",
         isPublic: true,
         icon: "StarBorder",
         text: "Chi tiết tuyến",
