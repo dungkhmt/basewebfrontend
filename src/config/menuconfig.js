@@ -1041,6 +1041,14 @@ export const MENU_LIST = [
         text: "DS phân công",
         child: [],
       },
+      {
+        id: "",
+        path: "/edu/solve",
+        isPublic: true,
+        icon: "StarBorder",
+        text: "Tiến hành phân công",
+        child: [],
+      },
     ],
   },
 ];
