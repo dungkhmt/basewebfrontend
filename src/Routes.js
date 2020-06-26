@@ -20,10 +20,6 @@ import ListDepartment from "./component/departments/listdepartment";
 import DistributorCreate from "./component/distributor/DistributorCreate";
 import DistributorDetail from "./component/distributor/DistributorDetail";
 import DistributorList from "./component/distributor/DistributorList";
-import AssignmentList from "./component/education/AssignmentList";
-import ClassesList from "./component/education/ClassesList";
-import CoursesList from "./component/education/CoursesList";
-import TeachersList from "./component/education/TeachersList";
 import ChangeDistanceDetail from "./component/geo/ChangeDistanceDetail";
 import GeoGoogleMapChangeCoordinates from "./component/geo/GeoGoogleMapChangeCoordinates";
 import GeoListDistanceInfo from "./component/geo/GeoListDistanceInfo";
@@ -150,14 +146,13 @@ import PrivateRoute from "./common/PrivateRoute";
 function Routes(props) {
   const location = useLocation();
   const dispatch = useDispatch();
-  useEffect(()=>{
-
+  useEffect(() => {
     console.log(location.pathname);
-    let selectedFunction =mapPathMenu.get(location.pathname);
-    if(selectedFunction!== undefined && selectedFunction!==null)
-    dispatch(updateSelectedFuction(selectedFunction));
-  },[location]);
-  if (props.error.isError) return <Route component={error500} path="*" />;
+    let selectedFunction = mapPathMenu.get(location.pathname);
+    if (selectedFunction !== undefined && selectedFunction !== null)
+      dispatch(updateSelectedFuction(selectedFunction));
+  }, [location]);
+  //if (props.error.isError) return <Route component={error500} path="*" />;
   return (
     <Switch>
       <PrivateRouteWithLayout
@@ -209,9 +204,9 @@ function Routes(props) {
         path="/user/approve-register" // props
       />
       <PrivateRoute
-        component={ChangePassword} 
+        component={ChangePassword}
         isAuthenticated={props.isAuthenticated}
-        path="/userlogin/change-password/:username" 
+        path="/userlogin/change-password/:username"
       />
       <PrivateRouteWithLayout
         component={EditUser} //props
@@ -1132,42 +1127,6 @@ function Routes(props) {
         //isAuthenticated={true}
         //exact                                   // props
         path="/purchase-order/create/:supplierPartyId" // props
-      />
-
-      <PrivateRouteWithLayout
-        component={CoursesList} //props
-        layout={Layout} //props
-        isAuthenticated={props.isAuthenticated} // props
-        //isAuthenticated={true}
-        //exact                                   // props
-        path="/edu/courses-list" // props
-      />
-
-      <PrivateRouteWithLayout
-        component={TeachersList} //props
-        layout={Layout} //props
-        isAuthenticated={props.isAuthenticated} // props
-        //isAuthenticated={true}
-        //exact                                   // props
-        path="/edu/teachers-list" // props
-      />
-
-      <PrivateRouteWithLayout
-        component={ClassesList} //props
-        layout={Layout} //props
-        isAuthenticated={props.isAuthenticated} // props
-        //isAuthenticated={true}
-        //exact                                   // props
-        path="/edu/classes-list" // props
-      />
-
-      <PrivateRouteWithLayout
-        component={AssignmentList} //props
-        layout={Layout} //props
-        isAuthenticated={props.isAuthenticated} // props
-        //isAuthenticated={true}
-        //exact                                   // props
-        path="/edu/assignment" // props
       />
 
       <PrivateRouteWithLayout
