@@ -14,6 +14,7 @@ import ExpandMore from "@material-ui/icons/ExpandMore";
 import InboxIcon from "@material-ui/icons/MoveToInbox";
 import StarBorder from "@material-ui/icons/StarBorder";
 import clsx from "clsx";
+<<<<<<< HEAD
 import React, {useState} from "react";
 import {Link} from "react-router-dom";
 import makeStyles from "@material-ui/core/styles/makeStyles";
@@ -32,6 +33,12 @@ import FastfoodIcon from "@material-ui/icons/Fastfood";
 import LocalGroceryStoreIcon from "@material-ui/icons/LocalGroceryStore";
 
 import BlurOnIcon from "@material-ui/icons/BlurOn";
+=======
+import React, { useEffect } from "react";
+import { Link } from "react-router-dom";
+import { menuIconMap, MENU_LIST } from "../config/menuconfig";
+import { useSelector } from "react-redux";
+>>>>>>> 5f767af716b82a403e2937a30fb49f6cd64b75d6
 
 const drawerWidth = 340;
 const useStyles = makeStyles((theme) => ({
@@ -101,7 +108,10 @@ export default function SideBar(props) {
   const open = props.open;
   const handleDrawerClose = props.handleDrawerClose;
   const theme = useTheme();
+
+  const selectedFunction = useSelector((state) => state.menu.selectedFunction);
   const classes = useStyles();
+<<<<<<< HEAD
   const [openCollapse,] = React.useState(new Set()); // thiet lap 4 menu TO
   const [, rerender] = useState([]);
   const handleListClick = key => {
@@ -116,6 +126,39 @@ export default function SideBar(props) {
     rerender([]);
   };
 
+=======
+  const [openCollapse, setOpenCollapse] = React.useState(new Set());
+  const handleOpenCollapseMenu = (id) => {
+    let newCollapse = new Set(openCollapse);
+    if (!newCollapse.has(id)) {
+      newCollapse.add(id);
+      setOpenCollapse(newCollapse);
+    }
+  };
+  const handleListClick = (id) => {
+    let newCollapse = new Set(openCollapse);
+    if (newCollapse.has(id)) newCollapse.delete(id);
+    else newCollapse.add(id);
+    setOpenCollapse(newCollapse);
+  };
+
+  useEffect(() => {
+    if (selectedFunction !== null)
+      if (
+        selectedFunction.parent !== null &&
+        selectedFunction.parent !== undefined
+      ) {
+        handleOpenCollapseMenu(selectedFunction.parent.id);
+
+        if (
+          selectedFunction.parent.parent !== null &&
+          selectedFunction.parent.parent !== undefined
+        ) {
+          handleOpenCollapseMenu(selectedFunction.parent.partent.id);
+        }
+      }
+  }, [selectedFunction]);
+>>>>>>> 5f767af716b82a403e2937a30fb49f6cd64b75d6
   // const logo = require('../favicon.ico');
 
   return (
@@ -143,6 +186,7 @@ export default function SideBar(props) {
           )}
         </IconButton>
       </div>
+<<<<<<< HEAD
       <Divider/>
       <List>
         {props.menu.has("MENU_DEPARTMENT") ? (
@@ -958,6 +1002,38 @@ export default function SideBar(props) {
                 ) : (
                   ""
                 )}
+=======
+      <Divider />
+      <ListMenuItem
+        configs={MENU_LIST}
+        openCollapse={openCollapse}
+        menu={props.menu}
+        handleListClick={handleListClick}
+        iconMap={menuIconMap}
+        selectedFunction={selectedFunction}
+      />
+    </Drawer>
+  );
+}
+
+function ListMenuItem(props) {
+  let menuItems = props.configs.map((config) => (
+    <MenuItem
+      config={config}
+      openCollapse={props.openCollapse}
+      menu={props.menu}
+      handleListClick={props.handleListClick}
+      iconMap={props.iconMap}
+      selectedFunction={props.selectedFunction}
+    />
+  ));
+  return (
+    <List component="div" disablePadding>
+      {menuItems}
+    </List>
+  );
+}
+>>>>>>> 5f767af716b82a403e2937a30fb49f6cd64b75d6
 
                 {props.menu.has("MENU_CUSTOMER_VIEW") ? (
                   <ListItem
@@ -1815,4 +1891,63 @@ export default function SideBar(props) {
       </List>
     </Drawer>
   );
+<<<<<<< HEAD
 }
+=======
+  let menu = {};
+  if (
+    props.config.child !== undefined &&
+    props.config.child !== null &&
+    props.config.child.length !== 0
+  ) {
+    menu = (
+      <div>
+        <ListItem button onClick={() => props.handleListClick(props.config.id)}>
+          {icon}
+          <ListItemText primary={props.config.text} />
+          {props.openCollapse.has(props.config.id) ? (
+            <ExpandLess />
+          ) : (
+            <ExpandMore />
+          )}
+        </ListItem>
+        <Collapse
+          in={props.openCollapse.has(props.config.id)}
+          timeout="auto"
+          unmountOnExit
+        >
+          <ListMenuItem
+            iconMap={props.iconMap}
+            configs={props.config.child}
+            openCollapse={props.openCollapse}
+            menu={props.menu}
+            handleListClick={props.handleListClick}
+            selectedFunction={props.selectedFunction}
+          />
+        </Collapse>
+      </div>
+    );
+  } else {
+    menu = (
+      <div>
+        <ListItem
+          button
+          className={classes.nested}
+          component={Link}
+          selected={
+            props.selectedFunction !== null
+              ? props.config.id === props.selectedFunction.id ||
+                props.config.path === props.selectedFunction.path
+              : false
+          }
+          to={process.env.PUBLIC_URL + props.config.path}
+        >
+          {icon}
+          <ListItemText primary={props.config.text} />
+        </ListItem>
+      </div>
+    );
+  }
+  return menu;
+}
+>>>>>>> 5f767af716b82a403e2937a30fb49f6cd64b75d6

@@ -15,6 +15,7 @@ import PersonIcon from "@material-ui/icons/Person";
 import StarBorder from "@material-ui/icons/StarBorder";
 import StoreMallDirectorySharpIcon from "@material-ui/icons/StoreMallDirectorySharp";
 import React from "react";
+import { buildMapPathMenu } from "../utils/MenuUtils";
 
 export const MENU_LIST = [
   {
@@ -224,7 +225,7 @@ export const MENU_LIST = [
       },
       {
         id: "",
-        path: "",
+        path: "/salesroutes/plan/period/detail",
         isPublic: true,
         icon: "StarBorder",
         text: "Chi tiết tuyến",
@@ -1060,3 +1061,4 @@ menuIconMap.set("HomeSharpIcon", <HomeSharpIcon />);
 menuIconMap.set("FastfoodIcon", <FastfoodIcon />);
 menuIconMap.set("LocalGroceryStoreIcon", <LocalGroceryStoreIcon />);
 menuIconMap.set("BlurOnIcon", <BlurOnIcon />);
+export const mapPathMenu = buildMapPathMenu(MENU_LIST);

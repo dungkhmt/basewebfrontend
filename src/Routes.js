@@ -1,7 +1,14 @@
 import React from "react";
-import { Route, Switch } from "react-router-dom";
+import { Route, Switch, useHistory, useLocation } from "react-router-dom";
 import { Home, PrivateRouteWithLayout } from "./component";
-import { DistributorUnpaidInvoiceDetail, DistributorUnpaidInvoiceList, Invoice, InvoiceDetail, Payment, PaymentApplication } from "./component/accounting/InvoiceDataTable";
+import {
+  DistributorUnpaidInvoiceDetail,
+  DistributorUnpaidInvoiceList,
+  Invoice,
+  InvoiceDetail,
+  Payment,
+  PaymentApplication,
+} from "./component/accounting/InvoiceDataTable";
 import PaymentApplicationCreate from "./component/accounting/PaymentApplicationCreate";
 import { PaymentCreate } from "./component/accounting/PaymentCreate";
 import QuickInvoicePayment from "./component/accounting/QuickInvoicePayment";
@@ -33,8 +40,8 @@ import OrderList from "./component/order/listorders";
 import OrderCreate from "./component/order/OrderCreate";
 import PurchaseOrderCreate from "./component/order/PurchaseOrderCreate";
 import PurchaseOrderList from "./component/order/PurchaseOrderList";
-import CreatePostOffice from './component/postsystem/postoffice/CreatePostOffice';
-import PostOfficeList from './component/postsystem/postoffice/PostOfficeList';
+import CreatePostOffice from "./component/postsystem/postoffice/CreatePostOffice";
+import PostOfficeList from "./component/postsystem/postoffice/PostOfficeList";
 import AddProductImg from "./component/product/AddProductImg";
 import ProductDetail from "./component/product/detailproduct";
 import ProductCreate from "./component/product/ProductCreate";
@@ -42,8 +49,15 @@ import ProductEdit from "./component/product/ProductEdit";
 import ProductList from "./component/product/ProductList";
 import ProductPriceCreate from "./component/product/ProductPriceCreate";
 import SetPrimaryImg from "./component/product/SetPrimaryImg";
-import { SaleReportByPartyCustomer, SaleReportByProduct } from "./component/report/SaleReport";
-import { TransportReportByDriver, TransportReportByFacility, TransportReportByPartyCustomer } from "./component/report/TransportReport";
+import {
+  SaleReportByPartyCustomer,
+  SaleReportByProduct,
+} from "./component/report/SaleReport";
+import {
+  TransportReportByDriver,
+  TransportReportByFacility,
+  TransportReportByPartyCustomer,
+} from "./component/report/TransportReport";
 import SaleReportByDate from "./component/reportsales/SalesReportByDate";
 import RetailOutletCreate from "./component/retailoutlet/RetailOutletCreate";
 import RetailOutletDetail from "./component/retailoutlet/RetailOutletDetail";
@@ -122,21 +136,28 @@ import NumberFormatTextField from "./utils/NumberFormatTextField";
 
 import Plan from "./component/salesroutes/salesrouteplan/Plan";
 import PlanPeriod from "./component/salesroutes/salesrouteplan/PlanPeriod";
-import SalesRouteDetail from "./component/salesroutes/salesroutedatail/SalesRouteDetail"
-import SalesRouteConfig from "./component/salesroutes/salesrouteconfig/SalesRouteConfig"
+import SalesRouteDetail from "./component/salesroutes/salesroutedatail/SalesRouteDetail";
+import SalesRouteConfig from "./component/salesroutes/salesrouteconfig/SalesRouteConfig";
 import AddVisitConfirguration from "./component/salesroutes/salesrouteplan/AddVisitConfirguration";
 import EditVisitConfirguration from "./component/salesroutes/salesrouteplan/EditVisitConfiguration";
 import AddSalesRouteConfig from "./component/salesroutes/salesrouteconfig/AddSalesRouteConfig";
+import { mapPathMenu } from "./config/menuconfig";
+import { updateSelectedFuction } from "./action";
+import { useDispatch } from "react-redux";
+import { useEffect } from "react";
+import ChangePassword from "./component/userlogin/changepassword";
+import PrivateRoute from "./common/PrivateRoute";
 
 function Routes(props) {
-  console.log(props);
-  if (props.error.isError)
-    return (
-      <Route
-        component={error500} 
-        path="*"
-      />
-    );
+  const location = useLocation();
+  const dispatch = useDispatch();
+  useEffect(() => {
+    console.log(location.pathname);
+    let selectedFunction = mapPathMenu.get(location.pathname);
+    if (selectedFunction !== undefined && selectedFunction !== null)
+      dispatch(updateSelectedFuction(selectedFunction));
+  }, [location]);
+  //if (props.error.isError) return <Route component={error500} path="*" />;
   return (
     <Switch>
       <PrivateRouteWithLayout
@@ -187,7 +208,11 @@ function Routes(props) {
         //exact                                   // props
         path="/user/approve-register" // props
       />
-
+      <PrivateRoute
+        component={ChangePassword}
+        isAuthenticated={props.isAuthenticated}
+        path="/userlogin/change-password/:username"
+      />
       <PrivateRouteWithLayout
         component={EditUser} //props
         layout={Layout} //props
@@ -528,7 +553,6 @@ function Routes(props) {
         isAuthenticated={props.isAuthenticated}
         path="/products/create"
       />
-
 
       <PrivateRouteWithLayout
         component={AddProductImg}
@@ -1192,42 +1216,6 @@ function Routes(props) {
       />
 
       <PrivateRouteWithLayout
-        component={CoursesList} //props
-        layout={Layout} //props
-        isAuthenticated={props.isAuthenticated} // props
-        //isAuthenticated={true}
-        //exact                                   // props
-        path="/edu/courses-list" // props
-      />
-
-      <PrivateRouteWithLayout
-        component={TeachersList} //props
-        layout={Layout} //props
-        isAuthenticated={props.isAuthenticated} // props
-        //isAuthenticated={true}
-        //exact                                   // props
-        path="/edu/teachers-list" // props
-      />
-
-      <PrivateRouteWithLayout
-        component={ClassesList} //props
-        layout={Layout} //props
-        isAuthenticated={props.isAuthenticated} // props
-        //isAuthenticated={true}
-        //exact                                   // props
-        path="/edu/classes-list" // props
-      />
-
-      <PrivateRouteWithLayout
-        component={AssignmentList} //props
-        layout={Layout} //props
-        isAuthenticated={props.isAuthenticated} // props
-        //isAuthenticated={true}
-        //exact                                   // props
-        path="/edu/assignment" // props
-      />
-
-      <PrivateRouteWithLayout
         component={SupplierCreate} //props
         layout={Layout} //props
         isAuthenticated={props.isAuthenticated} // props
@@ -1258,7 +1246,6 @@ function Routes(props) {
         component={error} // props
         path="*" // props
       />
-
     </Switch>
   );
 }
