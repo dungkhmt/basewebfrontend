@@ -20,6 +20,11 @@ import ListDepartment from "./component/departments/listdepartment";
 import DistributorCreate from "./component/distributor/DistributorCreate";
 import DistributorDetail from "./component/distributor/DistributorDetail";
 import DistributorList from "./component/distributor/DistributorList";
+import AssignmentList from './component/education/AssignmentList';
+import ClassesList from './component/education/ClassesList';
+import CoursesList from './component/education/CoursesList';
+import TeachersList from './component/education/TeachersList';
+import BCASolver from './component/education/BCASolver'
 import ChangeDistanceDetail from "./component/geo/ChangeDistanceDetail";
 import GeoGoogleMapChangeCoordinates from "./component/geo/GeoGoogleMapChangeCoordinates";
 import GeoListDistanceInfo from "./component/geo/GeoListDistanceInfo";
@@ -1092,6 +1097,87 @@ function Routes(props) {
         //exact                                   // props
         path="/supplier/list" // props
       />
+
+        <PrivateRouteWithLayout
+          component={SupplierCreate} //props
+          layout={Layout} //props
+          isAuthenticated={props.isAuthenticated} // props
+          //isAuthenticated={true}
+          //exact                                   // props
+          path="/supplier/create" // props
+        />
+
+          <PrivateRouteWithLayout
+            component={ProductPriceSupplier} //props
+            layout={Layout} //props
+            isAuthenticated={props.isAuthenticated} // props
+            //isAuthenticated={true}
+            //exact                                   // props
+            path="/product-price-supplier/list" // props
+          />
+
+          <PrivateRouteWithLayout
+            component={PurchaseOrderList} //props
+            layout={Layout} //props
+            isAuthenticated={props.isAuthenticated} // props
+            //isAuthenticated={true}
+            //exact                                   // props
+            path="/purchase-order/list" // props
+          />
+
+          <PrivateRouteWithLayout
+            component={PurchaseOrderCreate} //props
+            layout={Layout} //props
+            isAuthenticated={props.isAuthenticated} // props
+            //isAuthenticated={true}
+            //exact                                   // props
+            path="/purchase-order/create/:supplierPartyId" // props
+          />
+
+          <PrivateRouteWithLayout
+            component={CoursesList} //props
+            layout={Layout} //props
+            isAuthenticated={props.isAuthenticated} // props
+            //isAuthenticated={true}
+            //exact                                   // props
+            path="/edu/courses-list" // props
+          />
+
+          <PrivateRouteWithLayout
+            component={TeachersList} //props
+            layout={Layout} //props
+            isAuthenticated={props.isAuthenticated} // props
+            //isAuthenticated={true}
+            //exact                                   // props
+            path="/edu/teachers-list" // props
+          />
+
+          <PrivateRouteWithLayout
+            component={ClassesList} //props
+            layout={Layout} //props
+            isAuthenticated={props.isAuthenticated} // props
+            //isAuthenticated={true}
+            //exact                                   // props
+            path="/edu/classes-list" // props
+          />
+
+          <PrivateRouteWithLayout
+            component={AssignmentList} //props
+            layout={Layout} //props
+            isAuthenticated={props.isAuthenticated} // props
+            //isAuthenticated={true}
+            //exact                                   // props
+            path="/edu/assignment" // props
+          />
+
+          <PrivateRouteWithLayout
+            component={BCASolver} //props
+            layout={Layout} //props
+            isAuthenticated={props.isAuthenticated} // props
+            //isAuthenticated={true}
+            //exact                                   // props
+            path="/edu/solve" // props
+          />
 
       <PrivateRouteWithLayout
         component={SupplierCreate} //props
