@@ -360,7 +360,7 @@ export const MENU_LIST = [
       {
         id: "",
         path: "/driver/create",
-        isPublic: false,
+        isPublic: true,
         icon: "StarBorder",
         text: "Tạo mới Tài xế",
         child: [],
@@ -368,7 +368,7 @@ export const MENU_LIST = [
       {
         id: "",
         path: "/driver/list",
-        isPublic: false,
+        isPublic: true,
         icon: "StarBorder",
         text: "DS Tài xế",
         child: [],
@@ -376,7 +376,7 @@ export const MENU_LIST = [
       {
         id: "",
         path: "",
-        isPublic: false,
+        isPublic: true,
         icon: "StarBorder",
         text: "DS khách hàng",
         child: [],
@@ -384,7 +384,7 @@ export const MENU_LIST = [
       {
         id: "",
         path: "/shipment",
-        isPublic: false,
+        isPublic: true,
         icon: "StarBorder",
         text: "DS đơn hàng vận chuyển",
         child: [],
@@ -392,7 +392,7 @@ export const MENU_LIST = [
       {
         id: "",
         path: "/delivery-plan/create",
-        isPublic: false,
+        isPublic: true,
         icon: "StarBorder",
         text: "Tạo mới đợt giao hàng",
         child: [],
@@ -400,7 +400,7 @@ export const MENU_LIST = [
       {
         id: "",
         path: "/delivery-plan-list",
-        isPublic: false,
+        isPublic: true,
         icon: "StarBorder",
         text: "DS đợt giao hàng",
         child: [],
@@ -408,7 +408,7 @@ export const MENU_LIST = [
       {
         id: "",
         path: "",
-        isPublic: false,
+        isPublic: true,
         icon: "StarBorder",
         text: "Lập kế hoạch giao hàng",
         child: [],
@@ -416,7 +416,7 @@ export const MENU_LIST = [
       {
         id: "",
         path: "/solver-config-param",
-        isPublic: false,
+        isPublic: true,
         icon: "StarBorder",
         text: "Cấu hình bộ giải",
         child: [],
