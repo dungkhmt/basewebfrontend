@@ -59,10 +59,13 @@ export default function AssignmentList(props) {
     if (semesterQuery === null) {
       return;
     }
-    fetch(API_URL + "/edu/get-all-assignment/" + semesterQuery + "/" + teacherQuery, {
-      method: "GET",
-      headers: { "Content-Type": "application/json", "X-Auth-Token": token },
-    })
+    fetch(
+      API_URL + "/edu/get-all-assignment/" + semesterQuery + "/" + teacherQuery,
+      {
+        method: "GET",
+        headers: { "Content-Type": "application/json", "X-Auth-Token": token },
+      }
+    )
       .then((response) => response.json())
       .then((response) => {
         setAssignment(response);
@@ -72,7 +75,7 @@ export default function AssignmentList(props) {
   useEffect(() => {
     fetch(API_URL + "/edu/get-all-semester", {
       method: "GET",
-      headers: {"Content-Type": "application/json", "X-Auth-Token": token},
+      headers: { "Content-Type": "application/json", "X-Auth-Token": token },
     })
       .then((response) => response.json())
       .then((response) => {
@@ -113,13 +116,17 @@ export default function AssignmentList(props) {
       "Loại lớp": item.classType,
       "Số tín chỉ": item.credit,
       "Tên giảng viên": item.teacherName,
-      "Email": item.email,
+      Email: item.email,
       "Ca học": item.sessionId,
     }));
 
     var sheet = XLSX.utils.json_to_sheet(data);
     var wb = XLSX.utils.book_new();
     sheet["!cols"] = wbcols;
+
+    const range = XLSX.utils.decode_range(sheet["!ref"]);
+    sheet["!ref"] = XLSX.utils.encode_range(range);
+
     XLSX.utils.book_append_sheet(wb, sheet, "assignment");
     XLSX.writeFile(wb, semesterQuery + "-assignment.xlsx");
   };
@@ -159,7 +166,9 @@ export default function AssignmentList(props) {
             name="teacherQuery"
           >
             {teacher.map((item) => {
-              return <MenuItem value={item.teacherId}>{item.teacherName}</MenuItem>;
+              return (
+                <MenuItem value={item.teacherId}>{item.teacherName}</MenuItem>
+              );
             })}
           </Select>
         </FormControl>

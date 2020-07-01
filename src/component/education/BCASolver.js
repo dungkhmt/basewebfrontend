@@ -66,7 +66,7 @@ export default function BCASolver(props) {
     setProgressing(true);
     var formData = new FormData();
     formData.append("file", classFile);
-    fetch(API_URL + "/edu/upload/class-teacher-preference/" + semester, {
+    fetch(API_URL + "/edu/upload/class/" + semester, {
       method: "POST",
       headers: { "X-Auth-Token": token },
       body: formData,
