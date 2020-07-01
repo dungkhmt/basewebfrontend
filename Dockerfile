@@ -1,7 +1,8 @@
 FROM node:8 as react-build
 WORKDIR /app
-COPY . ./
+COPY package.json .
 RUN npm i
+COPY . ./
 RUN npm run build
 
 FROM nginx:alpine

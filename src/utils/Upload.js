@@ -11,11 +11,14 @@ import CloudUploadIcon from "@material-ui/icons/CloudUpload";
 
 export default function Upload(props) {
 
-  const {url, token, buttonTitle, dispatch, handleSaveCallback, fullUrl} = props;
+  const {
+    url, token, buttonTitle, dispatch, handleSaveCallback = () => {
+    }, fullUrl, multipleFile = false
+  } = props;
 
   const [open, setOpen] = useState(false);
 
-  const [files, setFiles] = useState();
+  const [files, setFiles] = useState([]);
 
   const [waiting, setWaiting] = useState(false);
 
@@ -23,7 +26,13 @@ export default function Upload(props) {
     setOpen(false);
     setWaiting(true);
     let data = new FormData();
-    data.append('file', files[0]);
+    if (multipleFile) {
+      for (let i = 0; i < files.length; i++) {
+        data.append(`files[]`, files[i]);
+      }
+    } else {
+      data.append('file', files[0]);
+    }
     Promise.all([uploadFile(url, data, fullUrl)]).then(([response]) => {
       setWaiting(false);
       handleSaveCallback(response);
@@ -59,7 +68,9 @@ export default function Upload(props) {
             <DropzoneArea
               open={open}
               onChange={files => setFiles(files)}
-              acceptedFiles={["application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"]}
+              filesLimit={multipleFile ? 999 : 1}
+              acceptedFiles={[""]}
+              // acceptedFiles={["application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"]}
               maxFileSize={50000000}
               onClose={handleClose}
             />

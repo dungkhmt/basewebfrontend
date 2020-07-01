@@ -1,95 +1,105 @@
-import React, {useState} from "react";
-import Button from "@material-ui/core/Button";
-import CssBaseline from "@material-ui/core/CssBaseline";
-import TextField from "@material-ui/core/TextField";
-import FormControlLabel from "@material-ui/core/FormControlLabel";
-import Checkbox from "@material-ui/core/Checkbox";
-import Link from "@material-ui/core/Link";
-import Grid from "@material-ui/core/Grid";
 import Box from "@material-ui/core/Box";
-import Typography from "@material-ui/core/Typography";
-import {makeStyles} from "@material-ui/core/styles";
-import Container from "@material-ui/core/Container";
-//import { login } from "../action";
-import {Redirect} from "react-router";
+import Button from "@material-ui/core/Button";
+import Checkbox from "@material-ui/core/Checkbox";
 import CircularProgress from "@material-ui/core/CircularProgress";
+import Container from "@material-ui/core/Container";
+import CssBaseline from "@material-ui/core/CssBaseline";
+import FormControlLabel from "@material-ui/core/FormControlLabel";
+import Grid from "@material-ui/core/Grid";
+import Link from "@material-ui/core/Link";
+import { makeStyles } from "@material-ui/core/styles";
+import TextField from "@material-ui/core/TextField";
+import Typography from "@material-ui/core/Typography";
+import React, { useState } from "react";
+//import { login } from "../action";
+import { Redirect } from "react-router";
 
 function Copyright() {
   return (
     <Typography variant="body2" color="textSecondary" align="center">
       {"Copyright © "}
-
       <Link color="inherit" href="">
         D
       </Link>{" "}
-
       {new Date().getFullYear()}
       {"."}
     </Typography>
   );
 }
 
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles((theme) => ({
   "@global": {
     body: {
-      backgroundColor: theme.palette.common.white
-    }
+      backgroundColor: theme.palette.common.white,
+    },
   },
   paper: {
     marginTop: theme.spacing(8),
     display: "flex",
     flexDirection: "column",
-    alignItems: "center"
+    alignItems: "center",
   },
   avatar: {
     margin: theme.spacing(1),
     //backgroundColor: theme.palette.secondary.main,
     width: theme.spacing(12),
-    height: theme.spacing(8)
+    height: theme.spacing(8),
   },
   form: {
     width: "100%", // Fix IE 11 issue.
-    marginTop: theme.spacing(1)
+    marginTop: theme.spacing(1),
   },
   submit: {
-    margin: theme.spacing(3, 0, 2)
-  }
+    margin: theme.spacing(3, 0, 2),
+  },
 }));
 
 export default function SignIn(props) {
   const classes = useStyles();
-  const [userName, setUserName] = useState("");// new State (var) userName 
-  const [password, setPassword] = useState("");// new State (var) password
-
-  const handleUserNameChange = event => {
+  const [userName, setUserName] = useState(""); // new State (var) userName
+  const [password, setPassword] = useState(""); // new State (var) password
+  const [isTyping, setIsTyping] = useState(false);
+  const handleUserNameChange = (event) => {
+    setIsTyping(true);
     setUserName(event.target.value);
   };
 
-  const handlePasswordChange = event => {
+  const handlePasswordChange = (event) => {
+    setIsTyping(true);
     setPassword(event.target.value);
   };
 
-  const handleSubmit = e => {
+  const handleSubmit = (e) => {
     e.preventDefault();
+    setIsTyping(false);
     props.requestLogin(userName, password);
+    
   };
   if (props.isAuthenticated === true)
-    return <Redirect to={{pathname: "/", state: {from: props.location}}}/>;
+    return <Redirect to={{ pathname: "/", state: { from: props.location } }} />;
   else
     return (
       <Container component="main" maxWidth="xs">
-        <CssBaseline/>
+        <CssBaseline />
         <div className={classes.paper}>
-
           <img
-            //alt="Hust"
-            //className={classes.avatar}
-            //src={process.env.PUBLIC_URL + "/soict-logo.png"}
+          //alt="Hust"
+          //className={classes.avatar}
+          //src={process.env.PUBLIC_URL + "/soict-logo.png"}
           />
-          <Typography component="h1" variant="h5">
+          <Typography component="h1" variant="h4">
             Sign in
           </Typography>
           <form className={classes.form} onSubmit={handleSubmit} noValidate>
+            {props.errorState === true && isTyping=== false? (
+              <Typography
+                variant="overline"
+                display="block"
+                color="error"
+            >{props.errorMsg}</Typography>
+            ) : (
+              ""
+            )}
             <TextField
               variant="outlined"
               margin="normal"
@@ -99,6 +109,7 @@ export default function SignIn(props) {
               label="User Name"
               name="user"
               onChange={handleUserNameChange}
+              error={isTyping ===false && props.errorState!==null && props.errorState===true }
               autoFocus
             />
             <TextField
@@ -111,10 +122,11 @@ export default function SignIn(props) {
               type="password"
               id="password"
               onChange={handlePasswordChange}
+              error={isTyping===false&&props.errorState!==null && props.errorState===true }
               autoComplete="current-password"
             />
             <FormControlLabel
-              control={<Checkbox value="remember" color="primary"/>}
+              control={<Checkbox value="remember" color="primary" />}
               label="Remember me"
             />
             {props.isRequesting === true ? (
@@ -126,9 +138,8 @@ export default function SignIn(props) {
                 color="primary"
                 className={classes.submit}
               >
-                <CircularProgress/> Sign In
+                <CircularProgress /> Sign In
               </Button>
-
             ) : (
               <Button
                 type="submit"
@@ -147,7 +158,10 @@ export default function SignIn(props) {
                 </Link>
               </Grid>
               <Grid item>
-                <Link href={process.env.PUBLIC_URL + "/user/register"} variant="body2">
+                <Link
+                  href={process.env.PUBLIC_URL + "/user/register"}
+                  variant="body2"
+                >
                   {"Don't have an account? Sign Up"}
                 </Link>
               </Grid>
@@ -155,7 +169,7 @@ export default function SignIn(props) {
           </form>
         </div>
         <Box mt={8}>
-          <Copyright/>
+          <Copyright />
         </Box>
       </Container>
     );
