@@ -4,7 +4,9 @@ import SignIn from "../component/SignIn";
 
 const mapStateToProps = state1 => ({ // query de lay ra
   isAuthenticated: state1.auth.isAuthenticated,
-  isRequesting: state1.auth.isRequesting
+  isRequesting: state1.auth.isRequesting,
+  errorState: state1.auth.errorState,
+  errorMsg: state1.auth.errorMsg
 });
 
 const mapDispatchToProps = dispatch => ({

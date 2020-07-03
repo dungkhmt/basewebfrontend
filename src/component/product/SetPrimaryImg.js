@@ -48,7 +48,10 @@ function SetPrimaryImg(props) {
           setData(res.productImageInfoModels);
           setPrimaryImgId(res.primaryImgId);
 
-        }
+        },
+      (error) => {
+        
+      }
       )
   }, []);
 

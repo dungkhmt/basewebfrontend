@@ -61,6 +61,8 @@ export const login = (username, password) => {
       .then(res => {
         if (res.ok) {
           dispatch(success(res.headers.get("X-Auth-Token")));
+        }else if(res.status===401){
+          dispatch(failed(true,"Username or password is incorrect!!"));
         }
         return res.json();
       })
@@ -73,7 +75,6 @@ export const login = (username, password) => {
           // }
         },
         error => {
-          dispatch(failed());
         }
       );
   };
@@ -85,9 +86,11 @@ const requesting = () => {
   };
 };
 
-export const failed = () => {
+export const failed = (errorState=false,errorMsg=null) => {
   return {
-    type: LOGIN_FAILURE
+    type: LOGIN_FAILURE,
+    errorState: errorState,
+    errorMsg: errorMsg
   };
 };
 const success = token => {// token la tham so cua ham success
