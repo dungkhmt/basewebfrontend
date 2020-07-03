@@ -426,14 +426,14 @@ export const MENU_LIST = [
   {
     id: "MENU_POST",
     path: "",
-    isPublic: false,
+    isPublic: true,
     icon: "ApartmentSharpIcon",
     text: "QL chuyển phát bưu kiện",
     child: [
       {
         id: "",
         path: "",
-        isPublic: false,
+        isPublic: true,
         icon: "StarBorder",
         text: "DS phương tiện",
         child: [],
@@ -441,7 +441,7 @@ export const MENU_LIST = [
       {
         id: "",
         path: "",
-        isPublic: false,
+        isPublic: true,
         icon: "StarBorder",
         text: "DS khách hàng",
         child: [],
@@ -449,7 +449,7 @@ export const MENU_LIST = [
       {
         id: "",
         path: "/postoffice/list",
-        isPublic: false,
+        isPublic: true,
         icon: "StarBorder",
         text: "DS bưu cục",
         child: [],
@@ -457,7 +457,7 @@ export const MENU_LIST = [
       {
         id: "",
         path: "",
-        isPublic: false,
+        isPublic: true,
         icon: "StarBorder",
         text: "DS đơn hàng chuyển phát",
         child: [],
@@ -465,7 +465,7 @@ export const MENU_LIST = [
       {
         id: "",
         path: "",
-        isPublic: false,
+        isPublic: true,
         icon: "StarBorder",
         text: "Tạo mới đợt chuyển phát",
         child: [],
@@ -473,7 +473,7 @@ export const MENU_LIST = [
       {
         id: "",
         path: "",
-        isPublic: false,
+        isPublic: true,
         icon: "StarBorder",
         text: "DS đợt chuyển phát",
         child: [],
@@ -481,7 +481,7 @@ export const MENU_LIST = [
       {
         id: "",
         path: "",
-        isPublic: false,
+        isPublic: true,
         icon: "StarBorder",
         text: "Lập kế hoạch thu gom bưu kiện",
         child: [],
@@ -489,7 +489,7 @@ export const MENU_LIST = [
       {
         id: "",
         path: "",
-        isPublic: false,
+        isPublic: true,
         icon: "StarBorder",
         text: "Lập kế hoạch phát bưu kiện",
         child: [],
