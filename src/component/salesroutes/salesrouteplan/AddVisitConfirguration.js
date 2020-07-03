@@ -6,7 +6,7 @@ import CardContent from "@material-ui/core/CardContent";
 import Typography from "@material-ui/core/Typography";
 import TextField from "@material-ui/core/TextField";
 import Button from "@material-ui/core/Button";
-import { authPost, authGet } from "../../../api";
+import { authPost, authGet, axiosPost, axiosGet } from "../../../api";
 import { useDispatch, useSelector } from "react-redux";
 import { Save, Cancel } from "@material-ui/icons";
 import { Controller, useForm } from "react-hook-form";
@@ -75,30 +75,32 @@ function AddVisitConfirguration(props) {
 
   // Functions
   const getSalesmans = () => {
-    authPost(dispatch, token, "/get-list-all-salesmans", { statusId: null })
-      .then((res) => res.json())
-      .then((res) => setSalesmans(res));
+    axiosPost(dispatch, token, "/get-list-all-salesmans", { statusId: null })
+      .then((res) => {
+        setSalesmans(res.data);
+        console.log("Salesmans ", res.data);
+      })
+      .catch((error) => console.log(error));
   };
 
   const getVisitFrequencies = () => {
-    authGet(dispatch, token, "/get-list-sales-route-visit-frequency").then(
-      (res) => {
-        console.log(res);
-        setFrequencies(res);
-      }
-    );
+    axiosGet(dispatch, token, "/get-list-sales-route-visit-frequency")
+      .then((res) => {
+        setFrequencies(res.data);
+        console.log("Frequencies", res.data);
+      })
+      .catch((error) => console.log(error));
   };
 
   const getConfigs = () => {
-    authPost(dispatch, token, "/get-list-sales-route-config", {
+    axiosPost(dispatch, token, "/get-list-sales-route-config", {
       statusId: null,
     })
-      .then((res) => res.json())
       .then((res) => {
-        console.log("configs");
-        console.log(res);
-        setConfigs(res);
-      });
+        setConfigs(res.data);
+        console.log("Configs ", res.data);
+      })
+      .catch((error) => console.log(error));
   };
 
   const generateListOfWeeks = () => {
@@ -148,27 +150,29 @@ function AddVisitConfirguration(props) {
   };
 
   const onChangeSalesman = (event) => {
-    setValue([{ distributor: "" }, { retailOutlet: "" }]);
     setLoadingDistributors(true);
+    setValue([{ distributor: "" }, { retailOutlet: "" }]);
     setRetailOutlets([]);
+
     const { salesmanId } = event.currentTarget.dataset;
 
-    authPost(dispatch, token, "/get-distributors-of-salesman", {
+    axiosPost(dispatch, token, "/get-distributors-of-salesman", {
       partySalesmanId: salesmanId,
     })
-      .then((res) => res.json())
       .then((res) => {
-        console.log(res);
-        setLoadingDistributors(false);
-        setDistributors(res);
-      });
+        setDistributors(res.data);
+        console.log("Distributors of salesman", res.data);
+      })
+      .catch((error) => console.log(error))
+      .finally(() => setLoadingDistributors(false));
   };
 
   const onChangeDistributor = (event) => {
     setLoadingRetailOutlets(true);
+
     const { distributorId } = event.currentTarget.dataset;
 
-    authPost(
+    axiosPost(
       dispatch,
       token,
       "/get-list-retail-outlets-of-salesman-and-distributor",
@@ -177,12 +181,12 @@ function AddVisitConfirguration(props) {
         partyDistributorId: distributorId,
       }
     )
-      .then((res) => res.json())
       .then((res) => {
-        setLoadingRetailOutlets(false);
-        setRetailOutlets(res);
-        console.log(res);
-      });
+        setRetailOutlets(res.data);
+        console.log("Retail outlets of salesman and distributor: ", res.data);
+      })
+      .catch((error) => console.log(error))
+      .finally(() => setLoadingRetailOutlets(false));
   };
 
   const onChangeFrequency = (event) => {
@@ -217,7 +221,7 @@ function AddVisitConfirguration(props) {
     console.log("Form data ", data);
     // notify()
 
-    authPost(dispatch, token, "/create-sales-route-config-retail-outlet", {
+    axiosPost(dispatch, token, "/create-sales-route-config-retail-outlet", {
       retailOutletSalesmanVendorId: data.retailOutlet,
       salesRoutePlanningPeriodId:
         props.location.state.salesRoutePlanningPeriodId,
@@ -232,14 +236,15 @@ function AddVisitConfirguration(props) {
               /\//g,
               "-"
             ),
-    }).then((res) => {
-      if (res.ok) {
+    })
+      .then((res) => {
         toast.dismiss();
         history.goBack();
-      } else {
+      })
+      .catch((error) => {
         errorNoti();
-      }
-    });
+        console.log(error);
+      });
   };
 
   useEffect(() => {
