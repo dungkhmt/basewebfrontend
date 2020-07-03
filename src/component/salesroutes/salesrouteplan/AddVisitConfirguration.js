@@ -13,32 +13,47 @@ import { Controller, useForm } from "react-hook-form";
 import { DevTool } from "react-hook-form-devtools";
 import { useHistory } from "react-router";
 import { toast } from "react-toastify";
-import { Box } from "@material-ui/core";
+import { Box, Menu } from "@material-ui/core";
 import { IconContext } from "react-icons/lib/cjs";
 import { MdCancel } from "react-icons/md";
 import { CircularProgress } from "material-ui";
 import { errorNoti } from "../Notification";
+import moment from "moment";
+import { object, string } from "yup";
 
 function AddVisitConfirguration(props) {
   const history = useHistory();
   const dispatch = useDispatch();
   const token = useSelector((state) => state.auth.token);
 
-  // Form
+  // Form data.
+  const [weeks, setWeeks] = useState([]);
   const [salesmans, setSalesmans] = useState([]);
   const [distributors, setDistributors] = useState([]);
   const [retailOutlets, setRetailOutlets] = useState([]);
   const [frequencies, setFrequencies] = useState([]);
   const [configs, setConfigs] = useState([]);
   const [respectiveConfigs, setRespectiveConfigs] = useState([]);
+
+  // Form engine.
+  const schema = object().shape({
+    salesman: string().required("Vui lòng chọn một mục"),
+    distributor: string().required("Vui lòng chọn một mục"),
+    retailOutlet: string().required("Vui lòng chọn một mục"),
+    frequency: string().required("Vui lòng chọn một mục"),
+    startExecuteWeek: string().when("config", {
+      is: (config) => config !== "" && config !== "None",
+      then: string().required("Vui lòng chọn một mục"),
+    }),
+  });
+
   const {
-    register,
     control,
     handleSubmit,
     errors,
-    getValues,
     setValue,
     watch,
+    clearError,
   } = useForm({
     defaultValues: {
       salesman: "",
@@ -46,10 +61,10 @@ function AddVisitConfirguration(props) {
       retailOutlet: "",
       frequency: "",
       config: "",
-      startWeek: "",
+      startExecuteWeek: "",
     },
+    validationSchema: schema,
   });
-  const [payLoad, setPayLoad] = useState({ salesRouteConfigId: "" });
 
   // Util
   const [loadingDistributor, setLoadingDistributors] = useState(false);
@@ -86,13 +101,60 @@ function AddVisitConfirguration(props) {
       });
   };
 
-  const onChangeSalesman = (child) => {
+  const generateListOfWeeks = () => {
+    const fromDate = new Date(props.location.state.fromDate);
+    const toDate = new Date(props.location.state.toDate);
+
+    // Find the first Monday from fromDate to toDate.
+    const day = fromDate.getDay();
+    fromDate.setDate(
+      fromDate.getDate() + (day == 1 || day == 0 ? 1 - day : 8 - day)
+    );
+
+    // Generate list of weeks.
+    let monday;
+    let sunday;
+    let listOfWeeks = [];
+    let i = 1;
+
+    while (fromDate.getTime() <= toDate.getTime()) {
+      monday = moment(fromDate).format("YYYY/MM/DD");
+      fromDate.setDate(fromDate.getDate() + 6);
+      sunday = moment(fromDate).format("YYYY/MM/DD");
+
+      listOfWeeks.push({
+        id: i,
+        fromDate: monday,
+        toDate: sunday,
+      });
+
+      fromDate.setDate(fromDate.getDate() + 1);
+      i++;
+    }
+
+    // Last week may not be enough 7 days.
+    if (listOfWeeks.length > 0) {
+      const lastWeek = listOfWeeks[listOfWeeks.length - 1];
+      fromDate.setDate(fromDate.getDate() - 7);
+
+      listOfWeeks[listOfWeeks.length - 1] = {
+        id: lastWeek.id,
+        fromDate: moment(fromDate).format("YYYY/MM/DD"),
+        toDate: moment(toDate).format("YYYY/MM/DD"),
+      };
+    }
+
+    setWeeks(listOfWeeks);
+  };
+
+  const onChangeSalesman = (event) => {
     setValue([{ distributor: "" }, { retailOutlet: "" }]);
     setLoadingDistributors(true);
     setRetailOutlets([]);
+    const { salesmanId } = event.currentTarget.dataset;
 
     authPost(dispatch, token, "/get-distributors-of-salesman", {
-      partySalesmanId: child.key,
+      partySalesmanId: salesmanId,
     })
       .then((res) => res.json())
       .then((res) => {
@@ -100,20 +162,19 @@ function AddVisitConfirguration(props) {
         setLoadingDistributors(false);
         setDistributors(res);
       });
-
-    setPayLoad(() => ({ ...payLoad, partySalesmanId: child.key }));
   };
 
-  const onChangeDistributor = (child) => {
+  const onChangeDistributor = (event) => {
     setLoadingRetailOutlets(true);
+    const { distributorId } = event.currentTarget.dataset;
 
     authPost(
       dispatch,
       token,
       "/get-list-retail-outlets-of-salesman-and-distributor",
       {
-        partySalesmanId: payLoad.partySalesmanId,
-        partyDistributorId: child.key,
+        partySalesmanId: watch("salesman"),
+        partyDistributorId: distributorId,
       }
     )
       .then((res) => res.json())
@@ -122,18 +183,13 @@ function AddVisitConfirguration(props) {
         setRetailOutlets(res);
         console.log(res);
       });
-
-    setPayLoad(() => ({ ...payLoad, partyDistributorId: child.key }));
   };
 
-  const onChangeRetailOutlet = (child) => {
-    setPayLoad(() => ({ ...payLoad, retailOutletSalesmanVendorId: child.key }));
-  };
+  const onChangeFrequency = (event) => {
+    const { visitFrequencyId } = event.currentTarget.dataset;
 
-  const onChangeFrequency = (child) => {
-    setPayLoad(() => ({ ...payLoad, visitFrequencyId: child.key }));
     setRespectiveConfigs([
-      ...configs.filter((c) => c.visitFrequencyId === child.key),
+      ...configs.filter((c) => c.visitFrequencyId === visitFrequencyId),
       {
         salesRouteConfigId: "None",
         days: "None",
@@ -144,9 +200,13 @@ function AddVisitConfirguration(props) {
     ]);
   };
 
-  const onChangeConfig = (child) => {
-    setValue("fromWeek", "");
-    setPayLoad(() => ({ ...payLoad, salesRouteConfigId: child.key }));
+  const onChangeConfig = (event) => {
+    const { salesRouteConfigId } = event.currentTarget.dataset;
+
+    if (salesRouteConfigId === "None") {
+      clearError(["startExecuteWeek"]);
+      setValue("startExecuteWeek", "");
+    }
   };
 
   const onClickCancelButton = () => {
@@ -154,19 +214,24 @@ function AddVisitConfirguration(props) {
   };
 
   const onSubmit = (data) => {
-    console.log(data);
+    console.log("Form data ", data);
     // notify()
 
     authPost(dispatch, token, "/create-sales-route-config-retail-outlet", {
-      salesRouteConfigId:
-        payLoad.salesRouteConfigId === "None"
-          ? null
-          : payLoad.salesRouteConfigId,
-      retailOutletSalesmanVendorId: payLoad.retailOutletSalesmanVendorId,
+      retailOutletSalesmanVendorId: data.retailOutlet,
       salesRoutePlanningPeriodId:
         props.location.state.salesRoutePlanningPeriodId,
-      visitFrequencyId: payLoad.visitFrequencyId,
-      startExecuteDate: "",
+      visitFrequencyId: data.frequency,
+      salesRouteConfigId: data.config === "None" ? null : data.config,
+      startExecuteWeek:
+        data.startExecuteWeek === "" ? null : data.startExecuteWeek,
+      startExecuteDate:
+        data.startExecuteWeek === ""
+          ? null
+          : weeks[parseInt(data.startExecuteWeek) - 1].fromDate.replace(
+              /\//g,
+              "-"
+            ),
     }).then((res) => {
       if (res.ok) {
         toast.dismiss();
@@ -181,6 +246,7 @@ function AddVisitConfirguration(props) {
     getSalesmans();
     getVisitFrequencies();
     getConfigs();
+    generateListOfWeeks();
   }, []);
 
   return (
@@ -204,42 +270,44 @@ function AddVisitConfirguration(props) {
               <Controller
                 as={
                   <TextField
-                    required
                     select
                     error={!!errors.salesman}
                     id="salesman"
-                    label="Nhân viên bán hàng"
-                    value={getValues("salesman")}
+                    label="Nhân viên bán hàng*"
+                    value={watch("salesman")}
                     helperText={errors.salesman?.message}
                     style={{ minWidth: "200px", marginLeft: "30px" }}
                   >
                     {/* {loadingDistributors?   <LoadingIndicator/>:*/}
                     {salesmans.map((s) => (
-                      <MenuItem key={s.partyId} value={s.userLoginId}>
+                      <MenuItem
+                        key={s.partyId}
+                        value={s.partyId}
+                        data-salesman-id={s.partyId}
+                        onClick={onChangeSalesman}
+                      >
                         {s.userLoginId}
                       </MenuItem>
                     ))}
                   </TextField>
                 }
                 name="salesman"
-                rules={{ required: "Vui lòng chọn một mục" }}
                 control={control}
-                onChange={(e) => {
-                  onChangeSalesman(e[1]);
-                  return e[1].props.value;
-                }}
+                // onChange={(e) => {
+                //   onChangeSalesman(e[1].key);
+                //   return e[1].props.value;
+                // }}
               />
               <br />
               <br />
               <Controller
                 as={
                   <TextField
-                    required
                     select
                     error={!!errors.distributor}
                     id="distributor"
-                    label="Nhà phân phối"
-                    value={getValues("distributor")}
+                    label="Nhà phân phối*"
+                    value={watch("distributor")}
                     helperText={errors.distributor?.message}
                     style={{ minWidth: "200px", marginLeft: "30px" }}
                   >
@@ -247,7 +315,12 @@ function AddVisitConfirguration(props) {
                       <LoadingIndicator />
                     ) : (
                       distributors.map((d) => (
-                        <MenuItem key={d.partyId} value={d.distributorName}>
+                        <MenuItem
+                          key={d.partyId}
+                          value={d.partyId}
+                          data-distributor-id={d.partyId}
+                          onClick={onChangeDistributor}
+                        >
                           {d.distributorName}
                         </MenuItem>
                       ))
@@ -255,24 +328,18 @@ function AddVisitConfirguration(props) {
                   </TextField>
                 }
                 name="distributor"
-                rules={{ required: "Vui lòng chọn một mục" }}
                 control={control}
-                onChange={(e) => {
-                  onChangeDistributor(e[1]);
-                  return e[1].props.value;
-                }}
               />
               <br />
               <br />
               <Controller
                 as={
                   <TextField
-                    required
                     select
                     error={!!errors.retailOutlet}
                     id="retailOutlet"
-                    label="Đại lý bán lẻ"
-                    value={getValues("retailOutlet")}
+                    label="Đại lý bán lẻ*"
+                    value={watch("retailOutlet")}
                     helperText={errors.retailOutlet?.message}
                     style={{ minWidth: "200px", marginLeft: "30px" }}
                   >
@@ -282,7 +349,7 @@ function AddVisitConfirguration(props) {
                       retailOutlets.map((ro) => (
                         <MenuItem
                           key={ro.retailOutletSalesmanVendorId}
-                          value={ro.retailOutletName}
+                          value={ro.retailOutletSalesmanVendorId}
                         >
                           {ro.retailOutletName}
                         </MenuItem>
@@ -291,42 +358,35 @@ function AddVisitConfirguration(props) {
                   </TextField>
                 }
                 name="retailOutlet"
-                rules={{ required: "Vui lòng chọn một mục" }}
                 control={control}
-                onChange={(e) => {
-                  onChangeRetailOutlet(e[1]);
-                  return e[1].props.value;
-                }}
               />
               <br />
               <br />
               <Controller
                 as={
                   <TextField
-                    required
                     select
                     error={!!errors.frequency}
                     id="frequency"
-                    label="Tần suất thăm"
-                    value={getValues("frequency")}
+                    label="Tần suất thăm*"
+                    value={watch("frequency")}
                     helperText={errors.frequency?.message}
                     style={{ minWidth: "200px", marginLeft: "30px" }}
                   >
                     {frequencies.map((f) => (
-                      <MenuItem key={f.visitFrequencyId} value={f.description}>
+                      <MenuItem
+                        key={f.visitFrequencyId}
+                        value={f.visitFrequencyId}
+                        data-visit-frequency-id={f.visitFrequencyId}
+                        onClick={onChangeFrequency}
+                      >
                         {f.description}
                       </MenuItem>
                     ))}
                   </TextField>
                 }
                 name="frequency"
-                rules={{ required: "Vui lòng chọn một mục" }}
                 control={control}
-                onChange={(e) => {
-                  console.log(e[1]);
-                  onChangeFrequency(e[1]);
-                  return e[1].props.value;
-                }}
               />
               <br />
               <br />
@@ -336,11 +396,16 @@ function AddVisitConfirguration(props) {
                     select
                     id="config"
                     label="Cấu hình thăm"
-                    value={getValues("config")}
+                    value={watch("config")}
                     style={{ minWidth: "200px", marginLeft: "30px" }}
                   >
                     {respectiveConfigs.map((c) => (
-                      <MenuItem key={c.salesRouteConfigId} value={c.days}>
+                      <MenuItem
+                        key={c.salesRouteConfigId}
+                        value={c.salesRouteConfigId}
+                        data-sales-route-config-id={c.salesRouteConfigId}
+                        onClick={onChangeConfig}
+                      >
                         {c.days}
                       </MenuItem>
                     ))}
@@ -348,21 +413,32 @@ function AddVisitConfirguration(props) {
                 }
                 name="config"
                 control={control}
-                onChange={(e) => {
-                  onChangeConfig(e[1]);
-                  return e[1].props.value;
-                }}
               />
               <br />
               <br />
-              <TextField
-                disabled={watch("config") === "" || watch("config") === "None"}
-                id="fromWeek"
-                name="fromWeek"
-                label="Tuần bắt đầu"
-                helperText="Ví dụ: 1,2,3"
-                inputRef={register}
-                style={{ minWidth: "200px", marginLeft: "30px" }}
+              <Controller
+                as={
+                  <TextField
+                    select
+                    error={!!errors.startExecuteWeek}
+                    id="startExecuteWeek"
+                    label="Tuần bắt đầu"
+                    value={watch("startExecuteWeek")}
+                    helperText={errors.startExecuteWeek?.message}
+                    style={{ minWidth: "280px", marginLeft: "30px" }}
+                    disabled={
+                      watch("config") === "" || watch("config") === "None"
+                    }
+                  >
+                    {weeks.map((week) => (
+                      <MenuItem key={week.id} value={week.id}>
+                        {`Tuần ${week.id} (${week.fromDate} - ${week.toDate})`}
+                      </MenuItem>
+                    ))}
+                  </TextField>
+                }
+                name="startExecuteWeek"
+                control={control}
               />
               <br />
               <br />
@@ -376,6 +452,7 @@ function AddVisitConfirguration(props) {
                   background: "grey",
                   color: "white",
                   marginRight: "10px",
+                  margin: "0px 10px 0px 30px",
                 }}
               >
                 HỦY
