@@ -13,6 +13,7 @@
     "@progress/kendo-react-dateinputs": "^3.13.0",
     "@progress/kendo-react-intl": "^3.13.0",
     "@syncfusion/ej2-calendars": "^18.1.44",
+    "axios": "^0.19.2",
     "base-64": "^0.1.0",
     "canvasjs": "^1.8.3",
     "chart.js": "^2.9.3",
