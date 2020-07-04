@@ -80,7 +80,7 @@ function AddVisitConfirguration(props) {
         setSalesmans(res.data);
         console.log("Salesmans ", res.data);
       })
-      .catch((error) => console.log(error));
+      .catch((error) => console.log("Error in method getSalesman: ", error));
   };
 
   const getVisitFrequencies = () => {
@@ -89,7 +89,9 @@ function AddVisitConfirguration(props) {
         setFrequencies(res.data);
         console.log("Frequencies", res.data);
       })
-      .catch((error) => console.log(error));
+      .catch((error) =>
+        console.log("Error in method getVisitFrequencies: ", error)
+      );
   };
 
   const getConfigs = () => {
@@ -100,7 +102,7 @@ function AddVisitConfirguration(props) {
         setConfigs(res.data);
         console.log("Configs ", res.data);
       })
-      .catch((error) => console.log(error));
+      .catch((error) => console.log("Error in method getConfigs: ", error));
   };
 
   const generateListOfWeeks = () => {
@@ -149,12 +151,10 @@ function AddVisitConfirguration(props) {
     setWeeks(listOfWeeks);
   };
 
-  const onChangeSalesman = (event) => {
+  const onChangeSalesman = (salesmanId) => {
     setLoadingDistributors(true);
     setValue([{ distributor: "" }, { retailOutlet: "" }]);
     setRetailOutlets([]);
-
-    const { salesmanId } = event.currentTarget.dataset;
 
     axiosPost(dispatch, token, "/get-distributors-of-salesman", {
       partySalesmanId: salesmanId,
@@ -163,14 +163,14 @@ function AddVisitConfirguration(props) {
         setDistributors(res.data);
         console.log("Distributors of salesman", res.data);
       })
-      .catch((error) => console.log(error))
+      .catch((error) =>
+        console.log("Error in method onChangeSalesman: ", error)
+      )
       .finally(() => setLoadingDistributors(false));
   };
 
-  const onChangeDistributor = (event) => {
+  const onChangeDistributor = (distributorId) => {
     setLoadingRetailOutlets(true);
-
-    const { distributorId } = event.currentTarget.dataset;
 
     axiosPost(
       dispatch,
@@ -185,13 +185,13 @@ function AddVisitConfirguration(props) {
         setRetailOutlets(res.data);
         console.log("Retail outlets of salesman and distributor: ", res.data);
       })
-      .catch((error) => console.log(error))
+      .catch((error) =>
+        console.log("Error in method onChangeDistributor: ", error)
+      )
       .finally(() => setLoadingRetailOutlets(false));
   };
 
-  const onChangeFrequency = (event) => {
-    const { visitFrequencyId } = event.currentTarget.dataset;
-
+  const onChangeFrequency = (visitFrequencyId) => {
     setRespectiveConfigs([
       ...configs.filter((c) => c.visitFrequencyId === visitFrequencyId),
       {
@@ -204,9 +204,7 @@ function AddVisitConfirguration(props) {
     ]);
   };
 
-  const onChangeConfig = (event) => {
-    const { salesRouteConfigId } = event.currentTarget.dataset;
-
+  const onChangeConfig = (salesRouteConfigId) => {
     if (salesRouteConfigId === "None") {
       clearError(["startExecuteWeek"]);
       setValue("startExecuteWeek", "");
@@ -243,7 +241,7 @@ function AddVisitConfirguration(props) {
       })
       .catch((error) => {
         errorNoti();
-        console.log(error);
+        console.log("Error in method onSubmit: ", error);
       });
   };
 
@@ -285,12 +283,7 @@ function AddVisitConfirguration(props) {
                   >
                     {/* {loadingDistributors?   <LoadingIndicator/>:*/}
                     {salesmans.map((s) => (
-                      <MenuItem
-                        key={s.partyId}
-                        value={s.partyId}
-                        data-salesman-id={s.partyId}
-                        onClick={onChangeSalesman}
-                      >
+                      <MenuItem key={s.partyId} value={s.partyId}>
                         {s.userLoginId}
                       </MenuItem>
                     ))}
@@ -298,10 +291,10 @@ function AddVisitConfirguration(props) {
                 }
                 name="salesman"
                 control={control}
-                // onChange={(e) => {
-                //   onChangeSalesman(e[1].key);
-                //   return e[1].props.value;
-                // }}
+                onChange={([, selected]) => {
+                  onChangeSalesman(selected.props.value);
+                  return selected.props.value;
+                }}
               />
               <br />
               <br />
@@ -320,12 +313,7 @@ function AddVisitConfirguration(props) {
                       <LoadingIndicator />
                     ) : (
                       distributors.map((d) => (
-                        <MenuItem
-                          key={d.partyId}
-                          value={d.partyId}
-                          data-distributor-id={d.partyId}
-                          onClick={onChangeDistributor}
-                        >
+                        <MenuItem key={d.partyId} value={d.partyId}>
                           {d.distributorName}
                         </MenuItem>
                       ))
@@ -334,6 +322,10 @@ function AddVisitConfirguration(props) {
                 }
                 name="distributor"
                 control={control}
+                onChange={([, selected]) => {
+                  onChangeDistributor(selected.props.value);
+                  return selected.props.value;
+                }}
               />
               <br />
               <br />
@@ -382,8 +374,6 @@ function AddVisitConfirguration(props) {
                       <MenuItem
                         key={f.visitFrequencyId}
                         value={f.visitFrequencyId}
-                        data-visit-frequency-id={f.visitFrequencyId}
-                        onClick={onChangeFrequency}
                       >
                         {f.description}
                       </MenuItem>
@@ -392,6 +382,10 @@ function AddVisitConfirguration(props) {
                 }
                 name="frequency"
                 control={control}
+                onChange={([, selected]) => {
+                  onChangeFrequency(selected.props.value);
+                  return selected.props.value;
+                }}
               />
               <br />
               <br />
@@ -408,8 +402,6 @@ function AddVisitConfirguration(props) {
                       <MenuItem
                         key={c.salesRouteConfigId}
                         value={c.salesRouteConfigId}
-                        data-sales-route-config-id={c.salesRouteConfigId}
-                        onClick={onChangeConfig}
                       >
                         {c.days}
                       </MenuItem>
@@ -418,6 +410,10 @@ function AddVisitConfirguration(props) {
                 }
                 name="config"
                 control={control}
+                onChange={([, selected]) => {
+                  onChangeConfig(selected.props.value);
+                  return selected.props.value;
+                }}
               />
               <br />
               <br />
