@@ -18,7 +18,6 @@ import { IconContext } from "react-icons/lib/cjs";
 import { MdCancel } from "react-icons/md";
 import { CircularProgress } from "material-ui";
 import { errorNoti } from "../Notification";
-import moment from "moment";
 import { object, string } from "yup";
 
 function AddVisitConfirguration(props) {
@@ -122,9 +121,17 @@ function AddVisitConfirguration(props) {
     let i = 1;
 
     while (fromDate.getTime() <= toDate.getTime()) {
-      monday = moment(fromDate).format("YYYY/MM/DD");
+      monday = `${("0" + fromDate.getDate()).slice(-2)}/${(
+        "0" +
+        (fromDate.getMonth() + 1)
+      ).slice(-2)}/${fromDate.getFullYear()}`;
+
       fromDate.setDate(fromDate.getDate() + 6);
-      sunday = moment(fromDate).format("YYYY/MM/DD");
+
+      sunday = `${("0" + fromDate.getDate()).slice(-2)}/${(
+        "0" +
+        (fromDate.getMonth() + 1)
+      ).slice(-2)}/${fromDate.getFullYear()}`;
 
       listOfWeeks.push({
         id: i,
@@ -143,8 +150,16 @@ function AddVisitConfirguration(props) {
 
       listOfWeeks[listOfWeeks.length - 1] = {
         id: lastWeek.id,
-        fromDate: moment(fromDate).format("YYYY/MM/DD"),
-        toDate: moment(toDate).format("YYYY/MM/DD"),
+
+        fromDate: `${("0" + fromDate.getDate()).slice(-2)}/${(
+          "0" +
+          (fromDate.getMonth() + 1)
+        ).slice(-2)}/${fromDate.getFullYear()}`,
+
+        toDate: `${("0" + toDate.getDate()).slice(-2)}/${(
+          "0" +
+          (toDate.getMonth() + 1)
+        ).slice(-2)}/${toDate.getFullYear()}`,
       };
     }
 
