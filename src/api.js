@@ -1,6 +1,7 @@
-import {failed} from "./action/Auth";
-import {API_URL} from "./config/config";
+import { failed } from "./action/Auth";
+import { API_URL } from "./config/config";
 import { error } from "./action";
+import axios from "axios";
 
 export const authPost = (dispatch, token, url, body) => {
   return fetch(API_URL + url, {
@@ -49,16 +50,15 @@ export const authGet = (dispatch, token, url) => {
   }).then(
     (res) => {
       if (!res.ok) {
-        if(res.status===401){
+        if (res.status === 401) {
           dispatch(failed());
           throw Error();
-        }
-        else {
-          dispatch(error(res.status))
-          console.log(res.json())
+        } else {
+          dispatch(error(res.status));
+          console.log(res.json());
           throw Error();
         }
-          return null;
+        return null;
       }
       return res.json();
     },
@@ -91,4 +91,22 @@ export default {
   getMenu: (dispatch, token) => {
     return authGet(dispatch, token, "/menu");
   },
+};
+
+export const axiosPost = (dispatch, token, url, data) => {
+  return axios.post(API_URL + url, data, {
+    headers: {
+      "content-type": "application/json",
+      "X-Auth-Token": token,
+    },
+  });
+};
+
+export const axiosGet = (dispatch, token, url) => {
+  return axios.get(API_URL + url, {
+    headers: {
+      "content-type": "application/json",
+      "X-Auth-Token": token,
+    },
+  });
 };
