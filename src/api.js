@@ -110,3 +110,12 @@ export const axiosGet = (dispatch, token, url) => {
     },
   });
 };
+
+export const axiosPut = (dispatch, token, url, data) => {
+  return axios.put(API_URL + url, data, {
+    headers: {
+      "content-type": "application/json",
+      "X-Auth-Token": token,
+    },
+  });
+};
