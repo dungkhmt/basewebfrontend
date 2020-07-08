@@ -1,8 +1,7 @@
-import React from 'react';
+import React from "react";
 import Webcam from "react-webcam";
 
 export function WebcamUtils() {
-
   const webcamRef = React.useRef(null);
   const mediaRecorderRef = React.useRef(null);
   const [capturing, setCapturing] = React.useState(false);
@@ -11,7 +10,7 @@ export function WebcamUtils() {
   const handleStartCaptureClick = React.useCallback(() => {
     setCapturing(true);
     mediaRecorderRef.current = new MediaRecorder(webcamRef.current.stream, {
-      mimeType: "video/webm"
+      mimeType: "video/webm",
     });
     mediaRecorderRef.current.addEventListener(
       "dataavailable",
@@ -21,7 +20,7 @@ export function WebcamUtils() {
   }, [webcamRef, setCapturing, mediaRecorderRef]);
 
   const handleDataAvailable = React.useCallback(
-    ({data}) => {
+    ({ data }) => {
       if (data.size > 0) {
         setRecordedChunks((prev) => prev.concat(data));
       }
@@ -37,7 +36,7 @@ export function WebcamUtils() {
   const handleDownload = React.useCallback(() => {
     if (recordedChunks.length) {
       const blob = new Blob(recordedChunks, {
-        type: "video/webm"
+        type: "video/webm",
       });
       const url = URL.createObjectURL(blob);
       const a = document.createElement("a");
@@ -53,7 +52,7 @@ export function WebcamUtils() {
 
   return (
     <>
-      <Webcam audio={false} ref={webcamRef}/>
+      <Webcam audio={false} ref={webcamRef} />
       {capturing ? (
         <button onClick={handleStopCaptureClick}>Stop Capture</button>
       ) : (
