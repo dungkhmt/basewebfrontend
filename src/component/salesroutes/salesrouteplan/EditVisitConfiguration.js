@@ -74,8 +74,16 @@ function EditVisitConfirguration(props) {
   const generateListOfWeeks = () => {
     console.time("generateListOfWeeks");
 
-    const fromDate = new Date(data.fromDate);
-    const toDate = new Date(data.toDate);
+    let fromDate = data.fromDate;
+    let toDate = data.toDate;
+
+    fromDate = new Date(
+      fromDate.slice(3, 5) + "/" + fromDate.slice(0, 2) + fromDate.slice(5)
+    );
+
+    toDate = new Date(
+      toDate.slice(3, 5) + "/" + toDate.slice(0, 2) + toDate.slice(5)
+    );
 
     // Find the first Monday from fromDate to toDate.
     const day = fromDate.getDay();
