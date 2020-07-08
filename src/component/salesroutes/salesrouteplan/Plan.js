@@ -1,9 +1,8 @@
 import React, { useEffect, useState, forwardRef } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useForm } from "react-hook-form";
-import { authPost } from "../../../api";
+import { axiosPost } from "../../../api";
 import { Link } from "react-router-dom";
-import moment from "moment";
 import MomentUtils from "@date-io/moment";
 import { Save, Cancel } from "@material-ui/icons";
 import { IconButton, Card } from "material-ui";
@@ -43,17 +42,17 @@ function Plan() {
   const token = useSelector((state) => state.auth.token);
   const dispatch = useDispatch();
 
-  // Modal
+  // Modal.
   const [creationDialogOpen, setCreationDialogOpen] = useState(false);
   const [fromDate, setFromDate] = useState(new Date());
   const [toDate, setToDate] = useState(new Date());
   const { register, handleSubmit } = useForm();
 
-  // Snackbar
+  // Snackbar.
   const toastId = React.useRef(null);
 
-  // Table
-  const [plans, setPlans] = useState([{}]);
+  // Table.
+  const [plans, setPlans] = useState([]);
   const columns = [
     {
       field: "salesRoutePlanningPeriodId",
@@ -88,21 +87,40 @@ function Plan() {
   ];
 
   const getListSalesRoutePlanningPeriod = () => {
-    authPost(dispatch, token, "/get-list-sales-route-planning-period", {
+    axiosPost(dispatch, token, "/get-list-sales-route-planning-period", {
       statusId: null,
     })
-      .then((res) => res.json())
       .then((res) => {
-        for (let i = 0; i < res.length; i++) {
-          res[i] = {
-            ...res[i],
-            fromDate: moment(res[i].fromDate).format("YYYY-MM-DD"),
-            toDate: moment(res[i].toDate).format("YYYY-MM-DD"),
+        console.log("getListSalesRoutePlanningPeriod, plans ", res.data);
+
+        let plans = res.data;
+        let len = plans.length;
+        let fromDate, toDate;
+
+        for (let i = 0; i < len; i++) {
+          fromDate = new Date(plans[i].fromDate);
+          toDate = new Date(plans[i].toDate);
+
+          plans[i] = {
+            ...plans[i],
+
+            fromDate: `${("0" + fromDate.getDate()).slice(-2)}/${(
+              "0" +
+              (fromDate.getMonth() + 1)
+            ).slice(-2)}/${fromDate.getFullYear()}`,
+
+            toDate: `${("0" + toDate.getDate()).slice(-2)}/${(
+              "0" +
+              (toDate.getMonth() + 1)
+            ).slice(-2)}/${toDate.getFullYear()}`,
           };
         }
 
-        setPlans(res);
-      });
+        setPlans(plans);
+      })
+      .catch((error) =>
+        console.log("getListSalesRoutePlanningPeriod, error ", error)
+      );
   };
 
   const onDialogClose = () => {
@@ -115,20 +133,41 @@ function Plan() {
     setCreationDialogOpen(false);
     processingNoti(toastId, false);
 
-    authPost(dispatch, token, "/create-sales-route-planning-period", {
+    axiosPost(dispatch, token, "/create-sales-route-planning-period", {
       fromDate,
       toDate,
       description: data["Description"],
     })
-      .then((res) => res.json())
       .then((res) => {
-        if (res["status"] === undefined) {
-          updateSuccessNoti(toastId, "Đã thêm");
-        } else {
-          updateErrorNoti(toastId, "Rất tiếc! Đã xảy ra lỗi :((");
-        }
+        console.log("onClickSaveButton, new plan ", res.data);
 
-        getListSalesRoutePlanningPeriod();
+        const newPlan = res.data;
+        let fromDate = new Date(newPlan.fromDate);
+        let toDate = new Date(newPlan.toDate);
+
+        setPlans([
+          ...plans,
+          {
+            ...newPlan,
+
+            fromDate: `${("0" + fromDate.getDate()).slice(-2)}/${(
+              "0" +
+              (fromDate.getMonth() + 1)
+            ).slice(-2)}/${fromDate.getFullYear()}`,
+
+            toDate: `${("0" + toDate.getDate()).slice(-2)}/${(
+              "0" +
+              (toDate.getMonth() + 1)
+            ).slice(-2)}/${toDate.getFullYear()}`,
+          },
+        ]);
+
+        updateSuccessNoti(toastId, "Đã thêm");
+      })
+      .catch((error) => {
+        console.log("onClickSaveButton, error ", error);
+
+        updateErrorNoti(toastId, "Rất tiếc! Đã xảy ra lỗi :((");
       });
   };
 
@@ -146,6 +185,17 @@ function Plan() {
               columns={columns}
               data={plans}
               icons={tableIcons}
+              localization={{
+                header: {
+                  actions: "",
+                },
+                body: {
+                  emptyDataSourceMessage: "Không có bản ghi nào để hiển thị",
+                  filterRow: {
+                    filterTooltip: "Lọc",
+                  },
+                },
+              }}
               options={{
                 search: false,
                 actionsColumnIndex: -1,
