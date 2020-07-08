@@ -6,7 +6,7 @@ import CardContent from "@material-ui/core/CardContent";
 import Typography from "@material-ui/core/Typography";
 import TextField from "@material-ui/core/TextField";
 import Button from "@material-ui/core/Button";
-import { authPost, authGet, axiosPost, axiosGet } from "../../../api";
+import { axiosPost, axiosGet } from "../../../api";
 import { useDispatch, useSelector } from "react-redux";
 import { Save, Cancel } from "@material-ui/icons";
 import { Controller, useForm } from "react-hook-form";
@@ -72,7 +72,7 @@ function AddVisitConfirguration(props) {
     <CircularProgress size={30} style={{ marginLeft: "85px" }} />
   );
 
-  // Functions
+  // Functions.
   const getSalesmans = () => {
     axiosPost(dispatch, token, "/get-list-all-salesmans", { statusId: null })
       .then((res) => {
@@ -86,7 +86,7 @@ function AddVisitConfirguration(props) {
     axiosGet(dispatch, token, "/get-list-sales-route-visit-frequency")
       .then((res) => {
         setFrequencies(res.data);
-        console.log("Frequencies", res.data);
+        console.log("Frequencies ", res.data);
       })
       .catch((error) =>
         console.log("Error in method getVisitFrequencies: ", error)
@@ -105,6 +105,8 @@ function AddVisitConfirguration(props) {
   };
 
   const generateListOfWeeks = () => {
+    console.time("generateListOfWeeks");
+
     const fromDate = new Date(props.location.state.fromDate);
     const toDate = new Date(props.location.state.toDate);
 
@@ -163,6 +165,8 @@ function AddVisitConfirguration(props) {
       };
     }
 
+    console.timeEnd("generateListOfWeeks");
+
     setWeeks(listOfWeeks);
   };
 
@@ -207,6 +211,9 @@ function AddVisitConfirguration(props) {
   };
 
   const onChangeFrequency = (visitFrequencyId) => {
+    setValue([{ config: "" }, { startExecuteWeek: "" }]);
+    clearError(["startExecuteWeek"]);
+
     setRespectiveConfigs([
       ...configs.filter((c) => c.visitFrequencyId === visitFrequencyId),
       {
