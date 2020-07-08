@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useForm } from "react-hook-form";
-import { authPost, authGet } from "../../../api";
+import { authPost, authGet, axiosPost } from "../../../api";
 import { useHistory, Link, useParams } from "react-router-dom";
 import moment from "moment";
 import MaterialTable, { MTableToolbar } from "material-table";
@@ -20,11 +20,11 @@ function PlanPeriod(props) {
   const token = useSelector((state) => state.auth.token);
   const dispatch = useDispatch();
 
-  // Select Salesman Modal
+  // Select Salesman Modal.
   const [salesmans, setSalesmans] = useState([]);
   const [dialogOpen, setDialogOpen] = useState(false);
 
-  // Table
+  // Table.
   const [data, setData] = useState([]);
   const columns = [
     {
@@ -59,6 +59,11 @@ function PlanPeriod(props) {
     {
       field: "repeatWeek",
       title: "Tuần lặp",
+      filtering: false,
+    },
+    {
+      field: "startExecuteWeek",
+      title: "Tuần bắt đầu",
       filtering: false,
     },
   ];
@@ -124,14 +129,14 @@ function PlanPeriod(props) {
   };
 
   const onClickEditButton = (rowData) => {
-    console.log("onClickEditButton of PlanPeriod");
-    console.log(rowData);
+    console.log("onClickEditButton, rowData ", rowData);
 
-    authPost(dispatch, token, "/get-list-sales-route-config", {
+    axiosPost(dispatch, token, "/get-list-sales-route-config", {
       statusId: null,
     })
-      .then((res) => res.json())
       .then((res) => {
+        console.log("onClickEditButton, configs ", res.data);
+
         history.push({
           pathname: "/salesroutes/plan/period/edit/visit-confirguration",
           state: {
@@ -142,16 +147,24 @@ function PlanPeriod(props) {
             retailOutletName: rowData.retailOutletName,
             salesmanName: rowData.salesmanName,
             distributorName: rowData.distributorName,
-            frequency: rowData.visitFrequency,
             visitFrequencyId: rowData.visitFrequencyId,
-            selectedConfig:
+            configs: res.data,
+            salesRouteConfigId:
               rowData.visitConfig === "Chưa thiết lập"
                 ? ""
-                : rowData.visitConfig,
-            configs: res,
+                : res.data.find(
+                    (c) =>
+                      c.visitFrequencyId === rowData.visitFrequencyId &&
+                      c.days === rowData.visitConfig
+                  ).salesRouteConfigId,
+            startExecuteWeek:
+              rowData.startExecuteWeek === "Chưa thiết lập"
+                ? ""
+                : parseInt(rowData.startExecuteWeek),
           },
         });
-      });
+      })
+      .catch((error) => console.log("onClickEditButton, error ", error));
   };
 
   const handleDialogClose = (partySalesmanId) => {
