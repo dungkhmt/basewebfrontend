@@ -152,7 +152,8 @@ import {updateSelectedFuction} from "./action";
 import {useDispatch} from "react-redux";
 import ChangePassword from "./component/userlogin/changepassword";
 import PrivateRoute from "./common/PrivateRoute";
-import {WebcamUtils} from "./utils/WebcamUtils";
+import {WebcamVideoList} from "./component/webcam/WebcamVideoList";
+import {WebcamRecorder} from "./component/webcam/WebcamRecorder";
 
 function Routes(props) {
   const location = useLocation();
@@ -1249,11 +1250,19 @@ function Routes(props) {
       />
 
       <PrivateRouteWithLayout
-        component={WebcamUtils} //props
+        component={WebcamVideoList} //props
         layout={Layout} //props
         isAuthenticated={true}
         //exact                                   // props
-        path="/test-webcam" // props
+        path="/webcam/list" // props
+      />
+
+      <PrivateRouteWithLayout
+        component={WebcamRecorder} //props
+        layout={Layout} //props
+        isAuthenticated={true}
+        //exact                                   // props
+        path="/webcam/recorder" // props
       />
 
       <Route
