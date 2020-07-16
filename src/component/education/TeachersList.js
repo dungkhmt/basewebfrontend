@@ -70,7 +70,13 @@ export default function TeachersList() {
     if (flag) {
       alert("Giáo viên " + data["teacherName"] + " đã tồn tại trong hệ thống.");
     } else {
-      alert("Đã lưu giáo viên " + data["teacherName"] + ".");
+      let input = { teacherId: data["email"], teacherName: data["teacherName"], email: data["email"], credit: data["credit"] };
+      authPost(dispatch, token, "/edu/create-teacher", input)
+      .then((res) => res.json())
+      .then((res) => {
+        alert("Đã lưu giáo viên " + data["teacherName"] + ".");
+        window.location.reload(); 
+      });
     }
   };
 
@@ -149,6 +155,15 @@ export default function TeachersList() {
                                             inputRef={register({ required: true })}
                                             fullWidth
                                             type='email'
+                                          />
+                                          <TextField
+                                            required
+                                            margin="dense"
+                                            name="credit"
+                                            label="Số tín lớn nhất có thể đảm nhận trong một học kì"
+                                            inputRef={register({ required: true })}
+                                            fullWidth
+                                            type={Number}
                                           />
                                         </DialogContent>
                                         <DialogActions>

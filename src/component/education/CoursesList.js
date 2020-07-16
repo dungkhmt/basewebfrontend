@@ -80,7 +80,13 @@ export default function CourseList() {
     if (flag) {
       alert("Mã môn học " + data["courseId"] + " đã tồn tại trong hệ thống.");
     } else {
-      alert("Đã lưu môn học " + data["courseName"] + " - " + data["courseId"]);
+      let input = { courseId: data["courseId"], courseName: data["courseName"], credit: data["credit"] };
+      authPost(dispatch, token, "/edu/create-course", input)
+      .then((res) => res.json())
+      .then((res) => {
+        alert("Đã lưu môn học " + data["courseName"] + " - " + data["courseId"]);
+        window.location.reload(); 
+      });
     }
   };
 

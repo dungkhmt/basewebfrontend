@@ -47,7 +47,7 @@ export default function CreateSemester(props) {
     setDialogOpen(false);
   };
 
-  const onSaveTeacherHandler = (data) => {
+  const onSaveSemesterHandler = (data) => {
     setDialogOpen(false);
     let flag = false;
     semesters.forEach((item) => {
@@ -121,7 +121,7 @@ export default function CreateSemester(props) {
                             <DialogTitle id="form-dialog-title">
                               Thêm mới học kì
                             </DialogTitle>
-                            <form onSubmit={handleSubmit(onSaveTeacherHandler)}>
+                            <form onSubmit={handleSubmit(onSaveSemesterHandler)}>
                               <DialogContent>
                                 <DialogContentText>
                                   Điền thông tin vào form dưới đây và nhấn Lưu

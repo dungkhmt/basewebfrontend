@@ -9,6 +9,7 @@ import SaveIcon from "@material-ui/icons/Save";
 import CloudUploadIcon from "@material-ui/icons/CloudUpload";
 import { tableIcons } from "../../utils/iconutil";
 import { authPost, authGet } from "../../api";
+import {useHistory} from "react-router-dom";
 
 const useStyles = makeStyles((theme) => ({
   button: {
@@ -18,6 +19,7 @@ const useStyles = makeStyles((theme) => ({
 
 export default function CourseList() {
   const classes = useStyles();
+  const history = useHistory();
   const dispatch = useDispatch();
   const token = useSelector((state) => state.auth.token);
   const [allClasses, setAllClasses] = useState([]);
@@ -81,6 +83,7 @@ export default function CourseList() {
                             variant="contained"
                             color="primary"
                             size="small"
+                            onClick={() => history.push('/edu/create-class')}
                             className={classes.button}
                             style={{ marginLeft: "24px" }}
                           >
