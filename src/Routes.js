@@ -1,6 +1,6 @@
-import React from "react";
-import { Route, Switch, useHistory, useLocation } from "react-router-dom";
-import { Home, PrivateRouteWithLayout } from "./component";
+import React, {useEffect} from "react";
+import {Route, Switch, useLocation} from "react-router-dom";
+import {Home, PrivateRouteWithLayout} from "./component";
 import {
   DistributorUnpaidInvoiceDetail,
   DistributorUnpaidInvoiceList,
@@ -10,9 +10,8 @@ import {
   PaymentApplication,
 } from "./component/accounting/InvoiceDataTable";
 import PaymentApplicationCreate from "./component/accounting/PaymentApplicationCreate";
-import { PaymentCreate } from "./component/accounting/PaymentCreate";
+import {PaymentCreate} from "./component/accounting/PaymentCreate";
 import QuickInvoicePayment from "./component/accounting/QuickInvoicePayment";
-import error500 from "./component/common/error500";
 import error from "./component/common/errornotfound";
 import CustomerCreate from "./component/customer/CustomerCreate";
 import CustomerList from "./component/customer/CustomerList";
@@ -51,10 +50,7 @@ import ProductEdit from "./component/product/ProductEdit";
 import ProductList from "./component/product/ProductList";
 import ProductPriceCreate from "./component/product/ProductPriceCreate";
 import SetPrimaryImg from "./component/product/SetPrimaryImg";
-import {
-  SaleReportByPartyCustomer,
-  SaleReportByProduct,
-} from "./component/report/SaleReport";
+import {SaleReportByPartyCustomer, SaleReportByProduct,} from "./component/report/SaleReport";
 import {
   TransportReportByDriver,
   TransportReportByFacility,
@@ -78,13 +74,16 @@ import DeliveryPlanCreate from "./component/shipment/deliveryplan/DeliveryPlanCr
 import DeliveryPlanList from "./component/shipment/deliveryplan/DeliveryPlanList";
 import DeliveryTripChart from "./component/shipment/deliveryplan/deliverytrip/DeliveryTripChart";
 import DeliveryTripCreate from "./component/shipment/deliveryplan/deliverytrip/DeliveryTripCreate";
-import DeliveryTripDetailCreate from "./component/shipment/deliveryplan/deliverytrip/deliverytripdetail/DeliveryTripDetailCreate";
-import DeliveryTripDetailList from "./component/shipment/deliveryplan/deliverytrip/deliverytripdetail/DeliveryTripDetailList";
+import DeliveryTripDetailCreate
+  from "./component/shipment/deliveryplan/deliverytrip/deliverytripdetail/DeliveryTripDetailCreate";
+import DeliveryTripDetailList
+  from "./component/shipment/deliveryplan/deliverytrip/deliverytripdetail/DeliveryTripDetailList";
 import DeliveryTripList from "./component/shipment/deliveryplan/deliverytrip/DeliveryTripList";
 import NotScheduledShipmentItem from "./component/shipment/deliveryplan/deliverytrip/NotScheduledShipmentItem";
 import ShipmentItemDeliveryPlanAdd from "./component/shipment/deliveryplan/shipmentitem/ShipmentItemDeliveryPlanAdd";
 import ShipmentItemDeliveryPlanList from "./component/shipment/deliveryplan/shipmentitem/ShipmentItemDeliveryPlanList";
-import ShipmentItemDeliveryTripDetailList from "./component/shipment/deliveryplan/shipmentitem/ShipmentItemDeliveryTripDetailList";
+import ShipmentItemDeliveryTripDetailList
+  from "./component/shipment/deliveryplan/shipmentitem/ShipmentItemDeliveryTripDetailList";
 import VehicleDeliveryPlanAdd from "./component/shipment/deliveryplan/vehicle/VehicleDeliveryPlanAdd";
 import VehicleDeliveryPlanList from "./component/shipment/deliveryplan/vehicle/VehicleDeliveryPlanList";
 import VehicleNotInDeliveryTrips from "./component/shipment/deliveryplan/vehicle/VehicleNotInDeliveryTrips";
@@ -113,14 +112,21 @@ import DepotTruckList from "./component/tmscontainer/depotTruck/DepotTruckList";
 import PortCreate from "./component/tmscontainer/port/PortCreate";
 import PortGoogleMap from "./component/tmscontainer/port/PortGoogleMap";
 import PortList from "./component/tmscontainer/port/PortList";
-import CreateRequestTransportContainerEmptyExport from "./component/tmscontainer/requestexportempty/CreateRequestTransportContainerEmptyExport";
-import ListRequestTransportContainerEmptyExport from "./component/tmscontainer/requestexportempty/ListRequestTransportContainerEmptyExport";
-import CreateRequestTransportFullExport from "./component/tmscontainer/requestexportfull/CreateRequestTransportFullExport";
+import CreateRequestTransportContainerEmptyExport
+  from "./component/tmscontainer/requestexportempty/CreateRequestTransportContainerEmptyExport";
+import ListRequestTransportContainerEmptyExport
+  from "./component/tmscontainer/requestexportempty/ListRequestTransportContainerEmptyExport";
+import CreateRequestTransportFullExport
+  from "./component/tmscontainer/requestexportfull/CreateRequestTransportFullExport";
 import ListRequestTransportFullExport from "./component/tmscontainer/requestexportfull/ListRequestTransportFullExport";
-import CreateRequestTransportContainerEmpty from "./component/tmscontainer/requestimportempty/CreateRequestTransportContainerEmpty";
-import ListRequestTransportContainerEmpty from "./component/tmscontainer/requestimportempty/ListRequestTransportContainerEmpty";
-import CreateRequestTransportContainerToWarehouse from "./component/tmscontainer/requestimportfull/CreateRequestTransportContainerToWarehouse";
-import ListRequestTransportContainerToWareHouse from "./component/tmscontainer/requestimportfull/ListRequestTransportContainerToWareHouse";
+import CreateRequestTransportContainerEmpty
+  from "./component/tmscontainer/requestimportempty/CreateRequestTransportContainerEmpty";
+import ListRequestTransportContainerEmpty
+  from "./component/tmscontainer/requestimportempty/ListRequestTransportContainerEmpty";
+import CreateRequestTransportContainerToWarehouse
+  from "./component/tmscontainer/requestimportfull/CreateRequestTransportContainerToWarehouse";
+import ListRequestTransportContainerToWareHouse
+  from "./component/tmscontainer/requestimportfull/ListRequestTransportContainerToWareHouse";
 import TrailerCreate from "./component/tmscontainer/trailer/TrailerCreate";
 import TrailerList from "./component/tmscontainer/trailer/TrailerList";
 //import ListTrackLocations from "./component/tracklocations/listtracklocations";
@@ -133,7 +139,7 @@ import Approve from "./component/userregister/Approve";
 import Register from "./component/userregister/Register";
 import GMapContainer from "./container/gmapcontainer";
 import SignInContainer from "./container/SignInContainer";
-import { Layout } from "./layout";
+import {Layout} from "./layout";
 import NumberFormatTextField from "./utils/NumberFormatTextField";
 
 import Plan from "./component/salesroutes/salesrouteplan/Plan";
@@ -143,12 +149,13 @@ import SalesRouteConfig from "./component/salesroutes/salesrouteconfig/SalesRout
 import AddVisitConfirguration from "./component/salesroutes/salesrouteplan/AddVisitConfirguration";
 import EditVisitConfirguration from "./component/salesroutes/salesrouteplan/EditVisitConfiguration";
 import AddSalesRouteConfig from "./component/salesroutes/salesrouteconfig/AddSalesRouteConfig";
-import { mapPathMenu } from "./config/menuconfig";
-import { updateSelectedFuction } from "./action";
-import { useDispatch } from "react-redux";
-import { useEffect } from "react";
+import {mapPathMenu} from "./config/menuconfig";
+import {updateSelectedFuction} from "./action";
+import {useDispatch} from "react-redux";
 import ChangePassword from "./component/userlogin/changepassword";
 import PrivateRoute from "./common/PrivateRoute";
+import {WebcamVideoList} from "./component/webcam/WebcamVideoList";
+import {WebcamRecorder} from "./component/webcam/WebcamRecorder";
 
 function Routes(props) {
   const location = useLocation();
@@ -1100,86 +1107,86 @@ function Routes(props) {
         path="/supplier/list" // props
       />
 
-        <PrivateRouteWithLayout
-          component={SupplierCreate} //props
-          layout={Layout} //props
-          isAuthenticated={props.isAuthenticated} // props
-          //isAuthenticated={true}
-          //exact                                   // props
-          path="/supplier/create" // props
-        />
+      <PrivateRouteWithLayout
+        component={SupplierCreate} //props
+        layout={Layout} //props
+        isAuthenticated={props.isAuthenticated} // props
+        //isAuthenticated={true}
+        //exact                                   // props
+        path="/supplier/create" // props
+      />
 
-          <PrivateRouteWithLayout
-            component={ProductPriceSupplier} //props
-            layout={Layout} //props
-            isAuthenticated={props.isAuthenticated} // props
-            //isAuthenticated={true}
-            //exact                                   // props
-            path="/product-price-supplier/list" // props
-          />
+      <PrivateRouteWithLayout
+        component={ProductPriceSupplier} //props
+        layout={Layout} //props
+        isAuthenticated={props.isAuthenticated} // props
+        //isAuthenticated={true}
+        //exact                                   // props
+        path="/product-price-supplier/list" // props
+      />
 
-          <PrivateRouteWithLayout
-            component={PurchaseOrderList} //props
-            layout={Layout} //props
-            isAuthenticated={props.isAuthenticated} // props
-            //isAuthenticated={true}
-            //exact                                   // props
-            path="/purchase-order/list" // props
-          />
+      <PrivateRouteWithLayout
+        component={PurchaseOrderList} //props
+        layout={Layout} //props
+        isAuthenticated={props.isAuthenticated} // props
+        //isAuthenticated={true}
+        //exact                                   // props
+        path="/purchase-order/list" // props
+      />
 
-          <PrivateRouteWithLayout
-            component={PurchaseOrderCreate} //props
-            layout={Layout} //props
-            isAuthenticated={props.isAuthenticated} // props
-            //isAuthenticated={true}
-            //exact                                   // props
-            path="/purchase-order/create/:supplierPartyId" // props
-          />
+      <PrivateRouteWithLayout
+        component={PurchaseOrderCreate} //props
+        layout={Layout} //props
+        isAuthenticated={props.isAuthenticated} // props
+        //isAuthenticated={true}
+        //exact                                   // props
+        path="/purchase-order/create/:supplierPartyId" // props
+      />
 
-          <PrivateRouteWithLayout
-            component={CoursesList} //props
-            layout={Layout} //props
-            isAuthenticated={props.isAuthenticated} // props
-            //isAuthenticated={true}
-            //exact                                   // props
-            path="/edu/courses-list" // props
-          />
+      <PrivateRouteWithLayout
+        component={CoursesList} //props
+        layout={Layout} //props
+        isAuthenticated={props.isAuthenticated} // props
+        //isAuthenticated={true}
+        //exact                                   // props
+        path="/edu/courses-list" // props
+      />
 
-          <PrivateRouteWithLayout
-            component={TeachersList} //props
-            layout={Layout} //props
-            isAuthenticated={props.isAuthenticated} // props
-            //isAuthenticated={true}
-            //exact                                   // props
-            path="/edu/teachers-list" // props
-          />
+      <PrivateRouteWithLayout
+        component={TeachersList} //props
+        layout={Layout} //props
+        isAuthenticated={props.isAuthenticated} // props
+        //isAuthenticated={true}
+        //exact                                   // props
+        path="/edu/teachers-list" // props
+      />
 
-          <PrivateRouteWithLayout
-            component={ClassesList} //props
-            layout={Layout} //props
-            isAuthenticated={props.isAuthenticated} // props
-            //isAuthenticated={true}
-            //exact                                   // props
-            path="/edu/classes-list" // props
-          />
+      <PrivateRouteWithLayout
+        component={ClassesList} //props
+        layout={Layout} //props
+        isAuthenticated={props.isAuthenticated} // props
+        //isAuthenticated={true}
+        //exact                                   // props
+        path="/edu/classes-list" // props
+      />
 
-          <PrivateRouteWithLayout
-            component={AssignmentList} //props
-            layout={Layout} //props
-            isAuthenticated={props.isAuthenticated} // props
-            //isAuthenticated={true}
-            //exact                                   // props
-            path="/edu/assignment" // props
-          />
+      <PrivateRouteWithLayout
+        component={AssignmentList} //props
+        layout={Layout} //props
+        isAuthenticated={props.isAuthenticated} // props
+        //isAuthenticated={true}
+        //exact                                   // props
+        path="/edu/assignment" // props
+      />
 
-          <PrivateRouteWithLayout
-            component={BCASolver} //props
-            layout={Layout} //props
-            isAuthenticated={props.isAuthenticated} // props
-            //isAuthenticated={true}
-            //exact                                   // props
-            path="/edu/solve" // props
-          />
+      <PrivateRouteWithLayout
+        component={BCASolver} //props
+        layout={Layout} //props
+        isAuthenticated={props.isAuthenticated} // props
+        //isAuthenticated={true}
+        //exact                                   // props
+        path="/edu/solve" // props
+      />
 
           <PrivateRouteWithLayout
             component={CreateSemester} //props
@@ -1251,6 +1258,22 @@ function Routes(props) {
         //isAuthenticated={true}
         //exact                                   // props
         path="/purchase-order/list" // props
+      />
+
+      <PrivateRouteWithLayout
+        component={WebcamVideoList} //props
+        layout={Layout} //props
+        isAuthenticated={true}
+        //exact                                   // props
+        path="/webcam/list" // props
+      />
+
+      <PrivateRouteWithLayout
+        component={WebcamRecorder} //props
+        layout={Layout} //props
+        isAuthenticated={true}
+        //exact                                   // props
+        path="/webcam/recorder" // props
       />
 
       <Route

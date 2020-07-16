@@ -48,6 +48,7 @@
     "react-scripts": "^3.3.0",
     "react-text-mask": "^5.4.3",
     "react-toastify": "^6.0.5",
+    "react-webcam": "^5.2.0",
     "react-widgets": "^4.5.0",
     "redux": "^4.0.4",
     "redux-devtools-extension": "^2.13.8",

@@ -6,7 +6,7 @@ import CardContent from "@material-ui/core/CardContent";
 import Typography from "@material-ui/core/Typography";
 import TextField from "@material-ui/core/TextField";
 import Button from "@material-ui/core/Button";
-import { authPost, authGet, axiosPost, axiosGet } from "../../../api";
+import { axiosPost, axiosGet } from "../../../api";
 import { useDispatch, useSelector } from "react-redux";
 import { Save, Cancel } from "@material-ui/icons";
 import { Controller, useForm } from "react-hook-form";
@@ -18,7 +18,6 @@ import { IconContext } from "react-icons/lib/cjs";
 import { MdCancel } from "react-icons/md";
 import { CircularProgress } from "material-ui";
 import { errorNoti } from "../Notification";
-import moment from "moment";
 import { object, string } from "yup";
 
 function AddVisitConfirguration(props) {
@@ -73,23 +72,25 @@ function AddVisitConfirguration(props) {
     <CircularProgress size={30} style={{ marginLeft: "85px" }} />
   );
 
-  // Functions
+  // Functions.
   const getSalesmans = () => {
     axiosPost(dispatch, token, "/get-list-all-salesmans", { statusId: null })
       .then((res) => {
         setSalesmans(res.data);
         console.log("Salesmans ", res.data);
       })
-      .catch((error) => console.log(error));
+      .catch((error) => console.log("Error in method getSalesman: ", error));
   };
 
   const getVisitFrequencies = () => {
     axiosGet(dispatch, token, "/get-list-sales-route-visit-frequency")
       .then((res) => {
         setFrequencies(res.data);
-        console.log("Frequencies", res.data);
+        console.log("Frequencies ", res.data);
       })
-      .catch((error) => console.log(error));
+      .catch((error) =>
+        console.log("Error in method getVisitFrequencies: ", error)
+      );
   };
 
   const getConfigs = () => {
@@ -100,12 +101,22 @@ function AddVisitConfirguration(props) {
         setConfigs(res.data);
         console.log("Configs ", res.data);
       })
-      .catch((error) => console.log(error));
+      .catch((error) => console.log("Error in method getConfigs: ", error));
   };
 
   const generateListOfWeeks = () => {
-    const fromDate = new Date(props.location.state.fromDate);
-    const toDate = new Date(props.location.state.toDate);
+    console.time("generateListOfWeeks");
+
+    let fromDate = props.location.state.fromDate;
+    let toDate = props.location.state.toDate;
+
+    fromDate = new Date(
+      fromDate.slice(3, 5) + "/" + fromDate.slice(0, 2) + fromDate.slice(5)
+    );
+
+    toDate = new Date(
+      toDate.slice(3, 5) + "/" + toDate.slice(0, 2) + toDate.slice(5)
+    );
 
     // Find the first Monday from fromDate to toDate.
     const day = fromDate.getDay();
@@ -120,9 +131,17 @@ function AddVisitConfirguration(props) {
     let i = 1;
 
     while (fromDate.getTime() <= toDate.getTime()) {
-      monday = moment(fromDate).format("YYYY/MM/DD");
+      monday = `${("0" + fromDate.getDate()).slice(-2)}/${(
+        "0" +
+        (fromDate.getMonth() + 1)
+      ).slice(-2)}/${fromDate.getFullYear()}`;
+
       fromDate.setDate(fromDate.getDate() + 6);
-      sunday = moment(fromDate).format("YYYY/MM/DD");
+
+      sunday = `${("0" + fromDate.getDate()).slice(-2)}/${(
+        "0" +
+        (fromDate.getMonth() + 1)
+      ).slice(-2)}/${fromDate.getFullYear()}`;
 
       listOfWeeks.push({
         id: i,
@@ -141,20 +160,28 @@ function AddVisitConfirguration(props) {
 
       listOfWeeks[listOfWeeks.length - 1] = {
         id: lastWeek.id,
-        fromDate: moment(fromDate).format("YYYY/MM/DD"),
-        toDate: moment(toDate).format("YYYY/MM/DD"),
+
+        fromDate: `${("0" + fromDate.getDate()).slice(-2)}/${(
+          "0" +
+          (fromDate.getMonth() + 1)
+        ).slice(-2)}/${fromDate.getFullYear()}`,
+
+        toDate: `${("0" + toDate.getDate()).slice(-2)}/${(
+          "0" +
+          (toDate.getMonth() + 1)
+        ).slice(-2)}/${toDate.getFullYear()}`,
       };
     }
+
+    console.timeEnd("generateListOfWeeks");
 
     setWeeks(listOfWeeks);
   };
 
-  const onChangeSalesman = (event) => {
+  const onChangeSalesman = (salesmanId) => {
     setLoadingDistributors(true);
     setValue([{ distributor: "" }, { retailOutlet: "" }]);
     setRetailOutlets([]);
-
-    const { salesmanId } = event.currentTarget.dataset;
 
     axiosPost(dispatch, token, "/get-distributors-of-salesman", {
       partySalesmanId: salesmanId,
@@ -163,14 +190,14 @@ function AddVisitConfirguration(props) {
         setDistributors(res.data);
         console.log("Distributors of salesman", res.data);
       })
-      .catch((error) => console.log(error))
+      .catch((error) =>
+        console.log("Error in method onChangeSalesman: ", error)
+      )
       .finally(() => setLoadingDistributors(false));
   };
 
-  const onChangeDistributor = (event) => {
+  const onChangeDistributor = (distributorId) => {
     setLoadingRetailOutlets(true);
-
-    const { distributorId } = event.currentTarget.dataset;
 
     axiosPost(
       dispatch,
@@ -185,12 +212,15 @@ function AddVisitConfirguration(props) {
         setRetailOutlets(res.data);
         console.log("Retail outlets of salesman and distributor: ", res.data);
       })
-      .catch((error) => console.log(error))
+      .catch((error) =>
+        console.log("Error in method onChangeDistributor: ", error)
+      )
       .finally(() => setLoadingRetailOutlets(false));
   };
 
-  const onChangeFrequency = (event) => {
-    const { visitFrequencyId } = event.currentTarget.dataset;
+  const onChangeFrequency = (visitFrequencyId) => {
+    setValue([{ config: "" }, { startExecuteWeek: "" }]);
+    clearError(["startExecuteWeek"]);
 
     setRespectiveConfigs([
       ...configs.filter((c) => c.visitFrequencyId === visitFrequencyId),
@@ -204,9 +234,7 @@ function AddVisitConfirguration(props) {
     ]);
   };
 
-  const onChangeConfig = (event) => {
-    const { salesRouteConfigId } = event.currentTarget.dataset;
-
+  const onChangeConfig = (salesRouteConfigId) => {
     if (salesRouteConfigId === "None") {
       clearError(["startExecuteWeek"]);
       setValue("startExecuteWeek", "");
@@ -243,7 +271,7 @@ function AddVisitConfirguration(props) {
       })
       .catch((error) => {
         errorNoti();
-        console.log(error);
+        console.log("Error in method onSubmit: ", error);
       });
   };
 
@@ -285,12 +313,7 @@ function AddVisitConfirguration(props) {
                   >
                     {/* {loadingDistributors?   <LoadingIndicator/>:*/}
                     {salesmans.map((s) => (
-                      <MenuItem
-                        key={s.partyId}
-                        value={s.partyId}
-                        data-salesman-id={s.partyId}
-                        onClick={onChangeSalesman}
-                      >
+                      <MenuItem key={s.partyId} value={s.partyId}>
                         {s.userLoginId}
                       </MenuItem>
                     ))}
@@ -298,10 +321,10 @@ function AddVisitConfirguration(props) {
                 }
                 name="salesman"
                 control={control}
-                // onChange={(e) => {
-                //   onChangeSalesman(e[1].key);
-                //   return e[1].props.value;
-                // }}
+                onChange={([, selected]) => {
+                  onChangeSalesman(selected.props.value);
+                  return selected.props.value;
+                }}
               />
               <br />
               <br />
@@ -320,12 +343,7 @@ function AddVisitConfirguration(props) {
                       <LoadingIndicator />
                     ) : (
                       distributors.map((d) => (
-                        <MenuItem
-                          key={d.partyId}
-                          value={d.partyId}
-                          data-distributor-id={d.partyId}
-                          onClick={onChangeDistributor}
-                        >
+                        <MenuItem key={d.partyId} value={d.partyId}>
                           {d.distributorName}
                         </MenuItem>
                       ))
@@ -334,6 +352,10 @@ function AddVisitConfirguration(props) {
                 }
                 name="distributor"
                 control={control}
+                onChange={([, selected]) => {
+                  onChangeDistributor(selected.props.value);
+                  return selected.props.value;
+                }}
               />
               <br />
               <br />
@@ -382,8 +404,6 @@ function AddVisitConfirguration(props) {
                       <MenuItem
                         key={f.visitFrequencyId}
                         value={f.visitFrequencyId}
-                        data-visit-frequency-id={f.visitFrequencyId}
-                        onClick={onChangeFrequency}
                       >
                         {f.description}
                       </MenuItem>
@@ -392,6 +412,10 @@ function AddVisitConfirguration(props) {
                 }
                 name="frequency"
                 control={control}
+                onChange={([, selected]) => {
+                  onChangeFrequency(selected.props.value);
+                  return selected.props.value;
+                }}
               />
               <br />
               <br />
@@ -408,8 +432,6 @@ function AddVisitConfirguration(props) {
                       <MenuItem
                         key={c.salesRouteConfigId}
                         value={c.salesRouteConfigId}
-                        data-sales-route-config-id={c.salesRouteConfigId}
-                        onClick={onChangeConfig}
                       >
                         {c.days}
                       </MenuItem>
@@ -418,6 +440,10 @@ function AddVisitConfirguration(props) {
                 }
                 name="config"
                 control={control}
+                onChange={([, selected]) => {
+                  onChangeConfig(selected.props.value);
+                  return selected.props.value;
+                }}
               />
               <br />
               <br />
