@@ -1,16 +1,19 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { makeStyles } from "@material-ui/core/styles";
+import { useSelector, useDispatch } from "react-redux";
+import { authPost, authGet } from "../../api";
 import {
   Card,
   Typography,
   Button,
-  TextField,
   CardContent,
 } from "@material-ui/core";
-import { useSelector } from "react-redux";
 import { API_URL } from "../../config/config";
 import CircularProgress from "@material-ui/core/CircularProgress";
 import MaterialTable from "material-table";
+import Select from "@material-ui/core/Select";
+import MenuItem from "@material-ui/core/MenuItem";
+import { FormControl, InputLabel } from "@material-ui/core";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -33,7 +36,9 @@ const columns = [
 
 export default function BCASolver(props) {
   const classes = useStyles();
+  const dispatch = useDispatch();
   const token = useSelector((state) => state.auth.token);
+  const [semesterList, setSemesterList] = useState([]);
   const classFileInput = React.createRef();
   const teacherFileInput = React.createRef();
   const [semester, setSemester] = useState();
@@ -102,7 +107,7 @@ export default function BCASolver(props) {
   const executeAssignment = (event) => {
     if (semester === null) {
       return;
-    }
+    } 
     setProgressing(true);
     fetch(API_URL + "/edu/execute-class-teacher-assignment/" + semester, {
       method: "GET",
@@ -118,6 +123,13 @@ export default function BCASolver(props) {
       });
   };
 
+  useEffect(() => {
+    authGet(dispatch, token, "/edu/get-all-semester").then((res) => {
+      console.log(res);
+      setSemesterList(res);
+    });
+  }, []);
+
   return (
     <div className={classes.root}>
       <Typography variant="h5" component="h2">
@@ -126,12 +138,22 @@ export default function BCASolver(props) {
       <Card>
         <form>
           <div>
-            <TextField
+            <InputLabel htmlFor="semester">Học kì</InputLabel>
+            <Select
               label="Học kì"
+              labelId="semester"
               onChange={(event) => {
                 setSemester(event.target.value);
               }}
-            />
+              displayEmpty
+              name="semester"
+            >
+              {semesterList.map((item) => {
+                return (
+                  <MenuItem value={item.semesterId}>{item.semesterId}</MenuItem>
+                );
+              })}
+            </Select>
           </div>
           <div>
             <Typography>Tải lên danh sách môn học và giáo viên:</Typography>

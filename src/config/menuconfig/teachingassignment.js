@@ -7,6 +7,14 @@ export const teachingassignment = {
   child: [
     {
       id: "",
+      path: "/edu/semester",
+      isPublic: true,
+      icon: "StarBorder",
+      text: "DS học kì",
+      child: [],
+    },
+    {
+      id: "",
       path: "/edu/courses-list",
       isPublic: true,
       icon: "StarBorder",

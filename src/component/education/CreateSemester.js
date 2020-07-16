@@ -7,7 +7,6 @@ import { Card, CardContent, Box } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
 import { useSelector, useDispatch } from "react-redux";
 import { MuiThemeProvider } from "material-ui/styles";
-import CloudUploadIcon from "@material-ui/icons/CloudUpload";
 import { authPost, authGet } from "../../api";
 import TextField from "@material-ui/core/TextField";
 import Dialog from "@material-ui/core/Dialog";
@@ -22,78 +21,52 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function CourseList() {
+const columns = [
+  { title: "Mã học kì", field: "semesterId" },
+  { title: "Tên học kì", field: "semesterName" },
+];
+
+export default function CreateSemester(props) {
   const classes = useStyles();
   const dispatch = useDispatch();
   const token = useSelector((state) => state.auth.token);
 
-  // Table
-  const fileInput = useRef();
-  const [courses, setCourses] = useState([]);
-  const [file, setFile] = React.useState();
+  const [semesters, setSemesters] = useState([]);
+
   const { register, handleSubmit } = useForm();
+  const [dialogOpen, setDialogOpen] = useState(false);
 
-  const [addCourseDialogOpen, setAddCourseDialogOpen] = useState(false);
-  const [uploadFileDialogOpen, setUploadFileDialogOpen] = useState(false);
+  useEffect(() => {
+    authGet(dispatch, token, "/edu/get-all-semester").then((res) => {
+      console.log(res);
+      setSemesters(res);
+    });
+  }, []);
 
-  const columns = [
-    { title: "Mã học phần", field: "courseId" },
-    { title: "Tên học phần", field: "courseName" },
-    { title: "Số tín chỉ", field: "credit" },
-  ];
-
-  // Functions
-  const onClickUploadButton = () => {
-    fileInput.current.click();
+  const onCloseDialog = (event) => {
+    setDialogOpen(false);
   };
 
-  const onClickSaveButton = (event) => {
-    var formData = new FormData();
-    formData.append("file", file);
-
-    authPost(dispatch, token, "/edu/upload/course-for-teacher", formData)
-      .then((res) => res.json())
-      .then((res) => {
-        if (res.ok) {
-          console.log(res.data);
-          alert("File uploaded successfully.");
-        }
-      });
-  };
-
-  const fileHandler = (event) => {
-    setFile(event.target.files[0]);
-  };
-
-  const onCloseAddNewCourseDialog = (event) => {
-    setAddCourseDialogOpen(false);
-  };
-
-  const onSaveCourseHandler = (data) => {
-    setAddCourseDialogOpen(false);
+  const onSaveTeacherHandler = (data) => {
+    setDialogOpen(false);
     let flag = false;
-    courses.forEach((course) => {
-      if (course.courseId === data["courseId"]) {
+    semesters.forEach((item) => {
+      if (item.semesterId === data["semesterId"]) {
         flag = true;
       }
     });
     if (flag) {
-      alert("Mã môn học " + data["courseId"] + " đã tồn tại trong hệ thống.");
+      alert("Mã học kì " + data["semesterId"] + " đã tồn tại trong hệ thống.");
     } else {
-      alert("Đã lưu môn học " + data["courseName"] + " - " + data["courseId"]);
+      let input = { semesterId: data["semesterId"], semesterName: data["semesterName"] };
+      authPost(dispatch, token, "/edu/create-semester", input)
+      .then((res) => res.json())
+      .then((res) => {
+        alert("Đã lưu học kì " + data["semesterId"] + ".");
+        window.location.reload(); 
+      });
     }
   };
-
-  const getAllCourses = () => {
-    authGet(dispatch, token, "/edu/get-all-courses").then((res) => {
-      console.log(res);
-      setCourses(res);
-    });
-  };
-
-  useEffect(() => {
-    getAllCourses();
-  }, []);
 
   return (
     <div>
@@ -101,9 +74,9 @@ export default function CourseList() {
         <Card>
           <CardContent>
             <MaterialTable
-              title="Danh sách học phần"
+              title="Danh sách học kì"
               columns={columns}
-              data={courses}
+              data={semesters}
               icons={tableIcons}
               localization={{
                 header: {
@@ -132,50 +105,42 @@ export default function CourseList() {
                             variant="contained"
                             color="primary"
                             size="small"
-                            onClick={event => {
-                              setAddCourseDialogOpen(true);
+                            onClick={(event) => {
+                              setDialogOpen(true);
                             }}
                             className={classes.button}
                             style={{ marginLeft: "24px" }}
                           >
-                            Thêm mới môn học
+                            Thêm mới học kì
                           </Button>
                           <Dialog
-                            open={addCourseDialogOpen}
-                            onClose={onCloseAddNewCourseDialog}
+                            open={dialogOpen}
+                            onClose={onCloseDialog}
                             aria-labelledby="form-dialog-title"
                           >
                             <DialogTitle id="form-dialog-title">
-                              Thêm mới môn học
+                              Thêm mới học kì
                             </DialogTitle>
-                            <form onSubmit={handleSubmit(onSaveCourseHandler)}>
+                            <form onSubmit={handleSubmit(onSaveTeacherHandler)}>
                               <DialogContent>
                                 <DialogContentText>
                                   Điền thông tin vào form dưới đây và nhấn Lưu
-                                  để thêm mới môn học.
+                                  để thêm mới một học kì.
                                 </DialogContentText>
                                 <TextField
                                   required
                                   margin="dense"
-                                  name="courseId"
-                                  label="Mã môn học"
+                                  name="semesterId"
+                                  label="Mã học kì"
                                   inputRef={register({ required: true })}
                                   fullWidth
                                 />
                                 <TextField
                                   required
                                   margin="dense"
-                                  name="courseName"
-                                  label="Tên môn học"
+                                  name="semesterName"
+                                  label="Tên học kì"
                                   inputRef={register({ required: true })}
-                                  fullWidth
-                                />
-                                <TextField
-                                  margin="dense"
-                                  name="credit"
-                                  label="Số tín chỉ"
-                                  type={Number}
-                                  inputRef={register({ required: false })}
                                   fullWidth
                                 />
                               </DialogContent>
@@ -183,26 +148,12 @@ export default function CourseList() {
                                 <Button type="submit" color="primary">
                                   Lưu
                                 </Button>
-                                <Button
-                                  onClick={onCloseAddNewCourseDialog}
-                                  color="primary"
-                                >
+                                <Button onClick={onCloseDialog} color="primary">
                                   Hủy
                                 </Button>
                               </DialogActions>
                             </form>
                           </Dialog>
-
-                          <Button
-                            variant="contained"
-                            color="primary"
-                            size="small"
-                            className={classes.button}
-                            startIcon={<CloudUploadIcon />}
-                            style={{ marginLeft: "24px" }}
-                          >
-                            Tải lên các môn học
-                          </Button>
                         </form>
                       </Box>
                     </MuiThemeProvider>

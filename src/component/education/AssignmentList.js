@@ -124,9 +124,6 @@ export default function AssignmentList(props) {
     var wb = XLSX.utils.book_new();
     sheet["!cols"] = wbcols;
 
-    const range = XLSX.utils.decode_range(sheet["!ref"]);
-    sheet["!ref"] = XLSX.utils.encode_range(range);
-
     XLSX.utils.book_append_sheet(wb, sheet, "assignment");
     XLSX.writeFile(wb, semesterQuery + "-assignment.xlsx");
   };

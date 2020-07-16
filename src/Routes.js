@@ -25,6 +25,8 @@ import ClassesList from './component/education/ClassesList';
 import CoursesList from './component/education/CoursesList';
 import TeachersList from './component/education/TeachersList';
 import BCASolver from './component/education/BCASolver'
+import TeacherDetail from './component/education/TeacherDetail'
+import CreateSemester from './component/education/CreateSemester'
 import ChangeDistanceDetail from "./component/geo/ChangeDistanceDetail";
 import GeoGoogleMapChangeCoordinates from "./component/geo/GeoGoogleMapChangeCoordinates";
 import GeoListDistanceInfo from "./component/geo/GeoListDistanceInfo";
@@ -1177,6 +1179,15 @@ function Routes(props) {
             //isAuthenticated={true}
             //exact                                   // props
             path="/edu/solve" // props
+          />
+
+          <PrivateRouteWithLayout
+            component={CreateSemester} //props
+            layout={Layout} //props
+            isAuthenticated={props.isAuthenticated} // props
+            //isAuthenticated={true}
+            //exact                                   // props
+            path="/edu/semester" // props
           />
 
       <PrivateRouteWithLayout
