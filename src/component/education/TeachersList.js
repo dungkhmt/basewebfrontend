@@ -160,7 +160,7 @@ export default function TeachersList() {
                                             required
                                             margin="dense"
                                             name="credit"
-                                            label="Số tín lớn nhất có thể đảm nhận trong một học kì"
+                                            label="Số tín chỉ lớn nhất có thể đảm nhận trong một học kì"
                                             inputRef={register({ required: true })}
                                             fullWidth
                                             type={Number}

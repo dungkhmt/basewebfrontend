@@ -207,7 +207,7 @@ export default function CourseList() {
                             startIcon={<CloudUploadIcon />}
                             style={{ marginLeft: "24px" }}
                           >
-                            Tải lên các môn học
+                            Tải lên danh sách môn học
                           </Button>
                         </form>
                       </Box>
