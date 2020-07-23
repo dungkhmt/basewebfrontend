@@ -17,7 +17,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function CourseList() {
+export default function ClassesList() {
   const classes = useStyles();
   const history = useHistory();
   const dispatch = useDispatch();
