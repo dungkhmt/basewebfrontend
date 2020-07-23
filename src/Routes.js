@@ -16,6 +16,7 @@ import PaymentApplicationCreate from "./component/accounting/PaymentApplicationC
 import { PaymentCreate } from "./component/accounting/PaymentCreate";
 import QuickInvoicePayment from "./component/accounting/QuickInvoicePayment";
 import error from "./component/common/errornotfound";
+import Loading from "./component/common/Loading";
 import ListDepartment from "./component/departments/listdepartment";
 import AddProductImg from "./component/product/AddProductImg";
 import ProductEdit from "./component/product/ProductEdit";
@@ -115,7 +116,7 @@ function Routes(props) {
   }, [location]);
   //if (props.error.isError) return <Route component={error500} path="*" />;
   return (
-    <Suspense fallback={<div>Loading...</div>}>
+    <Suspense fallback={<Loading />}>
       <Switch>
         <PrivateRouteWithLayout
           component={Home}
