@@ -44,7 +44,7 @@ const MenuProps = {
   }
 };
 
-function UserCreate(props) {
+function OrderCreate(props) {
   const token = useSelector(state => state.auth.token);
   const dispatch = useDispatch();
   const history = useHistory();
@@ -349,4 +349,4 @@ function UserCreate(props) {
   );
 }
 
-export default UserCreate;
+export default OrderCreate;
