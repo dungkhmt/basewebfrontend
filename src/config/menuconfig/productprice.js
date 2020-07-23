@@ -7,7 +7,7 @@ export const productprice = {
   child: [
     {
       id: "MENU_PRODUCT_PRICE_CREATE",
-      path: "/distributor/create",
+      path: "",
       isPublic: false,
       icon: "StarBorder",
       text: "Thiết lập giá sản phẩm",
@@ -15,7 +15,7 @@ export const productprice = {
     },
     {
       id: "MENU_PRODUCT_VIEW",
-      path: "/distributor/list",
+      path: "",
       isPublic: false,
       icon: "StarBorder",
       text: "Danh sách SP",
