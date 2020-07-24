@@ -10,7 +10,7 @@ import {
   Invoice,
   InvoiceDetail,
   Payment,
-  PaymentApplication
+  PaymentApplication,
 } from "./component/accounting/InvoiceDataTable";
 import PaymentApplicationCreate from "./component/accounting/PaymentApplicationCreate";
 import { PaymentCreate } from "./component/accounting/PaymentCreate";
@@ -24,12 +24,12 @@ import ProductPriceCreate from "./component/product/ProductPriceCreate";
 import SetPrimaryImg from "./component/product/SetPrimaryImg";
 import {
   SaleReportByPartyCustomer,
-  SaleReportByProduct
+  SaleReportByProduct,
 } from "./component/report/SaleReport";
 import {
   TransportReportByDriver,
   TransportReportByFacility,
-  TransportReportByPartyCustomer
+  TransportReportByPartyCustomer,
 } from "./component/report/TransportReport";
 import SaleReportByDate from "./component/reportsales/SalesReportByDate";
 import DetailSalesman from "./component/salesman/DetailSalesman";
@@ -66,6 +66,7 @@ import { mapPathMenu } from "./config/menuconfig";
 import SignInContainer from "./container/SignInContainer";
 import { Layout } from "./layout";
 import NumberFormatTextField from "./utils/NumberFormatTextField";
+import Error500 from "./component/common/error500";
 
 const DepotContainerFuncRoute = lazy(() =>
   import("./routers/DepotContainerFuncRoute")
@@ -114,7 +115,7 @@ function Routes(props) {
     if (selectedFunction !== undefined && selectedFunction !== null)
       dispatch(updateSelectedFuction(selectedFunction));
   }, [location]);
-  //if (props.error.isError) return <Route component={error500} path="*" />;
+  if (props.error.isError) return <Route component={Error500} path="*" />;
   return (
     <Suspense fallback={<Loading />}>
       <Switch>
