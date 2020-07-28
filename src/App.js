@@ -9,7 +9,7 @@ class App extends Component {
   render() {
     return (
       <Router>
-        <Routes isAuthenticated={this.props.isAuthenticated} error={this.props.error} />
+        <Routes />
         <ToastContainer
           position="bottom-left"
           transition={Slide}
@@ -27,10 +27,4 @@ class App extends Component {
   }
 }
 
-const mapStateToProps = (state) => ({
-  isAuthenticated: state.auth.isAuthenticated,
-  error: state.error,
-});
-
-const mapDispatchToProps = (dispatch) => ({});
-export default connect(mapStateToProps, mapDispatchToProps)(App);
+export default App;
