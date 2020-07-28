@@ -100,7 +100,8 @@ function MainAppRoute(props) {
   const location = useLocation();
   const dispatch = useDispatch();
   useEffect(() => {
-    //console.log(location.pathname);
+    if (location.pathname === "/" || location.pathname === "")
+      dispatch(updateSelectedFuction(null));
     let selectedFunction = mapPathMenu.get(location.pathname);
     if (selectedFunction !== undefined && selectedFunction !== null)
       dispatch(updateSelectedFuction(selectedFunction));
