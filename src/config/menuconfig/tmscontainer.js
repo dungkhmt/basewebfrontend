@@ -79,7 +79,7 @@ export const tmscontainer = {
     },
     {
       id: "",
-      path: "/containerfunc/list",
+      path: "/transport-group/containerfunc/list",
       isPublic: true,
       icon: "StarBorder",
       text: "DS container",
@@ -103,7 +103,7 @@ export const tmscontainer = {
     },
     {
       id: "",
-      path: "/create-request-transport-container-empty",
+      path: "/transport-group/create-request-transport-container-empty",
       isPublic: true,
       icon: "StarBorder",
       text: "Thêm yêu cầu chuyển container rỗng từ kho về bãi",
@@ -111,7 +111,7 @@ export const tmscontainer = {
     },
     {
       id: "",
-      path: "/list-request-transport-container-empty",
+      path: "/transport-group/list-request-transport-container-empty",
       isPublic: true,
       icon: "StarBorder",
       text: "Danh sách đơn vận chuyển container rỗng từ kho đến bãi",
@@ -119,7 +119,7 @@ export const tmscontainer = {
     },
     {
       id: "",
-      path: "/create-request-transport-container-empty-export",
+      path: "/transport-group/create-request-transport-container-empty-export",
       isPublic: true,
       icon: "StarBorder",
       text: "Thêm yêu cầu chuyển container rỗng từ bãi về kho",
@@ -127,7 +127,7 @@ export const tmscontainer = {
     },
     {
       id: "",
-      path: "/list-request-transport-container-empty-export",
+      path: "/transport-group/list-request-transport-container-empty-export",
       isPublic: true,
       icon: "StarBorder",
       text: "Danh sách đơn vận chuyển container rỗng từ bãi đến kho",
@@ -135,7 +135,7 @@ export const tmscontainer = {
     },
     {
       id: "",
-      path: "/create-request-transport-full-export",
+      path: "/transport-group/create-request-transport-full-export",
       isPublic: true,
       icon: "StarBorder",
       text: "Thêm mới yêu cầu chuyển container đầy hàng từ kho ra cảng",
@@ -143,7 +143,7 @@ export const tmscontainer = {
     },
     {
       id: "",
-      path: "/list-request-transport-full-export",
+      path: "/transport-group/list-request-transport-full-export",
       isPublic: true,
       icon: "StarBorder",
       text: "Danh sách đơn vận chuyển container đầy hàng từ kho ra cảng ",
@@ -159,7 +159,7 @@ export const tmscontainer = {
     },
     {
       id: "",
-      path: "/create-request-transport-container-to-warehouse",
+      path: "/transport-group/create-request-transport-container-to-warehouse",
       isPublic: true,
       icon: "StarBorder",
       text: "Thêm mới yêu cầu vận chuyển container đến kho",
@@ -167,7 +167,7 @@ export const tmscontainer = {
     },
     {
       id: "",
-      path: "/list-request-transport-container-to-warehouse",
+      path: "/transport-group/list-request-transport-container-to-warehouse",
       isPublic: true,
       icon: "StarBorder",
       text: "Danh sách đơn vận chuyển container đầy đến kho",

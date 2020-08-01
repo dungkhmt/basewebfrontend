@@ -334,7 +334,7 @@ function CreateRequestTransportContainerEmptyExport() {
 
 
           <CardActions>
-            <Link to={"/list-request-transport-container-empty-export"}>
+            <Link to={"/transport-group/list-request-transport-container-empty-export"}>
               <Button
                 disabled={isRequesting}
                 variant="contained"

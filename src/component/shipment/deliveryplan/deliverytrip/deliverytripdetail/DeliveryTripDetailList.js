@@ -211,7 +211,7 @@ export default function DeliveryTripDetailList() {
                 </div>
 
                 {deliveryTrip && deliveryTrip['editable'] ?
-                  <Link to={'/create-delivery-trip-detail/' + deliveryTripId}>
+                  <Link to={'/delivery-group/create-delivery-trip-detail/' + deliveryTripId}>
                     <Button color={'primary'} variant={'contained'} startIcon={<AddIcon/>}> Thêm mới </Button>
                   </Link> : ''}
                 <Button color={'primary'} variant={'contained'} onClick={() => {

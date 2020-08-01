@@ -117,7 +117,7 @@ function ProductCreate(props) {
         console.log(error);
       }
     ).then((res) => {
-      history.push("/product/" + res);
+      history.push("/products/" + res);
     });
     event.preventDefault();
   };

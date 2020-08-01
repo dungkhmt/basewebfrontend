@@ -56,9 +56,9 @@ export function PaymentCreate() {
     let response = await authPost(dispatch, token, '/create-payment', body).then(r => r.json());
     if (response && response['paymentId']) {
       showAlert('Thành công', 'Tạo thành công, paymentId = ' + response['paymentId'],
-        ({OK: () => history.push('/customer-payment/list')}));
+                ({OK: () => history.push('/payment-group/customer-payment/list')}));
     } else {
-      history.push('/customer-payment/list');
+      history.push('/payment-group/customer-payment/list');
     }
   }
 

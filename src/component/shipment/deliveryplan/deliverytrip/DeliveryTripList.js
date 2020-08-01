@@ -52,7 +52,7 @@ export default function DeliveryTripList() {
       title: "Mã chuyến giao",
       field: "deliveryTripId",
       render: rowData => (
-        <Link to={"/delivery-trip/" + rowData["deliveryTripId"]}>
+        <Link to={"/delivery-group/delivery-trip/" + rowData["deliveryTripId"]}>
           {rowData["deliveryTripId"]}
         </Link>
       )
@@ -77,7 +77,8 @@ export default function DeliveryTripList() {
     {title: "Tổng số điểm", field: "totalLocation"},
     {
       title: "Mã xe",
-      render: rowData => <Link to={"/vehicle-detail/" + rowData['vehicleId']}>{rowData['vehicleId']}</Link>
+      render: rowData => <Link
+        to={"/vehicle-group/vehicle-detail/" + rowData['vehicleId']}>{rowData['vehicleId']}</Link>
     },
     {
       title: "Tải trọng tối đa của xe (kg)",
@@ -88,7 +89,7 @@ export default function DeliveryTripList() {
     {title: 'Mã trạng thái', field: 'statusId'},
     {
       title: "Mã tài xế",
-      render: rowData => <Link to={'/driver-detail/' + rowData['driverId']}>{rowData['userLoginId']}</Link>
+      render: rowData => <Link to={'/driver-group/driver-detail/' + rowData['driverId']}>{rowData['userLoginId']}</Link>
     }
   ];
 
@@ -160,7 +161,7 @@ export default function DeliveryTripList() {
               <IconButton
                 size="small"
                 style={{float: "left"}}
-                onClick={() => history.push("/delivery-plan-list")}
+                onClick={() => history.push("/delivery-group/delivery-plan-list")}
               >
                 <Icon
                   path={mdiArrowLeft}
@@ -173,7 +174,7 @@ export default function DeliveryTripList() {
                 //onClick={() => handlePopup(true)}
                 onClick={() =>
                   history.push(
-                    '/vehicle-not-in-delivery-trips/' + deliveryPlanId
+                    '/vehicle-group/vehicle-not-in-delivery-trips/' + deliveryPlanId
                   )
                 }
                 component="span"
@@ -224,7 +225,7 @@ export default function DeliveryTripList() {
               <IconButton
                 style={{float: "right"}}
                 onClick={() =>
-                  history.push("/delivery-trip-chart/" + deliveryPlanId)
+                  history.push("/delivery-group/delivery-trip-chart/" + deliveryPlanId)
                 }
                 component="span"
               >
@@ -237,7 +238,7 @@ export default function DeliveryTripList() {
               </IconButton>
               <IconButton
                 style={{float: "right"}}
-                onClick={() => history.push("/not-scheduled-shipment-items/" + deliveryPlanId)}
+                onClick={() => history.push("/shipment-group/not-scheduled-shipment-items/" + deliveryPlanId)}
                 component="span"
               >
                 <Icon
@@ -374,7 +375,7 @@ export default function DeliveryTripList() {
             style={{float: "right"}}
             color="primary"
             variant="contained"
-            onClick={() => history.push("/create-delivery-trip/" + deliveryPlanId)}
+            onClick={() => history.push("/delivery-group/create-delivery-trip/" + deliveryPlanId)}
           >
             Tạo mới chuyến
           </Button>

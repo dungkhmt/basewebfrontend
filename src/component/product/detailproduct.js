@@ -97,7 +97,7 @@ function ProductDetail(props) {
       <CardActions>
 
 
-        <Link to={"/set-product-primary-img/" + productId}>
+        <Link to={"/product-group/set-product-primary-img/" + productId}>
           <Button
             variant="contained"
             color="primary"
@@ -107,7 +107,7 @@ function ProductDetail(props) {
         </Link>
 
 
-        <Link to={"/product-add-img/" + productId}>
+        <Link to={"/product-group/product-add-img/" + productId}>
           <Button
             variant="contained"
             color="primary"
@@ -187,7 +187,8 @@ function ProductDetail(props) {
 
         <Grid item xs={12}>
           <Button color="primary" variant="contained"
-                  onClick={() => history.push('/create-product-price/' + productId)}>Thiết lập giá</Button>
+                  onClick={() => history.push('/product-group/create-product-price/' + productId)}>Thiết lập
+            giá</Button>
           <MaterialTable title={'Chi tiết giá'} columns={priceColumns} data={priceList} options={{search: false}}/>
         </Grid>
       </Grid>

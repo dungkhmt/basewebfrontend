@@ -50,10 +50,11 @@ export default function QuickInvoicePayment() {
     let body = {invoiceId, amount};
     let response = await authPost(dispatch, token, '/create-payment-application', body).then(r => r.json())
     if (response && response['paymentApplicationId']) {
-      showAlert('Thành công', 'Đã tạo khớp lệnh thanh toán thành công, paymentApplicationId = ' + response['paymentApplicationId'],
-        ({OK: () => history.push('/invoice-detail/' + invoiceId)}));
+      showAlert('Thành công',
+                'Đã tạo khớp lệnh thanh toán thành công, paymentApplicationId = ' + response['paymentApplicationId'],
+                ({OK: () => history.push('/invoice-group/invoice-detail/' + invoiceId)}));
     } else {
-      history.push('/invoice-detail/' + invoiceId);
+      history.push('/invoice-group/invoice-detail/' + invoiceId);
     }
   }
 
@@ -67,7 +68,7 @@ export default function QuickInvoicePayment() {
     })}
     <Button color={'primary'} variant={'contained'} onClick={handleSubmit}>Xác nhận</Button>
     <Button color={'secondary'} variant={'contained'}
-            onClick={() => history.push('/invoice-detail/' + invoiceId)}>Hủy</Button>
+            onClick={() => history.push('/invoice-group/invoice-detail/' + invoiceId)}>Hủy</Button>
 
     <AlertDialog
       title={alertTitle}

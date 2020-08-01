@@ -7,7 +7,7 @@ export const salereport = {
   child: [
     {
       id: "",
-      path: "/sale-reports-by-date",
+      path: "/report-group/sale-reports-by-date",
       isPublic: true,
       icon: "StarBorder",
       text: "Doanh số theo ngày",
@@ -15,7 +15,7 @@ export const salereport = {
     },
     {
       id: "",
-      path: "/sale-reports-by-customer",
+      path: "/report-group/sale-reports-by-customer",
       isPublic: true,
       icon: "StarBorder",
       text: "Doanh số theo khách hàng",
@@ -39,7 +39,7 @@ export const salereport = {
     },
     {
       id: "",
-      path: "/sale-reports-by-product",
+      path: "/report-group/sale-reports-by-product",
       isPublic: true,
       icon: "StarBorder",
       text: "Doanh số theo sản phẩm",

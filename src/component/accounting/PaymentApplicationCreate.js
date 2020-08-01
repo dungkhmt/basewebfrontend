@@ -79,7 +79,7 @@ export default function PaymentApplicationCreate() {
         response["paymentApplicationId"]
       );
     }
-    history.push("/payment-application/" + paymentId);
+    history.push("/payment-group/payment-application/" + paymentId);
   }
 
   return (

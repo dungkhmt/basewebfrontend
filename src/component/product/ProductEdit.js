@@ -62,7 +62,7 @@ function ProductEdit(props) {
 
   return (
     <div>
-      <Link to={"/set-product-primary-img/" + productId}>
+      <Link to={"/product-group/set-product-primary-img/" + productId}>
         <Button
           variant="contained"
           color="primary"

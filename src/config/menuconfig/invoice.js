@@ -15,7 +15,7 @@ export const invoice = {
     },
     {
       id: "MENU_INVOICE_LIST",
-      path: "/invoice-sales/list",
+      path: "/invoice-group/invoice-sales/list",
       isPublic: false,
       icon: "StarBorder",
       text: "DS hóa đơn thu",
@@ -23,7 +23,7 @@ export const invoice = {
     },
     {
       id: "MENU_INVOICE_LIST",
-      path: "/customer-payment/list",
+      path: "/payment-group/customer-payment/list",
       isPublic: false,
       icon: "StarBorder",
       text: "DS KH thanh toán",

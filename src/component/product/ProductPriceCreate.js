@@ -40,7 +40,7 @@ export default function ProductPriceCreate() {
    */
 
   async function getProduct() {
-    let product = await authGet(dispatch, token, '/product/' + productId);
+    let product = await authGet(dispatch, token, '/products/' + productId);
     setProduct(product);
   }
 
@@ -53,9 +53,9 @@ export default function ProductPriceCreate() {
     let response = await authPost(dispatch, token, '/set-product-price', body).then(r => r.json());
     if (response && response['productPriceId']) {
       showAlert('Thành công', 'Đã tạo thành công giá với mã: ' + response['productPriceId'],
-        ({OK: () => history.push('/product/' + productId)}));
+                ({OK: () => history.push('/products/' + productId)}));
     } else {
-      history.push('/product/' + productId);
+      history.push('/products/' + productId);
     }
   }
 
@@ -72,7 +72,8 @@ export default function ProductPriceCreate() {
     })}</p>
 
     <Button color={'primary'} variant={'contained'} onClick={handleSubmit}>Lưu</Button>
-    <Button color={'secondary'} variant={'contained'} onClick={() => history.push('/product/' + productId)}>Hủy</Button>
+    <Button color={'secondary'} variant={'contained'}
+            onClick={() => history.push('/products/' + productId)}>Hủy</Button>
 
     <AlertDialog
       title={alertTitle}

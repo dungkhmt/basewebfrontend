@@ -1,5 +1,3 @@
-import { MENU_LIST } from "../menuconfig";
-
 export const customer = {
   id: "MENU_CUSTOMER",
   path: "",

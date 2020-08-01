@@ -102,7 +102,7 @@ function AddProductImg(props) {
         <StyledDropzone uploadFile={uploadFile}/>
       </Paper>
 
-      <Link to={"/product/" + productId}>
+      <Link to={"/products/" + productId}>
         <Button
           variant="contained"
           color="primary"
