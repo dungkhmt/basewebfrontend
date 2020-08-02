@@ -7,7 +7,7 @@ export const productpricesupplier = {
   child: [
     {
       id: "",
-      path: "/product-price-supplier/list",
+      path: "/product-group/product-price-supplier/list",
       isPublic: true,
       icon: "StarBorder",
       text: "DS giá mua",

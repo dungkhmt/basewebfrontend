@@ -13,7 +13,8 @@ export function Invoice() {
   const columns = [
     {
       'title': 'Mã hóa đơn',
-      render: rowData => <Link to={'/invoice-detail/' + rowData['invoiceId']}>{rowData['invoiceId']}</Link>
+      render: rowData => <Link
+        to={'/invoice-group/invoice-detail/' + rowData['invoiceId']}>{rowData['invoiceId']}</Link>
     },
     {'title': 'Ngày hóa đơn', field: 'invoiceDate'},
     {'title': 'Tên khách hàng', field: 'toPartyCustomerName'},
@@ -60,7 +61,8 @@ export function InvoiceDetail() {
   const paymentApplicationColumns = [
     {
       'title': 'Mã thanh toán',
-      render: rowData => <Link to={'/payment-application/' + rowData['paymentId']}>{rowData['paymentId']}</Link>
+      render: rowData => <Link
+        to={'/payment-group/payment-application/' + rowData['paymentId']}>{rowData['paymentId']}</Link>
     },
     {'title': 'Ngày thanh toán', field: 'effectiveDate'},
     {'title': 'Thành tiền', field: 'appliedAmount'},
@@ -108,7 +110,7 @@ export function InvoiceDetail() {
       infos={invoiceItemInfos}
       actions={invoiceId && (invoice['amount'] - invoice['paidAmount'] > 0) ? [(
         <Button color={"primary"} variant={"contained"}
-                onClick={() => history.push('/quick-create-payment-application/' + invoiceId)}>
+                onClick={() => history.push('/payment-group/quick-create-payment-application/' + invoiceId)}>
           Thanh toán
         </Button>)] : []}
     />
@@ -129,7 +131,8 @@ export function Payment() {
   const columns = [
     {
       'title': 'Mã thanh toán',
-      render: rowData => <Link to={'/payment-application/' + rowData['paymentId']}>{rowData['paymentId']}</Link>
+      render: rowData => <Link
+        to={'/payment-group/payment-application/' + rowData['paymentId']}>{rowData['paymentId']}</Link>
     },
     {'title': 'Ngày thanh toán', field: 'effectiveDate'},
     {'title': 'Khách hàng thanh toán', field: 'fromCustomerId'},
@@ -148,7 +151,8 @@ export function Payment() {
   }, []);
 
   return <div>
-    <Button color="primary" variant="contained" onClick={() => history.push('/create-payment')}>Thêm mới</Button>
+    <Button color="primary" variant="contained" onClick={() => history.push('/payment-group/create-payment')}>Thêm
+      mới</Button>
     <InvoiceDataTable
       title={'Danh sách thanh toán'}
       columns={columns}
@@ -169,7 +173,8 @@ export function PaymentApplication() {
     {'title': 'Ngày khớp lệnh thanh toán', field: 'effectiveDate'},
     {
       'title': 'Mã hóa đơn',
-      render: rowData => <Link to={'/invoice-detail/' + rowData['invoiceId']}>{rowData['invoiceId']}</Link>
+      render: rowData => <Link
+        to={'/invoice-group/invoice-detail/' + rowData['invoiceId']}>{rowData['invoiceId']}</Link>
     },
     {'title': 'Số tiền khớp lệnh (VND)', field: 'appliedAmount'},
   ];
@@ -204,7 +209,7 @@ export function PaymentApplication() {
 
   return <div>
     <Button color="primary" variant="contained"
-            onClick={() => history.push('/create-payment-application/' + paymentId)}>
+            onClick={() => history.push('/payment-group/create-payment-application/' + paymentId)}>
       Thêm mới</Button>
     <InvoiceDataTable
       title={'Chi tiết thanh toán'}

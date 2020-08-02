@@ -7,7 +7,7 @@ export const department = {
   child: [
     {
       id: "MENU_DEPARTMENT_LIST",
-      path: "/departments/list",
+      path: "/user-group/departments/list",
       isPublic: true,
       icon: "StarBorder",
       text: "DS phòng ban",

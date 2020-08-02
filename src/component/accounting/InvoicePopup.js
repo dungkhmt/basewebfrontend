@@ -1,21 +1,13 @@
-import {
-  Button,
-  Grid,
-  IconButton,
-  InputAdornment,
-  Paper,
-  TextField,
-  Typography,
-} from "@material-ui/core";
+import {Button, Grid, IconButton, InputAdornment, Paper, TextField, Typography,} from "@material-ui/core";
 import Dialog from "@material-ui/core/Dialog";
-import { makeStyles } from "@material-ui/core/styles";
+import {makeStyles} from "@material-ui/core/styles";
 import KeyboardArrowRightIcon from "@material-ui/icons/KeyboardArrowRight";
 import SearchRoundedIcon from "@material-ui/icons/SearchRounded";
 import MaterialTable from "material-table";
-import { default as React, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { Link } from "react-router-dom";
-import { authGet } from "../../api";
+import {default as React, useState} from "react";
+import {useDispatch, useSelector} from "react-redux";
+import {Link} from "react-router-dom";
+import {authGet} from "../../api";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -50,7 +42,7 @@ export default function InvoicePopup(props) {
     {
       title: "Mã hóa đơn",
       render: (rowData) => (
-        <Link to={"/invoice-detail/" + rowData["invoiceId"]}>
+        <Link to={"/invoice-group/invoice-detail/" + rowData["invoiceId"]}>
           {rowData["invoiceId"]}
         </Link>
       ),

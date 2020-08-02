@@ -18,7 +18,7 @@ export default function ShipmentItemList() {
       title: "Mã đơn hàng",
       field: "shipmentItemId",
       render: rowData => (
-        <Link to={'/shipment-item-info/' + rowData['shipmentItemId']}>{rowData['shipmentItemId']}</Link>)
+        <Link to={'/shipment-group/shipment-item-info/' + rowData['shipmentItemId']}>{rowData['shipmentItemId']}</Link>)
     },
     {title: "Tổng số lượng", field: "quantity"},
     {title: "Số lượng đã xếp chuyến", field: "scheduledQuantity"},
@@ -59,7 +59,7 @@ export default function ShipmentItemList() {
               </Grid>
               <Grid item xs={4}
                     style={{verticalAlign: 'text-bottom', textAlign: 'right', padding: '0px 50px 10px 30px'}}>
-                <Link to={'/create-shipment-item'}>
+                <Link to={'/shipment-group/create-shipment-item'}>
                   <Button color={'primary'} variant={'contained'} startIcon={<AddIcon/>}> Thêm mới </Button>
                 </Link>
                 <Upload

@@ -93,7 +93,7 @@ function SetPrimaryImg(props) {
 
         </Grid>
         <Grid item xs={6}>
-          <Link to={"/product-edit/" + productId}>
+          <Link to={"/product-group/product-edit/" + productId}>
             <Button
               variant="contained"
               color="primary"

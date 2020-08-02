@@ -7,7 +7,7 @@ export const unpaidinvoice = {
   child: [
     {
       id: "",
-      path: "/distributor-unpaid-invoice/list",
+      path: "/invoice-group/distributor-unpaid-invoice/list",
       isPublic: true,
       icon: "StarBorder",
       text: "Công nợ của nhà phân phối",

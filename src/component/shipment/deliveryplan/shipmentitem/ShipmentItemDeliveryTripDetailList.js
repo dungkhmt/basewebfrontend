@@ -44,7 +44,8 @@ export default function ShipmentItemDeliveryTripDetailList() {
     {
       title: 'Mã chuyến',
       field: 'deliveryTripId',
-      render: rowData => (<Link to={'/delivery-trip/' + rowData['deliveryTripId']}>{rowData['deliveryTripId']}</Link>)
+      render: rowData => (
+        <Link to={'/delivery-group/delivery-trip/' + rowData['deliveryTripId']}>{rowData['deliveryTripId']}</Link>)
     },
     {title: 'Ngày thực hiện', field: 'executeDate'},
     {title: 'Số lượng xếp trên chuyến', field: 'deliveryQuantity'},
@@ -55,7 +56,7 @@ export default function ShipmentItemDeliveryTripDetailList() {
 
   return <div>
     {
-      <Link to={'/shipment'}>
+      <Link to={'/shipment-group/shipment'}>
         <Button variant={'outlined'} startIcon={<ArrowBackIosIcon/>}>
           Back</Button>
       </Link>

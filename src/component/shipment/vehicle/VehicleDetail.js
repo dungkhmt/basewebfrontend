@@ -35,7 +35,7 @@ export default function VehicleDetail() {
       title: "Mã chuyến giao",
       field: "deliveryTripId",
       render: rowData => (
-        <Link to={"/delivery-trip/" + rowData["deliveryTripId"]}>
+        <Link to={"/delivery-group/delivery-trip/" + rowData["deliveryTripId"]}>
           {rowData["deliveryTripId"]}
         </Link>
       )

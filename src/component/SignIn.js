@@ -11,8 +11,7 @@ import { makeStyles } from "@material-ui/core/styles";
 import TextField from "@material-ui/core/TextField";
 import Typography from "@material-ui/core/Typography";
 import React, { useState } from "react";
-//import { login } from "../action";
-import { Redirect } from "react-router";
+import { Redirect, useHistory } from "react-router";
 
 function Copyright() {
   return (
@@ -55,6 +54,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 export default function SignIn(props) {
+  const history = useHistory();
   const classes = useStyles();
   const [userName, setUserName] = useState(""); // new State (var) userName
   const [password, setPassword] = useState(""); // new State (var) password
@@ -73,11 +73,16 @@ export default function SignIn(props) {
     e.preventDefault();
     setIsTyping(false);
     props.requestLogin(userName, password);
-    
   };
-  if (props.isAuthenticated === true)
-    return <Redirect to={{ pathname: "/", state: { from: props.location } }} />;
-  else
+  if (props.isAuthenticated === true) {
+    if (history.location.state && history.location.state.from) {
+      history.replace(history.location.state.from);
+      return null;
+    } else
+      return (
+        <Redirect to={{ pathname: "/", state: { from: history.location } }} />
+      );
+  } else
     return (
       <Container component="main" maxWidth="xs">
         <CssBaseline />
@@ -91,12 +96,10 @@ export default function SignIn(props) {
             Sign in
           </Typography>
           <form className={classes.form} onSubmit={handleSubmit} noValidate>
-            {props.errorState === true && isTyping=== false? (
-              <Typography
-                variant="overline"
-                display="block"
-                color="error"
-            >{props.errorMsg}</Typography>
+            {props.errorState === true && isTyping === false ? (
+              <Typography variant="overline" display="block" color="error">
+                {props.errorMsg}
+              </Typography>
             ) : (
               ""
             )}
@@ -109,7 +112,11 @@ export default function SignIn(props) {
               label="User Name"
               name="user"
               onChange={handleUserNameChange}
-              error={isTyping ===false && props.errorState!==null && props.errorState===true }
+              error={
+                isTyping === false &&
+                props.errorState !== null &&
+                props.errorState === true
+              }
               autoFocus
             />
             <TextField
@@ -122,7 +129,11 @@ export default function SignIn(props) {
               type="password"
               id="password"
               onChange={handlePasswordChange}
-              error={isTyping===false&&props.errorState!==null && props.errorState===true }
+              error={
+                isTyping === false &&
+                props.errorState !== null &&
+                props.errorState === true
+              }
               autoComplete="current-password"
             />
             <FormControlLabel

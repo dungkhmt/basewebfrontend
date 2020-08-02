@@ -23,7 +23,7 @@ export const user = {
     },
     {
       id: "MENU_USER_LIST",
-      path: "/user/approve-register",
+      path: "/user-group/user/approve-register",
       isPublic: false,
       icon: "StarBorder",
       text: "Phê duyệt",

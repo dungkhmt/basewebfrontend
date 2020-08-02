@@ -20,7 +20,7 @@ function DriverList(props) {
     {
       title: "Mã Tài xế",
       field: "partyId",
-      render: rowData => <Link to={"/driver/" + rowData.partyId}>{rowData.partyId}</Link>
+      render: rowData => <Link to={"/driver-group/driver/" + rowData.partyId}>{rowData.partyId}</Link>
     },
     {title: "Tên Tài xế", field: "fullName"}
 
@@ -47,7 +47,7 @@ function DriverList(props) {
                 </Grid>
                 <Grid item xs={4}
                       style={{verticalAlign: 'text-bottom', textAlign: 'right', padding: '0px 50px 10px 30px'}}>
-                  <Link to={'/driver/create'}>
+                  <Link to={'/driver-group/driver/create'}>
                     <Button color={'primary'} variant={'contained'} startIcon={<AddIcon/>}> Thêm mới </Button>
                   </Link>
                 </Grid>

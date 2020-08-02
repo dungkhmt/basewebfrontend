@@ -123,7 +123,7 @@ export default function DeliveryTripDetailCreate() {
       response => {
         if (typeof response === 'number') {
           showAlert('Thành công', 'Đã thêm vào chuyến cho ' + response + ' đơn hàng',
-            ({OK: () => history.push(process.env.PUBLIC_URL + "/delivery-trip/" + deliveryTripId)}));
+                    ({OK: () => history.push(process.env.PUBLIC_URL + "/delivery-group/delivery-trip/" + deliveryTripId)}));
           console.log(response);
           // browserHistory.goBack();
         }
@@ -205,7 +205,7 @@ export default function DeliveryTripDetailCreate() {
 
   return <div>
     {
-      <Link to={'/delivery-trip/' + deliveryTripId}>
+      <Link to={'/delivery-group/delivery-trip/' + deliveryTripId}>
         <Button variant={'outlined'} startIcon={<ArrowBackIosIcon/>}>
           Back</Button>
       </Link>

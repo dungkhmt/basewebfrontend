@@ -116,7 +116,7 @@ function ProductList(props) {
         {productList.map((p) => (
           <Grid item xs={3}>
             <Card className={classes.root}>
-              <Link to={"/product/" + p.productId}>
+              <Link to={"/products/" + p.productId}>
                 <CardHeader
                   avatar={
                     <Avatar aria-label="recipe" className={classes.avatar}>

@@ -17,7 +17,7 @@ function SalesmanList(props) {
     {
       title: "Mã NVBH",
       field: "partyId",
-      render: rowData => <Link to={"/salesman/" + rowData.partyId}>{rowData.partyId}</Link>
+      render: rowData => <Link to={"/sales-group/salesman/" + rowData.partyId}>{rowData.partyId}</Link>
     },
     {title: "Tên NVBH", field: "name"},
     {title: "TK đăng nhập", field: "userName"}

@@ -93,7 +93,7 @@ export default function ShipmentItemCreate() {
     authPost(dispatch, token, '/create-shipment-item', shipmentItemInfo).then(
       response => {
         console.log(response);
-        history.push(process.env.PUBLIC_URL + "/shipment")
+        history.push(process.env.PUBLIC_URL + "/shipment-group/shipment")
       },
       error => {
         alert('Upload failed: ' + error);

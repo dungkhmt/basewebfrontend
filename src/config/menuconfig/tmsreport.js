@@ -7,7 +7,7 @@ export const tmsreport = {
   child: [
     {
       id: "",
-      path: "/transport-reports-by-driver",
+      path: "/report-group/transport-reports-by-driver",
       isPublic: true,
       icon: "StarBorder",
       text: "Báo cáo chuyến theo tài xế",
@@ -15,7 +15,7 @@ export const tmsreport = {
     },
     {
       id: "",
-      path: "/transport-reports-by-customer",
+      path: "/report-group/transport-reports-by-customer",
       isPublic: true,
       icon: "StarBorder",
       text: "Báo cáo chuyến theo KH",
@@ -23,7 +23,7 @@ export const tmsreport = {
     },
     {
       id: "",
-      path: "/transport-reports-by-facility",
+      path: "/report-group/transport-reports-by-facility",
       isPublic: true,
       icon: "StarBorder",
       text: "Báo cáo chuyến theo kho",

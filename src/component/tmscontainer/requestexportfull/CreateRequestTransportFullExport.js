@@ -358,7 +358,7 @@ function CreateRequestTransportFullExport() {
 
 
           <CardActions>
-            <Link to={"/list-request-transport-full-export"}>
+            <Link to={"/transport-group/list-request-transport-full-export"}>
               <Button
                 disabled={isRequesting}
                 variant="contained"

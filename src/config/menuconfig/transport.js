@@ -8,7 +8,7 @@ export const transport = {
   child: [
     {
       id: "",
-      path: "/vehicle",
+      path: "/vehicle-group/vehicle",
       isPublic: true,
       icon: "StarBorder",
       text: "DS Xe",
@@ -16,7 +16,7 @@ export const transport = {
     },
     {
       id: "",
-      path: "/driver/create",
+      path: "/driver-group/driver/create",
       isPublic: true,
       icon: "StarBorder",
       text: "Tạo mới Tài xế",
@@ -24,7 +24,7 @@ export const transport = {
     },
     {
       id: "",
-      path: "/driver/list",
+      path: "/driver-group/driver/list",
       isPublic: true,
       icon: "StarBorder",
       text: "DS Tài xế",
@@ -40,7 +40,7 @@ export const transport = {
     },
     {
       id: "",
-      path: "/shipment",
+      path: "/shipment-group/shipment",
       isPublic: true,
       icon: "StarBorder",
       text: "DS đơn hàng vận chuyển",
@@ -56,7 +56,7 @@ export const transport = {
     },
     {
       id: "",
-      path: "/delivery-plan-list",
+      path: "/delivery-group/delivery-plan-list",
       isPublic: true,
       icon: "StarBorder",
       text: "DS đợt giao hàng",
@@ -72,7 +72,7 @@ export const transport = {
     },
     {
       id: "",
-      path: "/solver-config-param",
+      path: "/config-group/solver-config-param",
       isPublic: true,
       icon: "StarBorder",
       text: "Cấu hình bộ giải",
