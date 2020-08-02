@@ -27,7 +27,7 @@
     "material-table": "^1.54.2",
     "material-ui": "^0.20.2",
     "material-ui-chip-input": "^1.1.0",
-    "material-ui-dropzone": "^2.3.5",
+    "material-ui-dropzone": "^3.3.1",
     "react": "^16.10.2",
     "react-chartjs-2": "^2.9.0",
     "react-datetime-picker": "^3.0.2",
