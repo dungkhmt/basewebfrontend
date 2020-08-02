@@ -1,9 +1,5 @@
-import React from 'react'
+import React from "react";
 
-export default function TeacherDetail(props){
-    return (
-        <div>
-            Hola
-        </div>
-    )
+export default function TeacherDetail(props) {
+  return <div>Teacher detail</div>;
 }
