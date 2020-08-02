@@ -9,7 +9,8 @@ import SaveIcon from "@material-ui/icons/Save";
 import CloudUploadIcon from "@material-ui/icons/CloudUpload";
 import { tableIcons } from "../../utils/iconutil";
 import { authPost, authGet } from "../../api";
-import {useHistory} from "react-router-dom";
+import { useHistory } from "react-router-dom";
+import UploadButton from "./UploadButton";
 
 const useStyles = makeStyles((theme) => ({
   button: {
@@ -83,7 +84,7 @@ export default function ClassesList() {
                             variant="contained"
                             color="primary"
                             size="small"
-                            onClick={() => history.push('/edu/create-class')}
+                            onClick={() => history.push("/edu/create-class")}
                             className={classes.button}
                             style={{ marginLeft: "24px" }}
                           >
