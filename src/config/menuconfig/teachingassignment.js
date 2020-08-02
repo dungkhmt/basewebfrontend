@@ -15,7 +15,7 @@ export const teachingassignment = {
     },
     {
       id: "",
-      path: "/edu/courses-list",
+      path: "/edu/courses/list",
       isPublic: true,
       icon: "StarBorder",
       text: "DS môn học",
@@ -23,10 +23,10 @@ export const teachingassignment = {
     },
     {
       id: "",
-      path: "/edu/teachers-list",
+      path: "/edu/teachers/list",
       isPublic: true,
       icon: "StarBorder",
-      text: "DS giáo viên",
+      text: "DS giảng viên",
       child: [],
     },
     {
