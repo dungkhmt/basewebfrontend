@@ -1,205 +1,161 @@
 import React, { useEffect, useRef, useState } from "react";
-import { useForm } from "react-hook-form";
 import Button from "@material-ui/core/Button";
 import MaterialTable, { MTableToolbar } from "material-table";
 import { tableIcons } from "../../utils/iconutil";
 import { Card, CardContent, Box } from "@material-ui/core";
-import { makeStyles } from "@material-ui/core/styles";
 import { useSelector, useDispatch } from "react-redux";
 import { MuiThemeProvider } from "material-ui/styles";
-import CloudUploadIcon from "@material-ui/icons/CloudUpload";
-import { authPost, authGet } from "../../api";
-import TextField from "@material-ui/core/TextField";
-import Dialog from "@material-ui/core/Dialog";
-import DialogActions from "@material-ui/core/DialogActions";
-import DialogContent from "@material-ui/core/DialogContent";
-import DialogContentText from "@material-ui/core/DialogContentText";
-import DialogTitle from "@material-ui/core/DialogTitle";
-
-const useStyles = makeStyles((theme) => ({
-  button: {
-    margin: theme.spacing(1),
-  },
-}));
+import { axiosGet } from "../../api";
+import { Link, useHistory } from "react-router-dom";
+import UploadButton from "./UploadButton";
+import XLSX from "xlsx";
 
 export default function TeachersList() {
-  const classes = useStyles();
-  const dispatch = useDispatch()
+  const history = useHistory();
+  const dispatch = useDispatch();
   const token = useSelector((state) => state.auth.token);
+
+  // Table.
   const [teachers, setTeachers] = useState([]);
-  const { register, handleSubmit } = useForm();
-
-  const [addTeacherDialogOpen, setAddTeacherDialogOpen] = useState(false);
-  const [uploadFileDialogOpen, setUploadFileDialogOpen] = useState(false);
-
   const columns = [
-    { title: "Mã giáo viên", field: "teacherId" },
-    { title: "Tên giáo viên", field: "teacherName" },
-    { title: "Email", field: "email" },
+    {
+      field: "teacherId",
+      title: "Email",
+      render: (rowData) => (
+        <Link
+          to={{
+            pathname: "/edu/teacher/detail",
+            state: {
+              teacherId: rowData["teacherId"],
+            },
+          }}
+        >
+          {rowData["teacherId"]}
+        </Link>
+      ),
+    },
+    { title: "Tên giảng viên", field: "teacherName" },
+    { title: "Bộ môn", field: "department" },
   ];
 
   const getAllTeachers = () => {
-    authGet(
-      dispatch, 
-      token,
-      "/edu/get-all-teachers",
-
-    )
-      .then( res => {
-        console.log(res);
+    axiosGet(dispatch, token, "/edu/get-all-teachers")
+      .then((res) => {
+        console.log("getAllTeachers, teachers ", res.data);
         setTeachers(res);
-      });
-  }
-
-  useEffect(() => {
-    getAllTeachers()
-  }, [])
-
-  const onCloseAddNewTeacherDialog = (event) => {
-    setAddTeacherDialogOpen(false);
+      })
+      .catch((error) => console.log("getAllTeachers, error ", error));
   };
 
-  const onSaveTeacherHandler = (data) => {
-    setAddTeacherDialogOpen(false);
-    let flag = false;
-    teachers.forEach((item) => {
-      if (item.teacherId === data["email"]) {
-        flag = true;
-      }
+  const onClickCreateNewButton = () => {
+    history.push({
+      pathname: "/edu/teacher/create",
+      state: {},
     });
-    if (flag) {
-      alert("Giáo viên " + data["teacherName"] + " đã tồn tại trong hệ thống.");
-    } else {
-      let input = { teacherId: data["email"], teacherName: data["teacherName"], email: data["email"], credit: data["credit"] };
-      authPost(dispatch, token, "/edu/create-teacher", input)
-      .then((res) => res.json())
-      .then((res) => {
-        alert("Đã lưu giáo viên " + data["teacherName"] + ".");
-        window.location.reload(); 
-      });
+  };
+
+  const checkDataFormat = (file) => {
+    var reader = new FileReader();
+    reader.onload = (event) => {
+      try {
+        const { result } = event.target;
+        // Read the entire excel table object in binary stream
+        const workbook = XLSX.read(result, { type: "binary" });
+        let data = []; // store the acquired data
+
+        if (workbook.Sheets.hasOwnProperty("Sheet2")) {
+          console.log(workbook.Sheets["Sheet2"]);
+
+          let count = 0;
+          for (let i = 2; i < 109; i++) {
+            if (workbook.Sheets["Sheet2"].hasOwnProperty("A" + i)) {
+              count += 1;
+            }
+          }
+
+          console.log(count);
+
+          // // Convert excel to json data using the sheet_to_json method
+          // data = data.concat(
+          //   XLSX.utils.sheet_to_json(workbook.Sheets["20182"])
+          // );
+        }
+
+        console.log(data);
+      } catch (e) {
+        // Here you can throw a related prompt with a file type error incorrect.
+        console.log("file type is incorrect", e);
+        return;
+      }
+    };
+    reader.readAsBinaryString(file);
+  };
+
+  const onClickSaveButton = (files) => {
+    console.log(files);
+
+    if (checkDataFormat(files[0])) {
+      var formData = new FormData();
+      formData.append("file", files[0]);
     }
   };
 
+  useEffect(() => {
+    getAllTeachers();
+  }, []);
+
   return (
     <div>
-        <MuiThemeProvider>
-            <Card>
-                <CardContent>
-                    <MaterialTable
-                        title="Danh sách giáo viên"
-                        columns={columns}
-                        data={teachers}
-                        icons={tableIcons}
-                        localization={{
-                            header: {
-                                actions: ''
-                            },
-                            body: {
-                                emptyDataSourceMessage: 'Không có bản ghi nào để hiển thị',
-                                filterRow: {
-                                    filterTooltip: 'Lọc'
-                                }
-                            }
-                        }}
-                        options={{
-                          search: false,
-                          filtering: true,
-                          actionsColumnIndex: -1
-                        }}     
-                        components={{
-                          Toolbar: (props) => (
-                            <div>
-                              <MTableToolbar {...props} />
-                              <MuiThemeProvider>
-                                <Box display="flex" justifyContent="flex-end" width="98%">
-                                  <form>
-                                    <Button
-                                      variant="contained"
-                                      color="primary"
-                                      size="small"
-                                      onClick={event => {
-                                        setAddTeacherDialogOpen(true);
-                                      }}
-                                      className={classes.button}
-                                      style={{ marginLeft: "24px" }}
-                                    >
-                                      Thêm mới giáo viên
-                                    </Button>
-                                    <Dialog
-                                      open={addTeacherDialogOpen}
-                                      onClose={onCloseAddNewTeacherDialog}
-                                      aria-labelledby="form-dialog-title"
-                                    >
-                                      <DialogTitle id="form-dialog-title">
-                                        Thêm mới giáo viên
-                                      </DialogTitle>
-                                      <form onSubmit={handleSubmit(onSaveTeacherHandler)}>
-                                        <DialogContent>
-                                          <DialogContentText>
-                                            Điền thông tin vào form dưới đây và nhấn Lưu
-                                            để thêm mới giáo viên.
-                                          </DialogContentText>
-                                          <TextField
-                                            required
-                                            margin="dense"
-                                            name="teacherName"
-                                            label="Tên giảng viên"
-                                            inputRef={register({ required: true })}
-                                            fullWidth
-                                          />
-                                          <TextField
-                                            required
-                                            margin="dense"
-                                            name="email"
-                                            label="Email"
-                                            inputRef={register({ required: true })}
-                                            fullWidth
-                                            type='email'
-                                          />
-                                          <TextField
-                                            required
-                                            margin="dense"
-                                            name="credit"
-                                            label="Số tín chỉ lớn nhất có thể đảm nhận trong một học kì"
-                                            inputRef={register({ required: true })}
-                                            fullWidth
-                                            type={Number}
-                                          />
-                                        </DialogContent>
-                                        <DialogActions>
-                                          <Button type="submit" color="primary">
-                                            Lưu
-                                          </Button>
-                                          <Button
-                                            onClick={onCloseAddNewTeacherDialog}
-                                            color="primary"
-                                          >
-                                            Hủy
-                                          </Button>
-                                        </DialogActions>
-                                      </form>
-                                    </Dialog>
-          
-                                    <Button
-                                      variant="contained"
-                                      color="primary"
-                                      size="small"
-                                      className={classes.button}
-                                      startIcon={<CloudUploadIcon />}
-                                      style={{ marginLeft: "24px" }}
-                                    >
-                                      Tải lên danh sách giáo viên
-                                    </Button>
-                                  </form>
-                                </Box>
-                              </MuiThemeProvider>
-                            </div>
-                          ),
-                        }}                                               
-                    />
-                </CardContent>
-            </Card>
-        </MuiThemeProvider>
+      <MuiThemeProvider>
+        <Card>
+          <CardContent>
+            <MaterialTable
+              title="Danh sách giảng viên"
+              columns={columns}
+              data={teachers}
+              icons={tableIcons}
+              localization={{
+                header: {
+                  actions: "",
+                },
+                body: {
+                  emptyDataSourceMessage: "Không có bản ghi nào để hiển thị",
+                  filterRow: {
+                    filterTooltip: "Lọc",
+                  },
+                },
+              }}
+              options={{
+                search: false,
+                actionsColumnIndex: -1,
+              }}
+              components={{
+                Toolbar: (props) => (
+                  <div>
+                    <MTableToolbar {...props} />
+                    <MuiThemeProvider>
+                      <Box display="flex" justifyContent="flex-end" width="98%">
+                        <Button
+                          variant="contained"
+                          color="primary"
+                          onClick={onClickCreateNewButton}
+                        >
+                          Thêm mới
+                        </Button>
+                        <UploadButton
+                          buttonTitle="Tải lên"
+                          onClickSaveButton={onClickSaveButton}
+                          filesLimit={1}
+                        />
+                      </Box>
+                    </MuiThemeProvider>
+                  </div>
+                ),
+              }}
+            />
+          </CardContent>
+        </Card>
+      </MuiThemeProvider>
     </div>
   );
 }
