@@ -53,7 +53,7 @@ function CourseList() {
     },
     {
       field: "credit",
-      title: "Só tín chỉ",
+      title: "Số tín chỉ",
     },
   ];
 
@@ -76,7 +76,6 @@ function CourseList() {
 
   const onClickSaveButton = (files) => {
     processingNoti(toastId, false);
-    console.log(files);
 
     let file = files[0];
     let sheetName = "courses";
@@ -93,6 +92,7 @@ function CourseList() {
 
         if (workbook.Sheets.hasOwnProperty(sheetName)) {
           let sheet = workbook.Sheets[sheetName];
+          // console.log(sheet);
 
           if (!sheet.hasOwnProperty("!ref")) {
             if (toast.isActive(toastId.current)) {
@@ -107,23 +107,9 @@ function CourseList() {
             return;
           }
 
-          let dataLocation = sheet["!ref"];
-          let index = dataLocation.indexOf(":");
-          let startRow = Number(dataLocation.slice(1, index));
-          let endRow = Number(dataLocation.slice(index + 2));
-
-          // console.log("Start row", startRow);
-          // console.log("Start column", endRow);
-
-          if (Number.isNaN(startRow) || Number.isNaN(endRow)) {
-            if (toast.isActive(toastId.current)) {
-              updateErrorNoti(toastId, "Bảng đặt ở vị trí không hợp lệ");
-            } else {
-              errorNoti("Bảng đặt ở vị trí không hợp lệ");
-            }
-
-            return;
-          }
+          let range = XLSX.utils.decode_range(sheet["!ref"]);
+          let startRow = range.s.r + 1;
+          let endRow = range.e.r + 1;
 
           if (endRow === startRow) {
             if (toast.isActive(toastId.current)) {
@@ -139,18 +125,22 @@ function CourseList() {
           }
 
           // Check number of column.
-          let startCol = dataLocation.charCodeAt(0);
-          let endCol = dataLocation.charCodeAt(index + 1);
+          let startCol = range.s.c; // number
+          let endCol = range.e.c; // number
 
-          if (endCol - startCol + 1 != noCols) {
+          if (endCol - startCol + 1 > noCols) {
+            warningNoti(
+              `Số cột dữ liệu nhiều hơn so với yêu cầu. Các cột không được yêu cầu sẽ bị bỏ qua. Tải xuống tệp định dạng nội dung chuẩn`
+            );
+          } else if (endCol - startCol + 1 < noCols) {
             if (toast.isActive(toastId.current)) {
               updateErrorNoti(
                 toastId,
-                "Số cột dữ liệu khác so với yêu cầu. Tải xuống tệp định dạng nội dung chuẩn"
+                `Số cột dữ liệu ít hơn so với yêu cầu. Tải xuống tệp định dạng nội dung chuẩn`
               );
             } else {
               errorNoti(
-                "Số cột dữ liệu khác so với yêu cầu. Tải xuống tệp định dạng nội dung chuẩn"
+                `Số cột dữ liệu ít hơn so với yêu cầu. Tải xuống tệp định dạng nội dung chuẩn`
               );
             }
 
@@ -162,24 +152,22 @@ function CourseList() {
             if (toast.isActive(toastId.current)) {
               updateErrorNoti(
                 toastId,
-                "Bảng có chứa ô hợp nhất (merge cell). Tải xuống tệp định dạng nội dung chuẩn"
+                `Bảng có chứa ${sheet["!merges"].length} ô hợp nhất (merge cell). Tải xuống tệp định dạng nội dung chuẩn`
               );
             } else {
               errorNoti(
-                "Bảng có chứa ô hợp nhất (merge cell). Tải xuống tệp định dạng nội dung chuẩn"
+                `Bảng có chứa ${sheet["!merges"].length} ô hợp nhất (merge cell). Tải xuống tệp định dạng nội dung chuẩn`
               );
             }
 
             return;
           }
 
-          // Tinh nang du kien: thong bao so ban ghi trung, so ban ghi duoc tao moi khi su dung nut tai len nhieu lan
-          // Chi gui di cac ban ghi can tao moi! -> Vi xoa row trong sheet qua lang nhang nen phan nay de server lam
+          // Validate cell.
+          let cell;
 
-          // Validate data.
           for (let i = 0; i < noCols; i++) {
-            let colName = String.fromCharCode(startCol + i);
-            let idx = 0;
+            let colName = XLSX.utils.encode_col(startCol + i);
 
             sheet[colName + startRow] = {
               t: dataTypeOfCol[i],
@@ -187,35 +175,32 @@ function CourseList() {
             };
 
             for (let j = startRow + 1; j <= endRow; j++) {
-              if (sheet.hasOwnProperty(colName + j)) {
-                if (!(sheet[colName + j].t === dataTypeOfCol[i])) {
+              cell = colName + j;
+
+              if (sheet.hasOwnProperty(cell)) {
+                if (!(sheet[cell].t === dataTypeOfCol[i])) {
                   if (toast.isActive(toastId.current)) {
                     updateErrorNoti(
                       toastId,
-                      `Kiểu dữ liệu của ô ${
-                        colName + j
-                      } không đúng định dạng. Tải xuống tệp định dạng nội dung chuẩn`
+                      `Kiểu dữ liệu của ô "${cell}" không đúng định dạng. Tải xuống tệp định dạng nội dung chuẩn`
                     );
                   } else {
                     errorNoti(
-                      `Kiểu dữ liệu của ô ${
-                        colName + j
-                      } không đúng định dạng. Tải xuống tệp định dạng nội dung chuẩn`
+                      `Kiểu dữ liệu của ô "${cell}" không đúng định dạng. Tải xuống tệp định dạng nội dung chuẩn`
                     );
                   }
 
                   return;
                 }
               } else {
-                // [khong co o colName + j]: phat trien sau
                 if (toast.isActive(toastId.current)) {
                   updateErrorNoti(
                     toastId,
-                    `Không có ô abc. Tải xuống tệp định dạng nội dung chuẩn`
+                    `Ô "${cell}" không chứa dữ liệu. Tải xuống tệp định dạng nội dung chuẩn`
                   );
                 } else {
                   errorNoti(
-                    `Không có ô abc. Tải xuống tệp định dạng nội dung chuẩn`
+                    `Ô "${cell}" không chứa dữ liệu. Tải xuống tệp định dạng nội dung chuẩn`
                   );
                 }
 
@@ -225,31 +210,31 @@ function CourseList() {
           }
 
           let duplicateCourses = new Set();
-          let colId = String.fromCharCode(startCol);
-          let firstRowAddr, secondRowAddr;
+          let colId = XLSX.utils.encode_col(startCol);
+          let firstCell, secondCell;
 
           for (let i = startRow + 1; i < endRow; i++) {
-            firstRowAddr = colId + i;
+            firstCell = colId + i;
 
-            if (sheet.hasOwnProperty(firstRowAddr)) {
-              sheet[firstRowAddr].v = sheet[firstRowAddr].v
+            // if (sheet.hasOwnProperty(firstCell)) {
+            sheet[firstCell].v = sheet[firstCell].v
+              .replace(/\s/g, "")
+              .toUpperCase();
+
+            for (let j = i + 1; j <= endRow; j++) {
+              secondCell = colId + j;
+
+              // if (sheet.hasOwnProperty(secondCell)) {
+              sheet[secondCell].v = sheet[secondCell].v
                 .replace(/\s/g, "")
                 .toUpperCase();
 
-              for (let j = i + 1; j <= endRow; j++) {
-                secondRowAddr = colId + j;
-
-                if (sheet.hasOwnProperty(secondRowAddr)) {
-                  sheet[secondRowAddr].v = sheet[secondRowAddr].v
-                    .replace(/\s/g, "")
-                    .toUpperCase();
-
-                  if (sheet[firstRowAddr].v === sheet[secondRowAddr].v) {
-                    duplicateCourses.add(sheet[firstRowAddr].v);
-                  }
-                }
+              if (sheet[firstCell].v === sheet[secondCell].v) {
+                duplicateCourses.add(sheet[firstCell].v);
               }
+              // }
             }
+            // }
           }
 
           if (duplicateCourses.size > 0) {
