@@ -1,7 +1,5 @@
 * Định dạng nội dung tệp excel:
     - Chung:
-        + Phạm vi: không chứa ô nào ở vị trí các cột có tên gồm 2 kí tự trở lên (e.g AZ), bảng có thể bắt đầu và
-          kết thúc ở bất cứ cột nào thoả mãn điều kiện trên và từ bất cứ dòng nào.
         + Header: (CẦN CÓ) dòng đầu tiên của bảng được mặc định là Header, 
           nếu không có Header và dòng đầu tiên là dữ liệu thì dòng dữ liệu đầu tiên sẽ được xem là header và
           không được lưu.
@@ -10,8 +8,9 @@
         + Không yêu cầu bảng dữ liệu có đường viền hay được định dạng, trang trí.
         + Không sử dụng hợp nhất (merge cell) hai hay nhiều ô trong bảng, vì khi đó các ô được hợp nhất sẽ được
           tính như 1 ô thông thường, dẫn tới thiếu ô dữ liệu theo kích thước bảng, do đó sai định dạng nội dung.
-        + Vị trí của 2 cột có cùng kiểu dữ liệu có thể thay đổi, khác kiểu thì không thể thay đổi
-        + Cột đầu tiên luôn là cột Id!
+        + Vị trí của các cột được yêu cầu cần được đảm bảo đúng thứ tự và kiểu dữ liệu, có thể thêm một lượng
+          tuỳ ý các cột khác (ghi chú,...) nhưng các cột không được yêu cầu này sẽ bị loại bỏ khi xử lý.
+        + Các cột yêu cầu được lấy theo thứ tự liên tiếp từ trái sang phải.
     - Môn học:
             + Tên sheet: "courses"
             + Số cột: 3 (chính xác)
