@@ -2,15 +2,15 @@ import React from "react";
 import { Route, Switch, useRouteMatch } from "react-router";
 import AssignmentList from "../component/education/AssignmentList";
 import BCASolver from "../component/education/BCASolver";
-import ClassesList from "../component/education/ClassesList";
-import CreateClass from "../component/education/CreateClass";
 import CreateSemester from "../component/education/CreateSemester";
-import TeacherDetail from "../component/education/TeacherDetail";
-import TeachersList from "../component/education/TeachersList";
-import CourseList from "../component/education/CourseList";
-import CourseDetail from "../component/education/CourseDetail";
-import AddNewCourse from "../component/education/AddNewCourse";
-import AddTeacher from "../component/education/AddTeacher";
+import CourseList from "../component/education/course/CourseList";
+import AddNewCourse from "../component/education/course/AddNewCourse";
+import ClassesList from "../component/education/class/ClassesList";
+import CreateClass from "../component/education/class/CreateClass";
+import CourseDetail from "../component/education/course/CourseDetail";
+import TeachersList from "../component/education/teacher/TeachersList";
+import TeacherDetail from "../component/education/teacher/TeacherDetail";
+import AddTeacher from "../component/education/teacher/AddTeacher";
 
 export default function EduRoute() {
   let { path, url } = useRouteMatch();
