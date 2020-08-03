@@ -5,7 +5,6 @@ import { GiInfo } from "react-icons/gi";
 import { FiCheckCircle } from "react-icons/fi";
 import { MdCancel, MdWarning } from "react-icons/md";
 import { Box } from "@material-ui/core";
-import WarningIcon from "@material-ui/icons/Warning";
 
 // Snackbar
 
@@ -54,7 +53,7 @@ export const updateErrorNoti = (toastId, message) =>
     ),
   });
 
-export const errorNoti = (message) =>
+export const errorNoti = (message, autoClose) =>
   toast.error(
     <Box display="flex" alignItems="center">
       <IconContext.Provider>
@@ -64,14 +63,14 @@ export const errorNoti = (message) =>
     </Box>,
     {
       position: "bottom-right",
-      autoClose: 2000,
+      autoClose: autoClose === undefined ? false : autoClose,
       pauseOnHover: true,
       draggable: true,
       progress: undefined,
     }
   );
 
-export const successNoti = (message) =>
+export const successNoti = (message, autoClose) =>
   toast.success(
     <Box display="flex" alignItems="center">
       <IconContext.Provider>
@@ -81,14 +80,14 @@ export const successNoti = (message) =>
     </Box>,
     {
       position: "bottom-right",
-      autoClose: 2000,
+      autoClose: autoClose === undefined ? false : autoClose,
       pauseOnHover: true,
       draggable: true,
       progress: undefined,
     }
   );
 
-export const warningNoti = (message) =>
+export const warningNoti = (message, autoClose) =>
   toast.warning(
     <Box display="flex" alignItems="center">
       <IconContext.Provider>
@@ -98,7 +97,7 @@ export const warningNoti = (message) =>
     </Box>,
     {
       position: "bottom-right",
-      autoClose: false,
+      autoClose: autoClose === undefined ? false : autoClose,
       pauseOnHover: true,
       draggable: true,
       progress: undefined,
