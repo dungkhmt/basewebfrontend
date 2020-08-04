@@ -82,6 +82,7 @@ function CourseList() {
     let noCols = 3;
     let dataTypeOfCol = ["s", "s", "n"];
     let dataColName = ["courseId", "courseName", "credit"];
+    let excelColName = [];
 
     const reader = new FileReader();
 
@@ -163,30 +164,30 @@ function CourseList() {
             return;
           }
 
-          // Validate cell.
-          let cell;
+          // Round 1: validate cell.
+          let processingCell;
 
           for (let i = 0; i < noCols; i++) {
-            let colName = XLSX.utils.encode_col(startCol + i);
+            excelColName.push(XLSX.utils.encode_col(startCol + i));
 
-            sheet[colName + startRow] = {
+            sheet[excelColName[i] + startRow] = {
               t: dataTypeOfCol[i],
               v: dataColName[i],
             };
 
             for (let j = startRow + 1; j <= endRow; j++) {
-              cell = colName + j;
+              processingCell = excelColName[i] + j;
 
-              if (sheet.hasOwnProperty(cell)) {
-                if (!(sheet[cell].t === dataTypeOfCol[i])) {
+              if (sheet.hasOwnProperty(processingCell)) {
+                if (!(sheet[processingCell].t === dataTypeOfCol[i])) {
                   if (toast.isActive(toastId.current)) {
                     updateErrorNoti(
                       toastId,
-                      `Kiểu dữ liệu của ô "${cell}" không đúng định dạng. Tải xuống tệp định dạng nội dung chuẩn`
+                      `Kiểu dữ liệu của ô "${processingCell}" không đúng định dạng. Tải xuống tệp định dạng nội dung chuẩn`
                     );
                   } else {
                     errorNoti(
-                      `Kiểu dữ liệu của ô "${cell}" không đúng định dạng. Tải xuống tệp định dạng nội dung chuẩn`
+                      `Kiểu dữ liệu của ô "${processingCell}" không đúng định dạng. Tải xuống tệp định dạng nội dung chuẩn`
                     );
                   }
 
@@ -196,11 +197,11 @@ function CourseList() {
                 if (toast.isActive(toastId.current)) {
                   updateErrorNoti(
                     toastId,
-                    `Ô "${cell}" không chứa dữ liệu. Tải xuống tệp định dạng nội dung chuẩn`
+                    `Ô "${processingCell}" không chứa dữ liệu. Tải xuống tệp định dạng nội dung chuẩn`
                   );
                 } else {
                   errorNoti(
-                    `Ô "${cell}" không chứa dữ liệu. Tải xuống tệp định dạng nội dung chuẩn`
+                    `Ô "${processingCell}" không chứa dữ liệu. Tải xuống tệp định dạng nội dung chuẩn`
                   );
                 }
 
@@ -209,51 +210,56 @@ function CourseList() {
             }
           }
 
-          let duplicateCourses = new Set();
-          let colId = XLSX.utils.encode_col(startCol);
-          let firstCell, secondCell;
-
-          for (let i = startRow + 1; i < endRow; i++) {
-            firstCell = colId + i;
-
-            // if (sheet.hasOwnProperty(firstCell)) {
-            sheet[firstCell].v = sheet[firstCell].v
+          // Round 2: format data.
+          for (let i = startRow + 1; i <= endRow; i++) {
+            // Format courseId.
+            processingCell = excelColName[0] + i;
+            sheet[processingCell].v = sheet[processingCell].v
+              .trim()
               .replace(/\s/g, "")
               .toUpperCase();
 
+            // Format courseName.
+            processingCell = excelColName[1] + i;
+            sheet[processingCell].v = sheet[processingCell].v
+              .trim()
+              .replace(/\s+/g, " ");
+          }
+
+          // Round 3: check duplicate record.
+          let duplicateCourses = new Set();
+
+          for (let i = startRow + 1; i < endRow; i++) {
+            processingCell = excelColName[0] + i;
+
             for (let j = i + 1; j <= endRow; j++) {
-              secondCell = colId + j;
-
-              // if (sheet.hasOwnProperty(secondCell)) {
-              sheet[secondCell].v = sheet[secondCell].v
-                .replace(/\s/g, "")
-                .toUpperCase();
-
-              if (sheet[firstCell].v === sheet[secondCell].v) {
-                duplicateCourses.add(sheet[firstCell].v);
+              if (sheet[processingCell].v === sheet[excelColName[0] + j].v) {
+                duplicateCourses.add(sheet[processingCell].v);
               }
-              // }
             }
-            // }
           }
 
           if (duplicateCourses.size > 0) {
-            let warningMess =
-              "Phát hiện các bản ghi trùng nhau của các học phần: ";
+            let warningMess;
             let duplCoursesArr = Array.from(duplicateCourses);
             let len = duplCoursesArr.length - 1;
 
-            for (let i = 0; i < len; i++) {
-              warningMess += duplCoursesArr[i] + ", ";
+            if (duplCoursesArr.length === 1) {
+              warningMess = `Phát hiện các bản ghi trùng nhau của học phần: `;
+            } else {
+              warningMess = `Phát hiện các bản ghi trùng nhau của các học phần: `;
+
+              for (let i = 0; i < len; i++) {
+                warningMess += duplCoursesArr[i] + ", ";
+              }
             }
 
-            warningMess +=
-              duplCoursesArr[len] +
-              ". Một bản ghi trong mỗi cặp trùng nhau sẽ bị loại bỏ";
+            warningMess += `${duplCoursesArr[len]}. Một bản ghi trong mỗi cặp trùng nhau sẽ bị loại bỏ`;
 
             warningNoti(warningMess);
           }
 
+          // Everything is OK!.
           axiosPost(
             dispatch,
             token,
@@ -284,6 +290,13 @@ function CourseList() {
         }
       } catch (e) {
         console.log(e);
+
+        if (toast.isActive(toastId.current)) {
+          updateErrorNoti(toastId, "Rất tiếc! Đã xảy ra lỗi :((");
+        } else {
+          errorNoti("Rất tiếc! Đã xảy ra lỗi :((");
+        }
+
         return;
       }
     };
