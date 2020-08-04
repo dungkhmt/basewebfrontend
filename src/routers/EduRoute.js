@@ -8,9 +8,9 @@ import AddNewCourse from "../component/education/course/AddNewCourse";
 import ClassesList from "../component/education/class/ClassesList";
 import CreateClass from "../component/education/class/CreateClass";
 import CourseDetail from "../component/education/course/CourseDetail";
-import TeachersList from "../component/education/teacher/TeachersList";
 import TeacherDetail from "../component/education/teacher/TeacherDetail";
 import AddTeacher from "../component/education/teacher/AddTeacher";
+import TeacherList from "../component/education/teacher/TeacherList";
 
 export default function EduRoute() {
   let { path, url } = useRouteMatch();
@@ -23,7 +23,7 @@ export default function EduRoute() {
 
         <Route component={AddNewCourse} path={`${path}/course/create`} />
 
-        <Route component={TeachersList} path={`${path}/teachers/list`} />
+        <Route component={TeacherList} path={`${path}/teachers/list`} />
 
         <Route component={TeacherDetail} path={`${path}/teacher/detail`} />
 
