@@ -1,6 +1,5 @@
-import { failed } from "./action/Auth";
-import { API_URL } from "./config/config";
-import { error } from "./action";
+import {failed} from "./action/Auth";
+import {API_URL} from "./config/config";
 import axios from "axios";
 
 export const authPost = (dispatch, token, url, body) => {
@@ -52,11 +51,10 @@ export const authGet = (dispatch, token, url) => {
       if (!res.ok) {
         if (res.status === 401) {
           dispatch(failed());
-          throw Error();
+          // throw Error();
         } else {
-          dispatch(error(res.status));
-          console.log(res.json());
-          throw Error();
+          // dispatch(error(res.status));
+          // throw Error();
         }
         return null;
       }
