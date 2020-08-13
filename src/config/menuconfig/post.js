@@ -6,23 +6,23 @@ export const post = {
   text: "QL chuyển phát bưu kiện",
   child: [
     {
-      id: "",
+      id: "MENU_POST_VIEW_VEHICLE",
       path: "",
       isPublic: false,
       icon: "StarBorder",
-      text: "DS phương tiện",
+      text: "Danh sách phương tiện",
       child: [],
     },
     {
-      id: "",
+      id: "MENU_POST_VIEW_CUSTOMER",
       path: "",
       isPublic: false,
       icon: "StarBorder",
-      text: "DS khách hàng",
+      text: "Danh sách khách hàng",
       child: [],
     },
     {
-      id: "",
+      id: "MENU_POST_VIEW_POST_OFFICE",
       path: "/postoffice/list",
       isPublic: false,
       icon: "StarBorder",
@@ -30,7 +30,7 @@ export const post = {
       child: [],
     },
     {
-      id: "",
+      id: "MENU_POST_VIEW_POST_ORDER",
       path: "",
       isPublic: false,
       icon: "StarBorder",
@@ -38,7 +38,7 @@ export const post = {
       child: [],
     },
     {
-      id: "",
+      id: "MENU_POST_CREATE_POST_ORDER",
       path: "",
       isPublic: false,
       icon: "StarBorder",
@@ -46,15 +46,7 @@ export const post = {
       child: [],
     },
     {
-      id: "",
-      path: "",
-      isPublic: false,
-      icon: "StarBorder",
-      text: "DS đợt chuyển phát",
-      child: [],
-    },
-    {
-      id: "",
+      id: "MENU_POST_VIEW_PACKAGE_PICKUP_PLAN",
       path: "",
       isPublic: false,
       icon: "StarBorder",
@@ -62,7 +54,7 @@ export const post = {
       child: [],
     },
     {
-      id: "",
+      id: "MENU_POST_VIEW_PACKAGE_DELIVERY_PLAN",
       path: "",
       isPublic: false,
       icon: "StarBorder",

@@ -1,22 +1,22 @@
 export const webcam = {
-  id: "MENU_WEBCAM",
+  id: "MENU_VIDEO_WEBCAM_CAPTURE",
   path: "",
-  isPublic: true,
+  isPublic: false,
   icon: "BlurOnIcon",
   text: "Webcam",
   child: [
     {
-      id: "",
+      id: "MENU_VIDEO_WEBCAM_CAPTURE_EXECUTE",
       path: "/webcam/recorder",
-      isPublic: true,
+      isPublic: false,
       icon: "StarBorder",
       text: "Ghi hình",
       child: [],
     },
     {
-      id: "",
+      id: "MENU_VIDEO_WEBCAM_CAPTURE_LIST",
       path: "/webcam/list",
-      isPublic: true,
+      isPublic: false,
       icon: "StarBorder",
       text: "Danh sách đã ghi",
       child: [],

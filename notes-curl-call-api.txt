@@ -395,3 +395,67 @@ curl --location --request POST 'http://localhost:8080/api/create-facilities' \
         "address": "145/11, Khu Pho 5 Pham Van Thuan, Tam Hiep, Thanh pho Bien Hoa, Dong Nai, Vietnam"
     }
 ]'
+-----------------------------
+GisMap
+
+	InitBuildStreet: 
+	curl --header "Content-Type: application/json" -v POST http://localhost:8080/api/gismap/init-build-street -u admin:sscm@123456 -d '{"streetName":"Dai Co Viet","directional":false,"forCar":true,"forTruck":false,"forMotobike":true}'
+
+	
+	AddPointStreet: 
+	curl --header "Content-Type: application/json" -v POST http://localhost:8080/api/gismap/add-point-street -u admin:sscm@123456 -d '{"streetId":"334ae460-1ff1-4a41-9f79-0bec44ed110f","lat":21.000, "lng":105.000,"timestamp":"2020-07-20 10:30:45"}'
+	
+	
+	Terminate building a street, store into MongoDB: 
+	curl --header "Content-Type: application/json" -v POST http://localhost:8080/api/gismap/terminate-build-street -u admin:sscm@123456 -d '{"streetId":"fbefcd38-c882-4f94-8343-33da18b3dbab"}'
+	
+	Get all streets
+	curl --header "Content-Type: application/json" -v GET http://localhost:8080/api/gismap/get-all-streets -u admin:sscm@123456
+	
+	curl --header "Content-Type: application/json" -v GET http://localhost:8080/api/gismap/get-all-streets -u admin:sscm@123456
+	
+	
+	Get all unterminated streets
+	lệnh: curl --header "Content-Type: application/json" -v GET http://localhost:8080/api/gismap/get-unterminated-streets -u admin:sscm@123456
+	
+	Remove built street
+	Lenh: curl --header "Content-Type: application/json" -v POST http://localhost:8080/api/gismap/remove-built-street -u admin:sscm@123456 -d '{"streetId":"0ff7fc18-75e5-423c-8f17-3de8f198e722"}'
+-----------------------------
+Logistic MONGO
+
+	Create Product
+	Lenh: curl --header "Content-Type: application/json" -v POST http://localhost:8080/api/mongo/create-product -u admin:sscm@123456 -d '{"productId":"PRD00003","productName":"Kem hop","uomId":"HOP"}'
+
+	Create facility
+	Lenh: curl --header "Content-Type: application/json" -v POST http://localhost:8080/api/mongo/create-facility-of-user-login-salesman -u admin:sscm@123456 -d '{"facilityName":"Kho Vinmart Vinh Tuy","address":"120 Nguyen Khoai, Vinh Tuy"}'
+	
+	Lenh: curl --header "Content-Type: application/json" -v GET http://localhost:8080/api/mongo/get-facility-of-user-login -u admin:sscm@123456
+	
+Get list faciilty
+	curl --header "Content-Type: application/json" -v GET http://localhost:8080/api/mongo/get-facility-of-user-login -u admin:sscm@123456
+	
+Get list products
+	curl --header "Content-Type: application/json" -v GET http://localhost:8080/api/mongo/get-list-products -u admin:sscm@123456
+	
+Sales MONGO
+	create customer:
+	Lenh: curl --header "Content-Type: application/json" -v POST http://localhost:8080/api/mongo/create-customer-of-salesman -u admin:sscm@123456 -d '{"customerName":"Vin commerce Vinh Tuy","address":"120 Nguyen Khoai, Vinh Tuy"}'
+	
+	Lenh: curl --header "Content-Type: application/json" -v GET http://localhost:8080/api/mongo/get-customer-of-user-login -u admin:sscm@123456
+	
+	Get produc and price
+	Lenh: curl --header "Content-Type: application/json" -v GET http://localhost:8080/api/mongo/get-products-and-price -u admin:sscm@123456
+	
+Tao don ban
+	curl --header "Content-Type: application/json" -v POST http://localhost:8080/api/mongo/create-sales-order -u admin:sscm@123456 -d '{"customerId":"0fcd1705-18d9-404c-808a-8e38fd59ac1e","orderDate":"2020-07-08 10:35:00",	"userLoginId":"admin","fromFacilityId":"7f92a9b6-9cc8-4826-85af-b8fc88b77c31","orderItems":[{"productId":"5f1e70c38d74b90b9cca43c6","quantity":120},{"productId":"5f1e70fc8d74b90b9cca43c7","quantity":150}]}'
+	
+Tao don mua
+	curl --header "Content-Type: application/json" -v POST http://localhost:8080/api/mongo/create-purchase-order -u admin:sscm@123456 -d '{"fromProviderId":"","orderDate":"2020-07-08 10:35:00",	"userLoginId":"admin","toFacilityId":"7f92a9b6-9cc8-4826-85af-b8fc88b77c31","orderItems":[{"productId":"5f1e70c38d74b90b9cca43c6","quantity":120},{"productId":"5f1e70fc8d74b90b9cca43c7","quantity":150}]}'
+		
+Lay DS ton kho
+	curl --header "Content-Type: application/json" -v GET http://localhost:8080/api/mongo/get-inventory-item/7f92a9b6-9cc8-4826-85af-b8fc88b77c31 -u admin:sscm@123456
+		
+Delete all running sales-logistics data
+	curl --header "Content-Type: application/json" -v GET http://localhost:8080/api/mongo/delete-all-sales-logistics -u admin:sscm@123456
+			
+-----------------------------

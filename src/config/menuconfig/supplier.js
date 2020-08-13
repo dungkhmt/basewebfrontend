@@ -1,22 +1,22 @@
 export const supplier = {
-  id: "MENU_SUPPLIER",
+  id: "MENU_SUPPLIER_MANAGEMENT",
   path: "",
-  isPublic: true,
+  isPublic: false,
   icon: "HomeSharpIcon",
   text: "QL nhà cung cấp",
   child: [
     {
-      id: "",
+      id: "MENU_SUPPLIER_MANAGEMENT_CREATE",
       path: "/supplier/list",
-      isPublic: true,
+      isPublic: false,
       icon: "StarBorder",
       text: "DS nhà cung cấp",
       child: [],
     },
     {
-      id: "",
+      id: "MENU_SUPPLIER_MANAGEMENT_LIST",
       path: "/supplier/create",
-      isPublic: true,
+      isPublic: false,
       icon: "StarBorder",
       text: "Tạo mới nhà cung cấp",
       child: [],
