@@ -6,17 +6,17 @@ import List from "@material-ui/core/List";
 import ListItem from "@material-ui/core/ListItem";
 import ListItemIcon from "@material-ui/core/ListItemIcon";
 import ListItemText from "@material-ui/core/ListItemText";
-import { useTheme } from "@material-ui/core/styles";
+import {useTheme} from "@material-ui/core/styles";
 import makeStyles from "@material-ui/core/styles/makeStyles";
 import ChevronLeftIcon from "@material-ui/icons/ChevronLeft";
 import ChevronRightIcon from "@material-ui/icons/ChevronRight";
 import ExpandLess from "@material-ui/icons/ExpandLess";
 import ExpandMore from "@material-ui/icons/ExpandMore";
 import clsx from "clsx";
-import React, { useEffect } from "react";
-import { Link } from "react-router-dom";
-import { menuIconMap, MENU_LIST } from "../config/menuconfig";
-import { useSelector } from "react-redux";
+import React, {useEffect} from "react";
+import {Link} from "react-router-dom";
+import {MENU_LIST, menuIconMap} from "../config/menuconfig";
+import {useSelector} from "react-redux";
 
 const drawerWidth = 340;
 const useStyles = makeStyles((theme) => ({
@@ -116,7 +116,7 @@ export default function SideBar(props) {
           selectedFunction.parent.parent !== null &&
           selectedFunction.parent.parent !== undefined
         ) {
-          handleOpenCollapseMenu(selectedFunction.parent.partent.id);
+          handleOpenCollapseMenu(selectedFunction.parent.parent.id);
         }
       }
   }, [selectedFunction]);
