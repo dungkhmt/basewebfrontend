@@ -30,8 +30,10 @@ export function selectValueCallback(label, list, menuItemValueCallback, selected
 export function selectValueByIdName(label, list, id, name, selected, setSelected) {
   return <div>
     <InputLabel>{label}</InputLabel>
-    <Select value={selected} onChange={event => setSelected(event.target.value)}>
-      {list.map(e => (<MenuItem value={e}>{e[name] + ' (' + e[id] + ')'}</MenuItem>))}
+    <Select value={selected || ''} onChange={event => setSelected(event.target.value)}>
+      {list.map(e => (<MenuItem value={e}>
+        {(!id || !name) ? e : e[name] + ' (' + e[id] + ')'}
+      </MenuItem>))}
     </Select>
     <p/>
   </div>;

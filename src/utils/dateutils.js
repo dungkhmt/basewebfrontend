@@ -40,7 +40,28 @@ export function addZeroBefore(number, k) {
   return ('0' + number).slice(-k);
 }
 
-export function dateFromThru(fromDate, thruDate, setFromDate, setThruDate, onChangeSelected) {
+export function datePicker(label, date, setDate, onChangeSelected = () => '') {
+  return <MuiPickersUtilsProvider utils={DateFnsUtils}>
+    <KeyboardDatePicker
+      disableToolbar
+      variant="inline"
+      format="dd/MM/yyyy"
+      margin="normal"
+      label={label}
+      value={date}
+      onChange={date => {
+        setDate(date);
+        onChangeSelected(date);
+      }}
+      KeyboardButtonProps={{
+        'aria-label': 'change date',
+      }}
+    />
+    <p/>
+  </MuiPickersUtilsProvider>
+}
+
+export function dateFromThru(fromDate, thruDate, setFromDate, setThruDate, onChangeSelected = () => '') {
   return <MuiPickersUtilsProvider utils={DateFnsUtils}>
     <KeyboardDatePicker
       disableToolbar

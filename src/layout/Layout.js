@@ -5,84 +5,70 @@ import {makeStyles} from "@material-ui/core/styles";
 import Toolbar from "@material-ui/core/Toolbar";
 import Typography from "@material-ui/core/Typography";
 import MenuIcon from "@material-ui/icons/Menu";
+import MenuOpenIcon from "@material-ui/icons/MenuOpen";
 import clsx from "clsx";
 import React, {useEffect} from "react";
 import {connect} from "react-redux";
 import {getMenu, logout} from "../action";
-import SideBar from "./SideBar";
-import ExitToAppIcon from "@material-ui/icons/ExitToApp";
-import { LayoutBreadcrumbs } from "./LayoutBreadcrumbs";
+import Logo from "../component/common/Logo";
+import {LayoutBreadcrumbs} from "./LayoutBreadcrumbs";
 import AccountButton from "./account/AccountButton";
+import SideBar from "./SideBar";
 
 const drawerWidth = 340;
 
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles((theme) => ({
   root: {
-    display: "flex"
+    display: "flex",
   },
   appBar: {
     zIndex: theme.zIndex.drawer + 1,
     transition: theme.transitions.create(["width", "margin"], {
       easing: theme.transitions.easing.sharp,
-      duration: theme.transitions.duration.leavingScreen
-    })
+      duration: theme.transitions.duration.leavingScreen,
+    }),
   },
-  appBarShift: {
-    marginLeft: drawerWidth,
-    width: `calc(100% - ${drawerWidth}px)`,
+  appBarTitle: {
+    marginLeft: theme.spacing(2),
     transition: theme.transitions.create(["width", "margin"], {
       easing: theme.transitions.easing.sharp,
-      duration: theme.transitions.duration.enteringScreen
-    })
-  },
-  menuButton: {
-    marginRight: 36
-  },
-  hide: {
-    display: "none"
-  },
-  drawer: {
-    width: drawerWidth,
-    flexShrink: 0,
-    whiteSpace: "nowrap"
-  },
-  drawerOpen: {
-    width: drawerWidth,
-    transition: theme.transitions.create("width", {
-      easing: theme.transitions.easing.sharp,
-      duration: theme.transitions.duration.enteringScreen
-    })
-  },
-  drawerClose: {
-    transition: theme.transitions.create("width", {
-      easing: theme.transitions.easing.sharp,
-      duration: theme.transitions.duration.leavingScreen
+      duration: theme.transitions.duration.enteringScreen,
     }),
-    overflowX: "hidden",
-    width: theme.spacing(7) + 1,
-    [theme.breakpoints.up("sm")]: {
-      width: theme.spacing(9) + 1
-    }
   },
   toolbar: {
     display: "flex",
     alignItems: "center",
     justifyContent: "flex-end",
     padding: theme.spacing(0, 1),
-    ...theme.mixins.toolbar
+    ...theme.mixins.toolbar,
+  },
+  hideButton: {
+    marginLeft: drawerWidth / 2 - theme.spacing(6),
+  },
+  toolbarButtons: {
+    marginLeft: "auto",
+    marginRight: -12,
   },
   content: {
     flexGrow: 1,
-    padding: theme.spacing(3)
+    padding: theme.spacing(3),
+    transition: theme.transitions.create("margin", {
+      easing: theme.transitions.easing.sharp,
+      duration: theme.transitions.duration.leavingScreen,
+    }),
+    marginLeft: -drawerWidth,
   },
-  nested: {
-    paddingLeft: theme.spacing(4)
+  contentShift: {
+    transition: theme.transitions.create("margin", {
+      easing: theme.transitions.easing.easeOut,
+      duration: theme.transitions.duration.enteringScreen,
+    }),
+    marginLeft: 0,
   },
-
-  toolbarButtons: {
-    marginLeft: "auto",
-    marginRight: -12
-  }
+  largeIcon: {
+    width: 50,
+    height: 50,
+  },
 }));
 
 function Layout(props) {
@@ -91,14 +77,14 @@ function Layout(props) {
 
   const [open, setOpen] = React.useState(false);
 
-  const handleDrawerOpen = () => {
-    setOpen(true);
+  const handleDrawer = () => {
+    setOpen(!open);
   };
 
   const handleDrawerClose = () => {
     setOpen(false);
   };
-  const handleLogout = e => {
+  const handleLogout = (e) => {
     props.processLogout();
   };
 
@@ -112,26 +98,48 @@ function Layout(props) {
       <AppBar
         position="fixed"
         className={clsx(classes.appBar, {
-          [classes.appBarShift]: open
+          // [classes.appBarShift]: open,
         })}
       >
         <Toolbar>
-          <IconButton
-            color="inherit"
-            aria-label="open drawer"
-            onClick={handleDrawerOpen}
-            edge="start"
-            className={clsx(classes.menuButton, {
-              [classes.hide]: open
-            })}
-          >
-            <MenuIcon/>
+          <IconButton color="inherit" className={clsx(classes.largeIcon, {})}>
+            <Logo fontSize="large"/>
           </IconButton>
-          <Typography variant="h6" noWrap>
-            Quản lý chuỗi cung ứng
-          </Typography>
+
+          {open ? (
+            <Typography variant="h6" noWrap>
+              Daily Opt
+              <IconButton
+                color="inherit"
+                aria-label="open drawer"
+                onClick={handleDrawer}
+                edge="start"
+                className={classes.hideButton}
+              >
+                <MenuOpenIcon/>
+              </IconButton>
+            </Typography>
+          ) : (
+            <IconButton
+              color="inherit"
+              aria-label="open drawer"
+              onClick={handleDrawer}
+              edge="start"
+            >
+              <MenuIcon/>
+            </IconButton>
+          )}
+          <div
+            className={clsx({
+                              [classes.appBarTitle]: open,
+                            })}
+          >
+            <Typography variant="h6" noWrap>
+              Quản lý chuỗi cung ứng
+            </Typography>
+          </div>
           <span className={classes.toolbarButtons}>
-            <AccountButton handleLogout={handleLogout}/> 
+            <AccountButton handleLogout={handleLogout}/>
           </span>
         </Toolbar>
       </AppBar>
@@ -140,7 +148,11 @@ function Layout(props) {
         handleDrawerClose={handleDrawerClose}
         menu={props.menu}
       />
-      <main className={classes.content}>
+      <main
+        className={clsx(classes.content, {
+          [classes.contentShift]: open,
+        })}
+      >
         <div className={classes.toolbar}/>
         <LayoutBreadcrumbs/>
         {children}
@@ -149,14 +161,14 @@ function Layout(props) {
   );
 }
 
-const mapStateToProps = state => ({
+const mapStateToProps = (state) => ({
   menu: state.menu.menu,
-  isMenuGot: state.menu.isMenuGot
+  isMenuGot: state.menu.isMenuGot,
 });
 
-const mapDispatchToProps = dispatch => ({
+const mapDispatchToProps = (dispatch) => ({
   getMenu: () => dispatch(getMenu()),
-  processLogout: () => dispatch(logout())
+  processLogout: () => dispatch(logout()),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(Layout);
