@@ -22,7 +22,7 @@ export const user = {
       child: [],
     },
     {
-      id: "MENU_USER_LIST",
+      id: "MENU_USER_APPROVE_REGISTRATION",
       path: "/user-group/user/approve-register",
       isPublic: false,
       icon: "StarBorder",
