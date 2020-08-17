@@ -11,7 +11,11 @@ export default function Register() {
   const [userLoginId, setUserLoginId] = useState('');
   const [password, setPassword] = useState('');
   const [email, setEmail] = useState('');
-  const [fullName, setFullName] = useState('');
+  // const [fullName, setFullName] = useState('');
+
+  const [firstName, setFirstName] = useState('');
+  const [middleName, setMiddleName] = useState('');
+  const [lastName, setLastName] = useState('');
 
   /*
    * BEGIN: Alert Dialog
@@ -52,13 +56,17 @@ export default function Register() {
       verify(userLoginId, notEmptyCheck, emptyErrorMessage) &&
       verify(password, notEmptyCheck, emptyErrorMessage) &&
       verify(email, isValidEmail, 'Hãy nhập một email hợp lệ!') &&
-      verify(fullName, notEmptyCheck, emptyErrorMessage)) {
+      verify(firstName, notEmptyCheck, emptyErrorMessage) &&
+      verify(middleName, notEmptyCheck, emptyErrorMessage) &&
+      verify(lastName, notEmptyCheck, emptyErrorMessage)) {
 
       let body = {
         userLoginId,
         password,
         email,
-        fullName
+        firstName,
+        middleName,
+        lastName
       };
       let userRegister = await fetch(API_URL + '/user/register/', {
         method: "POST",
@@ -69,11 +77,15 @@ export default function Register() {
       }).then(r => r.json());
 
       if (userRegister && userRegister['userLoginId']) {
-        showAlert('Đăng ký thành công', 'Đăng ký thành công người dùng ' + userLoginId + ', người dùng đang chờ được phê duyệt.',
+        showAlert(
+          'Đăng ký thành công',
+          'Đăng ký thành công người dùng ' + userLoginId + ', người dùng đang chờ được phê duyệt.',
           ({OK: () => history.push('/login')})
         );
       } else {
-        showAlert('Đăng ký thất bại', 'Đăng ký thất bại, tên người dùng ' + userLoginId + ' hoặc địa chỉ email ' + email + ' có thể đã được sử dụng!');
+        showAlert(
+          'Đăng ký thất bại',
+          'Đăng ký thất bại, tên người dùng ' + userLoginId + ' hoặc địa chỉ email ' + email + ' có thể đã được sử dụng!');
       }
     }
   }
@@ -84,7 +96,9 @@ export default function Register() {
     {textField('userLoginId', 'Tên đăng nhập', 'search', userLoginId, setUserLoginId)}
     {textField('password', 'Mật khẩu', 'password', password, setPassword)}
     {textField('email', 'Địa chỉ email', 'search', email, setEmail)}
-    {textField('fullName', 'Tên đầy đủ', 'search', fullName, setFullName)}
+    {textField('lastName', 'Họ', 'search', lastName, setLastName)}
+    {textField('middleName', 'Tên đệm', 'search', middleName, setMiddleName)}
+    {textField('firstName', 'Tên', 'search', firstName, setFirstName)}
 
     <AlertDialog
       title={alertTitle}
