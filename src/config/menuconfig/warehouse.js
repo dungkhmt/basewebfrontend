@@ -5,7 +5,23 @@ export const warehouse = {
   icon: "HomeSharpIcon",
   text: "QL Kho",
   child: [
-    {
+    {      
+      id: "MENU_WAREHOUSE_CREATE",
+      path: "/facility/create",
+      isPublic: false,
+      icon: "StarBorder",
+      text: "Tạo mới kho",
+      child: [],
+    },
+    {      
+      id: "MENU_WAREHOUSE_VIEW",
+      path: "/facility/list",
+      isPublic: false,
+      icon: "StarBorder",
+      text: "Danh sách kho",
+      child: [],
+    },
+    {      
       id: "MENU_WAREHOUSE_IMPORT",
       path: "/inventory/import",
       isPublic: false,
