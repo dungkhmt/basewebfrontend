@@ -28,6 +28,7 @@
     "material-ui": "^0.20.2",
     "material-ui-chip-input": "^1.1.0",
     "material-ui-dropzone": "^3.3.1",
+    "pdfmake": "^0.1.68",
     "react": "^16.10.2",
     "react-chartjs-2": "^2.9.0",
     "react-datetime-picker": "^3.0.2",

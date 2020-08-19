@@ -191,6 +191,10 @@ function DetailOrder(props) {
     return dialogTableData(shipmentOpen, setShipmentOpen, title1, columns1, data1, title2, columns2, data2);
   }
 
+  function exportPdf() {
+
+  }
+
   return (
     <div>
       <Card>
@@ -212,6 +216,9 @@ function DetailOrder(props) {
               </Grid>
               <Grid item xs={4}
                     style={{verticalAlign: 'text-bottom', textAlign: 'right', padding: '0px 50px 10px 30px'}}>
+                <Button color={'primary'} variant={'contained'} onClick={() => exportPdf()}>
+                  PDF
+                </Button>
                 <Button color={'primary'} variant={'contained'} onClick={() => setPaymentOpen(true)}>
                   Thanh toán
                 </Button>
