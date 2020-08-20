@@ -3,10 +3,13 @@ import {textField} from '../../utils/FormUtils'
 import Button from '@material-ui/core/Button'
 import {authPost} from "../../api";
 import {useDispatch, useSelector} from "react-redux";
+import {useHistory} from "react-router-dom";
 
 export function FacilityCreate() {
   const dispatch = useDispatch();
   const token = useSelector(state => state.auth.token);
+
+  const history = useHistory();
 
   const [facilityId, setFacilityId] = useState('')
 
@@ -19,6 +22,7 @@ export function FacilityCreate() {
     let response = await authPost(dispatch, token, '/create-facility', body).then(r => r.json());
     if (response && response['facilityId']) {
       alert('Đã tạo thành công kho với mã: ' + response['facilityId']);
+      history.push('/facility/list');
     }
   }
 

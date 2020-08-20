@@ -29,6 +29,7 @@ const DistributorRoute = lazy(() => import("./DistributorRouter"));
 const RetailOutletRoute = lazy(() => import("./RetailOutletRoute"));
 const SalemanRoute = lazy(() => import("./SalemanRoute"));
 const InventoryRoute = lazy(() => import("./InventoryRoute"));
+const FacilityRoute = lazy(() => import("./FacilityRoute"));
 const GeoRoute = lazy(() => import("./GeoRoute"));
 
 const TrackLocationRoute = lazy(() => import("./TrackLocationRoute"));
@@ -123,6 +124,10 @@ function MainAppRoute(props) {
             component={InventoryRoute}
             layout={Layout}
             path="/inventory"/>
+          <PrivateRoute
+            component={FacilityRoute}
+            layout={Layout}
+            path="/facility"/>
           <PrivateRoute
             component={GeoRoute}
             layout={Layout}

@@ -56,13 +56,29 @@ export function SalesmanFacilityList() {
   return (<div>
     <h2>Danh sách NVBH cho kho</h2>
 
-    <div>Mã kho: <b>{facilityId}</b></div>
-    <div>Tên kho: <b>{facility['facilityName']}</b></div>
-    <div>Địa chỉ: <b>{facility['postalAddress']['address']}</b></div>
+    <table style={{width: '100%', border: '0px'}}>
+      <tr>
+        <td style={{width: '10%'}}/>
+        <td style={{width: '90%'}}/>
+      </tr>
+      <tr>
+        <td>Mã kho:</td>
+        <td><b>{facilityId}</b></td>
+      </tr>
+      <tr>
+        <td>Tên kho:</td>
+        <td><b>{facility['facilityName']}</b></td>
+      </tr>
+      <tr>
+        <td>Địa chỉ:</td>
+        <td><b>{(facility['postalAddress'] || {})['address']}</b></td>
+      </tr>
+    </table>
 
-    <div style={{float: "right"}}>
-      <Button variant={"contained"} color={"primary"} onClick={() => history.push('/...')}>Thêm mới</Button>
+    <div style={{textAlign: "right"}}>
+      <Button variant={"contained"} color={"primary"}
+              onClick={() => history.push('/facility/salesman/create/' + facilityId)}>Thêm mới</Button>
     </div>
-    <MaterialTable columns={facilityRoleColumns} data={facilityRoles} title={''}/>
+    <MaterialTable columns={facilityRoleColumns} data={facilityRoles} title={''} options={{search: false}}/>
   </div>);
 }

@@ -19,14 +19,17 @@ export function SalesmanFacilityCreate() {
 
   async function getUserLoginIds() {
     let userLoginIds = await authGet(dispatch, token, '/get-all-user-login-ids');
-    setUserLoginIds(userLoginIds);
+    if (userLoginIds) {
+      setUserLoginIds(userLoginIds);
+      setSelectedUserLoginId(userLoginIds[0]);
+    }
   }
 
   async function handleSubmit() {
     const body = {userLoginId: selectedUserLoginId, facilityId};
-    let response = await authPost(dispatch, token, '/create-facility-role', body);
+    let response = await authPost(dispatch, token, '/create-facility-role', body).then(r => r.json());
     if (response && response['facilityRoleId']) {
-      history.push('/...') // SalesmanFacilityList
+      history.push('/facility/salesman/list/' + facilityId) // SalesmanFacilityList
     } else {
       alert('Đã có lỗi xảy ra');
     }
@@ -39,8 +42,21 @@ export function SalesmanFacilityCreate() {
   return (<div>
     <h2>Thêm nhân viên bán hàng vào kho</h2>
 
-    <div>Mã kho: <b>{facilityId}</b></div>
-    {selectValueCallback('userLoginId', userLoginIds, e => e, selectedUserLoginId, setSelectedUserLoginId)}
+    <table style={{width: '100%', border: '0px'}}>
+      <tr>
+        <td style={{width: '10%'}}/>
+        <td style={{width: '90%'}}/>
+      </tr>
+      <tr>
+        <td>Mã kho:</td>
+        <td><b>{facilityId}</b></td>
+      </tr>
+
+      <tr>
+        <td>Chọn nhân viên:</td>
+        <td><b>{selectValueCallback('', userLoginIds, e => e, selectedUserLoginId, setSelectedUserLoginId)}</b></td>
+      </tr>
+    </table>
 
     <Button variant={"contained"} color={"primary"} onClick={() => handleSubmit()}>Lưu</Button>
   </div>);
