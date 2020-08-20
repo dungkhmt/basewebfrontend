@@ -17,12 +17,19 @@ export function SalesmanFacilityCreate() {
 
   const [selectedUserLoginId, setSelectedUserLoginId] = useState('');
 
-  async function getUserLoginIds() {
+
+  async function getUserLoginIds(facilityRoleUserLoginIdSet) {
     let userLoginIds = await authGet(dispatch, token, '/get-all-user-login-ids');
     if (userLoginIds) {
+
+      userLoginIds = userLoginIds.filter(userLoginId => !facilityRoleUserLoginIdSet.has(userLoginId));
       setUserLoginIds(userLoginIds);
       setSelectedUserLoginId(userLoginIds[0]);
     }
+  }
+
+  async function getFacilityRoles() {
+    return await authGet(dispatch, token, '/get-all-facility-role?facilityId=' + facilityId);
   }
 
   async function handleSubmit() {
@@ -36,7 +43,9 @@ export function SalesmanFacilityCreate() {
   }
 
   useEffect(() => {
-    getUserLoginIds().then(r => r);
+    getFacilityRoles().then(facilityRoles => {
+      getUserLoginIds(new Set(facilityRoles.map(value => value['userLoginId']))).then(r => r);
+    });
   }, []);
 
   return (<div>
