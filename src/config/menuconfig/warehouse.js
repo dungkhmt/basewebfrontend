@@ -5,7 +5,7 @@ export const warehouse = {
   icon: "HomeSharpIcon",
   text: "QL Kho",
   child: [
-    {      
+    {
       id: "MENU_WAREHOUSE_CREATE",
       path: "/facility/create",
       isPublic: false,
@@ -13,7 +13,7 @@ export const warehouse = {
       text: "Tạo mới kho",
       child: [],
     },
-    {      
+    {
       id: "MENU_WAREHOUSE_VIEW",
       path: "/facility/list",
       isPublic: false,
@@ -21,7 +21,7 @@ export const warehouse = {
       text: "Danh sách kho",
       child: [],
     },
-    {      
+    {
       id: "MENU_WAREHOUSE_IMPORT",
       path: "/inventory/import",
       isPublic: false,
