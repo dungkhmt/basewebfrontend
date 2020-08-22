@@ -11,6 +11,7 @@ import DialogContent from "@material-ui/core/DialogContent";
 import Dialog from "@material-ui/core/Dialog";
 import Grid from "@material-ui/core/Grid";
 import Button from "@material-ui/core/Button";
+import {printOrderPdf} from "../../utils/PdfUtils";
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -28,7 +29,7 @@ function DetailOrder(props) {
   const token = useSelector(state => state.auth.token);
   const dispatch = useDispatch();
   const [orderItems, setOrderItems] = useState([]);
-  const [order, setOrder] = useState([]);
+  const [order, setOrder] = useState({});
   const orderItemColumns = [
     {title: "Tên sản phẩm", field: "productName"},
     {title: "Số lượng", field: "quantity"},
@@ -191,6 +192,10 @@ function DetailOrder(props) {
     return dialogTableData(shipmentOpen, setShipmentOpen, title1, columns1, data1, title2, columns2, data2);
   }
 
+  function exportPdf() {
+    printOrderPdf(order);
+  }
+
   return (
     <div>
       <Card>
@@ -212,6 +217,9 @@ function DetailOrder(props) {
               </Grid>
               <Grid item xs={4}
                     style={{verticalAlign: 'text-bottom', textAlign: 'right', padding: '0px 50px 10px 30px'}}>
+                <Button color={'primary'} variant={'contained'} onClick={() => exportPdf()}>
+                  PDF
+                </Button>
                 <Button color={'primary'} variant={'contained'} onClick={() => setPaymentOpen(true)}>
                   Thanh toán
                 </Button>
