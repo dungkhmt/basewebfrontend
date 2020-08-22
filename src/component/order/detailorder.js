@@ -11,6 +11,7 @@ import DialogContent from "@material-ui/core/DialogContent";
 import Dialog from "@material-ui/core/Dialog";
 import Grid from "@material-ui/core/Grid";
 import Button from "@material-ui/core/Button";
+import {printOrderPdf} from "../../utils/PdfUtils";
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -28,7 +29,7 @@ function DetailOrder(props) {
   const token = useSelector(state => state.auth.token);
   const dispatch = useDispatch();
   const [orderItems, setOrderItems] = useState([]);
-  const [order, setOrder] = useState([]);
+  const [order, setOrder] = useState({});
   const orderItemColumns = [
     {title: "Tên sản phẩm", field: "productName"},
     {title: "Số lượng", field: "quantity"},
@@ -192,7 +193,7 @@ function DetailOrder(props) {
   }
 
   function exportPdf() {
-
+    printOrderPdf(order);
   }
 
   return (
