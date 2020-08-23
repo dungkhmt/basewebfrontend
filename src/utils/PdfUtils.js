@@ -5,57 +5,65 @@ import {format} from 'date-fns'
 pdfMake.vfs = pdfFonts.pdfMake.vfs;
 
 function header(orderCode, orderDate,) {
-  return {
-    columns: [
+  return [
+    {
+      text: 'Công ty TNHH Daily Opt',
+      bold: true,
+      fontSize: 16,
+      alignment: 'center',
+      margin: [0, 0, 0, 20]
+    },
+
+    [
       {
-        text: 'Công ty TNHH Daily Opt',
-        bold: true,
-        fontSize: 16
+        text: 'ĐƠN HÀNG',
+        style: 'invoiceTitle',
+        width: '*',
       },
+      {
+        stack: [
+          {
+            columns: [
+              {
+                text: 'Mã đơn hàng:',
+                style: 'invoiceSubTitle',
+                width: 110
 
-      [
-        {
-          text: 'ĐƠN HÀNG',
-          style: 'invoiceTitle',
-          width: '*'
-        },
-        {
-          stack: [
-            {
-              columns: [
-                {
-                  text: 'Mã đơn hàng:',
-                  style: 'invoiceSubTitle',
-                  width: '*'
+              },
+              {
+                text: orderCode,
+                style: 'invoiceSubValue',
+                width: '*'
 
-                },
-                {
-                  text: orderCode,
-                  style: 'invoiceSubValue',
-                  width: 100
-
-                }
-              ]
-            },
-            {
-              columns: [
-                {
-                  text: 'Ngày đơn hàng:',
-                  style: 'invoiceSubTitle',
-                  width: '*'
-                },
-                {
-                  text: orderDate,
-                  style: 'invoiceSubValue',
-                  width: 100
-                }
-              ]
-            },
-          ]
-        }
-      ],
+              },
+              {
+                text: '',
+                width: 250
+              }
+            ]
+          },
+          {
+            columns: [
+              {
+                text: 'Ngày đơn hàng:',
+                style: 'invoiceSubTitle',
+                width: 110
+              },
+              {
+                text: orderDate,
+                style: 'invoiceSubValue',
+                width: '*'
+              },
+              {
+                text: '',
+                width: 250
+              }
+            ]
+          },
+        ]
+      }
     ],
-  };
+  ];
 }
 
 function customerAndVendorInfo(vendorId, vendorName, customerCode, customerName) {
@@ -231,15 +239,15 @@ let styles = {
   },
   // Invoice Title
   invoiceTitle: {
-    fontSize: 22,
+    fontSize: 24,
     bold: true,
-    alignment: 'right',
-    margin: [0, 0, 0, 15]
+    alignment: 'center',
+    margin: [0, 0, 0, 40]
   },
   // Invoice Details
   invoiceSubTitle: {
     fontSize: 12,
-    alignment: 'right'
+    alignment: 'left'
   },
   invoiceSubValue: {
     fontSize: 12,
@@ -339,7 +347,7 @@ let styles = {
 export function printOrderPdf(order) {
   const docDefinition = {
     content: [
-      header(order['orderId'], format(new Date(order['orderDate']), 'dd/MM/yyyy HH:mm:ss')),
+      ...header(order['orderId'], format(new Date(order['orderDate']), 'dd/MM/yyyy HH:mm:ss')),
       customerAndVendorInfo(order['vendorId'], order['vendorName'], order['customerId'], order['customerName']),
 
       '\n\n',
