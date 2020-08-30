@@ -1,6 +1,7 @@
 import DateFnsUtils from "@date-io/date-fns";
 import {KeyboardDatePicker, MuiPickersUtilsProvider} from "@material-ui/pickers";
 import React from "react";
+import {format} from "date-fns"
 
 export function toFormattedDateTime(rawTime) {
   let date = new Date(rawTime);
@@ -72,7 +73,7 @@ export function dateFromThru(fromDate, thruDate, setFromDate, setThruDate, onCha
       value={fromDate}
       onChange={date => {
         setFromDate(date);
-        onChangeSelected(date, thruDate).then(r => r);
+        onChangeSelected(date, thruDate);
       }}
       KeyboardButtonProps={{
         'aria-label': 'change date',
@@ -87,7 +88,7 @@ export function dateFromThru(fromDate, thruDate, setFromDate, setThruDate, onCha
       value={thruDate}
       onChange={date => {
         setThruDate(date);
-        onChangeSelected(fromDate, date).then(r => r);
+        onChangeSelected(fromDate, date);
       }}
       KeyboardButtonProps={{
         'aria-label': 'change date',
@@ -99,4 +100,8 @@ export function dateFromThru(fromDate, thruDate, setFromDate, setThruDate, onCha
 export function getDateFromNowPlus(year, month, day) {
   let date = new Date();
   return new Date(date.getFullYear() + year, date.getMonth() + month, date.getDay() + day);
+}
+
+export function dateFnFormat(date, formatString) {
+  return format(date, formatString);
 }

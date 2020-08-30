@@ -24,6 +24,7 @@ const PostOfficeRoute = lazy(() => import("./PostOfficeRoute"));
 const ShipmentItemDeliveryPlanRoute = lazy(() => import("./ShipmentItemDelieveryPlanRoute"));
 const SalesRoutesPlanRoute = lazy(() => import("./SalesRoutesPlanRoute"));
 const ProductRoute = lazy(() => import("./ProductRouter"));
+const PromoTaxGroupRoute = lazy(() => import('./PromoTaxGroupRoute'))
 const CustomerRoute = lazy(() => import("./CustomerRouter"));
 const DistributorRoute = lazy(() => import("./DistributorRouter"));
 const RetailOutletRoute = lazy(() => import("./RetailOutletRoute"));
@@ -104,6 +105,10 @@ function MainAppRoute(props) {
             component={ProductRoute}
             layout={Layout}
             path="/products"/>
+          <PrivateRoute
+            component={PromoTaxGroupRoute}
+            layout={Layout}
+            path="/promo-group"/>
           <PrivateRoute
             component={CustomerRoute}
             layout={Layout}

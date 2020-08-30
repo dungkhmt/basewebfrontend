@@ -42,12 +42,14 @@ import {unpaidinvoice} from "./menuconfig/unpaidinvoice";
 import {user} from "./menuconfig/user";
 import {warehouse} from "./menuconfig/warehouse";
 import {webcam} from "./menuconfig/webcam";
+import {promotax} from "./menuconfig/promotax";
 
 export const MENU_LIST = [];
 MENU_LIST.push(department);
 MENU_LIST.push(tms);
 MENU_LIST.push(user);
 MENU_LIST.push(order);
+MENU_LIST.push(promotax);
 MENU_LIST.push(invoice);
 MENU_LIST.push(unpaidinvoice);
 MENU_LIST.push(salesroute);
