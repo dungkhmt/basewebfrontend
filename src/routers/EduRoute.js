@@ -11,6 +11,13 @@ import CourseDetail from "../component/education/course/CourseDetail";
 import TeacherDetail from "../component/education/teacher/TeacherDetail";
 import AddTeacher from "../component/education/teacher/AddTeacher";
 import TeacherList from "../component/education/teacher/TeacherList";
+import ClassRegistration from "../component/education/classmanagement/student/ClassRegistration";
+import TClassDetail from "../component/education/classmanagement/teacher/TClassDetail";
+import TClassList from "../component/education/classmanagement/teacher/TClassList";
+import TExerciseDetail from "../component/education/classmanagement/teacher/TExerciseDetail";
+import SClassDetail from "../component/education/classmanagement/student/SClassDetail";
+import SClassList from "../component/education/classmanagement/student/SClassList";
+import SExerciseDetail from "../component/education/classmanagement/student/SExerciseDetail";
 
 export default function EduRoute() {
   let { path, url } = useRouteMatch();
@@ -38,6 +45,35 @@ export default function EduRoute() {
         <Route component={CreateSemester} path={`${path}/semester`} />
 
         <Route component={CreateClass} path={`${path}/create-class`} />
+
+        <Route
+          component={ClassRegistration}
+          path={`${path}/class/registration`}
+        />
+
+        <Route component={SClassList} path={`${path}/student/class/list`} />
+
+        <Route
+          component={SClassDetail}
+          path={`${path}/student/class/detail/{id}`}
+        />
+
+        <Route
+          component={SExerciseDetail}
+          path={`${path}/student/exercise/detail/{id}`}
+        />
+
+        <Route component={TClassList} path={`${path}/teacher/class/list`} />
+
+        <Route
+          component={TClassDetail}
+          path={`${path}/teacher/class/detail/{id}`}
+        />
+
+        <Route
+          component={TExerciseDetail}
+          path={`${path}/teacher/exercise/detail/{id}`}
+        />
       </Switch>
     </div>
   );
