@@ -158,9 +158,10 @@ function ClassRegistration() {
               headerStyle: {
                 backgroundColor: "#a5c3f2",
                 fontWeight: "bold",
+                fontSize: "1rem",
               },
               sorting: false,
-              // cellStyle: {},
+              cellStyle: { fontSize: "1rem" },
               // rowStyle: {
               //   textAlign: "left",
               // },
