@@ -1,13 +1,13 @@
-import React, {lazy, Suspense, useEffect} from "react";
-import {useDispatch} from "react-redux";
-import {Route, Switch, useLocation} from "react-router-dom";
-import {updateSelectedFuction} from "../action";
+import React, { lazy, Suspense, useEffect } from "react";
+import { useDispatch } from "react-redux";
+import { Route, Switch, useLocation } from "react-router-dom";
+import { updateSelectedFuction } from "../action";
 import PrivateRoute from "../common/PrivateRoute";
-import {Home} from "../component";
+import { Home } from "../component";
 import error from "../component/common/errornotfound";
 import Loading from "../component/common/Loading";
-import {mapPathMenu} from "../config/menuconfig";
-import {Layout} from "../layout";
+import { mapPathMenu } from "../config/menuconfig";
+import { Layout } from "../layout";
 
 const DepotContainerFuncRoute = lazy(() => import("./DepotContainerFuncRoute"));
 const DepotTrailerFuncRoute = lazy(() => import("./DepotTrailerFuncRoute"));
@@ -21,10 +21,12 @@ const TrailerFuncRoute = lazy(() => import("./TrailerFuncRoute"));
 const WebcamRoute = lazy(() => import("./WebcamRoute"));
 const PostOfficeRoute = lazy(() => import("./PostOfficeRoute"));
 
-const ShipmentItemDeliveryPlanRoute = lazy(() => import("./ShipmentItemDelieveryPlanRoute"));
+const ShipmentItemDeliveryPlanRoute = lazy(() =>
+  import("./ShipmentItemDelieveryPlanRoute")
+);
 const SalesRoutesPlanRoute = lazy(() => import("./SalesRoutesPlanRoute"));
 const ProductRoute = lazy(() => import("./ProductRouter"));
-const PromoTaxGroupRoute = lazy(() => import('./PromoTaxGroupRoute'))
+const PromoTaxGroupRoute = lazy(() => import("./PromoTaxGroupRoute"));
 const CustomerRoute = lazy(() => import("./CustomerRouter"));
 const DistributorRoute = lazy(() => import("./DistributorRouter"));
 const RetailOutletRoute = lazy(() => import("./RetailOutletRoute"));
@@ -36,7 +38,9 @@ const GeoRoute = lazy(() => import("./GeoRoute"));
 const TrackLocationRoute = lazy(() => import("./TrackLocationRoute"));
 const OrderRoute = lazy(() => import("./OrderRoute"));
 const DeliveryPlanRoute = lazy(() => import("./DeliveryPlanRoute"));
-const VehicleDeliveryPlanRoute = lazy(() => import("./VehicleDeliveryPlanRoute"));
+const VehicleDeliveryPlanRoute = lazy(() =>
+  import("./VehicleDeliveryPlanRoute")
+);
 const UserLoginRoute = lazy(() => import("./UserLoginRoute"));
 
 const PaymentGroupRoute = lazy(() => import("./PaymentGroupRoute"));
@@ -65,119 +69,134 @@ function MainAppRoute(props) {
   }, [location]);
   return (
     <Layout>
-      <Suspense fallback={<Loading/>}>
+      <Suspense fallback={<Loading />}>
         <Switch>
-          <PrivateRoute component={Home} layout={Layout} exact path="/"/>
+          <PrivateRoute component={Home} layout={Layout} exact path="/" />
 
           <PrivateRoute
             component={UserLoginRoute}
             layout={Layout}
-            path="/userlogin"/>
-          <PrivateRoute
-            component={OrderRoute}
-            layout={Layout}
-            path="/orders"/>
+            path="/userlogin"
+          />
+          <PrivateRoute component={OrderRoute} layout={Layout} path="/orders" />
           <PrivateRoute
             component={TrackLocationRoute}
             layout={Layout}
-            path="/tracklocations"/>
+            path="/tracklocations"
+          />
           <PrivateRoute
             component={DeliveryPlanRoute}
             layout={Layout}
-            path="/delivery-plan"/>
+            path="/delivery-plan"
+          />
           <PrivateRoute
             component={ShipmentItemDeliveryPlanRoute}
             layout={Layout}
-            path="/shipment-item-delivery-plan"/>
+            path="/shipment-item-delivery-plan"
+          />
           <PrivateRoute
             component={PostOfficeRoute}
             layout={Layout}
-            path="/postoffice"/>
+            path="/postoffice"
+          />
           <PrivateRoute
             component={VehicleDeliveryPlanRoute}
             layout={Layout}
-            path="/vehicle-delivery-plan"/>
+            path="/vehicle-delivery-plan"
+          />
           <PrivateRoute
             component={SalesRoutesPlanRoute}
             layout={Layout}
-            path="/salesroutes"/>
+            path="/salesroutes"
+          />
           <PrivateRoute
             component={ProductRoute}
             layout={Layout}
-            path="/products"/>
+            path="/products"
+          />
           <PrivateRoute
             component={PromoTaxGroupRoute}
             layout={Layout}
-            path="/promo-group"/>
+            path="/promo-group"
+          />
           <PrivateRoute
             component={CustomerRoute}
             layout={Layout}
-            path="/customer"/>
+            path="/customer"
+          />
           <PrivateRoute
             component={DistributorRoute}
             layout={Layout}
-            path="/distributor"/>
+            path="/distributor"
+          />
           <PrivateRoute
             component={RetailOutletRoute}
             layout={Layout}
-            path="/retailoutlet"/>
+            path="/retailoutlet"
+          />
           <PrivateRoute
             component={SalemanRoute}
             layout={Layout}
-            path="/salesman"/>
+            path="/salesman"
+          />
           <PrivateRoute
             component={InventoryRoute}
             layout={Layout}
-            path="/inventory"/>
+            path="/inventory"
+          />
           <PrivateRoute
             component={FacilityRoute}
             layout={Layout}
-            path="/facility"/>
-          <PrivateRoute
-            component={GeoRoute}
-            layout={Layout}
-            path="/geo"/>
+            path="/facility"
+          />
+          <PrivateRoute component={GeoRoute} layout={Layout} path="/geo" />
           <PrivateRoute
             component={DepotContainerFuncRoute}
             layout={Layout}
-            path="/depotcontainerfunc"/>
+            path="/depotcontainerfunc"
+          />
           <PrivateRoute
             component={DepotTrailerFuncRoute}
             layout={Layout}
-            path="/depottrailerfunc"/>
+            path="/depottrailerfunc"
+          />
           <PrivateRoute
             component={DepotTruckFuncRoute}
             layout={Layout}
-            path="/depottruckfunc"/>
+            path="/depottruckfunc"
+          />
           <PrivateRoute
             component={TrailerFuncRoute}
             layout={Layout}
-            path="/trailerfunc"/>
+            path="/trailerfunc"
+          />
           <PrivateRoute
             component={PortFuncRoute}
             layout={Layout}
-            path="/portfunc"/>
-          <PrivateRoute
-            component={SalesRoute}
-            layout={Layout}
-            path="/sales"/>
+            path="/portfunc"
+          />
+          <PrivateRoute component={SalesRoute} layout={Layout} path="/sales" />
           <PrivateRoute
             component={SupplierRoute}
             layout={Layout}
-            path="/supplier"/>
+            path="/supplier"
+          />
           <PrivateRoute
             component={PurchaseOrderRoute}
             layout={Layout}
-            path="/purchase-order"/>
+            path="/purchase-order"
+          />
           <PrivateRoute
             component={EduRoute}
-            layout={Layout}
-            path="/edu"/>
+            // layout={Layout}
+            path="/edu"
+          />
           <PrivateRoute
             component={WebcamRoute}
             layout={Layout}
             isAuthenticated={true}
-            path="/webcam"/>
+            path="/webcam"
+          />
           <PrivateRoute
             component={PaymentGroupRoute}
             layout={Layout}
@@ -269,7 +288,7 @@ function MainAppRoute(props) {
             path="/sales-group"
           />
 
-          <Route component={error} path="*"/>
+          <Route component={error} path="*" />
         </Switch>
       </Suspense>
     </Layout>
