@@ -6,6 +6,7 @@ import {
   Typography,
   Box,
   CardHeader,
+  Paper,
 } from "@material-ui/core";
 import MaterialTable from "material-table";
 import { useDispatch, useSelector } from "react-redux";
@@ -147,12 +148,15 @@ function ClassRegistration() {
               //       })
               //       .catch((e) => {
               //         reject({
-              //           message: "Không tải được dữ liệu. Thử lại ",
+              //           message: "Đã có lỗi xảy ra trong quá trình tải dữ liệu. Thử lại ",
               //           errorCause: "query",
               //         });
               //       });
               //   })
             }
+            components={{
+              Container: (props) => <Paper {...props} elevation={0} />,
+            }}
             options={{
               debounceInterval: 500,
               headerStyle: {
