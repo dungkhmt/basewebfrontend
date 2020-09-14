@@ -18,6 +18,7 @@ import TExerciseDetail from "../component/education/classmanagement/teacher/TExe
 import SClassDetail from "../component/education/classmanagement/student/SClassDetail";
 import SClassList from "../component/education/classmanagement/student/SClassList";
 import SExerciseDetail from "../component/education/classmanagement/student/SExerciseDetail";
+import CreateExercise from "../component/education/classmanagement/teacher/CreateExercise";
 
 export default function EduRoute() {
   let { path, url } = useRouteMatch();
@@ -46,33 +47,29 @@ export default function EduRoute() {
 
         <Route component={CreateClass} path={`${path}/create-class`} />
 
-        <Route
-          component={ClassRegistration}
-          path={`${path}/class/registration`}
-        />
+        <Route component={ClassRegistration} path={`${path}/class/register`} />
 
         <Route component={SClassList} path={`${path}/student/class/list`} />
 
-        <Route
-          component={SClassDetail}
-          path={`${path}/student/class/detail/{id}`}
-        />
+        <Route component={SClassDetail} path={`${path}/student/class/:id`} />
 
         <Route
           component={SExerciseDetail}
-          path={`${path}/student/exercise/detail/{id}`}
+          path={`${path}/student/exercise/:id`}
         />
 
         <Route component={TClassList} path={`${path}/teacher/class/list`} />
 
+        <Route component={TClassDetail} path={`${path}/teacher/class/:id`} />
+
         <Route
-          component={TClassDetail}
-          path={`${path}/teacher/class/detail/{id}`}
+          component={CreateExercise}
+          path={`${path}/teacher/exercise/create`}
         />
 
         <Route
           component={TExerciseDetail}
-          path={`${path}/teacher/exercise/detail/{id}`}
+          path={`${path}/teacher/exercise/:id`}
         />
       </Switch>
     </div>
