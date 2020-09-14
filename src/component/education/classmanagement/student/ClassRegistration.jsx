@@ -28,6 +28,7 @@ function ClassRegistration() {
       },
       cellStyle: {
         textAlign: "center",
+        fontSize: "1rem",
       },
     },
     {
