@@ -1,7 +1,7 @@
 import React from "react";
 
-function ExerciseDetail() {
+function SExerciseDetail() {
   return <div></div>;
 }
 
-export default ExerciseDetail;
+export default SExerciseDetail;

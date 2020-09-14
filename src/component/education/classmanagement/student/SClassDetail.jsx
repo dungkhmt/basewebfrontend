@@ -1,7 +1,7 @@
 import React from "react";
 
-function ClassDetail() {
-  return <div></div>;
+function SClassDetail() {
+  return <div>Student class detail</div>;
 }
 
-export default ClassDetail;
+export default SClassDetail;

@@ -1,7 +1,7 @@
 import React from "react";
 
-function ClassList() {
-  return <div></div>;
+function SClassList() {
+  return <div>Student class list</div>;
 }
 
-export default ClassList;
+export default SClassList;
