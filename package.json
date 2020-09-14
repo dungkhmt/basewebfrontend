@@ -20,6 +20,7 @@
     "cross-fetch": "^3.0.4",
     "customize-cra": "^1.0.0",
     "date-fns": "^2.15.0",
+    "framer-motion": "^2.6.13",
     "google-map-react": "^1.1.4",
     "google-maps-react": "^2.0.2",
     "jspdf": "^1.5.3",
