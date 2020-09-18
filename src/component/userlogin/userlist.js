@@ -1,14 +1,13 @@
 import MaterialTable from "material-table";
 import React from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { Link, useHistory } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { authGet } from "../../api";
 import { tableIcons } from "../../utils/iconutil";
+import withScreenSecurity from "../withScreenSecurity";
 
-
-export default function UserList() {
+function UserList() {
   const dispatch = useDispatch();
-  const history = useHistory();
   const token = useSelector((state) => state.auth.token);
   const columns = [
     { title: "Full Name", field: "fullName" },
@@ -89,3 +88,5 @@ export default function UserList() {
     />
   );
 }
+const screenName = "SCREEN_USER_LIST";
+export default withScreenSecurity(UserList, screenName, true);

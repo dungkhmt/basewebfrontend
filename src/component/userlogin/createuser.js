@@ -1,39 +1,43 @@
 import DateFnsUtils from "@date-io/date-fns";
+import { CircularProgress } from "@material-ui/core";
 import Button from "@material-ui/core/Button";
 import Card from "@material-ui/core/Card";
 import CardActions from "@material-ui/core/CardActions";
 import CardContent from "@material-ui/core/CardContent";
-import {makeStyles} from "@material-ui/core/styles";
-import TextField from "@material-ui/core/TextField";
-import Typography from "@material-ui/core/Typography";
+import FormControl from "@material-ui/core/FormControl";
+import Input from "@material-ui/core/Input";
 import InputLabel from "@material-ui/core/InputLabel";
 import MenuItem from "@material-ui/core/MenuItem";
-import FormControl from "@material-ui/core/FormControl";
 import Select from "@material-ui/core/Select";
-import Input from "@material-ui/core/Input";
+import { makeStyles } from "@material-ui/core/styles";
+import TextField from "@material-ui/core/TextField";
+import Typography from "@material-ui/core/Typography";
+import {
+  KeyboardDatePicker,
+  MuiPickersUtilsProvider
+} from "@material-ui/pickers";
+import React, { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { useHistory } from "react-router-dom";
+import { failed } from "../../action/Auth";
+import { authPost } from "../../api";
+import { API_URL } from "../../config/config";
+import withScreenSecurity from "../withScreenSecurity";
 
-import {failed} from "../../action/Auth";
-import {KeyboardDatePicker, MuiPickersUtilsProvider} from "@material-ui/pickers";
-import React, {useEffect, useState} from "react";
-import {useHistory} from "react-router-dom";
-import {authPost} from "../../api";
-import {API_URL} from "../../config/config";
-import {useDispatch, useSelector} from "react-redux";
-import {CircularProgress} from "@material-ui/core";
 
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles((theme) => ({
   root: {
     padding: theme.spacing(4),
     "& .MuiTextField-root": {
       margin: theme.spacing(1),
-      width: 200
-    }
+      width: 200,
+    },
   },
   formControl: {
     margin: theme.spacing(1),
     minWidth: 120,
-    maxWidth: 300
-  }
+    maxWidth: 300,
+  },
 }));
 const ITEM_HEIGHT = 48;
 const ITEM_PADDING_TOP = 8;
@@ -41,13 +45,13 @@ const MenuProps = {
   PaperProps: {
     style: {
       maxHeight: ITEM_HEIGHT * 4.5 + ITEM_PADDING_TOP,
-      width: 250
-    }
-  }
+      width: 250,
+    },
+  },
 };
 
 function UserCreate(props) {
-  const token = useSelector(state => state.auth.token);
+  const token = useSelector((state) => state.auth.token);
   const dispatch = useDispatch();
   const history = useHistory();
 
@@ -62,7 +66,7 @@ function UserCreate(props) {
   const [partyCode, setPartyCode] = useState();
   const [roles, setRoles] = useState([]);
   const [birthDate, setBirthDate] = useState(new Date());
-  const handleBirthDateChange = date => {
+  const handleBirthDateChange = (date) => {
     setBirthDate(date);
   };
   const [isRequesting, setIsRequesting] = useState(false);
@@ -70,17 +74,15 @@ function UserCreate(props) {
   const classes = useStyles();
 
   function getSecurityGroups() {
-    fetch(
-      API_URL + '/get-security-groups',
-      {
-        method: 'GET',
-        headers: {'Content-Type': 'application/json', "X-Auth-Token": token}
-      }
-    ).then(response => response.json())
-      .then(response => {
+    fetch(API_URL + "/get-security-groups", {
+      method: "GET",
+      headers: { "Content-Type": "application/json", "X-Auth-Token": token },
+    })
+      .then((response) => response.json())
+      .then((response) => {
         console.log(response);
         let arr = [];
-        response.forEach(d => {
+        response.forEach((d) => {
           arr.push(d);
         });
         setSecurityGroups(arr);
@@ -94,33 +96,33 @@ function UserCreate(props) {
     getSecurityGroups();
   }, []);
 
-  const handleUserNameChange = event => {
+  const handleUserNameChange = (event) => {
     setUserName(event.target.value);
   };
-  const handleLastNameChange = event => {
+  const handleLastNameChange = (event) => {
     setLastName(event.target.value);
   };
-  const handleMiddleNameChange = event => {
+  const handleMiddleNameChange = (event) => {
     setMiddleName(event.target.value);
   };
-  const handleFirstNameChange = event => {
+  const handleFirstNameChange = (event) => {
     setFirstName(event.target.value);
   };
-  const handlePasswordChange = event => {
+  const handlePasswordChange = (event) => {
     setPassword(event.target.value);
   };
-  const handleGenderChange = event => {
+  const handleGenderChange = (event) => {
     setGender(event.target.value);
   };
-  const handlePartyCodeChange = event => {
+  const handlePartyCodeChange = (event) => {
     setPartyCode(event.target.value);
   };
 
-  const handleChange = event => {
+  const handleChange = (event) => {
     setRoles(event.target.value);
   };
 
-  const handleRoleChange = event => {
+  const handleRoleChange = (event) => {
     // console.log(event.target);
     // const { options } = event.target;
     // const value = [];
@@ -141,12 +143,12 @@ function UserCreate(props) {
       birthDate: birthDate,
       gender: gender,
       partyCode: partyCode,
-      roles: roles
+      roles: roles,
     };
     setIsRequesting(true);
     authPost(dispatch, token, "/user", data)
       .then(
-        res => {
+        (res) => {
           console.log(res);
           setIsRequesting(false);
           if (res.status === 401) {
@@ -158,11 +160,11 @@ function UserCreate(props) {
             return res.json();
           }
         },
-        error => {
+        (error) => {
           console.log(error);
         }
       )
-      .then(res => {
+      .then((res) => {
         history.push("/userlogin/" + res);
       });
   };
@@ -225,7 +227,7 @@ function UserCreate(props) {
                 value={birthDate}
                 onChange={handleBirthDateChange}
                 KeyboardButtonProps={{
-                  "aria-label": "change date"
+                  "aria-label": "change date",
                 }}
               />
               <TextField
@@ -249,20 +251,14 @@ function UserCreate(props) {
                   multiple
                   value={roles}
                   onChange={handleRoleChange}
-                  input={<Input/>}
+                  input={<Input />}
                   MenuProps={MenuProps}
                 >
-
-                  {securityGroups.map(s => (
-                    <MenuItem
-                      key={s.groupId}
-                      value={s.groupId}
-                    >
+                  {securityGroups.map((s) => (
+                    <MenuItem key={s.groupId} value={s.groupId}>
                       {s.description}
                     </MenuItem>
                   ))}
-
-
                 </Select>
               </FormControl>
             </div>
@@ -275,12 +271,12 @@ function UserCreate(props) {
             color="primary"
             onClick={handleSubmit}
           >
-            {isRequesting ? <CircularProgress/> : "Save"}
+            {isRequesting ? <CircularProgress /> : "Save"}
           </Button>
         </CardActions>
       </Card>
     </MuiPickersUtilsProvider>
   );
 }
-
-export default UserCreate;
+const screenName = "SCREEN_USER_CREATE";
+export default withScreenSecurity(UserCreate, screenName, true);
