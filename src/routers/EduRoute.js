@@ -51,26 +51,26 @@ export default function EduRoute() {
 
         <Route component={SClassList} path={`${path}/student/class/list`} />
 
-        <Route component={SClassDetail} path={`${path}/student/class/:id`} />
-
         <Route
           component={SExerciseDetail}
-          path={`${path}/student/exercise/:id`}
+          path={`${path}/student/class/:classCode/exercise/:exerciseCode`}
         />
+
+        <Route component={SClassDetail} path={`${path}/student/class/:id`} />
 
         <Route component={TClassList} path={`${path}/teacher/class/list`} />
 
-        <Route component={TClassDetail} path={`${path}/teacher/class/:id`} />
-
         <Route
           component={CreateExercise}
-          path={`${path}/teacher/exercise/create`}
+          path={`${path}/teacher/class/:id/exercise/create`}
         />
 
         <Route
           component={TExerciseDetail}
-          path={`${path}/teacher/exercise/:id`}
+          path={`${path}/teacher/class/:classCode/exercise/:exerciseCode`}
         />
+
+        <Route component={TClassDetail} path={`${path}/teacher/class/:id`} />
       </Switch>
     </div>
   );
