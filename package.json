@@ -33,6 +33,7 @@
     "pdfmake": "^0.1.68",
     "react": "^16.10.2",
     "react-chartjs-2": "^2.9.0",
+    "react-countdown-circle-timer": "^2.3.7",
     "react-datetime-picker": "^3.0.2",
     "react-dom": "^16.10.2",
     "react-dropzone": "^10.2.2",
