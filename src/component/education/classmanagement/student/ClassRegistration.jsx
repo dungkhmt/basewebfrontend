@@ -7,14 +7,23 @@ import {
   Box,
   CardHeader,
   Paper,
+  Avatar,
 } from "@material-ui/core";
 import MaterialTable from "material-table";
 import { useDispatch, useSelector } from "react-redux";
 import { useHistory } from "react-router";
 import { authGet } from "../../../../api";
 import { MuiThemeProvider } from "material-ui/styles";
+import { makeStyles } from "@material-ui/core/styles";
+
+const useStyles = makeStyles((theme) => ({
+  card: {
+    marginTop: theme.spacing(2),
+  },
+}));
 
 function ClassRegistration() {
+  const classes = useStyles();
   const dispatch = useDispatch();
   const token = useSelector((state) => state.auth.token);
   const history = useHistory();
@@ -81,14 +90,14 @@ function ClassRegistration() {
 
   return (
     <MuiThemeProvider>
-      <Card>
+      <Card className={classes.card}>
         <CardHeader
-          title={<Typography variant="h4">Đăng ký lớp học</Typography>}
-          subheader={<Typography variant="h6">Học kỳ: 20201</Typography>}
+          avatar={<Avatar style={{ background: "#ff5722" }}>R</Avatar>}
+          title={
+            <Typography variant="h5">Đăng ký lớp học - Học kỳ 20201</Typography>
+          }
         />
         <CardContent>
-          <br />
-          <br />
           <MaterialTable
             title=""
             columns={columns}
@@ -161,15 +170,13 @@ function ClassRegistration() {
             options={{
               debounceInterval: 500,
               headerStyle: {
-                backgroundColor: "#a5c3f2",
+                backgroundColor: "#673ab7",
                 fontWeight: "bold",
                 fontSize: "1rem",
+                color: "white",
               },
               sorting: false,
               cellStyle: { fontSize: "1rem" },
-              // rowStyle: {
-              //   textAlign: "left",
-              // },
             }}
           />
         </CardContent>

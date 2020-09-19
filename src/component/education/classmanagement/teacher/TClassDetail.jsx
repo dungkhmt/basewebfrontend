@@ -10,6 +10,8 @@ import {
   Badge,
   CardActionArea,
   Grid,
+  Box,
+  Link,
 } from "@material-ui/core";
 import MaterialTable, { MTableToolbar } from "material-table";
 import { useDispatch, useSelector } from "react-redux";
@@ -20,15 +22,26 @@ import { useParams } from "react-router";
 import { makeStyles, useTheme, withStyles } from "@material-ui/core/styles";
 import PeopleAltRoundedIcon from "@material-ui/icons/PeopleAltRounded";
 import { Avatar, IconButton } from "material-ui";
-import { FcApproval, FcMindMap, FcViewDetails } from "react-icons/fc";
+import {
+  FcApproval,
+  FcMindMap,
+  FcViewDetails,
+  FcCollapse,
+  FcExpand,
+  FcConferenceCall,
+} from "react-icons/fc";
 import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
 import ExpandLessIcon from "@material-ui/icons/ExpandLess";
 import { motion } from "framer-motion";
 import { BiDetail } from "react-icons/bi";
+import AddCircleOutlineIcon from "@material-ui/icons/AddCircleOutline";
 
 const useStyles = makeStyles((theme) => ({
   card: {
     marginTop: theme.spacing(2),
+  },
+  grid: {
+    paddingLeft: 56,
   },
 }));
 
@@ -63,12 +76,14 @@ function TClassDetail() {
     {
       field: "id",
       title: "Mã bài tập",
+      width: 150,
       headerStyle: {
         textAlign: "center",
       },
       cellStyle: {
         textAlign: "center",
         fontSize: "1rem",
+        padding: 5,
       },
     },
     {
@@ -98,6 +113,59 @@ function TClassDetail() {
     {
       field: "id",
       title: "Mã sinh viên",
+      width: 172,
+      headerStyle: {
+        textAlign: "center",
+      },
+      cellStyle: {
+        textAlign: "center",
+        fontSize: "1rem",
+      },
+    },
+    {
+      field: "name",
+      title: "Họ và tên",
+    },
+    {
+      field: "phoneNumber",
+      title: "Số điện thoại",
+      headerStyle: {
+        textAlign: "center",
+      },
+      cellStyle: {
+        textAlign: "center",
+        fontSize: "1rem",
+      },
+    },
+    {
+      field: "email",
+      title: "Email",
+      render: (rowData) => (
+        <Link href={`mailto:${rowData.email}`}>{rowData.email}</Link>
+      ),
+    },
+    {
+      field: "",
+      title: "",
+      cellStyle: { alignItems: "center" },
+      render: (rowData) => (
+        <Box display="flex" justifyContent="center">
+          <Button
+            variant="outlined"
+            color="secondary"
+            onClick={() => onClickRemoveBtn(rowData)}
+          >
+            Loại khỏi lớp
+          </Button>
+        </Box>
+      ),
+    },
+  ];
+
+  const entrantListCols = [
+    {
+      field: "id",
+      title: "Mã sinh viên",
       headerStyle: {
         textAlign: "center",
       },
@@ -121,18 +189,20 @@ function TClassDetail() {
       id: 20173441,
       name: "Lê Anh Tuấn",
       email: "anhtuan0126104@gmail.com",
+      phoneNumber: "0969826785",
     },
     {
       id: 20172976,
       name: "Lê Văn Cường",
       email: "cuong.lv172976@sis.hust.edu.vn",
+      phoneNumber: "0357762225",
     },
   ];
 
   const tableRef = useRef(null);
 
   // Functions.
-  const onClickRegistrationBtn = (e) => {
+  const onClickRemoveBtn = (e) => {
     console.log("Click button", e);
   };
 
@@ -152,7 +222,7 @@ function TClassDetail() {
           title={<Typography variant="h5">Thông tin lớp</Typography>}
         />
         <CardContent>
-          <Grid container>
+          <Grid container className={classes.grid}>
             <Grid item md={3} sm={3} xs={3}>
               <Typography>Mã lớp</Typography>
             </Grid>
@@ -181,24 +251,31 @@ function TClassDetail() {
         </CardContent>
       </Card>
       <Card className={classes.card}>
-        <CardHeader
-          avatar={
-            <Avatar style={{ background: "#ffeb3b" }}>
-              <PeopleAltRoundedIcon />
-            </Avatar>
-          }
-          title={<Typography variant="h5">Danh sách sinh viên</Typography>}
-          action={
-            <div>
-              <IconButton
-                onClick={() => setOpenStudentList(!openStudentList)}
-                aria-label="show more"
-              >
-                {openStudentList ? <ExpandLessIcon /> : <ExpandMoreIcon />}
-              </IconButton>
-            </div>
-          }
-        />
+        <CardActionArea
+          disableRipple
+          onClick={() => setOpenStudentList(!openStudentList)}
+        >
+          <CardHeader
+            avatar={
+              <Avatar style={{ background: "white" }}>
+                {/*#ffeb3b <PeopleAltRoundedIcon /> */}
+                <FcConferenceCall size={40} />
+              </Avatar>
+            }
+            title={<Typography variant="h5">Danh sách sinh viên</Typography>}
+            action={
+              <div>
+                <IconButton aria-label="show more">
+                  {openStudentList ? (
+                    <FcCollapse size={24} />
+                  ) : (
+                    <FcExpand size={24} />
+                  )}
+                </IconButton>
+              </div>
+            }
+          />
+        </CardActionArea>
         <Collapse in={openStudentList} timeout="auto">
           <CardContent>
             <MaterialTable
@@ -212,7 +289,6 @@ function TClassDetail() {
                 toolbar: {
                   searchPlaceholder: "Tìm kiếm",
                   searchTooltip: "Tìm kiếm",
-                  nRowsSelected: "",
                 },
                 pagination: {
                   hover: "pointer",
@@ -227,29 +303,8 @@ function TClassDetail() {
               data={studentList}
               components={{
                 Container: (props) => <Paper {...props} elevation={0} />,
-                Action: (props) => {
-                  if (props.action.icon === "remove") {
-                    return (
-                      <Button
-                        color="secondary"
-                        variant="outlined"
-                        size="large"
-                        style={{
-                          marginLeft: 10,
-                          marginRight: 10,
-                        }}
-                        onClick={(event) =>
-                          props.action.onClick(event, props.data)
-                        }
-                      >
-                        Loại khỏi lớp
-                      </Button>
-                    );
-                  }
-                },
               }}
               options={{
-                selection: true,
                 debounceInterval: 500,
                 headerStyle: {
                   backgroundColor: "#673ab7",
@@ -259,70 +314,49 @@ function TClassDetail() {
                 },
                 sorting: false,
                 cellStyle: { fontSize: "1rem" },
-                // rowStyle: {
-                //   textAlign: "left",
-                // },
                 toolbarButtonAlignment: "left",
-              }}
-              actions={[
-                {
-                  icon: "remove",
-                  position: "toolbarOnSelect",
-                  onClick: (event, data) => console.log("click"),
-                },
-              ]}
-              onSelectionChange={(rows) => {
-                // setData(
-                //   data.map((row) =>
-                //     selectedRows.find(
-                //       (selected) => selected.classId === row.classId
-                //     )
-                //       ? { ...row, tableData: { checked: true } }
-                //       : row
-                //   )
-                // );
-                // setSelectedRows(rows);
-                console.log(rows);
               }}
             />
           </CardContent>
         </Collapse>
       </Card>
       <Card className={classes.card}>
-        {/* <CardActionArea
+        <CardActionArea
+          disableRipple
           onClick={() => setOpenRegistrationList(!openRegistrationList)}
-        > */}
-        <CardHeader
-          avatar={
-            <Avatar style={{ background: "white" }}>
-              <FcApproval size={40} />
-            </Avatar>
-          }
-          title={
-            <StyledBadge badgeContent={studentList.length} color="error">
-              Phê duyệt sinh viên đăng ký
-            </StyledBadge>
-          }
-          titleTypographyProps={{
-            variant: "h5",
-          }}
-          action={
-            <div>
-              <IconButton
-                onClick={() => setOpenRegistrationList(!openRegistrationList)}
-                aria-label="show more"
-              >
-                {openRegistrationList ? <ExpandLessIcon /> : <ExpandMoreIcon />}
-              </IconButton>
-            </div>
-          }
-        />
-        {/* </CardActionArea> */}
+        >
+          <CardHeader
+            avatar={
+              <Avatar style={{ background: "white" }}>
+                <FcApproval size={40} />
+              </Avatar>
+            }
+            title={
+              <StyledBadge badgeContent={studentList.length} color="error">
+                Phê duyệt sinh viên đăng ký
+              </StyledBadge>
+            }
+            titleTypographyProps={{
+              variant: "h5",
+            }}
+            action={
+              <div>
+                <IconButton aria-label="show more">
+                  {openRegistrationList ? (
+                    <FcCollapse size={24} />
+                  ) : (
+                    <FcExpand size={24} />
+                  )}
+                </IconButton>
+              </div>
+            }
+          />
+        </CardActionArea>
         <Collapse in={openRegistrationList} timeout="auto">
           <CardContent>
             <MaterialTable
               title=""
-              columns={studentListCols}
+              columns={entrantListCols}
               tableRef={tableRef}
               localization={{
                 body: {
@@ -331,7 +365,6 @@ function TClassDetail() {
                 toolbar: {
                   searchPlaceholder: "Tìm kiếm",
                   searchTooltip: "Tìm kiếm",
-                  nRowsSelected: "",
                 },
                 pagination: {
                   hover: "pointer",
@@ -352,7 +385,6 @@ function TClassDetail() {
                       <Button
                         color="secondary"
                         variant="outlined"
-                        size="large"
                         style={{
                           marginLeft: 10,
                           marginRight: 10,
@@ -370,7 +402,6 @@ function TClassDetail() {
                       <Button
                         color="primary"
                         variant="contained"
-                        size="large"
                         style={{
                           marginLeft: 10,
                           marginRight: 10,
@@ -397,6 +428,7 @@ function TClassDetail() {
                 sorting: false,
                 cellStyle: { fontSize: "1rem" },
                 toolbarButtonAlignment: "left",
+                showTextRowsSelected: false,
               }}
               actions={[
                 {
@@ -429,6 +461,9 @@ function TClassDetail() {
             columns={exerciseListCols}
             tableRef={tableRef}
             localization={{
+              header: {
+                actions: "",
+              },
               body: {
                 emptyDataSourceMessage: "",
               },
@@ -455,6 +490,12 @@ function TClassDetail() {
                     <Button
                       variant="contained"
                       color="primary"
+                      // startIcon={<AddCircleOutlineIcon />}
+                      style={{
+                        fontSize: "bold",
+                        // background: "green",
+                        // color: "white",
+                      }}
                       onClick={(event) =>
                         props.action.onClick(event, props.data)
                       }
@@ -463,20 +504,39 @@ function TClassDetail() {
                     </Button>
                   );
                 }
+                if (props.action.icon === "delete") {
+                  return (
+                    <Button
+                      variant="outlined"
+                      color="secondary"
+                      style={{ fontSize: "bold" }}
+                      onClick={(event) => {
+                        props.action.onClick(event, props.data);
+                        event.stopPropagation();
+                      }}
+                    >
+                      Xoá
+                    </Button>
+                  );
+                }
               },
             }}
             options={{
+              actionsColumnIndex: -1,
               debounceInterval: 500,
               headerStyle: {
                 backgroundColor: "#673ab7",
                 fontWeight: "bold",
                 fontSize: "1rem",
                 color: "white",
+                paddingLeft: 5,
+                paddingRight: 5,
               },
               sorting: false,
               cellStyle: {
                 fontSize: "1rem",
                 whiteSpace: "normal",
+                paddingLeft: 5,
                 wordBreak: "break-word",
               },
               toolbarButtonAlignment: "left",
@@ -486,19 +546,23 @@ function TClassDetail() {
                 icon: "create",
                 position: "toolbar",
                 onClick: (event) => {
-                  history.push({
-                    pathname: "/edu/teacher/exercise/create",
-                    state: {},
-                  });
+                  history.push(
+                    `/edu/teacher/class/${params.id}/exercise/create`
+                  );
                 },
+              },
+              {
+                icon: "delete",
+                tooltip: "Delete User",
+                onClick: (event, rowData) =>
+                  alert("You want to delete " + rowData.name),
               },
             ]}
             onRowClick={(event, rowData) => {
               console.log(rowData);
-              history.push({
-                pathname: `/edu/teacher/exercise/${rowData.id}`,
-                state: {},
-              });
+              history.push(
+                `/edu/teacher/class/${params.id}/exercise/${rowData.id}`
+              );
             }}
           />
         </CardContent>
