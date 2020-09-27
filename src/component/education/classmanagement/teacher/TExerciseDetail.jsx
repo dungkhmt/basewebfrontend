@@ -11,10 +11,12 @@ import {
   Zoom,
   IconButton,
   Box,
+  Divider,
+  CircularProgress,
 } from "@material-ui/core";
 import MaterialTable from "material-table";
 import { MuiThemeProvider } from "material-ui/styles";
-import { useParams } from "react-router";
+import { useHistory, useParams } from "react-router";
 import { makeStyles } from "@material-ui/core/styles";
 import PeopleAltRoundedIcon from "@material-ui/icons/PeopleAltRounded";
 import { Avatar } from "material-ui";
@@ -22,6 +24,10 @@ import { BiDetail } from "react-icons/bi";
 import { CountdownCircleTimer } from "react-countdown-circle-timer";
 import { FcDownload } from "react-icons/fc";
 import EditIcon from "@material-ui/icons/Edit";
+import { useDispatch, useSelector } from "react-redux";
+import { axiosGet } from "../../../../api";
+import axios from "axios";
+import { green } from "@material-ui/core/colors";
 
 const useStyles = makeStyles((theme) => ({
   card: {
@@ -45,6 +51,39 @@ const useStyles = makeStyles((theme) => ({
   },
   exercise: {
     fontSize: "1rem",
+  },
+  editBtn: {
+    textTransform: "none",
+    // fontWeight: "bold",
+    fontSize: "1rem",
+    borderRadius: 6,
+  },
+  divider: {
+    width: "91.67%",
+    marginTop: 16,
+    marginBottom: 16,
+  },
+  rootDivider: {
+    backgroundColor: "black",
+  },
+  buttonProgress: {
+    color: green[500],
+    position: "absolute",
+    top: "50%",
+    left: "50%",
+    marginTop: -12,
+    marginLeft: -12,
+  },
+  downloadBtn: {
+    width: 176,
+    borderRadius: 6,
+    textTransform: "none",
+    // fontWeight: "bold",
+    fontSize: "1rem",
+  },
+  wrapper: {
+    margin: theme.spacing(1),
+    position: "relative",
   },
 }));
 
@@ -74,66 +113,159 @@ const formatTime = (n) => (Number(n) < 10 ? "0" + Number(n) : "" + Number(n));
 function TExerciseDetail() {
   const classes = useStyles();
   const params = useParams();
+  const history = useHistory();
+  const dispatch = useDispatch();
+  const token = useSelector((state) => state.auth.token);
 
-  const startTime = new Date("09/14/2020"); // use UNIX timestamp in seconds
-  const endTime = new Date("09/20/2020"); // use UNIX timestamp in seconds
+  // Countdown.
+  const [remainingTime, setRemainingTime] = useState(0);
+  const [duration, setDuration] = useState(0);
+  const [key, setKey] = useState("initial-countdown");
 
-  const remainingTime =
-    endTime.getTime() >= startTime
-      ? (endTime.getTime() - Date.now()) / 1000
-      : 0;
-  const duration = (endTime.getTime() - startTime.getTime()) / 1000;
-  const [hideExercise, setHideExercise] = useState(true);
+  // Assignment detail.
+  const [hideSubject, setHideSubject] = useState(true);
+  const [assignmentDetail, setAssignmentDetail] = useState({});
 
-  const [exerciseDetail] = useState({
-    code: params.exerciseCode,
-    name: "Lập trình python",
-    note:
-      "Đây là một ghi chú rất dài để thử nghiệm xem ghi chú có hiển thị như mong muốn không, và kết quả như những gì chúng ta đang thấy",
-  });
-
-  const studentListCols = [
-    {
-      field: "id",
-      title: "Mã sinh viên",
-      headerStyle: {
-        textAlign: "center",
-      },
-      cellStyle: {
-        textAlign: "center",
-        fontSize: "1rem",
-      },
+  // Table.
+  const headerProperties = {
+    headerStyle: {
+      textAlign: "center",
     },
+    cellStyle: {
+      textAlign: "center",
+      fontSize: "1rem",
+    },
+  };
+
+  const columns = [
     {
       field: "name",
       title: "Họ và tên",
+      ...headerProperties,
     },
     {
-      field: "note",
-      title: "Ghi chú",
+      field: "submissionDate",
+      title: "Ngày nộp",
+      ...headerProperties,
+      render: (rowData) => {
+        let date = rowData.submissionDate;
+        return (
+          <Typography>
+            {date.getFullYear()}-{formatTime(date.getMonth() + 1)}-
+            {formatTime(date.getDate())}
+            &nbsp;&nbsp;
+            {formatTime(date.getHours())}
+            <b>:</b>
+            {formatTime(date.getMinutes())}
+            <b>:</b>
+            {formatTime(date.getSeconds())}
+          </Typography>
+        );
+      },
     },
   ];
 
-  const studentList = [
-    {
-      id: 20173441,
-      name: "Lê Anh Tuấn",
-      note: "",
-    },
-    {
-      id: 20172976,
-      name: "Lê Văn Cường",
-      note: "Đại diện nhóm 1 nộp bài tập lớn",
-    },
-  ];
-
+  const [data, setData] = useState([]);
   const tableRef = useRef(null);
+  const [selectedSubmissions, setSelectedSubmission] = useState([]);
+  const [isDownloading, setIsDownloading] = useState(false);
 
   // Functions.
-  const getExerciseDetail = () => {};
+  const getExerciseDetail = () => {
+    axiosGet(dispatch, token, `/edu/assignment/${params.assignmentId}/teacher`)
+      .then((res) => {
+        let assignmentDetail = res.data.assignmentDetail;
+        let startTime = new Date(assignmentDetail.createdStamp);
+        let endTime = new Date(assignmentDetail.deadLine);
+        let data = res.data.submissions;
+
+        data = data.map((submission) => ({
+          ...submission,
+          submissionDate: new Date(submission.submissionDate),
+        }));
+
+        setData(data);
+
+        setRemainingTime(
+          endTime.getTime() < Date.now()
+            ? 0
+            : (endTime.getTime() - Date.now()) / 1000
+        );
+
+        setDuration((endTime.getTime() - startTime.getTime()) / 1000);
+
+        setKey("update-params");
+
+        setAssignmentDetail({
+          name: assignmentDetail.name,
+          subject: assignmentDetail.subject,
+          startTime: startTime,
+          endTime: endTime,
+          noSubmissions: res.data.noSubmissions,
+        });
+      })
+      .catch((e) => {
+        console.log(e);
+      });
+  };
+
+  const onClickDownloadButton = () => {
+    setIsDownloading(true);
+
+    let studentIds = selectedSubmissions.map(
+      (submission) => submission.studentId
+    );
+
+    axios
+      .post(
+        "http://localhost:8080/api/edu/assignment/717729ee-fe55-11ea-8b6c-0862665303f9/submission/files",
+        { studentIds: studentIds },
+        {
+          headers: {
+            "content-type": "application/json",
+            "X-Auth-Token": token,
+          },
+          responseType: "arraybuffer",
+        }
+      )
+      .then((res) => {
+        setIsDownloading(false);
+        saveFile(params.assignmentId, res.data);
+      })
+      .catch((e) => {
+        setIsDownloading(false);
+        // Thong bao loi
+        console.log(e);
+      });
+  };
+
+  const saveFile = (fileName, data) => {
+    let blob = new Blob([data], { type: "application/zip" });
+
+    //IE11 support
+    if (window.navigator.msSaveOrOpenBlob) {
+      window.navigator.msSaveBlob(blob, fileName);
+    } else {
+      let link = window.document.createElement("a");
+
+      link.href = window.URL.createObjectURL(blob);
+      link.setAttribute("download", fileName);
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+
+      // other browsers
+      // Second approach but cannot specify saved name!
+      // let file = new File([data], fileName, { type: "application/zip" });
+      // let exportUrl = URL.createObjectURL(file);
+      // window.location.assign(exportUrl);
+      // URL.revokeObjectURL(exportUrl);
+    }
+  };
 
   useEffect(() => {
     tableRef.current.dataManager.changePageSize(20);
+    getExerciseDetail();
   }, []);
 
   return (
@@ -146,7 +278,12 @@ function TExerciseDetail() {
             </Avatar>
           }
           action={
-            <Button variant="outlined" color="primary">
+            <Button
+              variant="outlined"
+              color="primary"
+              startIcon={<EditIcon />}
+              className={classes.editBtn}
+            >
               Chỉnh sửa
             </Button>
           }
@@ -155,16 +292,8 @@ function TExerciseDetail() {
         <CardContent>
           <Grid container alignItems="flex-start" className={classes.grid}>
             <Grid item md={3} className={classes.countdown}>
-              {/* <Tooltip
-                title="Thời gian nộp bài còn lại"
-                arrow
-                interactive
-                placement="bottom"
-                classes={{ tooltip: classes.tooltip }}
-                TransitionComponent={Zoom}
-              > 
-                <div>*/}
               <CountdownCircleTimer
+                key={key}
                 isLinearGradient={true}
                 isPlaying={true}
                 size={150}
@@ -177,19 +306,9 @@ function TExerciseDetail() {
                   ["#1565c0", 0.5],
                 ]}
               />
-              {/*</div>
-               </Tooltip> */}
             </Grid>
             <Grid item md={9}>
               <Grid container>
-                <Grid item md={3} sm={3} xs={3}>
-                  <Typography>Mã bài tập</Typography>
-                </Grid>
-                <Grid item md={8} sm={8} xs={8}>
-                  <Typography>
-                    <b>:</b> {exerciseDetail.code}
-                  </Typography>
-                </Grid>
                 <Grid item md={3} sm={3} xs={3}>
                   <Typography>Tên bài tập</Typography>
                 </Grid>
@@ -201,53 +320,75 @@ function TExerciseDetail() {
                     }}
                   >
                     <b>:&nbsp;</b>
-                    <Typography>{exerciseDetail.name}</Typography>
+                    {assignmentDetail.name === undefined ? null : (
+                      <Typography>{assignmentDetail.name}</Typography>
+                    )}
                   </div>
                 </Grid>
                 <Grid item md={3} sm={3} xs={3}>
                   <Typography>Ngày giao</Typography>
                 </Grid>
                 <Grid item md={8} sm={8} xs={8}>
-                  <Typography>
-                    <b>:</b>&nbsp;{startTime.getFullYear()}-
-                    {formatTime(startTime.getMonth() + 1)}-
-                    {formatTime(startTime.getDate())}
-                    &nbsp;&nbsp;{formatTime(startTime.getHours())}
+                  {assignmentDetail.startTime == undefined ||
+                  assignmentDetail.startTime == null ? (
                     <b>:</b>
-                    {formatTime(startTime.getMinutes())}
-                    <b>:</b>
-                    {formatTime(startTime.getSeconds())}
-                  </Typography>
+                  ) : (
+                    <Typography>
+                      <b>:</b>&nbsp;{assignmentDetail.startTime.getFullYear()}-
+                      {formatTime(assignmentDetail.startTime.getMonth() + 1)}-
+                      {formatTime(assignmentDetail.startTime.getDate())}
+                      &nbsp;&nbsp;
+                      {formatTime(assignmentDetail.startTime.getHours())}
+                      <b>:</b>
+                      {formatTime(assignmentDetail.startTime.getMinutes())}
+                      <b>:</b>
+                      {formatTime(assignmentDetail.startTime.getSeconds())}
+                    </Typography>
+                  )}
                 </Grid>
                 <Grid item md={3} sm={3} xs={3}>
                   <Typography>Hạn nộp</Typography>
                 </Grid>
                 <Grid item md={8} sm={8} xs={8}>
-                  <Typography>
-                    <b>:</b>&nbsp;{endTime.getFullYear()}-
-                    {formatTime(endTime.getMonth() + 1)}-
-                    {formatTime(endTime.getDate())}
-                    &nbsp;&nbsp;{formatTime(endTime.getHours())}
+                  {assignmentDetail.endTime == undefined ||
+                  assignmentDetail.endTime == null ? (
                     <b>:</b>
-                    {formatTime(endTime.getMinutes())}
-                    <b>:</b>
-                    {formatTime(endTime.getSeconds())}
-                  </Typography>
+                  ) : (
+                    <Typography>
+                      <b>:</b>&nbsp;{assignmentDetail.endTime.getFullYear()}-
+                      {formatTime(assignmentDetail.endTime.getMonth() + 1)}-
+                      {formatTime(assignmentDetail.endTime.getDate())}
+                      &nbsp;&nbsp;
+                      {formatTime(assignmentDetail.endTime.getHours())}
+                      <b>:</b>
+                      {formatTime(assignmentDetail.endTime.getMinutes())}
+                      <b>:</b>
+                      {formatTime(assignmentDetail.endTime.getSeconds())}
+                    </Typography>
+                  )}
                 </Grid>
-                <Grid item md={3} sm={3} xs={3}>
-                  <Typography>Ghi chú</Typography>
-                </Grid>
-                <Grid item md={8} sm={8} xs={8}>
-                  <div
-                    style={{
-                      display: "flex",
-                      // whiteSpace: "pre-wrap",
-                    }}
-                  >
-                    <b>:&nbsp;</b>
-                    <Typography>{exerciseDetail.note}</Typography>
-                  </div>
-                </Grid>
+              </Grid>
+              <Grid item md={12}>
+                <div className={classes.divider}>
+                  <Divider
+                    variant="fullWidth"
+                    classes={{ root: classes.rootDivider }}
+                  />
+                </div>
+                <Box display="flex" fullWidth>
+                  <Grid item md={3} sm={3} xs={3}>
+                    <Typography>Sinh viên đã nộp bài</Typography>
+                  </Grid>
+                  <Grid item md={8} sm={8} xs={8}>
+                    {assignmentDetail.noSubmissions === undefined ? (
+                      <b>:</b>
+                    ) : (
+                      <Typography>
+                        <b>:</b> {assignmentDetail.noSubmissions}
+                      </Typography>
+                    )}
+                  </Grid>
+                </Box>
               </Grid>
             </Grid>
             <Grid item md={11} className={classes.exercise}>
@@ -260,16 +401,12 @@ function TExerciseDetail() {
                     marginLeft: 29,
                     paddingBottom: 10,
                   }}
-                  onClick={() => setHideExercise(!hideExercise)}
+                  onClick={() => setHideSubject(!hideSubject)}
                 >
-                  {hideExercise ? "Hiện đề bài" : "Ẩn đề bài"}
+                  {hideSubject ? "Hiện đề bài" : "Ẩn đề bài"}
                 </Button>
               </Box>
-              {hideExercise
-                ? null
-                : `Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Nisl tincidunt eget nullam non. Quis hendrerit dolor magna eget est lorem ipsum dolor sit. Volutpat odio facilisis mauris sit amet massa. Commodo odio aenean sed adipiscing diam donec adipiscing tristique. Mi eget mauris pharetra et. Non tellus orci ac auctor augue. Elit at imperdiet dui accumsan sit. Ornare arcu dui vivamus arcu felis. Egestas integer eget aliquet nibh praesent. In hac habitasse platea dictumst quisque sagittis purus. Pulvinar elementum integer enim neque volutpat ac.
-
-Senectus et netus et malesuada. Nunc pulvinar sapien et ligula ullamcorper malesuada proin. Neque convallis a cras semper auctor. Libero id faucibus nisl tincidunt eget. Leo a diam sollicitudin tempor id. A lacus vestibulum sed arcu non odio euismod lacinia. In tellus integer feugiat scelerisque. Feugiat in fermentum posuere urna nec tincidunt praesent. Porttitor rhoncus dolor purus non enim praesent elementum facilisis. Nisi scelerisque eu ultrices vitae auctor eu augue ut lectus. Ipsum faucibus vitae aliquet nec ullamcorper sit amet risus. Et malesuada fames ac turpis egestas sed. Sit amet nisl suscipit adipiscing bibendum est ultricies. Arcu ac tortor dignissim convallis aenean et tortor at. Pretium viverra suspendisse potenti nullam ac tortor vitae purus. Eros donec ac odio tempor orci dapibus ultrices. Elementum nibh tellus molestie nunc. Et magnis dis parturient montes nascetur. Est placerat in egestas erat imperdiet. Consequat interdum varius sit amet mattis vulputate enim.`}
+              {hideSubject ? null : assignmentDetail.subject}
             </Grid>
           </Grid>
         </CardContent>
@@ -287,7 +424,7 @@ Senectus et netus et malesuada. Nunc pulvinar sapien et ligula ullamcorper males
         <CardContent>
           <MaterialTable
             title=""
-            columns={studentListCols}
+            columns={columns}
             tableRef={tableRef}
             localization={{
               body: {
@@ -307,22 +444,34 @@ Senectus et netus et malesuada. Nunc pulvinar sapien et ligula ullamcorper males
                 previousTooltip: "Trang trước",
               },
             }}
-            data={studentList}
+            data={data}
             components={{
               Container: (props) => <Paper {...props} elevation={0} />,
               Action: (props) => {
                 if (props.action.icon === "download") {
                   return (
-                    <Button
-                      variant="outlined"
-                      color="primary"
-                      startIcon={<FcDownload size={24} />}
-                      onClick={(event) =>
-                        props.action.onClick(event, props.data)
-                      }
-                    >
-                      Tải xuống
-                    </Button>
+                    <div className={classes.wrapper}>
+                      <Button
+                        className={classes.downloadBtn}
+                        disabled={isDownloading}
+                        variant="outlined"
+                        color="primary"
+                        startIcon={
+                          isDownloading ? null : <FcDownload size={24} />
+                        }
+                        onClick={(event) =>
+                          props.action.onClick(event, props.data)
+                        }
+                      >
+                        {isDownloading ? "Đang chuẩn bị tệp" : "Tải xuống"}
+                      </Button>
+                      {isDownloading && (
+                        <CircularProgress
+                          size={24}
+                          className={classes.buttonProgress}
+                        />
+                      )}
+                    </div>
                   );
                 }
               },
@@ -345,11 +494,11 @@ Senectus et netus et malesuada. Nunc pulvinar sapien et ligula ullamcorper males
               {
                 icon: "download",
                 position: "toolbarOnSelect",
-                onClick: () => console.log("click"),
+                onClick: () => onClickDownloadButton(),
               },
             ]}
             onSelectionChange={(rows) => {
-              console.log(rows);
+              setSelectedSubmission(rows);
             }}
           />
         </CardContent>
