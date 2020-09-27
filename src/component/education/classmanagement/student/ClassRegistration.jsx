@@ -20,6 +20,9 @@ const useStyles = makeStyles((theme) => ({
   card: {
     marginTop: theme.spacing(2),
   },
+  registrationBtn: {
+    borderRadius: "6px",
+  },
 }));
 
 function ClassRegistration() {
@@ -53,6 +56,7 @@ function ClassRegistration() {
           <Button
             variant="contained"
             color="primary"
+            className={classes.registrationBtn}
             onClick={() => onClickRegistrationBtn(rowData)}
           >
             Tham gia
