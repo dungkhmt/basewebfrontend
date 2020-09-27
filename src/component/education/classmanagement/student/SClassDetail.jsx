@@ -321,8 +321,9 @@ function SClassDetail() {
             onRowClick={(event, rowData) => {
               console.log(rowData);
               history.push(
-                `/edu/student/class/${params.id}/exercise/${rowData.id}`
+                `/edu/student/class/${params.id}/exercise/717729ee-fe55-11ea-8b6c-0862665303f9`
               );
+              // ${rowData.id}
             }}
           />
         </CardContent>
