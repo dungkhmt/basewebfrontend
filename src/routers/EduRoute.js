@@ -62,12 +62,12 @@ export default function EduRoute() {
 
         <Route
           component={CreateExercise}
-          path={`${path}/teacher/class/:id/exercise/create`}
+          path={`${path}/teacher/class/:id/assignment/create`}
         />
 
         <Route
           component={TExerciseDetail}
-          path={`${path}/teacher/class/:classCode/exercise/:exerciseCode`}
+          path={`${path}/teacher/class/:classId/assignment/:assignmentId`}
         />
 
         <Route component={TClassDetail} path={`${path}/teacher/class/:id`} />
