@@ -1,4 +1,4 @@
-import React, { useRef, useEffect, useState } from "react";
+import React, { useRef, useEffect, useState, Fragment } from "react";
 import {
   Card,
   CardContent,
@@ -11,10 +11,13 @@ import {
   Zoom,
   IconButton,
   Box,
+  TextField,
+  Chip,
+  Divider,
 } from "@material-ui/core";
 import MaterialTable from "material-table";
 import { MuiThemeProvider } from "material-ui/styles";
-import { useParams } from "react-router";
+import { useHistory, useParams } from "react-router";
 import { makeStyles } from "@material-ui/core/styles";
 import PeopleAltRoundedIcon from "@material-ui/icons/PeopleAltRounded";
 import { Avatar } from "material-ui";
@@ -27,10 +30,23 @@ import AudiotrackIcon from "@material-ui/icons/Audiotrack";
 import DescriptionIcon from "@material-ui/icons/Description";
 import PictureAsPdfIcon from "@material-ui/icons/PictureAsPdf";
 import TheatersIcon from "@material-ui/icons/Theaters";
+import { axiosGet, axiosPost } from "../../../../api";
+import { useDispatch, useSelector } from "react-redux";
+import Snackbar from "@material-ui/core/Snackbar";
+import MuiAlert from "@material-ui/lab/Alert";
 
 const useStyles = makeStyles((theme) => ({
+  divider: {
+    width: "91.67%",
+    marginTop: 16,
+    marginBottom: 16,
+  },
+  rootDivider: {
+    backgroundColor: "black",
+  },
   card: {
     marginTop: theme.spacing(2),
+    minHeight: window.innerHeight - 133,
   },
   remainingTime: {
     display: "flex",
@@ -53,6 +69,26 @@ const useStyles = makeStyles((theme) => ({
   },
   submit: {
     paddingLeft: 72,
+  },
+  note: {
+    width: "100%",
+    marginTop: 16,
+    marginBottom: 16,
+  },
+  cancleBtn: {
+    marginTop: 16,
+    marginRight: 16,
+    textTransform: "none",
+  },
+  submitBtn: {
+    borderRadius: "6px",
+    marginTop: 16,
+    textTransform: "none",
+  },
+  editBtn: {
+    marginLeft: 16,
+    borderRadius: "6px",
+    textTransform: "none",
   },
 }));
 
@@ -79,66 +115,109 @@ const children = ({ remainingTime }) => {
 
 const formatTime = (n) => (Number(n) < 10 ? "0" + Number(n) : "" + Number(n));
 
+const Alert = (props) => {
+  return <MuiAlert elevation={6} variant="filled" {...props} />;
+};
+
 function SExerciseDetail() {
   const classes = useStyles();
   const params = useParams();
+  const history = useHistory();
+  const dispatch = useDispatch();
+  const token = useSelector((state) => state.auth.token);
 
   // Countdown.
   const [remainingTime, setRemainingTime] = useState(0);
   const [duration, setDuration] = useState(0);
   const [key, setKey] = useState("initial-countdown");
 
-  const [hideExercise, setHideExercise] = useState(true);
-  const [exerciseDetail, setExerciseDetail] = useState({});
+  // Assignment detail.
+  const [hideSubject, setHideSubject] = useState(true);
+  const [assignmentDetail, setAssignmentDetail] = useState({});
+
+  // Submit and edit submission.
+  const [file, setFile] = useState();
+  const [isUpdating, setIsUpdating] = useState(false);
+
+  // Snackbar.
+  const [state, setState] = React.useState({
+    open: false,
+    vertical: "top",
+    horizontal: "center",
+  });
+
+  const { vertical, horizontal, open } = state;
+  const [message, setMessage] = useState("");
 
   // Functions.
-  // const handlePreviewIcon = (fileObject, classes) => {
-  //   const { type } = fileObject.file;
-  //   const iconProps = {
-  //     className: classes.image,
-  //   };
-
-  //   if (type.startsWith("video/")) return <TheatersIcon {...iconProps} />;
-  //   if (type.startsWith("audio/")) return <AudiotrackIcon {...iconProps} />;
-
-  //   switch (type) {
-  //     case "application/msword":
-  //     case "application/vnd.openxmlformats-officedocument.wordprocessingml.document":
-  //       return <DescriptionIcon {...iconProps} />;
-  //     case "application/pdf":
-  //       return <PictureAsPdfIcon {...iconProps} />;
-  //     default:
-  //       return <AttachFileIcon {...iconProps} />;
-  //   }
-  // };
-
   const getExerciseDetail = () => {
-    const startTime = new Date("09/14/2020");
-    const endTime = new Date("09/20/2020");
+    axiosGet(
+      dispatch,
+      token,
+      "/edu/assignment/717729ee-fe55-11ea-8b6c-0862665303f9/student"
+    )
+      .then((res) => {
+        let assignmentDetail = res.data.assignmentDetail;
+        let startTime = new Date(assignmentDetail.createdStamp);
+        let endTime = new Date(assignmentDetail.deadLine);
 
-    setRemainingTime(
-      endTime.getTime() < Date.now()
-        ? 0
-        : (endTime.getTime() - Date.now()) / 1000
-    );
-    console.log(
-      "Remaining",
-      endTime.getTime() < Date.now()
-        ? 0
-        : (endTime.getTime() - Date.now()) / 1000
-    );
+        setRemainingTime(
+          endTime.getTime() < Date.now()
+            ? 0
+            : (endTime.getTime() - Date.now()) / 1000
+        );
 
-    setDuration((endTime.getTime() - startTime.getTime()) / 1000);
-    setKey("update-params");
+        setDuration((endTime.getTime() - startTime.getTime()) / 1000);
 
-    setExerciseDetail({
-      code: params.exerciseCode,
-      name: "Lập trình python",
-      startTime: startTime,
-      endTime: endTime,
-      note:
-        "Đây là một ghi chú rất dài để thử nghiệm xem ghi chú có hiển thị như mong muốn không, và kết quả như những gì chúng ta đang thấy",
-    });
+        setKey("update-params");
+
+        setAssignmentDetail({
+          name: assignmentDetail.name,
+          subject: assignmentDetail.subject,
+          startTime: startTime,
+          endTime: endTime,
+          submitedFileName: res.data.submitedFileName,
+        });
+      })
+      .catch((e) => console.log(e));
+  };
+
+  const handleClose = (event, reason) => {
+    if (reason === "clickaway") {
+      return;
+    }
+
+    setState({ ...state, open: false });
+  };
+
+  const onClickCancleBtn = () => {
+    setIsUpdating(false);
+  };
+
+  const onClickSubmitBtn = () => {
+    const data = new FormData();
+
+    data.append("file", file);
+
+    axiosPost(
+      dispatch,
+      token,
+      "/edu/assignment/717729ee-fe55-11ea-8b6c-0862665303f9/submission",
+      data
+    )
+      .then((res) => {
+        setMessage(isUpdating ? "Chỉnh sửa thành công" : "Nộp bài thành công");
+
+        setState({ ...state, open: true });
+
+        setIsUpdating(false);
+
+        setAssignmentDetail({
+          ...assignmentDetail,
+          submitedFileName: file.name,
+        });
+      })
+      .catch((e) => console.log(e));
   };
 
   useEffect(() => {
@@ -177,14 +256,6 @@ function SExerciseDetail() {
             <Grid item md={9}>
               <Grid container>
                 <Grid item md={3} sm={3} xs={3}>
-                  <Typography>Mã bài tập</Typography>
-                </Grid>
-                <Grid item md={8} sm={8} xs={8}>
-                  <Typography>
-                    <b>:</b> {params.exerciseCode}
-                  </Typography>
-                </Grid>
-                <Grid item md={3} sm={3} xs={3}>
                   <Typography>Tên bài tập</Typography>
                 </Grid>
                 <Grid item md={8} sm={8} xs={8}>
@@ -195,8 +266,8 @@ function SExerciseDetail() {
                     }}
                   >
                     <b>:&nbsp;</b>
-                    {exerciseDetail.name === undefined ? null : (
-                      <Typography>{exerciseDetail.name}</Typography>
+                    {assignmentDetail.name === undefined ? null : (
+                      <Typography>{assignmentDetail.name}</Typography>
                     )}
                   </div>
                 </Grid>
@@ -204,19 +275,20 @@ function SExerciseDetail() {
                   <Typography>Ngày giao</Typography>
                 </Grid>
                 <Grid item md={8} sm={8} xs={8}>
-                  {exerciseDetail.startTime === undefined ? (
+                  {assignmentDetail.startTime == undefined ||
+                  assignmentDetail.startTime == null ? (
                     <b>:</b>
                   ) : (
                     <Typography>
-                      <b>:</b>&nbsp;{exerciseDetail.startTime.getFullYear()}-
-                      {formatTime(exerciseDetail.startTime.getMonth() + 1)}-
-                      {formatTime(exerciseDetail.startTime.getDate())}
+                      <b>:</b>&nbsp;{assignmentDetail.startTime.getFullYear()}-
+                      {formatTime(assignmentDetail.startTime.getMonth() + 1)}-
+                      {formatTime(assignmentDetail.startTime.getDate())}
                       &nbsp;&nbsp;
-                      {formatTime(exerciseDetail.startTime.getHours())}
+                      {formatTime(assignmentDetail.startTime.getHours())}
                       <b>:</b>
-                      {formatTime(exerciseDetail.startTime.getMinutes())}
+                      {formatTime(assignmentDetail.startTime.getMinutes())}
                       <b>:</b>
-                      {formatTime(exerciseDetail.startTime.getSeconds())}
+                      {formatTime(assignmentDetail.startTime.getSeconds())}
                     </Typography>
                   )}
                 </Grid>
@@ -224,36 +296,62 @@ function SExerciseDetail() {
                   <Typography>Hạn nộp</Typography>
                 </Grid>
                 <Grid item md={8} sm={8} xs={8}>
-                  {exerciseDetail.endTime === undefined ? (
+                  {assignmentDetail.endTime == undefined ||
+                  assignmentDetail.endTime == null ? (
                     <b>:</b>
                   ) : (
                     <Typography>
-                      <b>:</b>&nbsp;{exerciseDetail.endTime.getFullYear()}-
-                      {formatTime(exerciseDetail.endTime.getMonth() + 1)}-
-                      {formatTime(exerciseDetail.endTime.getDate())}
+                      <b>:</b>&nbsp;{assignmentDetail.endTime.getFullYear()}-
+                      {formatTime(assignmentDetail.endTime.getMonth() + 1)}-
+                      {formatTime(assignmentDetail.endTime.getDate())}
                       &nbsp;&nbsp;
-                      {formatTime(exerciseDetail.endTime.getHours())}
+                      {formatTime(assignmentDetail.endTime.getHours())}
                       <b>:</b>
-                      {formatTime(exerciseDetail.endTime.getMinutes())}
+                      {formatTime(assignmentDetail.endTime.getMinutes())}
                       <b>:</b>
-                      {formatTime(exerciseDetail.endTime.getSeconds())}
+                      {formatTime(assignmentDetail.endTime.getSeconds())}
                     </Typography>
                   )}
                 </Grid>
-                <Grid item md={3} sm={3} xs={3}>
-                  <Typography>Ghi chú</Typography>
-                </Grid>
-                <Grid item md={8} sm={8} xs={8}>
-                  <div
-                    style={{
-                      display: "flex",
-                      // whiteSpace: "pre-wrap",
-                    }}
-                  >
-                    <b>:&nbsp;</b>
-                    <Typography>{exerciseDetail.note}</Typography>
-                  </div>
-                </Grid>
+                {assignmentDetail.submitedFileName != undefined &&
+                assignmentDetail.submitedFileName != null ? (
+                  <Grid item md={12}>
+                    <div className={classes.divider}>
+                      <Divider
+                        variant="fullWidth"
+                        classes={{ root: classes.rootDivider }}
+                      />
+                    </div>
+                    <Box display="flex" alignItems="center" fullWidth>
+                      <Grid item md={3} sm={3} xs={3}>
+                        <Typography>Tệp đã tải lên</Typography>
+                      </Grid>
+                      <Grid item md={8} sm={8} xs={8}>
+                        <Box display="flex" fullWidth alignItems="center">
+                          <Typography>
+                            <b>:&nbsp;</b>
+                          </Typography>
+                          <Chip
+                            variant="outlined"
+                            clickable
+                            color="primary"
+                            label={assignmentDetail.submitedFileName}
+                          />
+                          {remainingTime > 0 && isUpdating == false ? (
+                            <Button
+                              variant="outlined"
+                              className={classes.editBtn}
+                              style={{ background: "#2ea44f", color: "white" }}
+                              onClick={() => setIsUpdating(true)}
+                            >
+                              Chỉnh sửa
+                            </Button>
+                          ) : null}
+                        </Box>
+                      </Grid>
+                    </Box>
+                  </Grid>
+                ) : null}
               </Grid>
             </Grid>
             <Grid item md={11} className={classes.exercise}>
@@ -266,74 +364,105 @@ function SExerciseDetail() {
                     marginLeft: 29,
                     paddingBottom: 10,
                   }}
-                  onClick={() => setHideExercise(!hideExercise)}
+                  onClick={() => setHideSubject(!hideSubject)}
                 >
-                  {hideExercise ? "Hiện đề bài" : "Ẩn đề bài"}
+                  {hideSubject ? "Hiện đề bài" : "Ẩn đề bài"}
                 </Button>
               </Box>
-              {hideExercise
-                ? null
-                : `Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Nisl tincidunt eget nullam non. Quis hendrerit dolor magna eget est lorem ipsum dolor sit. Volutpat odio facilisis mauris sit amet massa. Commodo odio aenean sed adipiscing diam donec adipiscing tristique. Mi eget mauris pharetra et. Non tellus orci ac auctor augue. Elit at imperdiet dui accumsan sit. Ornare arcu dui vivamus arcu felis. Egestas integer eget aliquet nibh praesent. In hac habitasse platea dictumst quisque sagittis purus. Pulvinar elementum integer enim neque volutpat ac.
-
-Senectus et netus et malesuada. Nunc pulvinar sapien et ligula ullamcorper malesuada proin. Neque convallis a cras semper auctor. Libero id faucibus nisl tincidunt eget. Leo a diam sollicitudin tempor id. A lacus vestibulum sed arcu non odio euismod lacinia. In tellus integer feugiat scelerisque. Feugiat in fermentum posuere urna nec tincidunt praesent. Porttitor rhoncus dolor purus non enim praesent elementum facilisis. Nisi scelerisque eu ultrices vitae auctor eu augue ut lectus. Ipsum faucibus vitae aliquet nec ullamcorper sit amet risus. Et malesuada fames ac turpis egestas sed. Sit amet nisl suscipit adipiscing bibendum est ultricies. Arcu ac tortor dignissim convallis aenean et tortor at. Pretium viverra suspendisse potenti nullam ac tortor vitae purus. Eros donec ac odio tempor orci dapibus ultrices. Elementum nibh tellus molestie nunc. Et magnis dis parturient montes nascetur. Est placerat in egestas erat imperdiet. Consequat interdum varius sit amet mattis vulputate enim.`}
+              {hideSubject ? null : assignmentDetail.subject}
             </Grid>
           </Grid>
         </CardContent>
-      </Card>
-      {remainingTime === 0 ? null : (
-        <Card className={classes.card}>
-          <CardHeader
-            avatar={
-              <Avatar style={{ background: "#e3f2fd" }}>
-                <FcUpload size={32} />
-              </Avatar>
-            }
-            title={<Typography variant="h5">Nộp bài</Typography>}
-          />
-          <CardContent className={classes.submit}>
-            <DropzoneArea
-              filesLimit={1}
-              maxFileSize={10485760}
-              showPreviews={true}
-              showPreviewsInDropzone={false}
-              showFileNamesInPreview={true}
-              useChipsForPreview={true}
-              // getPreviewIcon={handlePreviewIcon}
-              dropzoneText="Kéo và thả tệp vào đây hoặc nhấn để chọn tệp"
-              previewText="Xem trước:"
-              previewChipProps={{ variant: "outlined", color: "primary" }}
-              getFileAddedMessage={(fileName) =>
-                `Tệp ${fileName} tải lên thành công`
+        {remainingTime > 0 &&
+        (assignmentDetail.submitedFileName == null || isUpdating == true) ? (
+          <Fragment>
+            <CardHeader
+              avatar={
+                <Avatar style={{ background: "#e3f2fd" }}>
+                  <FcUpload size={32} />
+                </Avatar>
               }
-              showAlerts={["error", "success"]}
-              getFileLimitExceedMessage={(filesLimit) =>
-                `Vượt quá số lượng tệp tối đa được cho phép. Chỉ được phép tải lên tối đa ${filesLimit} tệp.`
-              }
-              getDropRejectMessage={(
-                rejectedFile,
-                acceptedFiles,
-                maxFileSize
-              ) => {
-                var message = "Tệp ".concat(rejectedFile.name, " bị từ chối. ");
-
-                // if (!acceptedFiles.includes(rejectedFile.type)) {
-                //   message += "Định dạng tệp không hỗ trợ. ";
-                //   return message;
-                // }
-
-                if (rejectedFile.size > maxFileSize) {
-                  message +=
-                    "Kích thước tệp quá lớn. Kích thước giới hạn là " +
-                    maxFileSize / 1048576 +
-                    " megabytes. ";
-                  return message;
-                }
-              }}
-              onChange={(files) => console.log("Files:", files)}
+              title={<Typography variant="h5">Nộp bài tập</Typography>}
             />
-          </CardContent>
-        </Card>
-      )}
+            <CardContent className={classes.submit}>
+              <DropzoneArea
+                filesLimit={1}
+                maxFileSize={10485760}
+                showPreviews={true}
+                showPreviewsInDropzone={false}
+                showFileNamesInPreview={true}
+                useChipsForPreview={true}
+                dropzoneText="Kéo và thả tệp vào đây hoặc nhấn để chọn tệp"
+                previewText="Xem trước:"
+                previewChipProps={{ variant: "outlined", color: "primary" }}
+                getFileAddedMessage={(fileName) =>
+                  `Tệp ${fileName} tải lên thành công`
+                }
+                showAlerts={["error", "success"]}
+                alertSnackbarProps={{
+                  anchorOrigin: { vertical: "bottom", horizontal: "right" },
+                }}
+                getFileLimitExceedMessage={(filesLimit) =>
+                  `Vượt quá số lượng tệp tối đa được cho phép. Chỉ được phép tải lên tối đa ${filesLimit} tệp.`
+                }
+                getDropRejectMessage={(
+                  rejectedFile,
+                  acceptedFiles,
+                  maxFileSize
+                ) => {
+                  var message = "Tệp ".concat(
+                    rejectedFile.name,
+                    " bị từ chối. "
+                  );
+
+                  // if (!acceptedFiles.includes(rejectedFile.type)) {
+                  //   message += "Định dạng tệp không hỗ trợ. ";
+                  //   return message;
+                  // }
+
+                  if (rejectedFile.size > maxFileSize) {
+                    message +=
+                      "Kích thước tệp quá lớn. Kích thước giới hạn là " +
+                      maxFileSize / 1048576 +
+                      " megabytes. ";
+                    return message;
+                  }
+                }}
+                onChange={(files) => setFile(files[0])}
+              />
+              {isUpdating ? (
+                <Button
+                  variant="text"
+                  color="secondary"
+                  className={classes.cancleBtn}
+                  onClick={onClickCancleBtn}
+                >
+                  Huỷ
+                </Button>
+              ) : null}
+              <Button
+                variant="outlined"
+                style={{ background: "#2ea44f", color: "white" }}
+                className={classes.submitBtn}
+                onClick={onClickSubmitBtn}
+              >
+                {isUpdating ? "Cập nhật" : "Nộp bài"}
+              </Button>
+            </CardContent>
+          </Fragment>
+        ) : null}
+      </Card>
+      <Snackbar
+        autoHideDuration={3000}
+        anchorOrigin={{ vertical, horizontal }}
+        open={open}
+        onClose={handleClose}
+        key={vertical + horizontal}
+      >
+        <Alert onClose={handleClose} severity="success">
+          {message}
+        </Alert>
+      </Snackbar>
     </MuiThemeProvider>
   );
 }
