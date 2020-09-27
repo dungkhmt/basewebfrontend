@@ -43,6 +43,12 @@ const useStyles = makeStyles((theme) => ({
   grid: {
     paddingLeft: 56,
   },
+  createBtn: {
+    borderRadius: "6px",
+    marginTop: 16,
+    textTransform: "none",
+    fontSize: "1rem",
+  },
 }));
 
 const StyledBadge = withStyles((theme) => ({
@@ -488,14 +494,9 @@ function TClassDetail() {
                 if (props.action.icon === "create") {
                   return (
                     <Button
-                      variant="contained"
-                      color="primary"
-                      // startIcon={<AddCircleOutlineIcon />}
-                      style={{
-                        fontSize: "bold",
-                        // background: "green",
-                        // color: "white",
-                      }}
+                      variant="outlined"
+                      style={{ background: "#2ea44f", color: "white" }}
+                      className={classes.createBtn}
                       onClick={(event) =>
                         props.action.onClick(event, props.data)
                       }
@@ -547,7 +548,7 @@ function TClassDetail() {
                 position: "toolbar",
                 onClick: (event) => {
                   history.push(
-                    `/edu/teacher/class/${params.id}/exercise/create`
+                    `/edu/teacher/class/${params.id}/assignment/create`
                   );
                 },
               },
@@ -561,7 +562,7 @@ function TClassDetail() {
             onRowClick={(event, rowData) => {
               console.log(rowData);
               history.push(
-                `/edu/teacher/class/${params.id}/exercise/${rowData.id}`
+                `/edu/teacher/class/${params.id}/assignment/717729ee-fe55-11ea-8b6c-0862665303f9`
               );
             }}
           />
