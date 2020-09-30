@@ -25,9 +25,11 @@ import { CountdownCircleTimer } from "react-countdown-circle-timer";
 import { FcDownload } from "react-icons/fc";
 import EditIcon from "@material-ui/icons/Edit";
 import { useDispatch, useSelector } from "react-redux";
-import { axiosGet } from "../../../../api";
+import { authPost, axiosGet, axiosPost } from "../../../../api";
 import axios from "axios";
 import { green } from "@material-ui/core/colors";
+import { saveAs } from "file-saver";
+import { API_URL } from "../../../../config/config";
 
 const useStyles = makeStyles((theme) => ({
   card: {
@@ -168,7 +170,7 @@ function TExerciseDetail() {
   const [data, setData] = useState([]);
   const tableRef = useRef(null);
   const [selectedSubmissions, setSelectedSubmission] = useState([]);
-  const [isDownloading, setIsDownloading] = useState(false);
+  const [isZipping, setIsZipping] = useState(false);
 
   // Functions.
   const getExerciseDetail = () => {
@@ -210,57 +212,23 @@ function TExerciseDetail() {
   };
 
   const onClickDownloadButton = () => {
-    setIsDownloading(true);
+    setIsZipping(true);
 
     let studentIds = selectedSubmissions.map(
       (submission) => submission.studentId
     );
 
-    axios
-      .post(
-        "http://localhost:8080/api/edu/assignment/717729ee-fe55-11ea-8b6c-0862665303f9/submission/files",
-        { studentIds: studentIds },
-        {
-          headers: {
-            "content-type": "application/json",
-            "X-Auth-Token": token,
-          },
-          responseType: "arraybuffer",
-        }
-      )
+    axiosPost(
+      dispatch,
+      token,
+      `/edu/assignment/${params.assignmentId}/submissions`,
+      { studentIds: studentIds }
+    )
       .then((res) => {
-        setIsDownloading(false);
-        saveFile(params.assignmentId, res.data);
+        setIsZipping(false);
+        window.location.href = `${API_URL}/edu/assignment/${params.assignmentId}/download-file/${res.data}`;
       })
-      .catch((e) => {
-        setIsDownloading(false);
-        // Thong bao loi
-        console.log(e);
-      });
-  };
-
-  const saveFile = (fileName, data) => {
-    let blob = new Blob([data], { type: "application/zip" });
-
-    //IE11 support
-    if (window.navigator.msSaveOrOpenBlob) {
-      window.navigator.msSaveBlob(blob, fileName);
-    } else {
-      let link = window.document.createElement("a");
-
-      link.href = window.URL.createObjectURL(blob);
-      link.setAttribute("download", fileName);
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
-
-      // other browsers
-      // Second approach but cannot specify saved name!
-      // let file = new File([data], fileName, { type: "application/zip" });
-      // let exportUrl = URL.createObjectURL(file);
-      // window.location.assign(exportUrl);
-      // URL.revokeObjectURL(exportUrl);
-    }
+      .catch((e) => console.log(e));
   };
 
   useEffect(() => {
@@ -453,19 +421,17 @@ function TExerciseDetail() {
                     <div className={classes.wrapper}>
                       <Button
                         className={classes.downloadBtn}
-                        disabled={isDownloading}
+                        disabled={isZipping}
                         variant="outlined"
                         color="primary"
-                        startIcon={
-                          isDownloading ? null : <FcDownload size={24} />
-                        }
+                        startIcon={isZipping ? null : <FcDownload size={24} />}
                         onClick={(event) =>
                           props.action.onClick(event, props.data)
                         }
                       >
-                        {isDownloading ? "Đang chuẩn bị tệp" : "Tải xuống"}
+                        {isZipping ? "Đang nén các tệp" : "Tải xuống"}
                       </Button>
-                      {isDownloading && (
+                      {isZipping && (
                         <CircularProgress
                           size={24}
                           className={classes.buttonProgress}
