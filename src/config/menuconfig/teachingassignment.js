@@ -56,7 +56,7 @@ export const teachingassignment = {
 
     {
       id: "MENU_EDUCATION_ASSIGNMENT_EXECUTION",
-      path: "/edu/class/registration",
+      path: "/edu/class/register",
       isPublic: false,
       icon: null,
       text: "Đăng ký lớp",

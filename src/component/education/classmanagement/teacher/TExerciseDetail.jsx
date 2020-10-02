@@ -28,7 +28,6 @@ import { useDispatch, useSelector } from "react-redux";
 import { authPost, axiosGet, axiosPost } from "../../../../api";
 import axios from "axios";
 import { green } from "@material-ui/core/colors";
-import { saveAs } from "file-saver";
 import { API_URL } from "../../../../config/config";
 
 const useStyles = makeStyles((theme) => ({
