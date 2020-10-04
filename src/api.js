@@ -1,5 +1,5 @@
-import {failed} from "./action/Auth";
-import {API_URL} from "./config/config";
+import { failed } from "./action/Auth";
+import { API_URL } from "./config/config";
 import axios from "axios";
 
 export const authPost = (dispatch, token, url, body) => {
@@ -91,7 +91,7 @@ export default {
   },
 };
 
-export const axiosPost = (dispatch, token, url, data) => {
+export const axiosPost = (token, url, data, dispatch) => {
   return axios.post(API_URL + url, data, {
     headers: {
       "content-type": "application/json",
@@ -100,7 +100,7 @@ export const axiosPost = (dispatch, token, url, data) => {
   });
 };
 
-export const axiosGet = (dispatch, token, url) => {
+export const axiosGet = (token, url, dispatch) => {
   return axios.get(API_URL + url, {
     headers: {
       "content-type": "application/json",
@@ -109,7 +109,7 @@ export const axiosGet = (dispatch, token, url) => {
   });
 };
 
-export const axiosPut = (dispatch, token, url, data) => {
+export const axiosPut = (token, url, data, dispatch) => {
   return axios.put(API_URL + url, data, {
     headers: {
       "content-type": "application/json",

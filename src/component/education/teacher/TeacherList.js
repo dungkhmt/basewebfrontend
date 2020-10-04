@@ -56,7 +56,7 @@ function TeacherList() {
 
   // Functions.
   const getAllTeachers = () => {
-    axiosGet(dispatch, token, "/edu/teacher/all")
+    axiosGet(token, "/edu/teacher/all")
       .then((res) => {
         console.log("getAllTeachers, teachers ", res.data);
         setTeachers(res.data);
@@ -282,7 +282,6 @@ function TeacherList() {
 
           // Everything is OK!.
           axiosPost(
-            dispatch,
             token,
             "/edu/teacher/add-list-of-teachers",
             XLSX.utils.sheet_to_json(sheet)

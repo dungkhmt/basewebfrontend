@@ -59,7 +59,7 @@ function CourseList() {
 
   // Functions.
   const getAllCourses = () => {
-    axiosGet(dispatch, token, "/edu/course/all")
+    axiosGet(token, "/edu/course/all")
       .then((res) => {
         console.log("getAllCourses, courses ", res.data);
         setCourses(res.data);
@@ -261,7 +261,6 @@ function CourseList() {
 
           // Everything is OK!.
           axiosPost(
-            dispatch,
             token,
             "/edu/course/add-list-of-courses",
             XLSX.utils.sheet_to_json(sheet)

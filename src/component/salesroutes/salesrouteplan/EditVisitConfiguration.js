@@ -61,7 +61,7 @@ function EditVisitConfirguration(props) {
 
   // Functions.
   const getVisitFrequencies = () => {
-    axiosGet(dispatch, token, "/get-list-sales-route-visit-frequency")
+    axiosGet(token, "/get-list-sales-route-visit-frequency")
       .then((res) => {
         setFrequencies(res.data);
         console.log("Frequencies ", res.data);
@@ -180,7 +180,7 @@ function EditVisitConfirguration(props) {
     ) {
       history.goBack();
     } else {
-      axiosPut(dispatch, token, "/update-sales-route-config-retail-outlet", {
+      axiosPut(token, "/update-sales-route-config-retail-outlet", {
         salesRouteConfigRetailOutletId: data.salesRouteConfigRetailOutletId,
         visitFrequencyId: formData.frequency,
         salesRouteConfigId: formData.config === "None" ? null : formData.config,
