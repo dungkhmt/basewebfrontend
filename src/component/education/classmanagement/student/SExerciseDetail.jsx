@@ -152,7 +152,6 @@ function SExerciseDetail() {
   // Functions.
   const getExerciseDetail = () => {
     axiosGet(
-      dispatch,
       token,
       "/edu/assignment/717729ee-fe55-11ea-8b6c-0862665303f9/student"
     )
@@ -196,15 +195,9 @@ function SExerciseDetail() {
 
   const onClickSubmitBtn = () => {
     const data = new FormData();
-
     data.append("file", file);
 
-    axiosPost(
-      dispatch,
-      token,
-      "/edu/assignment/717729ee-fe55-11ea-8b6c-0862665303f9/submission",
-      data
-    )
+    axiosPost(token, `/edu/assignment/${params.assignmentId}/submission`, data)
       .then((res) => {
         setMessage(isUpdating ? "Chỉnh sửa thành công" : "Nộp bài thành công");
 
@@ -217,7 +210,7 @@ function SExerciseDetail() {
           submitedFileName: file.name,
         });
       })
-      .catch((e) => console.log(e));
+      .catch((e) => alert("error"));
   };
 
   useEffect(() => {

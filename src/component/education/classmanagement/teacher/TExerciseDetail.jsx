@@ -115,7 +115,6 @@ function TExerciseDetail() {
   const classes = useStyles();
   const params = useParams();
   const history = useHistory();
-  const dispatch = useDispatch();
   const token = useSelector((state) => state.auth.token);
 
   // Countdown.
@@ -173,7 +172,7 @@ function TExerciseDetail() {
 
   // Functions.
   const getExerciseDetail = () => {
-    axiosGet(dispatch, token, `/edu/assignment/${params.assignmentId}/teacher`)
+    axiosGet(token, `/edu/assignment/${params.assignmentId}/teacher`)
       .then((res) => {
         let assignmentDetail = res.data.assignmentDetail;
         let startTime = new Date(assignmentDetail.createdStamp);
@@ -217,12 +216,9 @@ function TExerciseDetail() {
       (submission) => submission.studentId
     );
 
-    axiosPost(
-      dispatch,
-      token,
-      `/edu/assignment/${params.assignmentId}/submissions`,
-      { studentIds: studentIds }
-    )
+    axiosPost(token, `/edu/assignment/${params.assignmentId}/submissions`, {
+      studentIds: studentIds,
+    })
       .then((res) => {
         setIsZipping(false);
         window.location.href = `${API_URL}/edu/assignment/${params.assignmentId}/download-file/${res.data}`;

@@ -1,4 +1,4 @@
-import React, { useRef, useEffect } from "react";
+import React, { useRef, useEffect, useState, forwardRef } from "react";
 import {
   Card,
   CardContent,
@@ -13,9 +13,9 @@ import {
 import MaterialTable from "material-table";
 import { useDispatch, useSelector } from "react-redux";
 import { useHistory } from "react-router";
-import { authGet } from "../../../../api";
+import { authGet, axiosGet } from "../../../../api";
 import { MuiThemeProvider } from "material-ui/styles";
-import { FcViewDetails, FcApproval } from "react-icons/fc";
+import { FcViewDetails, FcApproval, FcFilledFilter } from "react-icons/fc";
 import { Avatar } from "material-ui";
 import { makeStyles } from "@material-ui/core/styles";
 import { FaListUl } from "react-icons/fa";
@@ -38,37 +38,50 @@ const useStyles = makeStyles((theme) => ({
 
 function SClassList() {
   const classes = useStyles();
-  const dispatch = useDispatch();
   const token = useSelector((state) => state.auth.token);
   const history = useHistory();
 
+  const headerProperties = {
+    headerStyle: {
+      textAlign: "center",
+    },
+    cellStyle: {
+      textAlign: "center",
+      fontSize: "1rem",
+    },
+  };
   const columns = [
     {
-      field: "id",
+      field: "code",
       title: "Mã lớp",
-      headerStyle: {
-        textAlign: "center",
-      },
-      cellStyle: {
-        textAlign: "center",
-        fontSize: "1rem",
-      },
+      ...headerProperties,
     },
     {
-      field: "courseName",
-      title: "Tên môn học",
+      field: "courseId",
+      title: "Mã học phần",
+      ...headerProperties,
     },
     {
-      field: "semesterId",
+      field: "name",
+      title: "Tên học phần",
+    },
+    {
+      field: "classType",
+      title: "Loại lớp",
+      ...headerProperties,
+    },
+    {
+      field: "semester",
       title: "Học kỳ",
+      ...headerProperties,
     },
     {
       field: "status",
       title: "Trạng thái",
+      filtering: false,
       headerStyle: {
         textAlign: "center",
       },
-
       render: (rowData) => (
         <Box display="flex" justifyContent="center">
           {rowData.status === "APPROVED" ? (
@@ -92,36 +105,19 @@ function SClassList() {
     },
   ];
 
-  const data = [
-    {
-      id: "387435",
-      courseName: "Cấu trúc dữ liệu và thuật toán",
-      semesterId: "20192",
-      status: "APPROVED",
-    },
-    {
-      id: "435839",
-      courseName: "Java nâng cao",
-      semesterId: "20201",
-      status: "PENDING_APPROVAL",
-    },
-    {
-      id: "123456",
-      courseName: "Thuật toán ứng dụng",
-      semesterId: "20202",
-      status: "PENDING_APPROVAL",
-    },
-  ];
+  const [data, setData] = useState([]);
 
   const tableRef = useRef(null);
 
   // Functions.
-  const onClickRegistrationBtn = (e) => {
-    console.log("Click button", e);
+  const getClasses = () => {
+    axiosGet(token, "/edu/class/list/student")
+      .then((res) => setData(res.data))
+      .catch((e) => alert(e.response.body));
   };
 
   useEffect(() => {
-    tableRef.current.dataManager.changePageSize(20);
+    getClasses();
   }, []);
 
   return (
@@ -140,9 +136,14 @@ function SClassList() {
             title=""
             columns={columns}
             tableRef={tableRef}
+            icons={{
+              Filter: forwardRef((props, ref) => (
+                <FcFilledFilter {...props} ref={ref} />
+              )),
+            }}
             localization={{
               body: {
-                emptyDataSourceMessage: "",
+                emptyDataSourceMessage: "Không có bản ghi nào để hiển thị",
               },
               toolbar: {
                 searchPlaceholder: "Tìm kiếm",
@@ -163,7 +164,10 @@ function SClassList() {
               Container: (props) => <Paper {...props} elevation={0} />,
             }}
             options={{
-              debounceInterval: 500,
+              filtering: true,
+              search: false,
+              pageSize: 20,
+              debounceInterval: 300,
               headerStyle: {
                 backgroundColor: "#673ab7",
                 fontWeight: "bold",

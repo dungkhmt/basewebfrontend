@@ -16,7 +16,7 @@ import {
 import MaterialTable, { MTableToolbar } from "material-table";
 import { useDispatch, useSelector } from "react-redux";
 import { useHistory } from "react-router";
-import { authGet } from "../../../../api";
+import { authGet, axiosGet } from "../../../../api";
 import { MuiThemeProvider } from "material-ui/styles";
 import { useParams } from "react-router";
 import { makeStyles, useTheme, withStyles } from "@material-ui/core/styles";
@@ -60,96 +60,81 @@ const StyledBadge = withStyles((theme) => ({
   },
 }))(Badge);
 
+const formatTime = (n) => (Number(n) < 10 ? "0" + Number(n) : "" + Number(n));
+
 function TClassDetail() {
   const classes = useStyles();
   const theme = useTheme();
   const params = useParams();
-
-  const dispatch = useDispatch();
   const token = useSelector((state) => state.auth.token);
   const history = useHistory();
 
-  const [openStudentList, setOpenStudentList] = useState(false);
-  const [openRegistrationList, setOpenRegistrationList] = useState(false);
+  const [classDetail, setClassDetail] = useState({});
 
-  const [classDetail, setClassDetail] = useState({
-    id: params.id,
-    courseId: "IT3011",
-    courseName: "Cấu trúc dữ liệu và thuật toán",
-  });
+  // Tables.
+  const [assignment, setAssignments] = useState([]);
+  const [students, setStudents] = useState([]);
+  const [registStudents, setRegistStudents] = useState([]);
+  const [openClassStuCard, setOpenClassStuCard] = useState(false);
+  const [openRegistCard, setOpenRegistCard] = useState(false);
+  const tableRef = useRef(null);
 
-  const exerciseListCols = [
-    {
-      field: "id",
-      title: "Mã bài tập",
-      width: 150,
-      headerStyle: {
-        textAlign: "center",
-      },
-      cellStyle: {
-        textAlign: "center",
-        fontSize: "1rem",
-        padding: 5,
-      },
+  const headerProperties = {
+    headerStyle: {
+      textAlign: "center",
     },
+    cellStyle: {
+      textAlign: "center",
+      fontSize: "1rem",
+    },
+  };
+
+  const assignCols = [
     {
       field: "name",
       title: "Tên bài tập",
+      ...headerProperties,
     },
     {
-      field: "note",
-      title: "Ghi chú",
+      field: "deadLine",
+      title: "Hạn nộp",
+      ...headerProperties,
+      render: (rowData) => {
+        let deadLine = new Date(rowData.deadLine);
+        return (
+          <Typography>
+            {deadLine.getFullYear()}-{formatTime(deadLine.getMonth() + 1)}-
+            {formatTime(deadLine.getDate())}
+            &nbsp;&nbsp;
+            {formatTime(deadLine.getHours())}
+            <b>:</b>
+            {formatTime(deadLine.getMinutes())}
+            <b>:</b>
+            {formatTime(deadLine.getSeconds())}
+          </Typography>
+        );
+      },
     },
   ];
 
-  const exercises = [
-    {
-      id: "BT1",
-      name: "Luyện tập python",
-      note: "Bài tập khởi động",
-    },
-    {
-      id: "BT2",
-      name: "Mô hình hóa",
-      note: "Bài tập nâng cao",
-    },
-  ];
-
-  const studentListCols = [
-    {
-      field: "id",
-      title: "Mã sinh viên",
-      width: 172,
-      headerStyle: {
-        textAlign: "center",
-      },
-      cellStyle: {
-        textAlign: "center",
-        fontSize: "1rem",
-      },
-    },
+  const registCols = [
     {
       field: "name",
       title: "Họ và tên",
-    },
-    {
-      field: "phoneNumber",
-      title: "Số điện thoại",
-      headerStyle: {
-        textAlign: "center",
-      },
-      cellStyle: {
-        textAlign: "center",
-        fontSize: "1rem",
-      },
+      ...headerProperties,
     },
     {
       field: "email",
       title: "Email",
+      ...headerProperties,
       render: (rowData) => (
         <Link href={`mailto:${rowData.email}`}>{rowData.email}</Link>
       ),
     },
+  ];
+
+  const stuCols = [
+    ...registCols,
     {
       field: "",
       title: "",
@@ -168,52 +153,47 @@ function TClassDetail() {
     },
   ];
 
-  const entrantListCols = [
-    {
-      field: "id",
-      title: "Mã sinh viên",
-      headerStyle: {
-        textAlign: "center",
-      },
-      cellStyle: {
-        textAlign: "center",
-        fontSize: "1rem",
-      },
-    },
-    {
-      field: "name",
-      title: "Họ và tên",
-    },
-    {
-      field: "email",
-      title: "Email",
-    },
-  ];
-
-  const studentList = [
-    {
-      id: 20173441,
-      name: "Lê Anh Tuấn",
-      email: "anhtuan0126104@gmail.com",
-      phoneNumber: "0969826785",
-    },
-    {
-      id: 20172976,
-      name: "Lê Văn Cường",
-      email: "cuong.lv172976@sis.hust.edu.vn",
-      phoneNumber: "0357762225",
-    },
-  ];
-
-  const tableRef = useRef(null);
-
   // Functions.
+  const getClassDetail = () => {
+    axiosGet(token, `/edu/class/${params.id}`)
+      .then((res) => setClassDetail(res.data))
+      .catch((e) => alert("error"));
+  };
+
+  const getStudents = (type) => {
+    if (type === "register") {
+      axiosGet(token, `/edu/class/${params.id}/registered-students`)
+        .then((res) => setRegistStudents(res.data))
+        .catch((e) => alert("error"));
+    } else {
+      axiosGet(token, `/edu/class/${params.id}/students`)
+        .then((res) => setStudents(res.data))
+        .catch((e) => alert("error"));
+    }
+  };
+
+  const getAssignments = () => {
+    axiosGet(token, `/edu/class/${params.id}/assignments`)
+      .then((res) => setAssignments(res.data))
+      .catch((e) => alert("error"));
+  };
+
+  const onClickStuCard = () => {
+    if (false == openClassStuCard && 0 == students.length) {
+      getStudents("class");
+    }
+
+    setOpenClassStuCard(!openClassStuCard);
+  };
+
   const onClickRemoveBtn = (e) => {
     console.log("Click button", e);
   };
 
   useEffect(() => {
-    tableRef.current.dataManager.changePageSize(20);
+    getClassDetail();
+    getAssignments();
+    getStudents("register");
   }, []);
 
   return (
@@ -232,15 +212,15 @@ function TClassDetail() {
             <Grid item md={3} sm={3} xs={3}>
               <Typography>Mã lớp</Typography>
             </Grid>
-            <Grid item md={9} sm={9} xs={9}>
+            <Grid item md={8} sm={8} xs={8}>
               <Typography>
-                <b>:</b> {classDetail.id}
+                <b>:</b> {classDetail.code}
               </Typography>
             </Grid>
             <Grid item md={3} sm={3} xs={3}>
               <Typography>Mã học phần</Typography>
             </Grid>
-            <Grid item md={9} sm={9} xs={9}>
+            <Grid item md={8} sm={8} xs={8}>
               <Typography>
                 <b>:</b> {classDetail.courseId}
               </Typography>
@@ -248,19 +228,24 @@ function TClassDetail() {
             <Grid item md={3} sm={3} xs={3}>
               <Typography>Tên học phần</Typography>
             </Grid>
-            <Grid item md={9} sm={9} xs={9}>
+            <Grid item md={8} sm={8} xs={8}>
               <Typography>
-                <b>:</b> {classDetail.courseName}
+                <b>:</b> {classDetail.name}
+              </Typography>
+            </Grid>
+            <Grid item md={3} sm={3} xs={3}>
+              <Typography>Loại lớp</Typography>
+            </Grid>
+            <Grid item md={8} sm={8} xs={8}>
+              <Typography>
+                <b>:</b> {classDetail.classType}
               </Typography>
             </Grid>
           </Grid>
         </CardContent>
       </Card>
       <Card className={classes.card}>
-        <CardActionArea
-          disableRipple
-          onClick={() => setOpenStudentList(!openStudentList)}
-        >
+        <CardActionArea disableRipple onClick={onClickStuCard}>
           <CardHeader
             avatar={
               <Avatar style={{ background: "white" }}>
@@ -272,7 +257,7 @@ function TClassDetail() {
             action={
               <div>
                 <IconButton aria-label="show more">
-                  {openStudentList ? (
+                  {openClassStuCard ? (
                     <FcCollapse size={24} />
                   ) : (
                     <FcExpand size={24} />
@@ -282,11 +267,11 @@ function TClassDetail() {
             }
           />
         </CardActionArea>
-        <Collapse in={openStudentList} timeout="auto">
+        <Collapse in={openClassStuCard} timeout="auto">
           <CardContent>
             <MaterialTable
               title=""
-              columns={studentListCols}
+              columns={stuCols}
               tableRef={tableRef}
               localization={{
                 body: {
@@ -306,11 +291,12 @@ function TClassDetail() {
                   previousTooltip: "Trang trước",
                 },
               }}
-              data={studentList}
+              data={students}
               components={{
                 Container: (props) => <Paper {...props} elevation={0} />,
               }}
               options={{
+                pageSize: 20,
                 debounceInterval: 500,
                 headerStyle: {
                   backgroundColor: "#673ab7",
@@ -329,7 +315,7 @@ function TClassDetail() {
       <Card className={classes.card}>
         <CardActionArea
           disableRipple
-          onClick={() => setOpenRegistrationList(!openRegistrationList)}
+          onClick={() => setOpenRegistCard(!openRegistCard)}
         >
           <CardHeader
             avatar={
@@ -338,7 +324,7 @@ function TClassDetail() {
               </Avatar>
             }
             title={
-              <StyledBadge badgeContent={studentList.length} color="error">
+              <StyledBadge badgeContent={registStudents.length} color="error">
                 Phê duyệt sinh viên đăng ký
               </StyledBadge>
             }
@@ -348,7 +334,7 @@ function TClassDetail() {
             action={
               <div>
                 <IconButton aria-label="show more">
-                  {openRegistrationList ? (
+                  {openRegistCard ? (
                     <FcCollapse size={24} />
                   ) : (
                     <FcExpand size={24} />
@@ -358,11 +344,11 @@ function TClassDetail() {
             }
           />
         </CardActionArea>
-        <Collapse in={openRegistrationList} timeout="auto">
+        <Collapse in={openRegistCard} timeout="auto">
           <CardContent>
             <MaterialTable
               title=""
-              columns={entrantListCols}
+              columns={registCols}
               tableRef={tableRef}
               localization={{
                 body: {
@@ -382,7 +368,7 @@ function TClassDetail() {
                   previousTooltip: "Trang trước",
                 },
               }}
-              data={studentList}
+              data={registStudents}
               components={{
                 Container: (props) => <Paper {...props} elevation={0} />,
                 Action: (props) => {
@@ -423,6 +409,7 @@ function TClassDetail() {
                 },
               }}
               options={{
+                pageSize: 10,
                 selection: true,
                 debounceInterval: 500,
                 headerStyle: {
@@ -464,7 +451,7 @@ function TClassDetail() {
         <CardContent>
           <MaterialTable
             title=""
-            columns={exerciseListCols}
+            columns={assignCols}
             tableRef={tableRef}
             localization={{
               header: {
@@ -487,7 +474,7 @@ function TClassDetail() {
                 previousTooltip: "Trang trước",
               },
             }}
-            data={exercises}
+            data={assignment}
             components={{
               Container: (props) => <Paper {...props} elevation={0} />,
               Action: (props) => {
@@ -523,6 +510,7 @@ function TClassDetail() {
               },
             }}
             options={{
+              pageSize: 10,
               actionsColumnIndex: -1,
               debounceInterval: 500,
               headerStyle: {
@@ -547,9 +535,9 @@ function TClassDetail() {
                 icon: "create",
                 position: "toolbar",
                 onClick: (event) => {
-                  history.push(
-                    `/edu/teacher/class/${params.id}/assignment/create`
-                  );
+                  // history.push(
+                  //   `/edu/teacher/class/${params.id}/assignment/create`
+                  // );
                 },
               },
               {
@@ -562,7 +550,7 @@ function TClassDetail() {
             onRowClick={(event, rowData) => {
               console.log(rowData);
               history.push(
-                `/edu/teacher/class/${params.id}/assignment/717729ee-fe55-11ea-8b6c-0862665303f9`
+                `/edu/teacher/class/${params.id}/assignment/${rowData.id}`
               );
             }}
           />

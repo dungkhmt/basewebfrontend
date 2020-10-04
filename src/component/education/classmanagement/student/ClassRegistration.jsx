@@ -1,4 +1,4 @@
-import React, { useRef, useEffect } from "react";
+import React, { useRef, useEffect, useState } from "react";
 import {
   Card,
   CardContent,
@@ -12,9 +12,10 @@ import {
 import MaterialTable from "material-table";
 import { useDispatch, useSelector } from "react-redux";
 import { useHistory } from "react-router";
-import { authGet } from "../../../../api";
+import { axiosGet, axiosPost } from "../../../../api";
 import { MuiThemeProvider } from "material-ui/styles";
 import { makeStyles } from "@material-ui/core/styles";
+import { tableIcons } from "../../../../utils/iconutil";
 
 const useStyles = makeStyles((theme) => ({
   card: {
@@ -27,25 +28,46 @@ const useStyles = makeStyles((theme) => ({
 
 function ClassRegistration() {
   const classes = useStyles();
-  const dispatch = useDispatch();
   const token = useSelector((state) => state.auth.token);
   const history = useHistory();
 
+  const [semester, setSemester] = useState("");
+  const [data, setData] = useState([]);
+
+  // Table.
+  const headerProperties = {
+    headerStyle: {
+      textAlign: "center",
+    },
+    cellStyle: {
+      textAlign: "center",
+      fontSize: "1rem",
+    },
+  };
   const columns = [
     {
-      field: "classId",
+      field: "code",
       title: "Mã lớp",
-      headerStyle: {
-        textAlign: "center",
-      },
-      cellStyle: {
-        textAlign: "center",
-        fontSize: "1rem",
-      },
+      ...headerProperties,
+    },
+    {
+      field: "courseId",
+      title: "Mã học phần",
+      ...headerProperties,
     },
     {
       field: "courseName",
-      title: "Tên môn học",
+      title: "Tên học phần",
+    },
+    {
+      field: "classType",
+      title: "Loại lớp",
+      ...headerProperties,
+    },
+    {
+      field: "departmentId",
+      title: "Khoa/Viện",
+      ...headerProperties,
     },
     {
       field: "",
@@ -66,31 +88,16 @@ function ClassRegistration() {
     },
   ];
 
-  const data = [
-    {
-      classId: "387435",
-      courseName: "Cấu trúc dữ liệu và thuật toán",
-    },
-    {
-      classId: "435839",
-      courseName: "Java nâng cao",
-    },
-    {
-      classId: "123456",
-      courseName: "Thuật toán ứng dụng",
-    },
-  ];
-
   const tableRef = useRef(null);
 
   // Functions.
-  const onClickRegistrationBtn = (e) => {
-    console.log("Click button", e);
+  const onClickRegistrationBtn = (rowData) => {
+    // axiosPost(token, "/edu/class/register", { classId: rowData.id })
+    //   .then((res) => console.log(res))
+    //   .catch((e) => {
+    //     alert(e.response.data);
+    //   });
   };
-
-  useEffect(() => {
-    tableRef.current.dataManager.changePageSize(20);
-  }, []);
 
   return (
     <MuiThemeProvider>
@@ -98,7 +105,9 @@ function ClassRegistration() {
         <CardHeader
           avatar={<Avatar style={{ background: "#ff5722" }}>R</Avatar>}
           title={
-            <Typography variant="h5">Đăng ký lớp học - Học kỳ 20201</Typography>
+            <Typography variant="h5">
+              Đăng ký lớp học - Học kỳ {semester}
+            </Typography>
           }
         />
         <CardContent>
@@ -124,54 +133,43 @@ function ClassRegistration() {
                 previousTooltip: "Trang trước",
               },
             }}
-            data={
-              data
-              //  (query) =>
-              //   new Promise((resolve, reject) => {
-              //     console.log(query);
+            data={(query) =>
+              new Promise((resolve, reject) => {
+                console.log(query);
 
-              //     let filterParam = "";
-              //     filterParam = "&search=" + query.search;
+                // let filterParam = "";
+                // filterParam = "&search=" + query.search;
 
-              //     authGet(
-              //       dispatch,
-              //       token,
-              //       "/supplier" +
-              //         "?page=" +
-              //         (query.page + 1) +
-              //         "&limit=20" +
-              //         // query.pageSize +
-              //         filterParam
-              //     )
-              //       .then((res) => {
-              //         console.log(res);
+                axiosGet(
+                  token,
+                  `/edu/class?page=${query.page}&size=${query.pageSize}`
+                )
+                  .then((res) => {
+                    console.log(res);
+                    setSemester(res.data.semesterId);
+                    let { content, number, totalElements } = res.data.page;
 
-              //         let { content, number, size, totalElements } = res;
-              //         let data = content.map((item, index) => {
-              //           let tmp = Object.assign({}, item, {
-              //             stt: number * size + index + 1,
-              //           });
-              //           return tmp;
-              //         });
-
-              //         resolve({
-              //           data: data,
-              //           page: number,
-              //           totalCount: totalElements,
-              //         });
-              //       })
-              //       .catch((e) => {
-              //         reject({
-              //           message: "Đã có lỗi xảy ra trong quá trình tải dữ liệu. Thử lại ",
-              //           errorCause: "query",
-              //         });
-              //       });
-              //   })
+                    resolve({
+                      data: content,
+                      page: number,
+                      totalCount: totalElements,
+                    });
+                  })
+                  .catch((e) => {
+                    reject({
+                      message:
+                        "Đã có lỗi xảy ra trong quá trình tải dữ liệu. Thử lại ",
+                      errorCause: "query",
+                    });
+                  });
+              })
             }
             components={{
               Container: (props) => <Paper {...props} elevation={0} />,
             }}
             options={{
+              search: false,
+              pageSize: 20,
               debounceInterval: 500,
               headerStyle: {
                 backgroundColor: "#673ab7",

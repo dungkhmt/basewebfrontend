@@ -10,6 +10,7 @@ import {
   CardActionArea,
   Grid,
   Link,
+  Divider,
 } from "@material-ui/core";
 import MaterialTable from "material-table";
 import { useDispatch, useSelector } from "react-redux";
@@ -25,6 +26,7 @@ import {
   FcConferenceCall,
 } from "react-icons/fc";
 import { BiDetail } from "react-icons/bi";
+import { axiosGet } from "../../../../api";
 
 const useStyles = makeStyles((theme) => ({
   card: {
@@ -33,117 +35,129 @@ const useStyles = makeStyles((theme) => ({
   grid: {
     paddingLeft: 56,
   },
+  divider: {
+    width: "91.67%",
+    marginTop: 16,
+    marginBottom: 16,
+  },
+  rootDivider: {
+    backgroundColor: "black",
+  },
 }));
+
+const formatTime = (n) => (Number(n) < 10 ? "0" + Number(n) : "" + Number(n));
 
 function SClassDetail() {
   const classes = useStyles();
   const params = useParams();
-
+  const token = useSelector((state) => state.auth.token);
   const history = useHistory();
 
-  const [openStudentList, setOpenStudentList] = useState(false);
-  const [] = useState(false);
-
-  const [classDetail] = useState({
-    id: params.id,
-    courseId: "IT3011",
-    courseName: "Cấu trúc dữ liệu và thuật toán",
-  });
+  const [classDetail, setClassDetail] = useState({});
 
   // Tables.
-  const exerciseListCols = [
-    {
-      field: "id",
-      title: "Mã bài tập",
-      headerStyle: {
-        textAlign: "center",
-      },
-      width: 150,
-      cellStyle: {
-        textAlign: "center",
-        fontSize: "1rem",
-        padding: 5,
-      },
+  const [assignment, setAssignments] = useState([]);
+  const [students, setStudents] = useState([]);
+  const [openStudentList, setOpenStudentList] = useState(false);
+  const tableRef = useRef(null);
+
+  const headerProperties = {
+    headerStyle: {
+      textAlign: "center",
     },
+    cellStyle: {
+      textAlign: "center",
+      fontSize: "1rem",
+    },
+  };
+
+  const assignCols = [
+    // {
+    //   field: "id",
+    //   title: "Mã bài tập",
+    //   headerStyle: {
+    //     textAlign: "center",
+    //   },
+    //   width: 150,
+    //   cellStyle: {
+    //     textAlign: "center",
+    //     fontSize: "1rem",
+    //     padding: 5,
+    //   },
+    // },
     {
       field: "name",
       title: "Tên bài tập",
+      ...headerProperties,
     },
     {
-      field: "note",
-      title: "Ghi chú",
+      field: "deadLine",
+      title: "Hạn nộp",
+      ...headerProperties,
+      render: (rowData) => {
+        let deadLine = new Date(rowData.deadLine);
+        return (
+          <Typography>
+            {deadLine.getFullYear()}-{formatTime(deadLine.getMonth() + 1)}-
+            {formatTime(deadLine.getDate())}
+            &nbsp;&nbsp;
+            {formatTime(deadLine.getHours())}
+            <b>:</b>
+            {formatTime(deadLine.getMinutes())}
+            <b>:</b>
+            {formatTime(deadLine.getSeconds())}
+          </Typography>
+        );
+      },
     },
   ];
 
-  const exercises = [
-    {
-      id: "BT1",
-      name: "Luyện tập python",
-      note: "Bài tập khởi động",
-    },
-    {
-      id: "BT2",
-      name: "Mô hình hóa",
-      note: "Bài tập nâng cao",
-    },
-  ];
-
-  const studentListCols = [
-    {
-      field: "id",
-      title: "Mã sinh viên",
-      headerStyle: {
-        textAlign: "center",
-      },
-      cellStyle: {
-        textAlign: "center",
-        fontSize: "1rem",
-      },
-    },
+  const studentCols = [
     {
       field: "name",
       title: "Họ và tên",
-    },
-    {
-      field: "phoneNumber",
-      title: "Số điện thoại",
-      headerStyle: {
-        textAlign: "center",
-      },
-      cellStyle: {
-        textAlign: "center",
-        fontSize: "1rem",
-      },
+      ...headerProperties,
     },
     {
       field: "email",
       title: "Email",
+      ...headerProperties,
       render: (rowData) => (
         <Link href={`mailto:${rowData.email}`}>{rowData.email}</Link>
       ),
     },
   ];
 
-  const studentList = [
-    {
-      id: 20173441,
-      name: "Lê Anh Tuấn",
-      email: "anhtuan0126104@gmail.com",
-      phoneNumber: "0969826785",
-    },
-    {
-      id: 20172976,
-      name: "Lê Văn Cường",
-      email: "cuong.lv172976@sis.hust.edu.vn",
-      phoneNumber: "0357762225",
-    },
-  ];
-
-  const tableRef = useRef(null);
-
   // Functions.
+  const getClassDetail = () => {
+    axiosGet(token, `/edu/class/${params.id}`)
+      .then((res) => setClassDetail(res.data))
+      .catch((e) => alert("error"));
+  };
+
+  const getStudentsOfClass = () => {
+    axiosGet(token, `/edu/class/${params.id}/students`)
+      .then((res) => setStudents(res.data))
+      .catch((e) => alert("error"));
+  };
+
+  const getAssignments = () => {
+    axiosGet(token, `/edu/class/${params.id}/assignments`)
+      .then((res) => setAssignments(res.data))
+      .catch((e) => alert("error"));
+  };
+
+  const onCLickStudentCard = () => {
+    if (false == openStudentList && 0 == students.length) {
+      getStudentsOfClass();
+    }
+
+    setOpenStudentList(!openStudentList);
+  };
+
   useEffect(() => {
-    tableRef.current.dataManager.changePageSize(20);
+    getClassDetail();
+    getAssignments();
   }, []);
 
   return (
@@ -162,15 +176,15 @@ function SClassDetail() {
             <Grid item md={3} sm={3} xs={3}>
               <Typography>Mã lớp</Typography>
             </Grid>
-            <Grid item md={9} sm={9} xs={9}>
+            <Grid item md={8} sm={8} xs={8}>
               <Typography>
-                <b>:</b> {classDetail.id}
+                <b>:</b> {classDetail.code}
               </Typography>
             </Grid>
             <Grid item md={3} sm={3} xs={3}>
               <Typography>Mã học phần</Typography>
             </Grid>
-            <Grid item md={9} sm={9} xs={9}>
+            <Grid item md={8} sm={8} xs={8}>
               <Typography>
                 <b>:</b> {classDetail.courseId}
               </Typography>
@@ -178,19 +192,56 @@ function SClassDetail() {
             <Grid item md={3} sm={3} xs={3}>
               <Typography>Tên học phần</Typography>
             </Grid>
-            <Grid item md={9} sm={9} xs={9}>
+            <Grid item md={8} sm={8} xs={8}>
               <Typography>
-                <b>:</b> {classDetail.courseName}
+                <b>:</b> {classDetail.name}
               </Typography>
+            </Grid>
+            <Grid item md={3} sm={3} xs={3}>
+              <Typography>Loại lớp</Typography>
+            </Grid>
+            <Grid item md={8} sm={8} xs={8}>
+              <Typography>
+                <b>:</b> {classDetail.classType}
+              </Typography>
+            </Grid>
+            <div className={classes.divider}>
+              <Divider
+                variant="fullWidth"
+                classes={{ root: classes.rootDivider }}
+              />
+            </div>
+            <Grid item md={3} sm={3} xs={3}>
+              <Typography>Giảng viên</Typography>
+            </Grid>
+            <Grid item md={8} sm={8} xs={8}>
+              <Typography>
+                <b>:</b> {classDetail.teacherName}
+              </Typography>
+            </Grid>
+            <Grid item md={3} sm={3} xs={3}>
+              <Typography>Email</Typography>
+            </Grid>
+            <Grid item md={8} sm={8} xs={8}>
+              <div
+                style={{
+                  display: "flex",
+                  fontSize: "1rem",
+                }}
+              >
+                <b>:&nbsp;</b>
+                {
+                  <Link href={`mailto:${classDetail.email}`}>
+                    {classDetail.email}
+                  </Link>
+                }
+              </div>
             </Grid>
           </Grid>
         </CardContent>
       </Card>
       <Card className={classes.card}>
-        <CardActionArea
-          disableRipple
-          onClick={() => setOpenStudentList(!openStudentList)}
-        >
+        <CardActionArea disableRipple onClick={onCLickStudentCard}>
           <CardHeader
             avatar={
               <Avatar style={{ background: "white" }}>
@@ -220,11 +271,11 @@ function SClassDetail() {
           <CardContent>
             <MaterialTable
               title=""
-              columns={studentListCols}
+              columns={studentCols}
               tableRef={tableRef}
               localization={{
                 body: {
-                  emptyDataSourceMessage: "",
+                  emptyDataSourceMessage: "Không có bản ghi nào để hiển thị",
                 },
                 toolbar: {
                   searchPlaceholder: "Tìm kiếm",
@@ -240,11 +291,12 @@ function SClassDetail() {
                   previousTooltip: "Trang trước",
                 },
               }}
-              data={studentList}
+              data={students}
               components={{
                 Container: (props) => <Paper {...props} elevation={0} />,
               }}
               options={{
+                pageSize: 20,
                 debounceInterval: 500,
                 headerStyle: {
                   backgroundColor: "#673ab7",
@@ -272,13 +324,13 @@ function SClassDetail() {
         <CardContent>
           <MaterialTable
             title=""
-            columns={exerciseListCols}
+            columns={assignCols}
             localization={{
               header: {
                 actions: "",
               },
               body: {
-                emptyDataSourceMessage: "",
+                emptyDataSourceMessage: "Không có bản ghi nào để hiển thị",
               },
               toolbar: {
                 searchPlaceholder: "Tìm kiếm",
@@ -294,26 +346,22 @@ function SClassDetail() {
                 previousTooltip: "Trang trước",
               },
             }}
-            data={exercises}
+            data={assignment}
             components={{
               Container: (props) => <Paper {...props} elevation={0} />,
             }}
             options={{
-              actionsColumnIndex: -1,
-              debounceInterval: 500,
+              debounceInterval: 300,
               headerStyle: {
                 backgroundColor: "#673ab7",
                 fontWeight: "bold",
                 fontSize: "1rem",
                 color: "white",
-                paddingLeft: 5,
-                paddingRight: 5,
               },
               sorting: false,
               cellStyle: {
                 fontSize: "1rem",
                 whiteSpace: "normal",
-                paddingLeft: 5,
                 wordBreak: "break-word",
               },
               toolbarButtonAlignment: "left",
@@ -321,9 +369,8 @@ function SClassDetail() {
             onRowClick={(event, rowData) => {
               console.log(rowData);
               history.push(
-                `/edu/student/class/${params.id}/exercise/717729ee-fe55-11ea-8b6c-0862665303f9`
+                `/edu/student/class/${params.id}/assignment/${rowData.id}`
               );
-              // ${rowData.id}
             }}
           />
         </CardContent>

@@ -1,4 +1,4 @@
-import React, { useRef, useEffect } from "react";
+import React, { useRef, useEffect, useState } from "react";
 import {
   Card,
   CardContent,
@@ -12,7 +12,7 @@ import {
 import MaterialTable from "material-table";
 import { useDispatch, useSelector } from "react-redux";
 import { useHistory } from "react-router";
-import { authGet } from "../../../../api";
+import { authGet, axiosGet } from "../../../../api";
 import { MuiThemeProvider } from "material-ui/styles";
 import { FcViewDetails } from "react-icons/fc";
 import { Avatar } from "material-ui";
@@ -31,55 +31,64 @@ function ClassList() {
   const token = useSelector((state) => state.auth.token);
   const history = useHistory();
 
+  // Table.
+  const headerProperties = {
+    headerStyle: {
+      textAlign: "center",
+    },
+    cellStyle: {
+      textAlign: "center",
+      fontSize: "1rem",
+    },
+  };
   const columns = [
     {
-      field: "classId",
+      field: "code",
       title: "Mã lớp",
+      ...headerProperties,
+    },
+    {
+      field: "courseId",
+      title: "Mã học phần",
+      ...headerProperties,
+    },
+    {
+      field: "name",
+      title: "Tên học phần",
       headerStyle: {
         textAlign: "center",
       },
-      cellStyle: {
-        textAlign: "center",
-        fontSize: "1rem",
-      },
     },
     {
-      field: "courseName",
-      title: "Tên môn học",
+      field: "classType",
+      title: "Loại lớp",
+      ...headerProperties,
     },
     {
-      field: "semesterId",
+      field: "department",
+      title: "Khoa/Viện",
+      ...headerProperties,
+    },
+    {
+      field: "semester",
       title: "Học kỳ",
+      ...headerProperties,
     },
   ];
 
-  const data = [
-    {
-      classId: "387435",
-      courseName: "Cấu trúc dữ liệu và thuật toán",
-      semesterId: "20192",
-    },
-    {
-      classId: "435839",
-      courseName: "Java nâng cao",
-      semesterId: "20201",
-    },
-    {
-      classId: "123456",
-      courseName: "Thuật toán ứng dụng",
-      semesterId: "20202",
-    },
-  ];
+  const [data, setData] = useState([]);
 
   const tableRef = useRef(null);
 
   // Functions.
-  const onClickRegistrationBtn = (e) => {
-    console.log("Click button", e);
+  const getClasses = () => {
+    axiosGet(token, "/edu/class/list/teacher")
+      .then((res) => setData(res.data))
+      .catch((e) => alert(e.response.body));
   };
 
   useEffect(() => {
-    tableRef.current.dataManager.changePageSize(20);
+    getClasses();
   }, []);
 
   return (
@@ -100,7 +109,7 @@ function ClassList() {
             tableRef={tableRef}
             localization={{
               body: {
-                emptyDataSourceMessage: "",
+                emptyDataSourceMessage: "Không có bản ghi nào để hiển thị",
               },
               toolbar: {
                 searchPlaceholder: "Tìm kiếm",
@@ -116,54 +125,12 @@ function ClassList() {
                 previousTooltip: "Trang trước",
               },
             }}
-            data={
-              data
-              //  (query) =>
-              //   new Promise((resolve, reject) => {
-              //     console.log(query);
-
-              //     let filterParam = "";
-              //     filterParam = "&search=" + query.search;
-
-              //     authGet(
-              //       dispatch,
-              //       token,
-              //       "/supplier" +
-              //         "?page=" +
-              //         (query.page + 1) +
-              //         "&limit=20" +
-              //         // query.pageSize +
-              //         filterParam
-              //     )
-              //       .then((res) => {
-              //         console.log(res);
-
-              //         let { content, number, size, totalElements } = res;
-              //         let data = content.map((item, index) => {
-              //           let tmp = Object.assign({}, item, {
-              //             stt: number * size + index + 1,
-              //           });
-              //           return tmp;
-              //         });
-
-              //         resolve({
-              //           data: data,
-              //           page: number,
-              //           totalCount: totalElements,
-              //         });
-              //       })
-              //       .catch((e) => {
-              //         reject({
-              //           message: "Đã có lỗi xảy ra trong quá trình tải dữ liệu. Thử lại ",
-              //           errorCause: "query",
-              //         });
-              //       });
-              //   })
-            }
+            data={data}
             components={{
               Container: (props) => <Paper {...props} elevation={0} />,
             }}
             options={{
+              pageSize: 20,
               debounceInterval: 500,
               headerStyle: {
                 backgroundColor: "#673ab7",
@@ -173,14 +140,11 @@ function ClassList() {
               },
               sorting: false,
               cellStyle: { fontSize: "1rem" },
-              // rowStyle: {
-              //   textAlign: "left",
-              // },
             }}
             onRowClick={(event, rowData) => {
               console.log(rowData);
               history.push({
-                pathname: `/edu/teacher/class/${rowData.classId}`,
+                pathname: `/edu/teacher/class/${rowData.id}`,
                 state: {},
               });
             }}
