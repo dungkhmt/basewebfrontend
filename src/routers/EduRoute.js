@@ -53,7 +53,7 @@ export default function EduRoute() {
 
         <Route
           component={SExerciseDetail}
-          path={`${path}/student/class/:classCode/exercise/:exerciseCode`}
+          path={`${path}/student/class/:classId/assignment/:assignmentId`}
         />
 
         <Route component={SClassDetail} path={`${path}/student/class/:id`} />
