@@ -3,7 +3,7 @@ export const eduTeachingManagement = {
   path: "",
   isPublic: false,
   icon: "AirportShuttleIcon",
-  text: "Quản lý học tập",
+  text: "Quản lý giảng dạy",
   child: [
     {
       id: "MENU_EDUCATION_TEACHING_MANAGEMENT_TEACHER_VIEW_LIST_CLASS",
