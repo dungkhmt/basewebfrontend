@@ -1,4 +1,4 @@
-import React, { useRef, useEffect, useState } from "react";
+import React, { useRef, useEffect, useState, forwardRef } from "react";
 import {
   Card,
   CardContent,
@@ -15,7 +15,7 @@ import { useHistory } from "react-router";
 import { axiosGet, axiosPost } from "../../../../api";
 import { MuiThemeProvider } from "material-ui/styles";
 import { makeStyles } from "@material-ui/core/styles";
-import { tableIcons } from "../../../../utils/iconutil";
+import { FcFilledFilter } from "react-icons/fc";
 
 const useStyles = makeStyles((theme) => ({
   card: {
@@ -29,10 +29,9 @@ const useStyles = makeStyles((theme) => ({
 function ClassRegistration() {
   const classes = useStyles();
   const token = useSelector((state) => state.auth.token);
-  const history = useHistory();
 
   const [semester, setSemester] = useState("");
-  const [data, setData] = useState([]);
+  const [registeredClasses, setRegisteredClasses] = useState(new Set());
 
   // Table.
   const headerProperties = {
@@ -73,30 +72,71 @@ function ClassRegistration() {
       field: "",
       title: "",
       cellStyle: { alignItems: "center" },
-      render: (rowData) => (
-        <Box display="flex" justifyContent="center">
-          <Button
-            variant="contained"
-            color="primary"
-            className={classes.registrationBtn}
-            onClick={() => onClickRegistrationBtn(rowData)}
-          >
-            Tham gia
-          </Button>
-        </Box>
-      ),
+      render: (rowData) =>
+        registeredClasses.has(rowData.id) ? null : (
+          <Box display="flex" justifyContent="center">
+            <Button
+              variant="contained"
+              color="primary"
+              disableRipple
+              className={classes.registrationBtn}
+              onClick={() => onClickRegistBtn(rowData)}
+            >
+              Tham gia
+            </Button>
+          </Box>
+        ),
     },
   ];
 
   const tableRef = useRef(null);
 
   // Functions.
-  const onClickRegistrationBtn = (rowData) => {
-    // axiosPost(token, "/edu/class/register", { classId: rowData.id })
-    //   .then((res) => console.log(res))
-    //   .catch((e) => {
-    //     alert(e.response.data);
-    //   });
+  const getData = (query) =>
+    new Promise((resolve, reject) => {
+      // console.log("Query", query);
+
+      // let filterParam = "";
+      // filterParam = "&search=" + query.search;
+
+      axiosGet(token, `/edu/class?page=${query.page}&size=${query.pageSize}`)
+        .then((res) => {
+          let { content, number, totalElements } = res.data.page;
+
+          setSemester(res.data.semesterId);
+          setRegisteredClasses(new Set(res.data.registeredClasses));
+
+          resolve({
+            data: content,
+            page: number,
+            totalCount: totalElements,
+          });
+        })
+        .catch((e) => {
+          reject({
+            message: "Đã có lỗi xảy ra trong quá trình tải dữ liệu. Thử lại ",
+            errorCause: "query",
+          });
+        });
+    });
+
+  const onClickRegistBtn = (rowData) => {
+    let tmp = new Set(registeredClasses);
+    tmp.add(rowData.id);
+    setRegisteredClasses(tmp);
+
+    // Xu ly dang ky
+    axiosPost(token, "/edu/class/register", { classId: rowData.id })
+      .then((res) => alert("Đăng ký thành công"))
+      .catch((e) => {
+        let res = e.response;
+
+        if (400 == res.status) {
+          alert(res.body);
+        } else {
+          alert("error");
+        }
+      });
   };
 
   return (
@@ -115,6 +155,12 @@ function ClassRegistration() {
             title=""
             columns={columns}
             tableRef={tableRef}
+            data={getData}
+            icons={{
+              Filter: forwardRef((props, ref) => (
+                <FcFilledFilter {...props} ref={ref} />
+              )),
+            }}
             localization={{
               body: {
                 emptyDataSourceMessage: "",
@@ -133,41 +179,11 @@ function ClassRegistration() {
                 previousTooltip: "Trang trước",
               },
             }}
-            data={(query) =>
-              new Promise((resolve, reject) => {
-                console.log(query);
-
-                // let filterParam = "";
-                // filterParam = "&search=" + query.search;
-
-                axiosGet(
-                  token,
-                  `/edu/class?page=${query.page}&size=${query.pageSize}`
-                )
-                  .then((res) => {
-                    console.log(res);
-                    setSemester(res.data.semesterId);
-                    let { content, number, totalElements } = res.data.page;
-
-                    resolve({
-                      data: content,
-                      page: number,
-                      totalCount: totalElements,
-                    });
-                  })
-                  .catch((e) => {
-                    reject({
-                      message:
-                        "Đã có lỗi xảy ra trong quá trình tải dữ liệu. Thử lại ",
-                      errorCause: "query",
-                    });
-                  });
-              })
-            }
             components={{
               Container: (props) => <Paper {...props} elevation={0} />,
             }}
             options={{
+              // filtering: true,
               search: false,
               pageSize: 20,
               debounceInterval: 500,
