@@ -16,7 +16,7 @@ import {
 import MaterialTable, { MTableToolbar } from "material-table";
 import { useDispatch, useSelector } from "react-redux";
 import { useHistory } from "react-router";
-import { authGet, axiosGet } from "../../../../api";
+import { authGet, axiosGet, axiosPut } from "../../../../api";
 import { MuiThemeProvider } from "material-ui/styles";
 import { useParams } from "react-router";
 import { makeStyles, useTheme, withStyles } from "@material-ui/core/styles";
@@ -43,11 +43,24 @@ const useStyles = makeStyles((theme) => ({
   grid: {
     paddingLeft: 56,
   },
-  createBtn: {
+  refuseBtn: {
     borderRadius: "6px",
-    marginTop: 16,
     textTransform: "none",
     fontSize: "1rem",
+    marginLeft: 10,
+    marginRight: 10,
+    "&:hover": {
+      backgroundColor: "#f3f4f6",
+    },
+  },
+  approveBtn: {
+    borderRadius: "6px",
+    backgroundColor: "#1877f2",
+    textTransform: "none",
+    fontSize: "1rem",
+    "&:hover": {
+      backgroundColor: "#1834d2",
+    },
   },
 }));
 
@@ -70,6 +83,7 @@ function TClassDetail() {
   const history = useHistory();
 
   const [classDetail, setClassDetail] = useState({});
+  const [selectedStudents, setSelectedStudents] = useState([]);
 
   // Tables.
   const [assignment, setAssignments] = useState([]);
@@ -188,6 +202,37 @@ function TClassDetail() {
 
   const onClickRemoveBtn = (e) => {
     console.log("Click button", e);
+  };
+
+  const onSelectionChange = (rows) => {
+    let studentIds = rows.map((row) => row.id);
+    setSelectedStudents(studentIds);
+  };
+
+  const onClickUpdateStatusBtn = (type) => {
+    axiosPut(token, "/edu/class/registration-status", {
+      classId: params.id,
+      studentIds: selectedStudents,
+      status: type,
+    })
+      .then((res) => {
+        let data = res.data;
+        let tmp = [];
+
+        for (let i = 0; i < registStudents.length; i++) {
+          if (
+            data[registStudents[i].id] == undefined ||
+            data[registStudents[i].id].status != 200
+          ) {
+            tmp.push(registStudents[i]);
+          } else {
+            // Phe duyet thanh cong thi them luon len bang danh sach lop
+          }
+        }
+
+        setRegistStudents(tmp);
+      })
+      .catch((e) => alert("error"));
   };
 
   useEffect(() => {
@@ -350,6 +395,7 @@ function TClassDetail() {
               title=""
               columns={registCols}
               tableRef={tableRef}
+              data={registStudents}
               localization={{
                 body: {
                   emptyDataSourceMessage: "",
@@ -368,15 +414,14 @@ function TClassDetail() {
                   previousTooltip: "Trang trước",
                 },
               }}
-              data={registStudents}
               components={{
                 Container: (props) => <Paper {...props} elevation={0} />,
                 Action: (props) => {
                   if (props.action.icon === "refuse") {
                     return (
                       <Button
-                        color="secondary"
                         variant="outlined"
+                        className={classes.refuseBtn}
                         style={{
                           marginLeft: 10,
                           marginRight: 10,
@@ -394,10 +439,7 @@ function TClassDetail() {
                       <Button
                         color="primary"
                         variant="contained"
-                        style={{
-                          marginLeft: 10,
-                          marginRight: 10,
-                        }}
+                        className={classes.approveBtn}
                         onClick={(event) =>
                           props.action.onClick(event, props.data)
                         }
@@ -427,14 +469,15 @@ function TClassDetail() {
                 {
                   icon: "refuse",
                   position: "toolbarOnSelect",
-                  onClick: (event, data) => console.log("click"),
+                  onClick: (event, data) => onClickUpdateStatusBtn("REFUSED"),
                 },
                 {
                   icon: "approve",
                   position: "toolbarOnSelect",
-                  onClick: (event, data) => console.log("click"),
+                  onClick: (event, data) => onClickUpdateStatusBtn("APPROVED"),
                 },
               ]}
+              onSelectionChange={(rows) => onSelectionChange(rows)}
             />
           </CardContent>
         </Collapse>
@@ -481,9 +524,10 @@ function TClassDetail() {
                 if (props.action.icon === "create") {
                   return (
                     <Button
-                      variant="outlined"
-                      style={{ background: "#2ea44f", color: "white" }}
-                      className={classes.createBtn}
+                      variant="contained"
+                      color="primary"
+                      className={classes.approveBtn}
+                      style={{ marginTop: 16 }}
                       onClick={(event) =>
                         props.action.onClick(event, props.data)
                       }
