@@ -34,7 +34,7 @@ import {
   processingNoti,
   updateSuccessNoti,
   updateErrorNoti,
-} from "../Notification";
+} from "../../../utils/Notification";
 
 // const Transition = forwardRef((props, ref) => <Slide direction="down" ref={ref} {...props}/>);
 

@@ -12,9 +12,10 @@ import { Save, Cancel } from "@material-ui/icons";
 import { Controller, useForm } from "react-hook-form";
 import { DevTool } from "react-hook-form-devtools";
 import { useHistory } from "react-router";
-import { errorNoti } from "../Notification";
+
 import { object, string } from "yup";
 import { toast } from "react-toastify";
+import { errorNoti } from "../../../utils/Notification";
 
 function EditVisitConfirguration(props) {
   const dispatch = useDispatch();

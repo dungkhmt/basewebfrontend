@@ -17,7 +17,7 @@ import { Box, Menu } from "@material-ui/core";
 import { IconContext } from "react-icons/lib/cjs";
 import { MdCancel } from "react-icons/md";
 import { CircularProgress } from "material-ui";
-import { errorNoti } from "../Notification";
+import { errorNoti } from "../../../utils/Notification";
 import { object, string } from "yup";
 
 function AddVisitConfirguration(props) {
