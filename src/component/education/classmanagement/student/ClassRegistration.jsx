@@ -16,6 +16,7 @@ import { axiosGet, axiosPost } from "../../../../api";
 import { MuiThemeProvider } from "material-ui/styles";
 import { makeStyles } from "@material-ui/core/styles";
 import { FcFilledFilter } from "react-icons/fc";
+import { errorNoti, successNoti } from "../../../../utils/Notification";
 
 const useStyles = makeStyles((theme) => ({
   card: {
@@ -23,6 +24,12 @@ const useStyles = makeStyles((theme) => ({
   },
   registrationBtn: {
     borderRadius: "6px",
+    backgroundColor: "#1877f2",
+    textTransform: "none",
+    fontSize: "1rem",
+    "&:hover": {
+      backgroundColor: "#1834d2",
+    },
   },
 }));
 
@@ -125,16 +132,17 @@ function ClassRegistration() {
     tmp.add(rowData.id);
     setRegisteredClasses(tmp);
 
-    // Xu ly dang ky
     axiosPost(token, "/edu/class/register", { classId: rowData.id })
-      .then((res) => alert("Đăng ký thành công"))
+      .then((res) => {
+        successNoti("Đăng ký thành công.", 2000);
+      })
       .catch((e) => {
         let res = e.response;
 
         if (400 == res.status) {
-          alert(res.body);
+          errorNoti(res.body);
         } else {
-          alert("error");
+          errorNoti("Rất tiếc! Đã có lỗi xảy ra.");
         }
       });
   };
