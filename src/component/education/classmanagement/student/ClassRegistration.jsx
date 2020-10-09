@@ -1,4 +1,4 @@
-import React, { useRef, useEffect, useState, forwardRef } from "react";
+import React, { useRef, useState, forwardRef } from "react";
 import {
   Card,
   CardContent,
@@ -10,13 +10,12 @@ import {
   Avatar,
 } from "@material-ui/core";
 import MaterialTable from "material-table";
-import { useDispatch, useSelector } from "react-redux";
-import { useHistory } from "react-router";
 import { axiosGet, axiosPost } from "../../../../api";
 import { MuiThemeProvider } from "material-ui/styles";
 import { makeStyles } from "@material-ui/core/styles";
 import { FcFilledFilter } from "react-icons/fc";
 import { errorNoti, successNoti } from "../../../../utils/Notification";
+import { useSelector } from "react-redux";
 
 const useStyles = makeStyles((theme) => ({
   card: {
