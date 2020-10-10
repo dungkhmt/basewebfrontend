@@ -371,7 +371,7 @@ function SExerciseDetail() {
           <Fragment>
             <CardHeader
               avatar={
-                <Avatar style={{ background: "#e3f2fd" }}>
+                <Avatar style={{ background: '#e7f3ff' }}>
                   <FcUpload size={32} />
                 </Avatar>
               }
