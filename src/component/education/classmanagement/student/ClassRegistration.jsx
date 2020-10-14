@@ -1,4 +1,4 @@
-import React, { useRef, useState, forwardRef } from "react";
+import React, { useRef, useState, forwardRef, useEffect } from "react";
 import {
   Card,
   CardContent,
@@ -10,12 +10,13 @@ import {
   Avatar,
 } from "@material-ui/core";
 import MaterialTable from "material-table";
-import { axiosGet, axiosPost } from "../../../../api";
+import { request } from "../../../../api";
 import { MuiThemeProvider } from "material-ui/styles";
 import { makeStyles } from "@material-ui/core/styles";
 import { FcFilledFilter } from "react-icons/fc";
 import { errorNoti, successNoti } from "../../../../utils/Notification";
 import { useSelector } from "react-redux";
+import { useHistory } from "react-router";
 
 const useStyles = makeStyles((theme) => ({
   card: {
@@ -35,9 +36,17 @@ const useStyles = makeStyles((theme) => ({
 function ClassRegistration() {
   const classes = useStyles();
   const token = useSelector((state) => state.auth.token);
+  const history = useHistory();
 
   const [semester, setSemester] = useState("");
   const [registeredClasses, setRegisteredClasses] = useState(new Set());
+  const [filterParams, setFilterParams] = useState({
+    code: "",
+    courseId: "",
+    courseName: "",
+    classType: "",
+    departmentId: "",
+  });
 
   // Table.
   const headerProperties = {
@@ -97,18 +106,48 @@ function ClassRegistration() {
 
   const tableRef = useRef(null);
 
+  useEffect(() => {
+    let cols = tableRef.current.dataManager.columns;
+
+    cols[0].tableData.filterValue = filterParams.code;
+    cols[1].tableData.filterValue = filterParams.courseId;
+    cols[2].tableData.filterValue = filterParams.courseName;
+    cols[3].tableData.filterValue = filterParams.classType;
+    cols[4].tableData.filterValue = filterParams.departmentId;
+
+    console.log("filter params", filterParams);
+  }, [registeredClasses]);
+
   // Functions.
   const getData = (query) =>
     new Promise((resolve, reject) => {
       // console.log("Query", query);
 
-      // let filterParam = "";
-      // filterParam = "&search=" + query.search;
+      const filters = query.filters; // array.
+      const data = {};
 
-      axiosGet(token, `/edu/class?page=${query.page}&size=${query.pageSize}`)
-        .then((res) => {
+      if (filters.length > 0) {
+        filters.map((filter) => {
+          data[filter.column.field] = filter.value;
+        });
+      }
+
+      request(
+        token,
+        history,
+        "POST",
+        `/edu/class?page=${query.page}&size=${query.pageSize}`,
+        (res) => {
           let { content, number, totalElements } = res.data.page;
 
+          setFilterParams({
+            code: "",
+            courseId: "",
+            courseName: "",
+            classType: "",
+            departmentId: "",
+            ...data,
+          });
           setSemester(res.data.semesterId);
           setRegisteredClasses(new Set(res.data.registeredClasses));
 
@@ -117,13 +156,18 @@ function ClassRegistration() {
             page: number,
             totalCount: totalElements,
           });
-        })
-        .catch((e) => {
-          reject({
-            message: "Đã có lỗi xảy ra trong quá trình tải dữ liệu. Thử lại ",
-            errorCause: "query",
-          });
-        });
+        },
+        {
+          rest: (error) => {
+            console.log(error);
+            reject({
+              message: "Đã có lỗi xảy ra trong quá trình tải dữ liệu. Thử lại ",
+              errorCause: "query",
+            });
+          },
+        },
+        data
+      );
     });
 
   const onClickRegistBtn = (rowData) => {
@@ -131,19 +175,40 @@ function ClassRegistration() {
     tmp.add(rowData.id);
     setRegisteredClasses(tmp);
 
-    axiosPost(token, "/edu/class/register", { classId: rowData.id })
-      .then((res) => {
-        successNoti("Đăng ký thành công.", 2000);
-      })
-      .catch((e) => {
-        let res = e.response;
+    request(
+      token,
+      history,
+      "POST",
+      "/edu/class/register",
+      () => {
+        successNoti(
+          "Đăng ký thành công. Vui lòng chờ giảng viên phê duyệt.",
+          3000
+        );
+      },
+      {
+        400: (e) => {
+          errorNoti(e.response.body);
+        },
+      },
+      { classId: rowData.id }
+    );
+    // axiosPost(token, "/edu/class/register", { classId: rowData.id })
+    //   .then((res) => {
+    //     successNoti(
+    //       "Đăng ký thành công. Vui lòng chờ giảng viên phê duyệt.",
+    //       2000
+    //     );
+    //   })
+    //   .catch((e) => {
+    //     let res = e.response;
 
-        if (400 == res.status) {
-          errorNoti(res.body);
-        } else {
-          errorNoti("Rất tiếc! Đã có lỗi xảy ra.");
-        }
-      });
+    //     if (400 == res.status) {
+    //       errorNoti(res.body);
+    //     } else {
+    //       errorNoti("Rất tiếc! Đã có lỗi xảy ra.");
+    //     }
+    //   });
   };
 
   return (
@@ -190,7 +255,7 @@ function ClassRegistration() {
               Container: (props) => <Paper {...props} elevation={0} />,
             }}
             options={{
-              // filtering: true,
+              filtering: true,
               search: false,
               pageSize: 20,
               debounceInterval: 500,
