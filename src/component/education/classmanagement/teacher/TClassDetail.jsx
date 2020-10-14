@@ -467,14 +467,14 @@ function TClassDetail() {
               }}
               actions={[
                 {
-                  icon: "refuse",
-                  position: "toolbarOnSelect",
-                  onClick: (event, data) => onClickUpdateStatusBtn("REFUSED"),
-                },
-                {
                   icon: "approve",
                   position: "toolbarOnSelect",
                   onClick: (event, data) => onClickUpdateStatusBtn("APPROVED"),
+                },
+                {
+                  icon: "refuse",
+                  position: "toolbarOnSelect",
+                  onClick: (event, data) => onClickUpdateStatusBtn("REFUSED"),
                 },
               ]}
               onSelectionChange={(rows) => onSelectionChange(rows)}
