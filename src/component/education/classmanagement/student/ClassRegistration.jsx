@@ -158,6 +158,7 @@ function ClassRegistration() {
           });
         },
         {
+          noResponse: (error) => {},
           rest: (error) => {
             console.log(error);
             reject({
