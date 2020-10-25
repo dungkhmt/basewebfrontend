@@ -525,7 +525,7 @@ export default function NewRegister() {
                   </motion.div>
                 </Grid>
               </form>
-              <DevTool control={control} />
+              {/* <DevTool control={control} /> */}
             </Grid>
           </Grid>
           <Grid item md={7} xs={7} sm={7} className={classes.imgWrapper}>
