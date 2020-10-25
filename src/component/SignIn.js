@@ -76,6 +76,7 @@ export default function SignIn(props) {
   };
   if (props.isAuthenticated === true) {
     if (history.location.state && history.location.state.from) {
+      props.getMenu();
       history.replace(history.location.state.from);
       return null;
     } else
@@ -101,8 +102,8 @@ export default function SignIn(props) {
                 {props.errorMsg}
               </Typography>
             ) : (
-              ""
-            )}
+                ""
+              )}
             <TextField
               variant="outlined"
               margin="normal"
@@ -152,16 +153,16 @@ export default function SignIn(props) {
                 <CircularProgress /> Sign In
               </Button>
             ) : (
-              <Button
-                type="submit"
-                fullWidth
-                variant="contained"
-                color="primary"
-                className={classes.submit}
-              >
-                Sign In
-              </Button>
-            )}
+                <Button
+                  type="submit"
+                  fullWidth
+                  variant="contained"
+                  color="primary"
+                  className={classes.submit}
+                >
+                  Sign In
+                </Button>
+              )}
             <Grid container>
               <Grid item xs>
                 <Link href="#" variant="body2">

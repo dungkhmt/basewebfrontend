@@ -7,7 +7,7 @@ export const post = {
   child: [
     {
       id: "MENU_POST_VIEW_VEHICLE",
-      path: "",
+      path: "/postoffice/triplist",
       isPublic: false,
       icon: "StarBorder",
       text: "Danh sách phương tiện",
@@ -15,7 +15,7 @@ export const post = {
     },
     {
       id: "MENU_POST_VIEW_CUSTOMER",
-      path: "",
+      path: "/postoffice/userlist",
       isPublic: false,
       icon: "StarBorder",
       text: "Danh sách khách hàng",
@@ -31,7 +31,7 @@ export const post = {
     },
     {
       id: "MENU_POST_VIEW_POST_ORDER",
-      path: "",
+      path: "/postoffice/orderlist",
       isPublic: false,
       icon: "StarBorder",
       text: "DS đơn hàng chuyển phát",
@@ -59,6 +59,14 @@ export const post = {
       isPublic: false,
       icon: "StarBorder",
       text: "Lập kế hoạch phát bưu kiện",
+      child: [],
+    },
+    {
+      id: "MENU_POST_CREATE_POST_SHIP_ORDER",
+      path: "/postoffice/createshiporder",
+      isPublic: false,
+      icon: "StarBorder",
+      text: "Tạo đơn chuyển phát",
       child: [],
     },
   ],

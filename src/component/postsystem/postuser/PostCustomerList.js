@@ -19,18 +19,12 @@ import DialogTitle from "@material-ui/core/DialogTitle";
 import { DialogContent } from "@material-ui/core";
 import { API_URL } from "../../../config/config";
 import { Link } from "react-router-dom";
-import Upload from "../../../utils/Upload";
+
 const columns = [
-  { label: "Mã bưu cục", id: "postOfficeId", minWidth: 150 },
-  { label: "Tên bưu cục", id: "postOfficeName", minWidth: 200 },
-  { label: "Địa chỉ", id: "postalAddress", minWidth: 150 },
-  {
-    label: "Cấp bưu cục",
-    id: "postOfficeLevel",
-    minWidth: 20,
-    align: "right",
-    format: (value) => value.toLocaleString(),
-  },
+  { label: "Id", id: "postCustomerId", minWidth: 150 },
+  { label: "Họ tên", id: "postCustomerName", minWidth: 200 },
+  { label: "Số điện thoại", id: "phoneNum", minWidth: 150 },
+  { label: "Địa chỉ", id: "postalAddress", minWidth: 150 }
 ];
 
 const useStyles = makeStyles({
@@ -42,9 +36,10 @@ const useStyles = makeStyles({
   },
 });
 
-export default function PostOfficeList(props) {
+export default function PostCustomerList(props) {
   const classes = useStyles();
   const token = useSelector((state) => state.auth.token);
+
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
   const [data, setData] = useState([]);
@@ -63,7 +58,7 @@ export default function PostOfficeList(props) {
   };
 
   useEffect(() => {
-    fetch(API_URL + "/get-all-post-office", {
+    fetch(API_URL + "/get-customer-list", {
       method: "GET",
       headers: {
         "content-type": "application/json",
@@ -72,6 +67,7 @@ export default function PostOfficeList(props) {
     })
       .then((response) => response.json())
       .then((response) => {
+        console.log(response)
         setData(response);
       });
   }, data);
@@ -79,33 +75,17 @@ export default function PostOfficeList(props) {
   return (
     <Paper className={classes.root}>
       <Typography variant="h5" component="h2" align="center">
-        Danh sách bưu cục
+        Danh sách khách hàng
       </Typography>
-      <Button
-        component={Link}
-        to={{ pathname: "/postoffice/viewallpostoffice", state: { data: data } }}
-        variant="contained"
-        color="primary"
-        style={{ margin: 10, float: "right" }}
-      >
-        Xem tất cả
-      </Button>
-      <Button
+      {/* <Button
         component={Link}
         to={"/postoffice/create"}
         variant="contained"
         color="primary"
-        style={{ margin: 10, float: "right" }}
+        style={{margin: 10, float: "right"}}
       >
         Thêm mới
-      </Button>
-      <Upload
-        url={'upload-post-office-list'}
-        token={token}
-        buttonTitle={'Tải lên danh sách bưu cực'}
-        style={{ margin: 10, float: "right" }}
-        handleSaveCallback={() => window.location.reload()}
-      />
+      </Button> */}
       <TableContainer className={classes.container}>
         <Table stickyHeader aria-label="sticky table">
           <TableHead>
@@ -130,7 +110,6 @@ export default function PostOfficeList(props) {
                   <TableRow hover role="checkbox" tabIndex={-1} key={row.code}>
                     {columns.map((column) => {
                       const value = row[column.id];
-                      console.log(value)
                       return (
                         <TableCell key={column.id} align={column.align}>
                           {column.id === "postalAddress" ? (
@@ -148,12 +127,6 @@ export default function PostOfficeList(props) {
                         </TableCell>
                       );
                     })}
-                    <TableCell>
-                      <DeleteButton
-                        postOffice={row}
-                        callback={deleteCallBack}
-                      />
-                    </TableCell>
                   </TableRow>
                 );
               })}
@@ -174,55 +147,3 @@ export default function PostOfficeList(props) {
   );
 }
 
-function DeleteButton(props) {
-  const [open, setOpen] = useState(false);
-  const token = useSelector((state) => state.auth.token);
-
-  const handleRemove = () => {
-    setOpen(false);
-    fetch(API_URL + "/delete-post-office/" + props.postOffice.postOfficeId, {
-      method: "DELETE",
-      headers: {
-        "content-type": "application/json",
-        "X-Auth-Token": token,
-      },
-    });
-    props.callback(props.postOffice.postOfficeId);
-  };
-
-  const handleCancel = (event) => {
-    setOpen(false);
-  };
-
-  const handleDeleteClick = (event) => {
-    console.log(event.currentTarget.value);
-    setOpen(true);
-  };
-
-  return (
-    <div>
-      <IconButton
-        value={props.postOffice}
-        aria-label="delete"
-        align="right"
-        onClick={handleDeleteClick}
-      >
-        <DeleteIcon />
-      </IconButton>
-      <Dialog open={open} onClose={handleCancel}>
-        <DialogTitle>{"Xóa bưu cục?"}</DialogTitle>
-        <DialogContent>
-          {"Xác nhận xóa bưu cục " + props.postOffice.postOfficeName}
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={handleRemove} color="primary">
-            Xóa
-          </Button>
-          <Button onClick={handleCancel} color="primary">
-            Hủy
-          </Button>
-        </DialogActions>
-      </Dialog>
-    </div>
-  );
-}

@@ -20,17 +20,13 @@ import { DialogContent } from "@material-ui/core";
 import { API_URL } from "../../../config/config";
 import { Link } from "react-router-dom";
 import Upload from "../../../utils/Upload";
+
 const columns = [
-  { label: "Mã bưu cục", id: "postOfficeId", minWidth: 150 },
-  { label: "Tên bưu cục", id: "postOfficeName", minWidth: 200 },
-  { label: "Địa chỉ", id: "postalAddress", minWidth: 150 },
-  {
-    label: "Cấp bưu cục",
-    id: "postOfficeLevel",
-    minWidth: 20,
-    align: "right",
-    format: (value) => value.toLocaleString(),
-  },
+  { label: "Mã số chuyến", id: "postOfficeFixedTripId", minWidth: 150 },
+  { label: "Xuất phát", id: "fromPostOffice.postOfficeName", minWidth: 200 },
+  { label: "Điểm đến", id: "toPostOffice.postOfficeName", minWidth: 150 },
+  { label: "Từ ngày", id: "fromDate", minWidth: 150 },
+  { label: "Đến ngày", id: "thruDate", minWidth: 150 },
 ];
 
 const useStyles = makeStyles({
@@ -42,7 +38,7 @@ const useStyles = makeStyles({
   },
 });
 
-export default function PostOfficeList(props) {
+export default function TripList() {
   const classes = useStyles();
   const token = useSelector((state) => state.auth.token);
   const [page, setPage] = useState(0);
@@ -63,7 +59,7 @@ export default function PostOfficeList(props) {
   };
 
   useEffect(() => {
-    fetch(API_URL + "/get-all-post-office", {
+    fetch(API_URL + "/get-post-trip-list", {
       method: "GET",
       headers: {
         "content-type": "application/json",
@@ -79,7 +75,7 @@ export default function PostOfficeList(props) {
   return (
     <Paper className={classes.root}>
       <Typography variant="h5" component="h2" align="center">
-        Danh sách bưu cục
+        Danh sách chuyến xe
       </Typography>
       <Button
         component={Link}
