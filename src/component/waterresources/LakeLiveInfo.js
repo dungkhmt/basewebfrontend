@@ -59,7 +59,7 @@ function LakeLiveInfo(props) {
 
   useEffect(() => {
     try {
-      setInterval(async () => {
+      var refreshIntervalId=setInterval(async () => {
         const res = await fetch(API_URL + "/lakeinfolive/" + lakeId, {
           method: "GET",
           headers: {
@@ -73,6 +73,9 @@ function LakeLiveInfo(props) {
     } catch (e) {
       console.log("FOUND exception", e);
     }
+    return function cleanInterval() {
+      clearInterval(refreshIntervalId);
+    };
   }, []);
 
   //if (lake != undefined) return <div>{JSON.stringify(lake)} in {Date.now()}</div>;
@@ -85,47 +88,47 @@ function LakeLiveInfo(props) {
       <Grid container spacing={5}>
         <Grid item xs={5}>
           <Typography variant="h2" component="h2">
-            {this.lake.lakeName}
+            {lake.lakeName}
           </Typography>
           <br/>
           <Typography variant="h8" component="h8">
-            Diện tích lưu vực: {this.lake.dienTichLuuVuc}
+            Diện tích lưu vực: {lake.dienTichLuuVuc}
           </Typography>
           <br/>
           <Typography variant="h8" component="h8">
-            Mức đảm bảo tưới: {this.lake.mucDamBaoTuoi}
+            Mức đảm bảo tưới: {lake.mucDamBaoTuoi}
           </Typography>
           <br/>
           <Typography variant="h8" component="h8">
-            Diện tích tưới: {this.lake.dienTichTuoi}
+            Diện tích tưới: {lake.dienTichTuoi}
           </Typography>
           <br/>
           <Typography variant="h8" component="h8">
-            Mực nước chết: {this.lake.mucNuocChet}
+            Mực nước chết: {lake.mucNuocChet}
           </Typography>
           <br/>  
 
         </Grid>
         <Grid item xs={6}>
           <Map
-            google={this.props.google}
+            google={props.google}
             zoom={11}
             style={style}
             initialCenter={{
-              lat: this.centerLat,
-              lng: this.centerLng,
+              lat: centerLat,
+              lng: centerLng,
             }}
             center={{
-              lat: this.centerLat,
-              lng: this.centerLng,
+              lat: centerLat,
+              lng: centerLng,
             }}
-            onClick={this.mapClicked}
+            onClick={mapClicked}
           >
             <Marker
               title={'Geolocation'}
               position={{
-                lat: this.lat,
-                lng: this.lng,
+                lat: lat,
+                lng: lng,
               }}
             />
 
