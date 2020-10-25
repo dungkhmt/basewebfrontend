@@ -20,7 +20,7 @@ const SupplierRoute = lazy(() => import("./SupplierRoute"));
 const TrailerFuncRoute = lazy(() => import("./TrailerFuncRoute"));
 const WebcamRoute = lazy(() => import("./WebcamRoute"));
 const PostOfficeRoute = lazy(() => import("./PostOfficeRoute"));
-
+const WaterLakeRoute = lazy(() => import("./WaterLakeRoute"));
 const ShipmentItemDeliveryPlanRoute = lazy(() =>
   import("./ShipmentItemDelieveryPlanRoute")
 );
@@ -74,11 +74,22 @@ function MainAppRoute(props) {
           <PrivateRoute component={Home} layout={Layout} exact path="/" />
 
           <PrivateRoute
+            component={WaterLakeRoute}
+            layout={Layout}
+            path="/lake"
+          />
+          
+          
+          <PrivateRoute
             component={UserLoginRoute}
             layout={Layout}
             path="/userlogin"
           />
-          <PrivateRoute component={OrderRoute} layout={Layout} path="/orders" />
+          <PrivateRoute 
+            component={OrderRoute} 
+            layout={Layout} 
+            path="/orders" 
+          />
           <PrivateRoute
             component={TrackLocationRoute}
             layout={Layout}

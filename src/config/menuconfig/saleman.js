@@ -29,8 +29,7 @@ export const saleman = {
       text: "Phân công NVBH cho NPP",
       child: [],
     },
-    {
-      
+    {      
       id: "MENU_SALESMAN_MANAGEMENT_ASSIGN_SALESMAN_2_RETAIL_OUTLET",
       path: "/salesman/assign-salesman-2-retail-outlet",
       isPublic: false,
