@@ -75,8 +75,71 @@ function LakeLiveInfo(props) {
     }
   }, []);
 
-  if (lake != undefined) return <div>{JSON.stringify(lake)} in {Date.now()}</div>;
-  else return <div>LIVE</div>;
+  //if (lake != undefined) return <div>{JSON.stringify(lake)} in {Date.now()}</div>;
+  //else return <div>LIVE</div>;
+
+  
+  //if(lake != undefined)
+  return (
+    <div>
+      <Grid container spacing={5}>
+        <Grid item xs={5}>
+          <Typography variant="h2" component="h2">
+            {this.lake.lakeName}
+          </Typography>
+          <br/>
+          <Typography variant="h8" component="h8">
+            Diện tích lưu vực: {this.lake.dienTichLuuVuc}
+          </Typography>
+          <br/>
+          <Typography variant="h8" component="h8">
+            Mức đảm bảo tưới: {this.lake.mucDamBaoTuoi}
+          </Typography>
+          <br/>
+          <Typography variant="h8" component="h8">
+            Diện tích tưới: {this.lake.dienTichTuoi}
+          </Typography>
+          <br/>
+          <Typography variant="h8" component="h8">
+            Mực nước chết: {this.lake.mucNuocChet}
+          </Typography>
+          <br/>  
+
+        </Grid>
+        <Grid item xs={6}>
+          <Map
+            google={this.props.google}
+            zoom={11}
+            style={style}
+            initialCenter={{
+              lat: this.centerLat,
+              lng: this.centerLng,
+            }}
+            center={{
+              lat: this.centerLat,
+              lng: this.centerLng,
+            }}
+            onClick={this.mapClicked}
+          >
+            <Marker
+              title={'Geolocation'}
+              position={{
+                lat: this.lat,
+                lng: this.lng,
+              }}
+            />
+
+
+          </Map>
+        </Grid>
+
+      </Grid>
+    
+    </div>
+    ); 
+    
+    //else return <div>LIVE</div>;
+    
 }
 
 export default GoogleApiWrapper({
