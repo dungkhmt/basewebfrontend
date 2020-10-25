@@ -2,7 +2,7 @@ export const eduLearningManagement = {
   id: "MENU_EDUCATION_LEARNING_MANAGEMENT_STUDENT",
   path: "",
   isPublic: false,
-  icon: "AirportShuttleIcon",
+  icon: "DescriptionOutlinedIcon",
   text: "Quản lý học tập",
   child: [
     {

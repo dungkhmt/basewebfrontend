@@ -1,7 +1,7 @@
 export const promotax = {
   id: "MENU_PROMO_TAX",
   path: "",
-  isPublic: true,
+  isPublic: false,
   icon: "HomeSharpIcon",
   text: "Khuyến mãi và thuế",
   child: [
