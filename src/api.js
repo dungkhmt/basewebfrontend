@@ -196,6 +196,6 @@ export const request = async (
         error.message
       );
     }
-    console.log(error.config);
+    console.log('Request config', error.config);
   }
 };
