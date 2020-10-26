@@ -7,7 +7,7 @@ import {
   TextField,
   Typography,
 } from "@material-ui/core";
-import React, { useState } from "react";
+import React, { Fragment, useState } from "react";
 import {
   makeStyles,
   createMuiTheme,
@@ -62,17 +62,15 @@ const useStyles = makeStyles((theme) => ({
 
 function RegistrationDetail(props) {
   const classes = useStyles();
-  const { data, roles } = props;
-  const [grantedRoles, setGrantedRoles] = useState(data.roleIds);
+  const { data, roles, grantedRoles, handleApprove } = props;
+  const [assignedRoles, setAssignedRoles] = useState(data.roleIds); // collect selected items in select-box.
 
   // Functions.
   const handleChangeRoles = (e) => {
     if (e.target.value.length > 0) {
-      setGrantedRoles(e.target.value);
+      setAssignedRoles(e.target.value);
     }
   };
-
-  const onCLickApproveBtn = () => {};
 
   return (
     <Grid container md={12} xs={12} sm={12} className={classes.container}>
@@ -128,35 +126,43 @@ function RegistrationDetail(props) {
       >
         <Typography variant="h6">Phân quyền</Typography>
       </Grid>
-      <Box display="flex" alignItems="center">
-        <ThemeProvider theme={theme}>
-          <TextField
-            select
-            variant="outlined"
-            size="small"
-            value={grantedRoles}
-            className={classes.roles}
-            SelectProps={{
-              multiple: true,
-            }}
-            onChange={handleChangeRoles}
-          >
-            {roles.map((role) => (
-              <MenuItem key={data.id + role.id} value={role.id}>
-                {role.name}
-              </MenuItem>
-            ))}
-          </TextField>
-        </ThemeProvider>
-        <Button
-          variant="contained"
-          color="primary"
-          size="small"
-          className={classes.registrationBtn}
-          onClick={onCLickApproveBtn}
-        >
-          Phê duyệt
-        </Button>
+      <Box display="flex" alignItems="center" width="100%">
+        {undefined !== grantedRoles[data.id] ? (
+          <Typography>{grantedRoles[data.id]}</Typography>
+        ) : (
+          <Fragment>
+            <ThemeProvider theme={theme}>
+              <TextField
+                select
+                variant="outlined"
+                size="small"
+                value={assignedRoles}
+                className={classes.roles}
+                SelectProps={{
+                  multiple: true,
+                }}
+                onChange={handleChangeRoles}
+              >
+                {roles.map((role) => (
+                  <MenuItem key={data.id + role.id} value={role.id}>
+                    {role.name}
+                  </MenuItem>
+                ))}
+              </TextField>
+            </ThemeProvider>
+            <Button
+              variant="contained"
+              color="primary"
+              size="small"
+              className={classes.registrationBtn}
+              onClick={() => {
+                handleApprove(data.tableData.id, data.id, assignedRoles);
+              }}
+            >
+              Phê duyệt
+            </Button>
+          </Fragment>
+        )}
       </Box>
     </Grid>
   );

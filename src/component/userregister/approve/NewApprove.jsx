@@ -17,11 +17,12 @@ import MaterialTable from "material-table";
 import { request } from "../../../api";
 import { MuiThemeProvider } from "material-ui/styles";
 import { makeStyles } from "@material-ui/core/styles";
-import { FcApproval, FcFilledFilter } from "react-icons/fc";
+import { FcApproval } from "react-icons/fc";
 import { errorNoti, successNoti } from "../../../utils/Notification";
 import { useSelector } from "react-redux";
 import { useHistory } from "react-router";
 import RegistrationDetail from "./RegistrationDetail";
+import { localization, tableIcons } from "../../../utils/MaterialTableUtils";
 
 const useStyles = makeStyles((theme) => ({
   card: {
@@ -34,9 +35,13 @@ function NewApprove() {
   const history = useHistory();
   const token = useSelector((state) => state.auth.token);
 
-  const [roles, setRoles] = useState([]);
+  const [rolesArr, setRolesArr] = useState([]); // for rendering select-box.
+  const [rolesMap, setRolesMap] = useState({}); // for displaying roles.
+  const [grantedRoles, setGrantedRoles] = useState({});
+  const [currRowChanged, setCurrRowChanged] = useState();
 
   // Table.
+  const tableRef = useRef(null);
   const [registrations, setRegistrations] = useState([]);
   const headerProperties = {
     headerStyle: {
@@ -73,10 +78,8 @@ function NewApprove() {
     },
   ];
 
-  const tableRef = useRef(null);
-
   // Functions.
-  const getData = () =>
+  const getData = () => {
     request(
       token,
       history,
@@ -90,7 +93,7 @@ function NewApprove() {
           roles[role.id] = role.name;
         });
 
-        // Convert registered roles to array.
+        // Convert registered roles from string to array.
         registrations = res.data.regists.map((regist) => {
           return {
             ...regist,
@@ -103,7 +106,8 @@ function NewApprove() {
         });
 
         setRegistrations(registrations);
-        setRoles(res.data.roles);
+        setRolesArr(res.data.roles);
+        setRolesMap(roles);
       },
       {
         noResponse: (error) => {},
@@ -112,6 +116,65 @@ function NewApprove() {
         },
       }
     );
+  };
+
+  const handleApprove = (currRowChanged, userLoginId, assignedRoles) => {
+    request(
+      token,
+      history,
+      "post",
+      `/user/approve-registration`,
+      (res) => {
+        let change = {};
+
+        change[userLoginId] = assignedRoles
+          .map((id) => rolesMap[id])
+          .join(", ");
+
+        setCurrRowChanged(currRowChanged);
+        setGrantedRoles({ ...grantedRoles, ...change });
+      },
+      {
+        noResponse: (error) => {},
+        rest: (error) => {
+          console.log(error);
+        },
+      },
+      { userLoginId: userLoginId, roles: assignedRoles }
+    );
+  };
+
+  const toggle = (id) => {
+    if (tableRef.current && registrations.length) {
+      const { detailPanel } = tableRef.current.props;
+
+      if (id > -1) {
+        let row = registrations.find((regist) => regist.tableData.id == id);
+
+        row.tableData = {
+          ...row.tableData,
+          showDetailPanel:
+            typeof detailPanel === "function"
+              ? detailPanel
+              : detailPanel[0].render,
+        };
+      } else {
+        registrations.forEach((row) => {
+          row.tableData = {
+            ...row.tableData,
+            showDetailPanel:
+              typeof detailPanel === "function"
+                ? detailPanel
+                : detailPanel[0].render,
+          };
+        });
+      }
+    }
+  };
+
+  useEffect(() => {
+    toggle(currRowChanged);
+  }, [grantedRoles]);
 
   useEffect(() => {
     getData();
@@ -138,34 +201,12 @@ function NewApprove() {
             columns={columns}
             tableRef={tableRef}
             data={registrations}
-            icons={{
-              Filter: forwardRef((props, ref) => (
-                <FcFilledFilter {...props} ref={ref} />
-              )),
-            }}
-            localization={{
-              body: {
-                emptyDataSourceMessage: "",
-              },
-              toolbar: {
-                searchPlaceholder: "Tìm kiếm",
-                searchTooltip: "Tìm kiếm",
-              },
-              pagination: {
-                hover: "pointer",
-                labelRowsSelect: "hàng",
-                labelDisplayedRows: "{from}-{to} của {count}",
-                nextTooltip: "Trang tiếp",
-                lastTooltip: "Trang cuối",
-                firstTooltip: "Trang đầu",
-                previousTooltip: "Trang trước",
-              },
-            }}
+            localization={localization}
+            icons={tableIcons}
             components={{
               Container: (props) => <Paper {...props} elevation={0} />,
             }}
             options={{
-              detailPanelType: "single",
               filtering: true,
               search: false,
               pageSize: 20,
@@ -180,7 +221,12 @@ function NewApprove() {
               cellStyle: { fontSize: "1rem" },
             }}
             detailPanel={(rowData) => (
-              <RegistrationDetail data={rowData} roles={roles} />
+              <RegistrationDetail
+                data={rowData}
+                roles={rolesArr}
+                grantedRoles={grantedRoles}
+                handleApprove={handleApprove}
+              />
             )}
             onRowClick={(event, rowData, togglePanel) => togglePanel()}
           />
