@@ -456,7 +456,7 @@ export default function NewRegister() {
                           error={!!errors.confirmPassword}
                           htmlFor="standard-adornment-confirm-password"
                         >
-                          Xác nhận mật khẩu*
+                          Nhập lại mật khẩu*
                         </InputLabel>
                         <Input
                           id="standard-adornment-confirm-password"
