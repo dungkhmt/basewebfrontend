@@ -53,6 +53,8 @@ const ConfigGroupRoute = lazy(() => import("./ConfigGroupRoute"));
 const InvoiceGroupRoute = lazy(() => import("./InvoiceGroupRoute"));
 const SalesGroupRoute = lazy(() => import("./SalesGroupRoute"));
 
+const BacklogRoute = lazy(() => import("./BacklogRoute"));
+
 function MainAppRoute(props) {
   const location = useLocation();
   const dispatch = useDispatch();
@@ -269,7 +271,14 @@ function MainAppRoute(props) {
             path="/sales-group"
           />
 
-          <Route component={error} path="*"/>
+          <PrivateRoute
+            component={BacklogRoute}
+            layout={Layout}
+            isAuthenticated={props.isAuthenticated}
+            path="/backlog"
+          />
+
+          <Route component={error} path="*" />
         </Switch>
       </Suspense>
     </Layout>

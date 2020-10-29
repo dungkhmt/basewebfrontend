@@ -43,6 +43,7 @@ import {user} from "./menuconfig/user";
 import {warehouse} from "./menuconfig/warehouse";
 import {webcam} from "./menuconfig/webcam";
 import {promotax} from "./menuconfig/promotax";
+import {backlog} from "./menuconfig/backlog";
 
 export const MENU_LIST = [];
 MENU_LIST.push(department);
@@ -72,6 +73,7 @@ MENU_LIST.push(tmsreport);
 MENU_LIST.push(tmscontainer);
 MENU_LIST.push(teachingassignment);
 MENU_LIST.push(webcam);
+MENU_LIST.push(backlog);
 
 export const menuIconMap = new Map();
 menuIconMap.set("InboxIcon", <InboxIcon/>);
