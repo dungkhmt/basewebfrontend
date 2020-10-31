@@ -179,9 +179,10 @@ export default function ClassCreate(){
       const handleSubmit = () => {
         const data = {
           classCode: classId,
-          departmentId: departmentId,
           semesterId: semesterId,
-          courseId: courseId
+          courseId: courseId,
+          classType: classType,
+          departmentId: departmentId,
         };
         setIsRequesting(true);
         authPost(dispatch, token, "/edu/class/add", data)
