@@ -41,10 +41,47 @@ export default function LakeCreate(){
     const [mucDamBaoTuoi, setMucDamBaoTuoi] = useState();
     const [dienTichTuoi, setDienTichTuoi] = useState();
     const [mucNuocChet, setMucNuocChet] = useState();
+    const [mucNuocDangBinhThuong, setMucNuocDangBinhThuong] = useState();
+    const [mucNuocLuThietKe, setMucNuocLuThietKe] = useState();
+    const [mucNuocLuKiemTra, setMucNuocLuKiemTra] = useState();
+    const [dungTichToanBo, setDungTichToanBo] = useState();
+    const [dungTichHuuIch, setDungTichHuuIch] = useState();
+    const [dungTichChet, setDungTichChet] = useState();
+    const [luuLuongXaLuThietKe, setLuuLuongXaLuThietKe] = useState();
+    const [luuLuongXaLuKiemTra, setLuuLuongXaLuKiemTra] = useState();
 
 
     const [isRequesting, setIsRequesting] = useState(false);
     const classes = useStyles();
+
+    const handleLuuLuongXaLuKiemTraChange = (event) => {
+      setLuuLuongXaLuKiemTra(event.target.value);
+    };
+    const handleLuuLuongXaLuThietKeChange = (event) => {
+      setLuuLuongXaLuThietKe(event.target.value);
+    };
+    const handleDungTichChetChange = (event) => {
+      setDungTichChet(event.target.value);
+    };
+
+    const handleDungTichHuuIchChange = (event) => {
+      setDungTichHuuIch(event.target.value);
+    };
+
+    const handleDungTichToanBoChange = (event) => {
+      setDungTichToanBo(event.target.value);
+    };
+
+
+    const handleMucNuocLuKiemTraChange = (event) => {
+      setMucNuocLuKiemTra(event.target.value);
+    };
+    const handleMucNuocLuThietKeChange = (event) => {
+      setMucNuocLuThietKe(event.target.value);
+    };
+    const handleMucNuocDangBinhThuongChange = (event) => {
+      setMucNuocDangBinhThuong(event.target.value);
+    };
 
     const handleDienTichTuoiChange = (event) => {
       setDienTichTuoi(event.target.value);
@@ -84,7 +121,16 @@ export default function LakeCreate(){
           dienTichLuuVuc: dienTichLuuVuc,
           mucDamBaoTuoi: mucDamBaoTuoi,
           dienTichTuoi: dienTichTuoi,
-          mucNuocChet: mucNuocChet
+          mucNuocChet: mucNuocChet,
+          mucNuocDangBinhThuong: mucNuocDangBinhThuong,
+          mucNuocLuThietKe: mucNuocLuThietKe,
+          mucNuocLuKiemTra: mucNuocLuKiemTra,
+          dungTichToanBo: dungTichToanBo,
+          dungTichHuuIch: dungTichHuuIch,
+          dungTichChet: dungTichChet,
+          luuLuongXaLuThietKe: luuLuongXaLuThietKe,
+          luuLuongXaLuKiemTra: luuLuongXaLuKiemTra
+
         };
 
         setIsRequesting(true);
@@ -157,24 +203,6 @@ export default function LakeCreate(){
                   helperText="Diện tích lưu vực"
                 ></TextField>
 
-                <TextField
-                  id="mucDamBaoTuoi"
-                  label="Mức đảm bảo tưới"
-                  onChange={handleMucDamBaoTuoiChange}
-                  helperText="Mức đảm bảo tưới"
-                ></TextField>
-                <TextField
-                  id="dienTichTuoi"
-                  label="Diện tích tưới"
-                  onChange={handleDienTichTuoiChange}
-                  helperText="Diện tích tưới"
-                ></TextField>
-                <TextField
-                  id="mucNuocChet"
-                  label="Mực nước chết"
-                  onChange={handleMucNuocChetChange}
-                  helperText="Mực nước chết"
-                ></TextField>
                 
               </Paper>
             </Grid>

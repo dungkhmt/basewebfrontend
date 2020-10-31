@@ -15,7 +15,7 @@ export const eduTeachingManagement = {
     },
     {
       id: "MENU_EDUCATION_TEACHING_MANAGEMENT_TEACHER_CREATE_CLASS",
-      path: "/edu/courses/list",
+      path: "/edu/class/add",
       isPublic: false,
       icon: null,
       text: "Tạo lớp",

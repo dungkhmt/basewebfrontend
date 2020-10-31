@@ -32,14 +32,21 @@ function LakeList(props) {
     fetch(API_URL + '/get-lakes-owned-by-userlogin', requestOptionsGet)
       .then(response => response.json())
       .then(response => {
+        /*
         console.log(response);
         let arr = [];
         response.forEach(d => {
           arr.push(d);
         });
         setLakes(arr);
+        */
         //console.log('getDepartmentList = ',departments);
-      });
+        setLakes(response);
+      },
+      error => {
+        setLakes([]);
+      }
+      );
   }
 
   useEffect(() => {

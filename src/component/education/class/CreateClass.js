@@ -95,7 +95,7 @@ export default function CreateClass() {
   const [invalidCourseId, setInvalidCourseId] = useState(false);
 
   const getAllCourse = () => {
-    authGet(dispatch, token, "/edu/get-all-courses").then((res) => {
+    authGet(dispatch, token, "/edu/class/get-all-courses").then((res) => {
       console.log(res);
       setCoursePool(res);
     });
@@ -109,7 +109,7 @@ export default function CreateClass() {
   //   };
 
   const getAllSemester = () => {
-    authGet(dispatch, token, "/edu/get-all-semester").then((res) => {
+    authGet(dispatch, token, "/edu/class/get-all-semesters").then((res) => {
       console.log(res);
       setSemesterPool(res);
     });
@@ -231,8 +231,8 @@ export default function CreateClass() {
                   }}
                 >
                   {semesterPool.map((item) => (
-                    <MenuItem key={item.semesterId} value={item.semesterId}>
-                      {item.semesterId}
+                    <MenuItem key={item.id} value={item.id}>
+                      {item.id}
                     </MenuItem>
                   ))}
                 </TextField>
