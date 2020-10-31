@@ -21,6 +21,7 @@ import { useHistory } from "react-router";
 const useStyles = makeStyles((theme) => ({
   card: {
     marginTop: theme.spacing(2),
+    borderRadius: "6px",
   },
   registrationBtn: {
     borderRadius: "6px",

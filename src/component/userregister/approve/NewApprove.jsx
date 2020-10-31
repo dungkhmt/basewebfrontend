@@ -110,7 +110,6 @@ function NewApprove() {
         setRolesMap(roles);
       },
       {
-        noResponse: (error) => {},
         rest: (error) => {
           console.log(error);
         },
@@ -135,9 +134,22 @@ function NewApprove() {
         setGrantedRoles({ ...grantedRoles, ...change });
       },
       {
-        noResponse: (error) => {},
+        400: (e) => {
+          if ("approved" == e.response.data.error) {
+            errorNoti("Tài khoản đã được phê duyệt trước đó.");
+          } else {
+            errorNoti("Rất tiếc! Đã có lỗi xảy ra. Vui lòng thử lại.");
+          }
+        },
+        404: (e) => {
+          if ("not existed" == e.response.data.error) {
+            errorNoti("Đăng ký không tồn tại hoặc đã bị xoá.");
+          } else {
+            errorNoti("Rất tiếc! Đã có lỗi xảy ra. Vui lòng thử lại.");
+          }
+        },
         rest: (error) => {
-          console.log(error);
+          errorNoti("Rất tiếc! Đã có lỗi xảy ra. Vui lòng thử lại.");
         },
       },
       { userLoginId: userLoginId, roles: assignedRoles }

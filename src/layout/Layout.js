@@ -1,19 +1,20 @@
 import AppBar from "@material-ui/core/AppBar";
 import CssBaseline from "@material-ui/core/CssBaseline";
 import IconButton from "@material-ui/core/IconButton";
-import {makeStyles} from "@material-ui/core/styles";
+import { makeStyles } from "@material-ui/core/styles";
 import Toolbar from "@material-ui/core/Toolbar";
 import Typography from "@material-ui/core/Typography";
 import MenuIcon from "@material-ui/icons/Menu";
 import MenuOpenIcon from "@material-ui/icons/MenuOpen";
 import clsx from "clsx";
-import React, {useEffect} from "react";
-import {connect} from "react-redux";
-import {getMenu, logout} from "../action";
+import React, { useEffect } from "react";
+import { connect } from "react-redux";
+import { getMenu, logout } from "../action";
 import Logo from "../component/common/Logo";
-import {LayoutBreadcrumbs} from "./LayoutBreadcrumbs";
+import { LayoutBreadcrumbs } from "./LayoutBreadcrumbs";
 import AccountButton from "./account/AccountButton";
 import SideBar from "./SideBar";
+import Back2Top from "../utils/Back2Top";
 
 const drawerWidth = 340;
 
@@ -72,7 +73,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 function Layout(props) {
-  const {children} = props;
+  const { children } = props;
   const classes = useStyles();
 
   const [open, setOpen] = React.useState(false);
@@ -94,7 +95,7 @@ function Layout(props) {
 
   return (
     <div className={classes.root}>
-      <CssBaseline/>
+      <CssBaseline />
       <AppBar
         position="fixed"
         className={clsx(classes.appBar, {
@@ -103,9 +104,8 @@ function Layout(props) {
       >
         <Toolbar>
           <IconButton color="inherit" className={clsx(classes.largeIcon, {})}>
-            <Logo fontSize="large"/>
+            <Logo fontSize="large" />
           </IconButton>
-
           {open ? (
             <Typography variant="h6" noWrap>
               Daily Opt
@@ -116,7 +116,7 @@ function Layout(props) {
                 edge="start"
                 className={classes.hideButton}
               >
-                <MenuOpenIcon/>
+                <MenuOpenIcon />
               </IconButton>
             </Typography>
           ) : (
@@ -126,20 +126,20 @@ function Layout(props) {
               onClick={handleDrawer}
               edge="start"
             >
-              <MenuIcon/>
+              <MenuIcon />
             </IconButton>
           )}
           <div
             className={clsx({
-                              [classes.appBarTitle]: open,
-                            })}
+              [classes.appBarTitle]: open,
+            })}
           >
             <Typography variant="h6" noWrap>
               Quản lý chuỗi cung ứng
             </Typography>
           </div>
           <span className={classes.toolbarButtons}>
-            <AccountButton handleLogout={handleLogout}/>
+            <AccountButton handleLogout={handleLogout} />
           </span>
         </Toolbar>
       </AppBar>
@@ -153,10 +153,11 @@ function Layout(props) {
           [classes.contentShift]: open,
         })}
       >
-        <div className={classes.toolbar}/>
-        <LayoutBreadcrumbs/>
+        <div id="back-to-top-anchor" className={classes.toolbar} />
+        <LayoutBreadcrumbs />
         {children}
       </main>
+      <Back2Top />
     </div>
   );
 }

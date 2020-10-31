@@ -188,7 +188,7 @@ export const request = async (
         errorHandlers['noResponse'](error)
       }
 
-      errorNoti("Máy chủ không phản hồi.");
+      errorNoti("Không thể kết nối tới máy chủ.");
     } else {
       // Something happened in setting up the request that triggered an Error.
       console.log(

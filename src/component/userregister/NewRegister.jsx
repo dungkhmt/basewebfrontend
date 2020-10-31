@@ -6,6 +6,7 @@ import { DevTool } from "react-hook-form-devtools";
 import {
   Box,
   CardMedia,
+  CircularProgress,
   Divider,
   FormControl,
   FormHelperText,
@@ -33,6 +34,7 @@ import { useSelector } from "react-redux";
 import Visibility from "@material-ui/icons/Visibility";
 import VisibilityOff from "@material-ui/icons/VisibilityOff";
 import CustomizedDialogs from "./CustomizedDialogs";
+import { green } from "@material-ui/core/colors";
 
 const theme = createMuiTheme({
   overrides: {
@@ -57,9 +59,15 @@ const useStyles = makeStyles((theme) => ({
     borderTopRightRadius: "6px",
     borderBottomRightRadius: "6px",
   },
-  imgWrapper: { minWidth: 730, minHeight: 580 },
+  imgWrapper: {
+    minWidth: 730,
+    minHeight: 580,
+  },
   wrapper: {
     background: "#311b92",
+    height: "100vh",
+    minHeight: 694,
+    minWidth: 1366,
   },
   form: {
     background: "white",
@@ -67,13 +75,16 @@ const useStyles = makeStyles((theme) => ({
     borderBottomLeftRadius: "6px",
     paddingLeft: 24,
     paddingRight: 24,
-    minWidth: 520,
+    maxWidth: 540,
+  },
+  formField: {
+    width: 220,
   },
   container: {
     flex: "0 1 auto",
     boxShadow: "5px 5px 5px white",
     borderRadius: "6px",
-    minWidth: 1252,
+    maxWidth: 1294,
   },
   roles: {
     width: "100%",
@@ -91,17 +102,31 @@ const useStyles = makeStyles((theme) => ({
     },
   },
   createBtnWrapper: {
+    position: "relative",
     display: "flex",
-    width: "100%",
+    alignItems: "center",
     justifyContent: "center",
+  },
+  createBtnContainer: {
+    width: "100%",
     marginTop: 44,
     marginBottom: 16,
   },
-  formField: {
-    width: 220,
+  buttonProgress: {
+    color: green[500],
+    position: "absolute",
+    top: "50%",
+    left: "50%",
+    marginTop: -16,
+    marginLeft: -12,
   },
   title: {
     fontFamily: "'Roboto', sans-serif",
+  },
+  confirmBtn: {
+    "&:hover": {
+      backgroundColor: "#e7f3ff",
+    },
   },
 }));
 
@@ -113,6 +138,7 @@ export default function NewRegister() {
   const [roles, setRoles] = useState([]);
   const [showPassword, setShowPassword] = useState(false);
   const [existedAccErr, setExistedAccErr] = useState(false);
+  const [loading, setLoading] = React.useState(false);
 
   // Dialog.
   const [open, setOpen] = useState(false);
@@ -146,12 +172,14 @@ export default function NewRegister() {
   };
 
   const onSubmit = (data) => {
+    setLoading(true);
     request(
       token,
       history,
       "post",
       "/user/register",
       () => {
+        setLoading(false);
         setExistedAccErr(false);
         setOpen(true);
         reset({
@@ -166,12 +194,20 @@ export default function NewRegister() {
         });
       },
       {
-        400: (error) => {
-          if (error.response.data?.error === "existed") {
+        400: (e) => {
+          setLoading(false);
+          if (e.response.data?.error === "existed") {
             setExistedAccErr(true);
           } else {
             errorNoti("Rất tiếc! Đã có lỗi xảy ra. Vui lòng thử lại.");
           }
+        },
+        noResponse: () => {
+          setLoading(false);
+        },
+        rest: () => {
+          setLoading(false);
+          errorNoti("Rất tiếc! Đã có lỗi xảy ra. Vui lòng thử lại.");
         },
       },
       data
@@ -193,13 +229,11 @@ export default function NewRegister() {
   return (
     <Box
       display="flex"
-      width={window.innerWidth}
-      height={window.innerHeight}
       justifyContent="center"
       alignItems="center"
       className={classes.wrapper}
     >
-      <Box width="91.67%">
+      <Box width="91.67%" display="flex" justifyContent="center">
         <Grid
           container
           md={12}
@@ -422,7 +456,7 @@ export default function NewRegister() {
                           error={!!errors.confirmPassword}
                           htmlFor="standard-adornment-confirm-password"
                         >
-                          Xác nhận mật khẩu*
+                          Nhập lại mật khẩu*
                         </InputLabel>
                         <Input
                           id="standard-adornment-confirm-password"
@@ -510,19 +544,32 @@ export default function NewRegister() {
                       }}
                     />
                   </ThemeProvider>
-                  <motion.div
-                    whileTap={{ scale: 0.9 }}
-                    className={classes.createBtnWrapper}
+                  <Box
+                    display="flex"
+                    justifyContent="center"
+                    className={classes.createBtnContainer}
                   >
-                    <Button
-                      variant="contained"
-                      type="submit"
-                      color="primary"
-                      className={classes.createBtn}
+                    <motion.div
+                      whileTap={{ scale: 0.9 }}
+                      className={classes.createBtnWrapper}
                     >
-                      Tạo
-                    </Button>
-                  </motion.div>
+                      <Button
+                        disabled={loading}
+                        variant="contained"
+                        type="submit"
+                        color="primary"
+                        className={classes.createBtn}
+                      >
+                        Tạo
+                      </Button>
+                      {loading && (
+                        <CircularProgress
+                          size={32}
+                          className={classes.buttonProgress}
+                        />
+                      )}
+                    </motion.div>
+                  </Box>
                 </Grid>
               </form>
               {/* <DevTool control={control} /> */}
@@ -541,7 +588,11 @@ export default function NewRegister() {
         handleClose={handleClose}
         title=""
         actions={
-          <Button onClick={handleClose} color="primary" variant="contained">
+          <Button
+            onClick={handleClose}
+            color="primary"
+            className={classes.confirmBtn}
+          >
             OK
           </Button>
         }
