@@ -29,6 +29,7 @@ import { authPost, axiosGet, axiosPost } from "../../../../api";
 import axios from "axios";
 import { green } from "@material-ui/core/colors";
 import { API_URL } from "../../../../config/config";
+import parse from "html-react-parser";
 
 const useStyles = makeStyles((theme) => ({
   card: {
@@ -369,7 +370,7 @@ function TExerciseDetail() {
                   {hideSubject ? "Hiện đề bài" : "Ẩn đề bài"}
                 </Button>
               </Box>
-              {hideSubject ? null : assignmentDetail.subject}
+              {hideSubject ? null : parse(assignmentDetail.subject)}
             </Grid>
           </Grid>
         </CardContent>

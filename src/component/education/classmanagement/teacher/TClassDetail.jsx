@@ -579,9 +579,9 @@ function TClassDetail() {
                 icon: "create",
                 position: "toolbar",
                 onClick: (event) => {
-                  // history.push(
-                  //   `/edu/teacher/class/${params.id}/assignment/create`
-                  // );
+                  history.push(
+                    `/edu/teacher/class/${params.id}/assignment/create`
+                  );
                 },
               },
               {
