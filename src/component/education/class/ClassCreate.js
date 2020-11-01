@@ -56,6 +56,9 @@ export default function ClassCreate(){
   
     const [coursePool, setCoursePool] = useState([]);
     const [semesterPool, setSemesterPool] = useState([]);
+    const [departmentPool, setDepartmentPool] = useState([]);
+
+    /*
     const departmentPool = [
       { departmentId: "ATTT", departmentName: "An toàn thông tin" },
       { departmentId: "CNPM", departmentName: "Công nghệ phần mềm" },
@@ -64,7 +67,9 @@ export default function ClassCreate(){
       { departmentId: "KTMT", departmentName: "Kĩ thuật máy tính" },
       { departmentId: "TTMMT", departmentName: "Truyền thông và mạng máy tính" },
       { departmentId: "TTMT", departmentName: "Trung tâm máy tính" },
+      { departmentId: "KCNTT", departmentName: "Viện CNTT&TT" },
     ];
+    */
     const classTypePool = [
       { type: "LT" },
       { type: "BT" },
@@ -74,7 +79,7 @@ export default function ClassCreate(){
     ];
     const [invalidCourseId, setInvalidCourseId] = useState(false);
 
-    const getAllCourse = () => {
+    const getAllCourses = () => {
         fetch(API_URL + "/edu/class/get-all-courses", {
             method: "GET",
             headers: { "Content-Type": "application/json", "X-Auth-Token": token },
@@ -97,22 +102,26 @@ export default function ClassCreate(){
             }
             );
 
-        /*    
-        authGet(dispatch, token, "/edu/get-all-courses").then((res) => {
-          console.log(res);
-          setCoursePool(res);
-        });
-        */
+       
       };
     
-      //   const getAllDepartment = () => {
-      //     authGet(dispatch, token, "/edu/get-all-department").then((res) => {
-      //       console.log(res);
-      //       setDepartmentPool(res);
-      //     });
-      //   };
+    const getAllDepartments = () => {
+        fetch(API_URL + "/edu/class/get-all-departments", {
+            method: "GET",
+            headers: { "Content-Type": "application/json", "X-Auth-Token": token },
+          })
+            .then((response) => response.json())
+            .then((response) => {
+              setDepartmentPool(response);
+            },
+            error => {
+              setDepartmentPool([]);
+            }
+            );
+
+      };
     
-      const getAllSemester = () => {
+      const getAllSemesters = () => {
         fetch(API_URL + "/edu/class/get-all-semesters", {
             method: "GET",
             headers: { "Content-Type": "application/json", "X-Auth-Token": token },
@@ -145,10 +154,10 @@ export default function ClassCreate(){
       };
     
       useEffect(() => {
-        getAllCourse();
-        // getAllDepartment();
-        getAllSemester();
-        console.log(semesterPool);
+        getAllCourses();
+        getAllDepartments();
+        getAllSemesters();
+        console.log('departments = ',departmentPool);
       }, []);
     
     const onCourseIdChange = (event) => {
@@ -304,8 +313,8 @@ export default function ClassCreate(){
                     }}
                   >
                     {departmentPool.map((item) => (
-                      <MenuItem key={item.departmentId} value={item.departmentId}>
-                        {item.departmentName}
+                      <MenuItem key={item.id} value={item.id}>
+                        {item.id}
                       </MenuItem>
                     ))}
                   </TextField>
