@@ -30,6 +30,7 @@ import axios from "axios";
 import { green } from "@material-ui/core/colors";
 import { API_URL } from "../../../../config/config";
 import parse from "html-react-parser";
+import { localization } from "../../../../utils/MaterialTableUtils";
 
 const useStyles = makeStyles((theme) => ({
   card: {
@@ -247,6 +248,11 @@ function TExerciseDetail() {
               color="primary"
               startIcon={<EditIcon />}
               className={classes.editBtn}
+              onClick={() =>
+                history.push(
+                  `/edu/teacher/class/${params.classId}/assignment/${params.assignmentId}/edit`
+                )
+              }
             >
               Chỉnh sửa
             </Button>
@@ -339,7 +345,7 @@ function TExerciseDetail() {
                     classes={{ root: classes.rootDivider }}
                   />
                 </div>
-                <Box display="flex" fullWidth>
+                <Box display="flex" width="100%">
                   <Grid item md={3} sm={3} xs={3}>
                     <Typography>Sinh viên đã nộp bài</Typography>
                   </Grid>
@@ -390,24 +396,7 @@ function TExerciseDetail() {
             title=""
             columns={columns}
             tableRef={tableRef}
-            localization={{
-              body: {
-                emptyDataSourceMessage: "",
-              },
-              toolbar: {
-                searchPlaceholder: "Tìm kiếm",
-                searchTooltip: "Tìm kiếm",
-              },
-              pagination: {
-                hover: "pointer",
-                labelRowsSelect: "hàng",
-                labelDisplayedRows: "{from}-{to} của {count}",
-                nextTooltip: "Trang tiếp",
-                lastTooltip: "Trang cuối",
-                firstTooltip: "Trang đầu",
-                previousTooltip: "Trang trước",
-              },
-            }}
+            localization={localization}
             data={data}
             components={{
               Container: (props) => <Paper {...props} elevation={0} />,
