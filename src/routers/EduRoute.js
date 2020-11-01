@@ -50,7 +50,6 @@ export default function EduRoute() {
 
         <Route component={ClassRegistration} path={`${path}/class/register`} />
 
-
         <Route component={SClassList} path={`${path}/student/class/list`} />
 
         <Route
@@ -64,7 +63,12 @@ export default function EduRoute() {
 
         <Route
           component={CreateExercise}
-          path={`${path}/teacher/class/:id/assignment/create`}
+          path={`${path}/teacher/class/:classId/assignment/create`}
+        />
+
+        <Route
+          component={CreateExercise}
+          path={`${path}/teacher/class/:classId/assignment/:assignmentId/edit`}
         />
 
         <Route
