@@ -35,7 +35,7 @@ import useOnMount from "./onMount";
 import _ from "lodash";
 import { request } from "../../../../api";
 import { useSelector } from "react-redux";
-import { successNoti } from "../../../../utils/Notification";
+import { errorNoti } from "../../../../utils/Notification";
 
 const useStyles = makeStyles((theme) => ({
   card: {
@@ -85,33 +85,29 @@ function CreateExercise() {
   const token = useSelector((state) => state.auth.token);
 
   const [editorState, setEditorState] = useState(EditorState.createEmpty());
+  const [loading, setLoading] = React.useState(false);
 
   // Form.
-  const {
-    register,
-    errors,
-    watch,
-    handleSubmit,
-    control,
-    setValue,
-    setError,
-  } = useForm({
-    defaultValues: {
-      deadline: (() => {
-        let date = new Date();
+  const { register, errors, watch, handleSubmit, setValue, setError } = useForm(
+    {
+      defaultValues: {
+        deadline: (() => {
+          let date = new Date();
 
-        date.setDate(date.getDate() + 1);
-        date.setHours(23);
-        date.setMinutes(59);
-        date.setSeconds(59);
+          date.setDate(date.getDate() + 1);
+          date.setHours(23);
+          date.setMinutes(59);
+          date.setSeconds(59);
 
-        return date;
-      })(),
-    },
-  });
+          return date;
+        })(),
+      },
+    }
+  );
 
   // Functions.
   const onSubmit = (formData) => {
+    setLoading(true);
     let subject = draftToHtml(convertToRaw(editorState.getCurrentContent()));
 
     request(
@@ -120,9 +116,33 @@ function CreateExercise() {
       "post",
       "/edu/assignment",
       (res) => {
-        successNoti("Success!");
+        history.goBack();
       },
-      {},
+      {
+        400: (e) => {
+          setLoading(false);
+          let data = e.response.data;
+
+          if ("require future date" == data?.error) {
+            setError(
+              "deadline",
+              "require future date ",
+              "Vui lòng chọn thời điểm trong tương lai"
+            );
+          } else if ("class not exist" == data?.error) {
+            errorNoti("Lớp chưa đã bị xoá trước đó.");
+          } else {
+            errorNoti("Rất tiếc! Đã có lỗi xảy ra. Vui lòng thử lại.");
+          }
+        },
+        noResponse: (e) => {
+          setLoading(false);
+        },
+        rest: (e) => {
+          setLoading(false);
+          errorNoti("Rất tiếc! Đã có lỗi xảy ra.");
+        },
+      },
       { ...formData, classId: params.id, subject: subject }
     );
   };
@@ -140,11 +160,6 @@ function CreateExercise() {
 
     date.setSeconds(59);
     setValue("deadline", date);
-    // setError(
-    //   "deadline",
-    //   "require future date ",
-    //   "Vui lòng chọn thời điểm trong tương lai"
-    // );
   };
 
   useOnMount(() => {
@@ -184,6 +199,7 @@ function CreateExercise() {
                     helperText={errors.name?.message}
                     className={classes.textField}
                     inputRef={register({
+                      required: "Trường này được yêu cầu",
                       maxLength: {
                         value: 255,
                         message: "Vui lòng chọn tên không vượt quá 255 kí tự",
@@ -199,7 +215,6 @@ function CreateExercise() {
                   <MuiPickersUtilsProvider utils={DateFnsUtils}>
                     <DateTimePicker
                       name="deadline"
-                      variant="inline"
                       inputVariant="outlined"
                       size="small"
                       cancelLabel="Huỷ"
@@ -245,6 +260,7 @@ function CreateExercise() {
                 </Grid>
                 <Grid item md={10}>
                   <Button
+                    disabled={loading}
                     type="submit"
                     variant="contained"
                     color="primary"
