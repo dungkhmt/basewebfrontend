@@ -33,7 +33,7 @@ import { errorNoti, successNoti } from "../../utils/Notification";
 import { useSelector } from "react-redux";
 import Visibility from "@material-ui/icons/Visibility";
 import VisibilityOff from "@material-ui/icons/VisibilityOff";
-import CustomizedDialogs from "./CustomizedDialogs";
+import CustomizedDialogs from "../../utils/CustomizedDialogs";
 import { green } from "@material-ui/core/colors";
 
 const theme = createMuiTheme({
@@ -583,10 +583,17 @@ export default function NewRegister() {
           </Grid>
         </Grid>
       </Box>
+
       <CustomizedDialogs
         open={open}
         handleClose={handleClose}
         title=""
+        content={
+          <Typography gutterBottom>
+            Đăng ký tài khoản thành công. Vui lòng chờ quản trị duyên phê duyệt
+            để sử dụng các tính năng của hệ thống.
+          </Typography>
+        }
         actions={
           <Button
             onClick={handleClose}
@@ -596,6 +603,7 @@ export default function NewRegister() {
             OK
           </Button>
         }
+        style={{ title: { height: 24 }, actions: { height: 40 } }}
       />
     </Box>
   );
