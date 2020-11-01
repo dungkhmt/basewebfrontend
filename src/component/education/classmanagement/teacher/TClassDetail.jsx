@@ -1,4 +1,4 @@
-import React, { useRef, useEffect, useState } from "react";
+import React, { useRef, useEffect, useState, Fragment } from "react";
 import {
   Card,
   CardContent,
@@ -16,7 +16,7 @@ import {
 import MaterialTable, { MTableToolbar } from "material-table";
 import { useDispatch, useSelector } from "react-redux";
 import { useHistory } from "react-router";
-import { authGet, axiosGet, axiosPut } from "../../../../api";
+import { authGet, axiosGet, axiosPut, request } from "../../../../api";
 import { MuiThemeProvider } from "material-ui/styles";
 import { useParams } from "react-router";
 import { makeStyles, useTheme, withStyles } from "@material-ui/core/styles";
@@ -35,6 +35,9 @@ import ExpandLessIcon from "@material-ui/icons/ExpandLess";
 import { motion } from "framer-motion";
 import { BiDetail } from "react-icons/bi";
 import AddCircleOutlineIcon from "@material-ui/icons/AddCircleOutline";
+import { localization } from "../../../../utils/MaterialTableUtils";
+import { errorNoti } from "../../../../utils/Notification";
+import CustomizedDialogs from "../../../../utils/CustomizedDialogs";
 
 const useStyles = makeStyles((theme) => ({
   card: {
@@ -62,6 +65,14 @@ const useStyles = makeStyles((theme) => ({
       backgroundColor: "#1834d2",
     },
   },
+  dialogDeleteBtn: {
+    borderRadius: "6px",
+    textTransform: "none",
+    fontSize: "1rem",
+    "&:hover": {
+      backgroundColor: "#e7f3ff",
+    },
+  },
 }));
 
 const StyledBadge = withStyles((theme) => ({
@@ -84,6 +95,10 @@ function TClassDetail() {
 
   const [classDetail, setClassDetail] = useState({});
   const [selectedStudents, setSelectedStudents] = useState([]);
+  const [deletedAssign, setDeletedAssign] = useState();
+
+  // Dialog.
+  const [open, setOpen] = useState(false);
 
   // Tables.
   const [assignment, setAssignments] = useState([]);
@@ -233,6 +248,40 @@ function TClassDetail() {
         setRegistStudents(tmp);
       })
       .catch((e) => alert("error"));
+  };
+
+  const onDeleteAssignment = (rowData) => {
+    setOpen(true);
+    setDeletedAssign(rowData.id);
+  };
+
+  const handleClose = () => {
+    setOpen(false);
+  };
+
+  const onClickDialogDeleteBtn = () => {
+    setOpen(false);
+
+    request(
+      token,
+      history,
+      "delete",
+      `/edu/assignment/${deletedAssign}`,
+      (res) => {
+        setAssignments(
+          assignment.filter((assign) => {
+            return assign.id != deletedAssign;
+          })
+        );
+      },
+      {
+        400: (e) => {
+          if ("not allowed" == e.response?.data?.error) {
+            errorNoti("Không thể xoá bài tập vì đã có sinh viên nộp bài.");
+          }
+        },
+      }
+    );
   };
 
   useEffect(() => {
@@ -496,27 +545,7 @@ function TClassDetail() {
             title=""
             columns={assignCols}
             tableRef={tableRef}
-            localization={{
-              header: {
-                actions: "",
-              },
-              body: {
-                emptyDataSourceMessage: "",
-              },
-              toolbar: {
-                searchPlaceholder: "Tìm kiếm",
-                searchTooltip: "Tìm kiếm",
-              },
-              pagination: {
-                hover: "pointer",
-                labelRowsSelect: "hàng",
-                labelDisplayedRows: "{from}-{to} của {count}",
-                nextTooltip: "Trang tiếp",
-                lastTooltip: "Trang cuối",
-                firstTooltip: "Trang đầu",
-                previousTooltip: "Trang trước",
-              },
-            }}
+            localization={localization}
             data={assignment}
             components={{
               Container: (props) => <Paper {...props} elevation={0} />,
@@ -540,8 +569,7 @@ function TClassDetail() {
                   return (
                     <Button
                       variant="outlined"
-                      color="secondary"
-                      style={{ fontSize: "bold" }}
+                      className={classes.refuseBtn}
                       onClick={(event) => {
                         props.action.onClick(event, props.data);
                         event.stopPropagation();
@@ -586,9 +614,10 @@ function TClassDetail() {
               },
               {
                 icon: "delete",
-                tooltip: "Delete User",
-                onClick: (event, rowData) =>
-                  alert("You want to delete " + rowData.name),
+
+                onClick: (event, rowData) => {
+                  onDeleteAssignment(rowData);
+                },
               },
             ]}
             onRowClick={(event, rowData) => {
@@ -600,6 +629,38 @@ function TClassDetail() {
           />
         </CardContent>
       </Card>
+
+      <CustomizedDialogs
+        open={open}
+        handleClose={handleClose}
+        title="Xoá bài tập"
+        content={
+          <Typography gutterBottom>
+            <b>Lưu ý:</b> Hành động này không thể hoàn tác sau khi thực hiện.
+          </Typography>
+        }
+        actions={
+          <Fragment>
+            <Button
+              color="primary"
+              onClick={handleClose}
+              className={classes.dialogDeleteBtn}
+              onClick={onClickDialogDeleteBtn}
+            >
+              Xoá
+            </Button>
+            <Button
+              variant="contained"
+              color="primary"
+              onClick={handleClose}
+              className={classes.approveBtn}
+              onClick={handleClose}
+            >
+              Huỷ
+            </Button>
+          </Fragment>
+        }
+      />
     </MuiThemeProvider>
   );
 }
