@@ -78,12 +78,12 @@ const editorStyle = {
 function CreateExercise() {
   const classes = useStyles();
   const params = useParams();
+  const assignmentId = params.assignmentId;
   const history = useHistory();
   const token = useSelector((state) => state.auth.token);
-  const assignmentId = params.assignmentId;
 
   const [editorState, setEditorState] = useState(EditorState.createEmpty());
-  const [loading, setLoading] = React.useState(false);
+  const [isProcessing, setIsProcessing] = useState(false);
 
   // Form.
   const {
@@ -140,7 +140,7 @@ function CreateExercise() {
   };
 
   const onSubmit = (formData) => {
-    setLoading(true);
+    setIsProcessing(true);
     let subject = draftToHtml(convertToRaw(editorState.getCurrentContent()));
 
     if (assignmentId) {
@@ -153,8 +153,10 @@ function CreateExercise() {
           history.goBack();
         },
         {
+          commonTask: (e) => {
+            setIsProcessing(false);
+          },
           400: (e) => {
-            setLoading(false);
             let data = e.response.data;
 
             if ("require future date" == data?.error) {
@@ -169,11 +171,7 @@ function CreateExercise() {
               errorNoti("Rất tiếc! Đã có lỗi xảy ra. Vui lòng thử lại.");
             }
           },
-          noResponse: (e) => {
-            setLoading(false);
-          },
           rest: (e) => {
-            setLoading(false);
             errorNoti("Rất tiếc! Đã có lỗi xảy ra.");
           },
         },
@@ -190,7 +188,7 @@ function CreateExercise() {
         },
         {
           400: (e) => {
-            setLoading(false);
+            setIsProcessing(false);
             let data = e.response.data;
 
             if ("require future date" == data?.error) {
@@ -206,10 +204,10 @@ function CreateExercise() {
             }
           },
           noResponse: (e) => {
-            setLoading(false);
+            setIsProcessing(false);
           },
           rest: (e) => {
-            setLoading(false);
+            setIsProcessing(false);
             errorNoti("Rất tiếc! Đã có lỗi xảy ra.");
           },
         },
@@ -339,7 +337,7 @@ function CreateExercise() {
                 </Grid>
                 <Grid item md={10}>
                   <Button
-                    disabled={loading}
+                    disabled={isProcessing}
                     type="submit"
                     variant="contained"
                     color="primary"
@@ -360,7 +358,7 @@ function CreateExercise() {
           </form>
         </CardContent>
       </Card>
-      <DevTool control={control} />
+      {/* <DevTool control={control} /> */}
     </MuiThemeProvider>
   );
 }
