@@ -46,7 +46,7 @@ const useStyles = makeStyles((theme) => ({
   grid: {
     paddingLeft: 56,
   },
-  refuseBtn: {
+  negativeBtn: {
     borderRadius: "6px",
     textTransform: "none",
     fontSize: "1rem",
@@ -88,20 +88,21 @@ const formatTime = (n) => (Number(n) < 10 ? "0" + Number(n) : "" + Number(n));
 
 function TClassDetail() {
   const classes = useStyles();
-  const theme = useTheme();
   const params = useParams();
-  const token = useSelector((state) => state.auth.token);
   const history = useHistory();
+  const token = useSelector((state) => state.auth.token);
 
   const [classDetail, setClassDetail] = useState({});
   const [selectedStudents, setSelectedStudents] = useState([]);
-  const [deletedAssign, setDeletedAssign] = useState();
+
+  // Assignment.
+  const [assign, setAssigns] = useState([]);
+  const [deletedAssignId, setDeletedAssignId] = useState();
 
   // Dialog.
   const [open, setOpen] = useState(false);
 
   // Tables.
-  const [assignment, setAssignments] = useState([]);
   const [students, setStudents] = useState([]);
   const [registStudents, setRegistStudents] = useState([]);
   const [openClassStuCard, setOpenClassStuCard] = useState(false);
@@ -172,7 +173,7 @@ function TClassDetail() {
         <Box display="flex" justifyContent="center">
           <Button
             variant="outlined"
-            color="secondary"
+            className={classes.negativeBtn}
             onClick={() => onClickRemoveBtn(rowData)}
           >
             Loại khỏi lớp
@@ -184,9 +185,9 @@ function TClassDetail() {
 
   // Functions.
   const getClassDetail = () => {
-    axiosGet(token, `/edu/class/${params.id}`)
-      .then((res) => setClassDetail(res.data))
-      .catch((e) => alert("error"));
+    request(token, history, "get", `/edu/class/${params.id}`, (res) => {
+      setClassDetail(res.data);
+    });
   };
 
   const getStudents = (type) => {
@@ -203,7 +204,7 @@ function TClassDetail() {
 
   const getAssignments = () => {
     axiosGet(token, `/edu/class/${params.id}/assignments`)
-      .then((res) => setAssignments(res.data))
+      .then((res) => setAssigns(res.data))
       .catch((e) => alert("error"));
   };
 
@@ -252,7 +253,7 @@ function TClassDetail() {
 
   const onDeleteAssignment = (rowData) => {
     setOpen(true);
-    setDeletedAssign(rowData.id);
+    setDeletedAssignId(rowData.id);
   };
 
   const handleClose = () => {
@@ -266,11 +267,11 @@ function TClassDetail() {
       token,
       history,
       "delete",
-      `/edu/assignment/${deletedAssign}`,
+      `/edu/assignment/${deletedAssignId}`,
       (res) => {
-        setAssignments(
-          assignment.filter((assign) => {
-            return assign.id != deletedAssign;
+        setAssigns(
+          assign.filter((assign) => {
+            return assign.id != deletedAssignId;
           })
         );
       },
@@ -367,24 +368,7 @@ function TClassDetail() {
               title=""
               columns={stuCols}
               tableRef={tableRef}
-              localization={{
-                body: {
-                  emptyDataSourceMessage: "",
-                },
-                toolbar: {
-                  searchPlaceholder: "Tìm kiếm",
-                  searchTooltip: "Tìm kiếm",
-                },
-                pagination: {
-                  hover: "pointer",
-                  labelRowsSelect: "hàng",
-                  labelDisplayedRows: "{from}-{to} của {count}",
-                  nextTooltip: "Trang tiếp",
-                  lastTooltip: "Trang cuối",
-                  firstTooltip: "Trang đầu",
-                  previousTooltip: "Trang trước",
-                },
-              }}
+              localization={localization}
               data={students}
               components={{
                 Container: (props) => <Paper {...props} elevation={0} />,
@@ -445,24 +429,7 @@ function TClassDetail() {
               columns={registCols}
               tableRef={tableRef}
               data={registStudents}
-              localization={{
-                body: {
-                  emptyDataSourceMessage: "",
-                },
-                toolbar: {
-                  searchPlaceholder: "Tìm kiếm",
-                  searchTooltip: "Tìm kiếm",
-                },
-                pagination: {
-                  hover: "pointer",
-                  labelRowsSelect: "hàng",
-                  labelDisplayedRows: "{from}-{to} của {count}",
-                  nextTooltip: "Trang tiếp",
-                  lastTooltip: "Trang cuối",
-                  firstTooltip: "Trang đầu",
-                  previousTooltip: "Trang trước",
-                },
-              }}
+              localization={localization}
               components={{
                 Container: (props) => <Paper {...props} elevation={0} />,
                 Action: (props) => {
@@ -470,7 +437,7 @@ function TClassDetail() {
                     return (
                       <Button
                         variant="outlined"
-                        className={classes.refuseBtn}
+                        className={classes.negativeBtn}
                         style={{
                           marginLeft: 10,
                           marginRight: 10,
@@ -546,7 +513,7 @@ function TClassDetail() {
             columns={assignCols}
             tableRef={tableRef}
             localization={localization}
-            data={assignment}
+            data={assign}
             components={{
               Container: (props) => <Paper {...props} elevation={0} />,
               Action: (props) => {
@@ -614,7 +581,6 @@ function TClassDetail() {
               },
               {
                 icon: "delete",
-
                 onClick: (event, rowData) => {
                   onDeleteAssignment(rowData);
                 },
@@ -629,7 +595,6 @@ function TClassDetail() {
           />
         </CardContent>
       </Card>
-
       <CustomizedDialogs
         open={open}
         handleClose={handleClose}
