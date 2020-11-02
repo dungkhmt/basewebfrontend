@@ -84,3 +84,13 @@ export const tableIcons = {
   ThirdStateCheck: forwardRef((props, ref) => <Remove {...props} ref={ref} />),
   ViewColumn: forwardRef((props, ref) => <ViewColumn {...props} ref={ref} />),
 };
+
+export default function changePageSize(totalCount, setPageSize) {
+  if (totalCount < 6) {
+    setPageSize(5);
+  } else if (totalCount < 11) {
+    setPageSize(10);
+  } else {
+    setPageSize(20);
+  }
+}
