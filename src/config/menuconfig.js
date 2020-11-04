@@ -45,6 +45,7 @@ import { webcam } from "./menuconfig/webcam";
 import { promotax } from "./menuconfig/promotax";
 import { eduTeachingManagement } from "./menuconfig/classmanagement/teacher";
 import { eduLearningManagement } from "./menuconfig/classmanagement/student";
+import {schedule} from "./menuconfig/schedule"
 
 export const MENU_LIST = [];
 MENU_LIST.push(department);
@@ -75,7 +76,7 @@ MENU_LIST.push(tmscontainer);
 // MENU_LIST.push(teachingassignment);
 MENU_LIST.push(webcam);
 MENU_LIST.push(eduTeachingManagement);
-MENU_LIST.push(eduLearningManagement);
+MENU_LIST.push(schedule);
 
 export const menuIconMap = new Map();
 menuIconMap.set("InboxIcon", <InboxIcon />);
