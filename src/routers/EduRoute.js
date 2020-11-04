@@ -7,6 +7,7 @@ import CourseList from "../component/education/course/CourseList";
 import AddNewCourse from "../component/education/course/AddNewCourse";
 import ClassesList from "../component/education/class/ClassesList";
 import CreateClass from "../component/education/class/CreateClass";
+import ClassCreate from "../component/education/class/ClassCreate";
 import CourseDetail from "../component/education/course/CourseDetail";
 import TeacherDetail from "../component/education/teacher/TeacherDetail";
 import AddTeacher from "../component/education/teacher/AddTeacher";
@@ -45,7 +46,7 @@ export default function EduRoute() {
 
         <Route component={CreateSemester} path={`${path}/semester`} />
 
-        <Route component={CreateClass} path={`${path}/create-class`} />
+        <Route component={ClassCreate} path={`${path}/class/add`} />
 
         <Route component={ClassRegistration} path={`${path}/class/register`} />
 
@@ -62,7 +63,12 @@ export default function EduRoute() {
 
         <Route
           component={CreateExercise}
-          path={`${path}/teacher/class/:id/assignment/create`}
+          path={`${path}/teacher/class/:classId/assignment/create`}
+        />
+
+        <Route
+          component={CreateExercise}
+          path={`${path}/teacher/class/:classId/assignment/:assignmentId/edit`}
         />
 
         <Route

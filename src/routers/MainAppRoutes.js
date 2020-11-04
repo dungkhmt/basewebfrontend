@@ -20,7 +20,7 @@ const SupplierRoute = lazy(() => import("./SupplierRoute"));
 const TrailerFuncRoute = lazy(() => import("./TrailerFuncRoute"));
 const WebcamRoute = lazy(() => import("./WebcamRoute"));
 const PostOfficeRoute = lazy(() => import("./PostOfficeRoute"));
-
+const WaterLakeRoute = lazy(() => import("./WaterLakeRoute"));
 const ShipmentItemDeliveryPlanRoute = lazy(() =>
   import("./ShipmentItemDelieveryPlanRoute")
 );
@@ -71,219 +71,162 @@ function MainAppRoute(props) {
     <Layout>
       <Suspense fallback={<Loading />}>
         <Switch>
-          <PrivateRoute component={Home} layout={Layout} exact path="/" />
+          <PrivateRoute component={Home} exact path="/" />
+
+          <PrivateRoute component={UserLoginRoute} path="/userlogin" />
+
+          <PrivateRoute component={OrderRoute} path="/orders" />
+
+          <PrivateRoute component={TrackLocationRoute} path="/tracklocations" />
+
+          <PrivateRoute component={DeliveryPlanRoute} path="/delivery-plan" />
 
           <PrivateRoute
-            component={UserLoginRoute}
+            component={WaterLakeRoute}
             layout={Layout}
-            path="/userlogin"
+            path="/lake"
           />
-          <PrivateRoute component={OrderRoute} layout={Layout} path="/orders" />
-          <PrivateRoute
-            component={TrackLocationRoute}
-            layout={Layout}
-            path="/tracklocations"
-          />
-          <PrivateRoute
-            component={DeliveryPlanRoute}
-            layout={Layout}
-            path="/delivery-plan"
-          />
+          
+          
           <PrivateRoute
             component={ShipmentItemDeliveryPlanRoute}
-            layout={Layout}
             path="/shipment-item-delivery-plan"
           />
-          <PrivateRoute
-            component={PostOfficeRoute}
-            layout={Layout}
-            path="/postoffice"
-          />
+
+          <PrivateRoute component={PostOfficeRoute} path="/postoffice" />
+
           <PrivateRoute
             component={VehicleDeliveryPlanRoute}
-            layout={Layout}
             path="/vehicle-delivery-plan"
           />
-          <PrivateRoute
-            component={SalesRoutesPlanRoute}
-            layout={Layout}
-            path="/salesroutes"
-          />
-          <PrivateRoute
-            component={ProductRoute}
-            layout={Layout}
-            path="/products"
-          />
-          <PrivateRoute
-            component={PromoTaxGroupRoute}
-            layout={Layout}
-            path="/promo-group"
-          />
-          <PrivateRoute
-            component={CustomerRoute}
-            layout={Layout}
-            path="/customer"
-          />
-          <PrivateRoute
-            component={DistributorRoute}
-            layout={Layout}
-            path="/distributor"
-          />
-          <PrivateRoute
-            component={RetailOutletRoute}
-            layout={Layout}
-            path="/retailoutlet"
-          />
-          <PrivateRoute
-            component={SalemanRoute}
-            layout={Layout}
-            path="/salesman"
-          />
-          <PrivateRoute
-            component={InventoryRoute}
-            layout={Layout}
-            path="/inventory"
-          />
-          <PrivateRoute
-            component={FacilityRoute}
-            layout={Layout}
-            path="/facility"
-          />
-          <PrivateRoute component={GeoRoute} layout={Layout} path="/geo" />
+
+          <PrivateRoute component={SalesRoutesPlanRoute} path="/salesroutes" />
+
+          <PrivateRoute component={ProductRoute} path="/products" />
+
+          <PrivateRoute component={PromoTaxGroupRoute} path="/promo-group" />
+
+          <PrivateRoute component={CustomerRoute} path="/customer" />
+
+          <PrivateRoute component={DistributorRoute} path="/distributor" />
+
+          <PrivateRoute component={RetailOutletRoute} path="/retailoutlet" />
+
+          <PrivateRoute component={SalemanRoute} path="/salesman" />
+
+          <PrivateRoute component={InventoryRoute} path="/inventory" />
+
+          <PrivateRoute component={FacilityRoute} path="/facility" />
+
+          <PrivateRoute component={GeoRoute} path="/geo" />
+
           <PrivateRoute
             component={DepotContainerFuncRoute}
-            layout={Layout}
             path="/depotcontainerfunc"
           />
+
           <PrivateRoute
             component={DepotTrailerFuncRoute}
-            layout={Layout}
             path="/depottrailerfunc"
           />
+
           <PrivateRoute
             component={DepotTruckFuncRoute}
-            layout={Layout}
             path="/depottruckfunc"
           />
-          <PrivateRoute
-            component={TrailerFuncRoute}
-            layout={Layout}
-            path="/trailerfunc"
-          />
-          <PrivateRoute
-            component={PortFuncRoute}
-            layout={Layout}
-            path="/portfunc"
-          />
-          <PrivateRoute component={SalesRoute} layout={Layout} path="/sales" />
-          <PrivateRoute
-            component={SupplierRoute}
-            layout={Layout}
-            path="/supplier"
-          />
-          <PrivateRoute
-            component={PurchaseOrderRoute}
-            layout={Layout}
-            path="/purchase-order"
-          />
-          <PrivateRoute
-            component={EduRoute}
-            // layout={Layout}
-            path="/edu"
-          />
+
+          <PrivateRoute component={TrailerFuncRoute} path="/trailerfunc" />
+
+          <PrivateRoute component={PortFuncRoute} path="/portfunc" />
+
+          <PrivateRoute component={SalesRoute} path="/sales" />
+
+          <PrivateRoute component={SupplierRoute} path="/supplier" />
+
+          <PrivateRoute component={PurchaseOrderRoute} path="/purchase-order" />
+
+          <PrivateRoute component={EduRoute} path="/edu" />
+
           <PrivateRoute
             component={WebcamRoute}
-            layout={Layout}
             isAuthenticated={true}
             path="/webcam"
           />
+
           <PrivateRoute
             component={PaymentGroupRoute}
-            layout={Layout}
             isAuthenticated={props.isAuthenticated}
             path="/payment-group"
           />
 
           <PrivateRoute
             component={ProductGroupRoute}
-            layout={Layout}
             isAuthenticated={props.isAuthenticated}
             path="/product-group"
           />
 
           <PrivateRoute
             component={ShipmentGroupRoute}
-            layout={Layout}
             isAuthenticated={props.isAuthenticated}
             path="/shipment-group"
           />
 
           <PrivateRoute
             component={TestGroupRoute}
-            layout={Layout}
             isAuthenticated={props.isAuthenticated}
             path="/test-group"
           />
 
           <PrivateRoute
             component={TransportGroupRoute}
-            layout={Layout}
             isAuthenticated={props.isAuthenticated}
             path="/transport-group"
           />
 
           <PrivateRoute
             component={ReportGroupRoute}
-            layout={Layout}
             isAuthenticated={props.isAuthenticated}
             path="/report-group"
           />
 
           <PrivateRoute
             component={VehicleGroupRoute}
-            layout={Layout}
             isAuthenticated={props.isAuthenticated}
             path="/vehicle-group"
           />
 
           <PrivateRoute
             component={UserGroupRoute}
-            layout={Layout}
             isAuthenticated={props.isAuthenticated}
             path="/user-group"
           />
 
           <PrivateRoute
             component={DeliveryGroupRoute}
-            layout={Layout}
             isAuthenticated={props.isAuthenticated}
             path="/delivery-group"
           />
 
           <PrivateRoute
             component={DriverGroupRoute}
-            layout={Layout}
             isAuthenticated={props.isAuthenticated}
             path="/driver-group"
           />
 
           <PrivateRoute
             component={ConfigGroupRoute}
-            layout={Layout}
             isAuthenticated={props.isAuthenticated}
             path="/config-group"
           />
 
           <PrivateRoute
             component={InvoiceGroupRoute}
-            layout={Layout}
             isAuthenticated={props.isAuthenticated}
             path="/invoice-group"
           />
 
           <PrivateRoute
             component={SalesGroupRoute}
-            layout={Layout}
             isAuthenticated={props.isAuthenticated}
             path="/sales-group"
           />

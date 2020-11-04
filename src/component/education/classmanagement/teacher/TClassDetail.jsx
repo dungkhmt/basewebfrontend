@@ -1,4 +1,4 @@
-import React, { useRef, useEffect, useState } from "react";
+import React, { useRef, useEffect, useState, Fragment } from "react";
 import {
   Card,
   CardContent,
@@ -16,7 +16,7 @@ import {
 import MaterialTable, { MTableToolbar } from "material-table";
 import { useDispatch, useSelector } from "react-redux";
 import { useHistory } from "react-router";
-import { authGet, axiosGet, axiosPut } from "../../../../api";
+import { authGet, axiosGet, axiosPut, request } from "../../../../api";
 import { MuiThemeProvider } from "material-ui/styles";
 import { useParams } from "react-router";
 import { makeStyles, useTheme, withStyles } from "@material-ui/core/styles";
@@ -35,6 +35,9 @@ import ExpandLessIcon from "@material-ui/icons/ExpandLess";
 import { motion } from "framer-motion";
 import { BiDetail } from "react-icons/bi";
 import AddCircleOutlineIcon from "@material-ui/icons/AddCircleOutline";
+import { localization } from "../../../../utils/MaterialTableUtils";
+import { errorNoti } from "../../../../utils/Notification";
+import CustomizedDialogs from "../../../../utils/CustomizedDialogs";
 
 const useStyles = makeStyles((theme) => ({
   card: {
@@ -43,7 +46,7 @@ const useStyles = makeStyles((theme) => ({
   grid: {
     paddingLeft: 56,
   },
-  refuseBtn: {
+  negativeBtn: {
     borderRadius: "6px",
     textTransform: "none",
     fontSize: "1rem",
@@ -62,6 +65,14 @@ const useStyles = makeStyles((theme) => ({
       backgroundColor: "#1834d2",
     },
   },
+  dialogDeleteBtn: {
+    borderRadius: "6px",
+    textTransform: "none",
+    fontSize: "1rem",
+    "&:hover": {
+      backgroundColor: "#e7f3ff",
+    },
+  },
 }));
 
 const StyledBadge = withStyles((theme) => ({
@@ -77,16 +88,21 @@ const formatTime = (n) => (Number(n) < 10 ? "0" + Number(n) : "" + Number(n));
 
 function TClassDetail() {
   const classes = useStyles();
-  const theme = useTheme();
   const params = useParams();
-  const token = useSelector((state) => state.auth.token);
   const history = useHistory();
+  const token = useSelector((state) => state.auth.token);
 
   const [classDetail, setClassDetail] = useState({});
   const [selectedStudents, setSelectedStudents] = useState([]);
 
+  // Assignment.
+  const [assign, setAssigns] = useState([]);
+  const [deletedAssignId, setDeletedAssignId] = useState();
+
+  // Dialog.
+  const [open, setOpen] = useState(false);
+
   // Tables.
-  const [assignment, setAssignments] = useState([]);
   const [students, setStudents] = useState([]);
   const [registStudents, setRegistStudents] = useState([]);
   const [openClassStuCard, setOpenClassStuCard] = useState(false);
@@ -157,7 +173,7 @@ function TClassDetail() {
         <Box display="flex" justifyContent="center">
           <Button
             variant="outlined"
-            color="secondary"
+            className={classes.negativeBtn}
             onClick={() => onClickRemoveBtn(rowData)}
           >
             Loại khỏi lớp
@@ -169,9 +185,9 @@ function TClassDetail() {
 
   // Functions.
   const getClassDetail = () => {
-    axiosGet(token, `/edu/class/${params.id}`)
-      .then((res) => setClassDetail(res.data))
-      .catch((e) => alert("error"));
+    request(token, history, "get", `/edu/class/${params.id}`, (res) => {
+      setClassDetail(res.data);
+    });
   };
 
   const getStudents = (type) => {
@@ -188,7 +204,7 @@ function TClassDetail() {
 
   const getAssignments = () => {
     axiosGet(token, `/edu/class/${params.id}/assignments`)
-      .then((res) => setAssignments(res.data))
+      .then((res) => setAssigns(res.data))
       .catch((e) => alert("error"));
   };
 
@@ -233,6 +249,40 @@ function TClassDetail() {
         setRegistStudents(tmp);
       })
       .catch((e) => alert("error"));
+  };
+
+  const onDeleteAssignment = (rowData) => {
+    setOpen(true);
+    setDeletedAssignId(rowData.id);
+  };
+
+  const handleClose = () => {
+    setOpen(false);
+  };
+
+  const onClickDialogDeleteBtn = () => {
+    setOpen(false);
+
+    request(
+      token,
+      history,
+      "delete",
+      `/edu/assignment/${deletedAssignId}`,
+      (res) => {
+        setAssigns(
+          assign.filter((assign) => {
+            return assign.id != deletedAssignId;
+          })
+        );
+      },
+      {
+        400: (e) => {
+          if ("not allowed" == e.response?.data?.error) {
+            errorNoti("Không thể xoá bài tập vì đã có sinh viên nộp bài.");
+          }
+        },
+      }
+    );
   };
 
   useEffect(() => {
@@ -318,24 +368,7 @@ function TClassDetail() {
               title=""
               columns={stuCols}
               tableRef={tableRef}
-              localization={{
-                body: {
-                  emptyDataSourceMessage: "",
-                },
-                toolbar: {
-                  searchPlaceholder: "Tìm kiếm",
-                  searchTooltip: "Tìm kiếm",
-                },
-                pagination: {
-                  hover: "pointer",
-                  labelRowsSelect: "hàng",
-                  labelDisplayedRows: "{from}-{to} của {count}",
-                  nextTooltip: "Trang tiếp",
-                  lastTooltip: "Trang cuối",
-                  firstTooltip: "Trang đầu",
-                  previousTooltip: "Trang trước",
-                },
-              }}
+              localization={localization}
               data={students}
               components={{
                 Container: (props) => <Paper {...props} elevation={0} />,
@@ -396,24 +429,7 @@ function TClassDetail() {
               columns={registCols}
               tableRef={tableRef}
               data={registStudents}
-              localization={{
-                body: {
-                  emptyDataSourceMessage: "",
-                },
-                toolbar: {
-                  searchPlaceholder: "Tìm kiếm",
-                  searchTooltip: "Tìm kiếm",
-                },
-                pagination: {
-                  hover: "pointer",
-                  labelRowsSelect: "hàng",
-                  labelDisplayedRows: "{from}-{to} của {count}",
-                  nextTooltip: "Trang tiếp",
-                  lastTooltip: "Trang cuối",
-                  firstTooltip: "Trang đầu",
-                  previousTooltip: "Trang trước",
-                },
-              }}
+              localization={localization}
               components={{
                 Container: (props) => <Paper {...props} elevation={0} />,
                 Action: (props) => {
@@ -421,7 +437,7 @@ function TClassDetail() {
                     return (
                       <Button
                         variant="outlined"
-                        className={classes.refuseBtn}
+                        className={classes.negativeBtn}
                         style={{
                           marginLeft: 10,
                           marginRight: 10,
@@ -496,28 +512,8 @@ function TClassDetail() {
             title=""
             columns={assignCols}
             tableRef={tableRef}
-            localization={{
-              header: {
-                actions: "",
-              },
-              body: {
-                emptyDataSourceMessage: "",
-              },
-              toolbar: {
-                searchPlaceholder: "Tìm kiếm",
-                searchTooltip: "Tìm kiếm",
-              },
-              pagination: {
-                hover: "pointer",
-                labelRowsSelect: "hàng",
-                labelDisplayedRows: "{from}-{to} của {count}",
-                nextTooltip: "Trang tiếp",
-                lastTooltip: "Trang cuối",
-                firstTooltip: "Trang đầu",
-                previousTooltip: "Trang trước",
-              },
-            }}
-            data={assignment}
+            localization={localization}
+            data={assign}
             components={{
               Container: (props) => <Paper {...props} elevation={0} />,
               Action: (props) => {
@@ -540,8 +536,7 @@ function TClassDetail() {
                   return (
                     <Button
                       variant="outlined"
-                      color="secondary"
-                      style={{ fontSize: "bold" }}
+                      className={classes.refuseBtn}
                       onClick={(event) => {
                         props.action.onClick(event, props.data);
                         event.stopPropagation();
@@ -579,16 +574,16 @@ function TClassDetail() {
                 icon: "create",
                 position: "toolbar",
                 onClick: (event) => {
-                  // history.push(
-                  //   `/edu/teacher/class/${params.id}/assignment/create`
-                  // );
+                  history.push(
+                    `/edu/teacher/class/${params.id}/assignment/create`
+                  );
                 },
               },
               {
                 icon: "delete",
-                tooltip: "Delete User",
-                onClick: (event, rowData) =>
-                  alert("You want to delete " + rowData.name),
+                onClick: (event, rowData) => {
+                  onDeleteAssignment(rowData);
+                },
               },
             ]}
             onRowClick={(event, rowData) => {
@@ -600,6 +595,37 @@ function TClassDetail() {
           />
         </CardContent>
       </Card>
+      <CustomizedDialogs
+        open={open}
+        handleClose={handleClose}
+        title="Xoá bài tập"
+        content={
+          <Typography gutterBottom>
+            <b>Lưu ý:</b> Hành động này không thể hoàn tác sau khi thực hiện.
+          </Typography>
+        }
+        actions={
+          <Fragment>
+            <Button
+              color="primary"
+              onClick={handleClose}
+              className={classes.dialogDeleteBtn}
+              onClick={onClickDialogDeleteBtn}
+            >
+              Xoá
+            </Button>
+            <Button
+              variant="contained"
+              color="primary"
+              onClick={handleClose}
+              className={classes.approveBtn}
+              onClick={handleClose}
+            >
+              Huỷ
+            </Button>
+          </Fragment>
+        }
+      />
     </MuiThemeProvider>
   );
 }

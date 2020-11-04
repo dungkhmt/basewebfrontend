@@ -25,10 +25,14 @@ import { CountdownCircleTimer } from "react-countdown-circle-timer";
 import { FcDownload } from "react-icons/fc";
 import EditIcon from "@material-ui/icons/Edit";
 import { useDispatch, useSelector } from "react-redux";
-import { authPost, axiosGet, axiosPost } from "../../../../api";
+import { authPost, axiosGet, axiosPost, request } from "../../../../api";
 import axios from "axios";
 import { green } from "@material-ui/core/colors";
 import { API_URL } from "../../../../config/config";
+import parse from "html-react-parser";
+import { localization } from "../../../../utils/MaterialTableUtils";
+import changePageSize from "../../../../utils/MaterialTableUtils";
+import displayTime from "../../../../utils/DateTimeUtils";
 
 const useStyles = makeStyles((theme) => ({
   card: {
@@ -86,6 +90,10 @@ const useStyles = makeStyles((theme) => ({
     margin: theme.spacing(1),
     position: "relative",
   },
+  assignDetail: {
+    display: "flex",
+    // whiteSpace: "pre-wrap",
+  },
 }));
 
 const minuteSeconds = 60;
@@ -109,8 +117,6 @@ const children = ({ remainingTime }) => {
   }
 };
 
-const formatTime = (n) => (Number(n) < 10 ? "0" + Number(n) : "" + Number(n));
-
 function TExerciseDetail() {
   const classes = useStyles();
   const params = useParams();
@@ -124,7 +130,7 @@ function TExerciseDetail() {
 
   // Assignment detail.
   const [hideSubject, setHideSubject] = useState(true);
-  const [assignmentDetail, setAssignmentDetail] = useState({});
+  const [assignDetail, setAssignDetail] = useState({});
 
   // Table.
   const headerProperties = {
@@ -137,7 +143,7 @@ function TExerciseDetail() {
     },
   };
 
-  const columns = [
+  const cols = [
     {
       field: "name",
       title: "Họ và tên",
@@ -149,31 +155,26 @@ function TExerciseDetail() {
       ...headerProperties,
       render: (rowData) => {
         let date = rowData.submissionDate;
-        return (
-          <Typography>
-            {date.getFullYear()}-{formatTime(date.getMonth() + 1)}-
-            {formatTime(date.getDate())}
-            &nbsp;&nbsp;
-            {formatTime(date.getHours())}
-            <b>:</b>
-            {formatTime(date.getMinutes())}
-            <b>:</b>
-            {formatTime(date.getSeconds())}
-          </Typography>
-        );
+
+        return displayTime(date);
       },
     },
   ];
 
   const [data, setData] = useState([]);
+  const [pageSize, setPageSize] = useState(5);
   const tableRef = useRef(null);
   const [selectedSubmissions, setSelectedSubmission] = useState([]);
   const [isZipping, setIsZipping] = useState(false);
 
   // Functions.
   const getExerciseDetail = () => {
-    axiosGet(token, `/edu/assignment/${params.assignmentId}/teacher`)
-      .then((res) => {
+    request(
+      token,
+      history,
+      "get",
+      `/edu/assignment/${params.assignmentId}/teacher`,
+      (res) => {
         let assignmentDetail = res.data.assignmentDetail;
         let startTime = new Date(assignmentDetail.createdStamp);
         let endTime = new Date(assignmentDetail.deadLine);
@@ -196,17 +197,17 @@ function TExerciseDetail() {
 
         setKey("update-params");
 
-        setAssignmentDetail({
+        setAssignDetail({
           name: assignmentDetail.name,
           subject: assignmentDetail.subject,
           startTime: startTime,
           endTime: endTime,
           noSubmissions: res.data.noSubmissions,
         });
-      })
-      .catch((e) => {
-        console.log(e);
-      });
+
+        setPageSize(changePageSize(data.length, setPageSize));
+      }
+    );
   };
 
   const onClickDownloadButton = () => {
@@ -227,7 +228,7 @@ function TExerciseDetail() {
   };
 
   useEffect(() => {
-    tableRef.current.dataManager.changePageSize(20);
+    // tableRef.current.dataManager.changePageSize(20);
     getExerciseDetail();
   }, []);
 
@@ -246,6 +247,11 @@ function TExerciseDetail() {
               color="primary"
               startIcon={<EditIcon />}
               className={classes.editBtn}
+              onClick={() =>
+                history.push(
+                  `/edu/teacher/class/${params.classId}/assignment/${params.assignmentId}/edit`
+                )
+              }
             >
               Chỉnh sửa
             </Button>
@@ -271,63 +277,36 @@ function TExerciseDetail() {
               />
             </Grid>
             <Grid item md={9}>
-              <Grid container>
-                <Grid item md={3} sm={3} xs={3}>
+              <Grid container md={12}>
+                <Grid item md={3} sm={3} xs={3} direction="column">
                   <Typography>Tên bài tập</Typography>
-                </Grid>
-                <Grid item md={8} sm={8} xs={8}>
-                  <div
-                    style={{
-                      display: "flex",
-                      // whiteSpace: "pre-wrap",
-                    }}
-                  >
-                    <b>:&nbsp;</b>
-                    {assignmentDetail.name === undefined ? null : (
-                      <Typography>{assignmentDetail.name}</Typography>
-                    )}
-                  </div>
-                </Grid>
-                <Grid item md={3} sm={3} xs={3}>
                   <Typography>Ngày giao</Typography>
-                </Grid>
-                <Grid item md={8} sm={8} xs={8}>
-                  {assignmentDetail.startTime == undefined ||
-                  assignmentDetail.startTime == null ? (
-                    <b>:</b>
-                  ) : (
-                    <Typography>
-                      <b>:</b>&nbsp;{assignmentDetail.startTime.getFullYear()}-
-                      {formatTime(assignmentDetail.startTime.getMonth() + 1)}-
-                      {formatTime(assignmentDetail.startTime.getDate())}
-                      &nbsp;&nbsp;
-                      {formatTime(assignmentDetail.startTime.getHours())}
-                      <b>:</b>
-                      {formatTime(assignmentDetail.startTime.getMinutes())}
-                      <b>:</b>
-                      {formatTime(assignmentDetail.startTime.getSeconds())}
-                    </Typography>
-                  )}
-                </Grid>
-                <Grid item md={3} sm={3} xs={3}>
                   <Typography>Hạn nộp</Typography>
                 </Grid>
-                <Grid item md={8} sm={8} xs={8}>
-                  {assignmentDetail.endTime == undefined ||
-                  assignmentDetail.endTime == null ? (
-                    <b>:</b>
+                <Grid item md={8} sm={8} xs={8} direction="column">
+                  <div className={classes.assignDetail}>
+                    <b>:&nbsp;</b>
+                    {assignDetail.name ? (
+                      <Typography>{assignDetail.name}</Typography>
+                    ) : null}
+                  </div>
+
+                  {assignDetail.startTime ? (
+                    <div className={classes.assignDetail}>
+                      <b>:</b>&nbsp;{displayTime(assignDetail.startTime)}
+                    </div>
                   ) : (
-                    <Typography>
-                      <b>:</b>&nbsp;{assignmentDetail.endTime.getFullYear()}-
-                      {formatTime(assignmentDetail.endTime.getMonth() + 1)}-
-                      {formatTime(assignmentDetail.endTime.getDate())}
-                      &nbsp;&nbsp;
-                      {formatTime(assignmentDetail.endTime.getHours())}
-                      <b>:</b>
-                      {formatTime(assignmentDetail.endTime.getMinutes())}
-                      <b>:</b>
-                      {formatTime(assignmentDetail.endTime.getSeconds())}
-                    </Typography>
+                    <b>:</b>
+                  )}
+
+                  {assignDetail.endTime ? (
+                    <div className={classes.assignDetail}>
+                      <b>:</b>&nbsp;{displayTime(assignDetail.endTime)}
+                    </div>
+                  ) : (
+                    <b>
+                      <br />:
+                    </b>
                   )}
                 </Grid>
               </Grid>
@@ -338,16 +317,16 @@ function TExerciseDetail() {
                     classes={{ root: classes.rootDivider }}
                   />
                 </div>
-                <Box display="flex" fullWidth>
+                <Box display="flex" width="100%">
                   <Grid item md={3} sm={3} xs={3}>
                     <Typography>Sinh viên đã nộp bài</Typography>
                   </Grid>
                   <Grid item md={8} sm={8} xs={8}>
-                    {assignmentDetail.noSubmissions === undefined ? (
+                    {assignDetail.noSubmissions === undefined ? (
                       <b>:</b>
                     ) : (
                       <Typography>
-                        <b>:</b> {assignmentDetail.noSubmissions}
+                        <b>:</b> {assignDetail.noSubmissions}
                       </Typography>
                     )}
                   </Grid>
@@ -369,7 +348,7 @@ function TExerciseDetail() {
                   {hideSubject ? "Hiện đề bài" : "Ẩn đề bài"}
                 </Button>
               </Box>
-              {hideSubject ? null : assignmentDetail.subject}
+              {hideSubject ? null : parse(assignDetail.subject)}
             </Grid>
           </Grid>
         </CardContent>
@@ -387,26 +366,9 @@ function TExerciseDetail() {
         <CardContent>
           <MaterialTable
             title=""
-            columns={columns}
+            columns={cols}
             tableRef={tableRef}
-            localization={{
-              body: {
-                emptyDataSourceMessage: "",
-              },
-              toolbar: {
-                searchPlaceholder: "Tìm kiếm",
-                searchTooltip: "Tìm kiếm",
-              },
-              pagination: {
-                hover: "pointer",
-                labelRowsSelect: "hàng",
-                labelDisplayedRows: "{from}-{to} của {count}",
-                nextTooltip: "Trang tiếp",
-                lastTooltip: "Trang cuối",
-                firstTooltip: "Trang đầu",
-                previousTooltip: "Trang trước",
-              },
-            }}
+            localization={localization}
             data={data}
             components={{
               Container: (props) => <Paper {...props} elevation={0} />,
@@ -438,6 +400,7 @@ function TExerciseDetail() {
               },
             }}
             options={{
+              pageSize: pageSize,
               selection: true,
               debounceInterval: 500,
               headerStyle: {

@@ -2,7 +2,7 @@ export const eduTeachingManagement = {
   id: "MENU_EDUCATION_TEACHING_MANAGEMENT_TEACHER",
   path: "",
   isPublic: false,
-  icon: "AirportShuttleIcon",
+  icon: "DescriptionOutlinedIcon",
   text: "Quản lý giảng dạy",
   child: [
     {
@@ -15,7 +15,7 @@ export const eduTeachingManagement = {
     },
     {
       id: "MENU_EDUCATION_TEACHING_MANAGEMENT_TEACHER_CREATE_CLASS",
-      path: "/edu/courses/list",
+      path: "/edu/class/add",
       isPublic: false,
       icon: null,
       text: "Tạo lớp",

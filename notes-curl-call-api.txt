@@ -459,3 +459,13 @@ Delete all running sales-logistics data
 	curl --header "Content-Type: application/json" -v GET http://localhost:8080/api/mongo/delete-all-sales-logistics -u admin:sscm@123456
 			
 -----------------------------
+Quan ly ho dap
+
+
+curl --header "Content-Type: application/json" -v GET http://localhost:8080/api/lake/H001 -u admin:sscm@123456
+-----------------------------
+
+Education
+curl --header "Content-Type: application/json" -v GET http://localhost:8080/api/edu/class/get-all-semesters -u admin:sscm@123456
+
+------------------------------

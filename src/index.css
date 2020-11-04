@@ -15,3 +15,7 @@ code {
 .Toastify__toast--success {
   border-radius: 6px !important;
 }
+
+.Toastify__toast--error {
+  border-radius: 6px !important;
+}
