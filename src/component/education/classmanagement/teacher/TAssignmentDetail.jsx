@@ -117,7 +117,7 @@ const children = ({ remainingTime }) => {
   }
 };
 
-function TExerciseDetail() {
+function TAssignmentDetail() {
   const classes = useStyles();
   const params = useParams();
   const history = useHistory();
@@ -431,4 +431,4 @@ function TExerciseDetail() {
   );
 }
 
-export default TExerciseDetail;
+export default TAssignmentDetail;
