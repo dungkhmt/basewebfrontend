@@ -1,10 +1,10 @@
 import React from "react";
+import PropTypes from "prop-types";
 import Button from "@material-ui/core/Button";
 import { withStyles } from "@material-ui/core/styles";
 
 const styles = {
   root: {
-    minWidth: 124,
     borderRadius: "6px",
     backgroundColor: "#1877f2",
     textTransform: "none",
@@ -16,13 +16,22 @@ const styles = {
   },
 };
 
-function PosButton(props) {
+function PositiveButton(props) {
   const { label, className } = props;
   return (
-    <Button {...props} className={className}>
+    <Button
+      variant="contained"
+      color="primary"
+      className={className}
+      {...props}
+    >
       {label}
     </Button>
   );
 }
 
-export default withStyles(styles)(PosButton);
+PositiveButton.propTypes = {
+  label: PropTypes.string.isRequired,
+};
+
+export default withStyles(styles)(PositiveButton);
