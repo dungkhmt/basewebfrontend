@@ -15,11 +15,11 @@ import TeacherList from "../component/education/teacher/TeacherList";
 import ClassRegistration from "../component/education/classmanagement/student/ClassRegistration";
 import TClassDetail from "../component/education/classmanagement/teacher/TClassDetail";
 import TClassList from "../component/education/classmanagement/teacher/TClassList";
-import TExerciseDetail from "../component/education/classmanagement/teacher/TExerciseDetail";
+import TAssignmentDetail from "../component/education/classmanagement/teacher/TAssignmentDetail";
 import SClassDetail from "../component/education/classmanagement/student/SClassDetail";
 import SClassList from "../component/education/classmanagement/student/SClassList";
-import SExerciseDetail from "../component/education/classmanagement/student/SExerciseDetail";
-import CreateExercise from "../component/education/classmanagement/teacher/CreateExercise";
+import SAssignmentDetail from "../component/education/classmanagement/student/SAssignmentDetail";
+import CreateAssignment from "../component/education/classmanagement/teacher/CreateAssignment";
 
 export default function EduRoute() {
   let { path, url } = useRouteMatch();
@@ -53,7 +53,7 @@ export default function EduRoute() {
         <Route component={SClassList} path={`${path}/student/class/list`} />
 
         <Route
-          component={SExerciseDetail}
+          component={SAssignmentDetail}
           path={`${path}/student/class/:classId/assignment/:assignmentId`}
         />
 
@@ -62,17 +62,17 @@ export default function EduRoute() {
         <Route component={TClassList} path={`${path}/teacher/class/list`} />
 
         <Route
-          component={CreateExercise}
+          component={CreateAssignment}
           path={`${path}/teacher/class/:classId/assignment/create`}
         />
 
         <Route
-          component={CreateExercise}
+          component={CreateAssignment}
           path={`${path}/teacher/class/:classId/assignment/:assignmentId/edit`}
         />
 
         <Route
-          component={TExerciseDetail}
+          component={TAssignmentDetail}
           path={`${path}/teacher/class/:classId/assignment/:assignmentId`}
         />
 
