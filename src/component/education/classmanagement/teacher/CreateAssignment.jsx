@@ -54,7 +54,7 @@ const useStyles = makeStyles((theme) => ({
       backgroundColor: "#f3f4f6",
     },
   },
-  createBtn: {
+  createOrUpdateBtn: {
     borderRadius: "6px",
     backgroundColor: "#1877f2",
     textTransform: "none",
@@ -75,7 +75,7 @@ const editorStyle = {
   },
 };
 
-function CreateExercise() {
+function CreateAssignment() {
   const classes = useStyles();
   const params = useParams();
   const assignmentId = params.assignmentId;
@@ -111,32 +111,27 @@ function CreateExercise() {
 
   // Functions.
   const getData = () => {
-    if (assignmentId) {
-      request(
-        token,
-        history,
-        "get",
-        `/edu/assignment/${params.assignmentId}/student`,
-        (res) => {
-          let data = res.data.assignmentDetail;
+    request(
+      token,
+      history,
+      "get",
+      `/edu/assignment/${params.assignmentId}/student`,
+      (res) => {
+        let data = res.data.assignmentDetail;
 
-          setValue([
-            { name: data.name },
-            { deadline: new Date(data.deadLine) },
-          ]);
+        setValue([{ name: data.name }, { deadline: new Date(data.deadLine) }]);
 
-          const blocksFromHtml = htmlToDraft(data.subject);
-          const { contentBlocks, entityMap } = blocksFromHtml;
-          const contentState = ContentState.createFromBlockArray(
-            contentBlocks,
-            entityMap
-          );
+        const blocksFromHtml = htmlToDraft(data.subject);
+        const { contentBlocks, entityMap } = blocksFromHtml;
+        const contentState = ContentState.createFromBlockArray(
+          contentBlocks,
+          entityMap
+        );
 
-          setEditorState(EditorState.createWithContent(contentState));
-        },
-        {}
-      );
-    }
+        setEditorState(EditorState.createWithContent(contentState));
+      },
+      {}
+    );
   };
 
   const onSubmit = (formData) => {
@@ -187,8 +182,10 @@ function CreateExercise() {
           history.goBack();
         },
         {
-          400: (e) => {
+          commonTask: (e) => {
             setIsProcessing(false);
+          },
+          400: (e) => {
             let data = e.response.data;
 
             if ("require future date" == data?.error) {
@@ -203,15 +200,11 @@ function CreateExercise() {
               errorNoti("Rất tiếc! Đã có lỗi xảy ra. Vui lòng thử lại.");
             }
           },
-          noResponse: (e) => {
-            setIsProcessing(false);
-          },
           rest: (e) => {
-            setIsProcessing(false);
             errorNoti("Rất tiếc! Đã có lỗi xảy ra.");
           },
         },
-        { ...formData, classId: params.classId, subject: subject }
+        { ...formData, subject: subject, classId: params.classId }
       );
     }
   };
@@ -224,7 +217,7 @@ function CreateExercise() {
     history.goBack();
   };
 
-  const onDeadlineChange = (newDate) => {
+  const onChangeDeadline = (newDate) => {
     let date = new Date(newDate);
 
     date.setSeconds(59);
@@ -236,7 +229,7 @@ function CreateExercise() {
   });
 
   useEffect(() => {
-    getData();
+    if (assignmentId) getData();
   }, []);
 
   return (
@@ -301,7 +294,7 @@ function CreateExercise() {
                       format="yyyy-MM-dd  HH:mm:ss"
                       label="Hạn nộp bài"
                       value={watch("deadline")}
-                      onChange={onDeadlineChange}
+                      onChange={onChangeDeadline}
                       strictCompareDates
                       error={!!errors.deadline}
                       helperText={errors.deadline?.message}
@@ -341,7 +334,7 @@ function CreateExercise() {
                     type="submit"
                     variant="contained"
                     color="primary"
-                    className={classes.createBtn}
+                    className={classes.createOrUpdateBtn}
                   >
                     {assignmentId ? "Chỉnh sửa" : "Tạo bài tập"}
                   </Button>
@@ -363,4 +356,4 @@ function CreateExercise() {
   );
 }
 
-export default CreateExercise;
+export default CreateAssignment;

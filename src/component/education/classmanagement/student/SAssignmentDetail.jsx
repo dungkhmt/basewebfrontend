@@ -34,6 +34,7 @@ import { axiosGet, axiosPost } from "../../../../api";
 import { useDispatch, useSelector } from "react-redux";
 import Snackbar from "@material-ui/core/Snackbar";
 import MuiAlert from "@material-ui/lab/Alert";
+import parse from "html-react-parser";
 
 const useStyles = makeStyles((theme) => ({
   divider: {
@@ -119,7 +120,7 @@ const Alert = (props) => {
   return <MuiAlert elevation={6} variant="filled" {...props} />;
 };
 
-function SExerciseDetail() {
+function SAssignmentDetail() {
   const classes = useStyles();
   const params = useParams();
   const history = useHistory();
@@ -150,11 +151,8 @@ function SExerciseDetail() {
   const [message, setMessage] = useState("");
 
   // Functions.
-  const getExerciseDetail = () => {
-    axiosGet(
-      token,
-      "/edu/assignment/717729ee-fe55-11ea-8b6c-0862665303f9/student"
-    )
+  const getAssignDetail = () => {
+    axiosGet(token, `/edu/assignment/${params.assignmentId}/student`)
       .then((res) => {
         let assignmentDetail = res.data.assignmentDetail;
         let startTime = new Date(assignmentDetail.createdStamp);
@@ -214,7 +212,7 @@ function SExerciseDetail() {
   };
 
   useEffect(() => {
-    getExerciseDetail();
+    getAssignDetail();
   }, []);
 
   return (
@@ -362,7 +360,7 @@ function SExerciseDetail() {
                   {hideSubject ? "Hiện đề bài" : "Ẩn đề bài"}
                 </Button>
               </Box>
-              {hideSubject ? null : assignmentDetail.subject}
+              {hideSubject ? null : parse(assignmentDetail.subject)}
             </Grid>
           </Grid>
         </CardContent>
@@ -371,7 +369,7 @@ function SExerciseDetail() {
           <Fragment>
             <CardHeader
               avatar={
-                <Avatar style={{ background: '#e7f3ff' }}>
+                <Avatar style={{ background: "#e7f3ff" }}>
                   <FcUpload size={32} />
                 </Avatar>
               }
@@ -460,4 +458,4 @@ function SExerciseDetail() {
   );
 }
 
-export default SExerciseDetail;
+export default SAssignmentDetail;
