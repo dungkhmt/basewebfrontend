@@ -1,25 +1,28 @@
-import React, { useRef, useEffect, useState, forwardRef } from "react";
+import React, { useRef, useEffect, useState } from "react";
 import {
   Card,
   CardContent,
-  Button,
   Typography,
   Box,
   CardHeader,
   Paper,
-  Grid,
   Chip,
 } from "@material-ui/core";
 import MaterialTable from "material-table";
-import { useDispatch, useSelector } from "react-redux";
+import { useSelector } from "react-redux";
 import { useHistory } from "react-router";
-import { authGet, axiosGet } from "../../../../api";
+import { request } from "../../../../api";
 import { MuiThemeProvider } from "material-ui/styles";
-import { FcViewDetails, FcApproval, FcFilledFilter } from "react-icons/fc";
+import { FcApproval } from "react-icons/fc";
 import { Avatar } from "material-ui";
 import { makeStyles } from "@material-ui/core/styles";
 import { FaListUl } from "react-icons/fa";
 import { GiSandsOfTime } from "react-icons/gi";
+import changePageSize, {
+  localization,
+  tableIcons,
+} from "../../../../utils/MaterialTableUtils";
+import { infoNoti } from "../../../../utils/Notification";
 
 const useStyles = makeStyles((theme) => ({
   card: {
@@ -41,6 +44,7 @@ function SClassList() {
   const token = useSelector((state) => state.auth.token);
   const history = useHistory();
 
+  // Table.
   const headerProperties = {
     headerStyle: {
       textAlign: "center",
@@ -106,14 +110,14 @@ function SClassList() {
   ];
 
   const [data, setData] = useState([]);
-
   const tableRef = useRef(null);
 
   // Functions.
   const getClasses = () => {
-    axiosGet(token, "/edu/class/list/student")
-      .then((res) => setData(res.data))
-      .catch((e) => alert(e.response.body));
+    request(token, history, "get", "/edu/class/list/student", (res) => {
+      changePageSize(res.data.length, tableRef);
+      setData(res.data);
+    });
   };
 
   useEffect(() => {
@@ -135,38 +139,17 @@ function SClassList() {
           <MaterialTable
             title=""
             columns={columns}
-            tableRef={tableRef}
-            icons={{
-              Filter: forwardRef((props, ref) => (
-                <FcFilledFilter {...props} ref={ref} />
-              )),
-            }}
-            localization={{
-              body: {
-                emptyDataSourceMessage: "Không có bản ghi nào để hiển thị",
-              },
-              toolbar: {
-                searchPlaceholder: "Tìm kiếm",
-                searchTooltip: "Tìm kiếm",
-              },
-              pagination: {
-                hover: "pointer",
-                labelRowsSelect: "hàng",
-                labelDisplayedRows: "{from}-{to} của {count}",
-                nextTooltip: "Trang tiếp",
-                lastTooltip: "Trang cuối",
-                firstTooltip: "Trang đầu",
-                previousTooltip: "Trang trước",
-              },
-            }}
             data={data}
+            tableRef={tableRef}
+            icons={tableIcons}
+            localization={localization}
             components={{
               Container: (props) => <Paper {...props} elevation={0} />,
             }}
             options={{
               filtering: true,
               search: false,
-              pageSize: 20,
+              pageSize: 10,
               debounceInterval: 300,
               headerStyle: {
                 backgroundColor: "#673ab7",
@@ -178,12 +161,14 @@ function SClassList() {
               cellStyle: { fontSize: "1rem" },
             }}
             onRowClick={(event, rowData) => {
-              console.log(rowData);
+              // console.log(rowData);
 
               if (rowData.status === "APPROVED") {
                 history.push(`/edu/student/class/${rowData.id}`);
               } else {
-                alert("Bạn cần được phê duyệt để xem thông tin lớp này");
+                infoNoti(
+                  `Vui lòng chờ giảng viên phê duyệt để xem thông tin của lớp ${rowData.name}.`
+                );
               }
             }}
           />
