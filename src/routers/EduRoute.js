@@ -12,14 +12,14 @@ import CourseDetail from "../component/education/course/CourseDetail";
 import TeacherDetail from "../component/education/teacher/TeacherDetail";
 import AddTeacher from "../component/education/teacher/AddTeacher";
 import TeacherList from "../component/education/teacher/TeacherList";
-import ClassRegistration from "../component/education/classmanagement/student/ClassRegistration";
-import TClassDetail from "../component/education/classmanagement/teacher/TClassDetail";
-import TClassList from "../component/education/classmanagement/teacher/TClassList";
-import TAssignmentDetail from "../component/education/classmanagement/teacher/TAssignmentDetail";
-import SClassDetail from "../component/education/classmanagement/student/SClassDetail";
-import SClassList from "../component/education/classmanagement/student/SClassList";
-import SAssignmentDetail from "../component/education/classmanagement/student/SAssignmentDetail";
-import CreateAssignment from "../component/education/classmanagement/teacher/CreateAssignment";
+import ClassRegistration from "../views/Education/ClassManagement/Student/ClassRegistration";
+import TClassDetail from "../views/Education/ClassManagement/Teacher/TClassDetail";
+import TClassList from "../views/Education/ClassManagement/Teacher/TClassList";
+import TAssignmentDetail from "../views/Education/ClassManagement/Teacher/TAssignmentDetail";
+import SClassDetail from "../views/Education/ClassManagement/Student/SClassDetail";
+import SClassList from "../views/Education/ClassManagement/Student/SClassList";
+import SAssignmentDetail from "../views/Education/ClassManagement/Student/SAssignmentDetail";
+import CreateAssignment from "../views/Education/ClassManagement/Teacher/CreateAssignment";
 
 export default function EduRoute() {
   let { path, url } = useRouteMatch();

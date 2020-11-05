@@ -38,7 +38,7 @@ import AddCircleOutlineIcon from "@material-ui/icons/AddCircleOutline";
 import { localization } from "../../../../utils/MaterialTableUtils";
 import { errorNoti } from "../../../../utils/Notification";
 import CustomizedDialogs from "../../../../utils/CustomizedDialogs";
-import PositiveButton from "../PositiveButton";
+import PositiveButton from "../../../../component/education/classmanagement/PositiveButton";
 
 const useStyles = makeStyles((theme) => ({
   card: {
