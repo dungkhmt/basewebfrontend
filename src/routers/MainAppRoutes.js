@@ -56,7 +56,7 @@ const DriverGroupRoute = lazy(() => import("./DriverGroupRoute"));
 const ConfigGroupRoute = lazy(() => import("./ConfigGroupRoute"));
 const InvoiceGroupRoute = lazy(() => import("./InvoiceGroupRoute"));
 const SalesGroupRoute = lazy(() => import("./SalesGroupRoute"));
-
+const ScheduleRoute = lazy(() => import("./ScheduleRoute"));
 function MainAppRoute(props) {
   const location = useLocation();
   const dispatch = useDispatch();
@@ -229,6 +229,13 @@ function MainAppRoute(props) {
             component={SalesGroupRoute}
             isAuthenticated={props.isAuthenticated}
             path="/sales-group"
+          />
+
+          <PrivateRoute
+            component={ScheduleRoute}
+            layout={Layout}
+            isAuthenticated={props.isAuthenticated}
+            path="/schedule"
           />
 
           <Route component={error} path="*" />
