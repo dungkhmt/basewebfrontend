@@ -39,6 +39,8 @@ import { localization } from "../../../../utils/MaterialTableUtils";
 import { errorNoti } from "../../../../utils/Notification";
 import CustomizedDialogs from "../../../../utils/CustomizedDialogs";
 import PositiveButton from "../../../../component/education/classmanagement/PositiveButton";
+import NegativeDialogButton from "../../../../component/education/classmanagement/NegativeDialogButton";
+import NegativeButton from "../../../../component/education/classmanagement/NegativeButton";
 
 const useStyles = makeStyles((theme) => ({
   card: {
@@ -48,37 +50,16 @@ const useStyles = makeStyles((theme) => ({
     paddingLeft: 56,
   },
   negativeBtn: {
-    minWidth: 124,
-    borderRadius: "6px",
-    backgroundColor: "#e4e6eb",
-    textTransform: "none",
-    fontSize: "1rem",
-    fontWeight: 600,
+    minWidth: 112,
     marginLeft: 10,
     marginRight: 10,
-    "&:hover": {
-      backgroundColor: "#CCD0D5",
-    },
   },
   approveBtn: {
-    minWidth: 124,
-    borderRadius: "6px",
-    backgroundColor: "#1877f2",
-    textTransform: "none",
-    fontSize: "1rem",
-    fontWeight: 600,
-    "&:hover": {
-      backgroundColor: "#1834d2",
-    },
+    minWidth: 112,
+    marginTop: 16,
   },
-  dialogDeleteBtn: {
-    borderRadius: "6px",
-    textTransform: "none",
-    fontSize: "1rem",
-    fontWeight: 600,
-    "&:hover": {
-      backgroundColor: "#e7f3ff",
-    },
+  dialogCancleBtn: {
+    fontWeight: "normal",
   },
 }));
 
@@ -178,12 +159,11 @@ function TClassDetail() {
       cellStyle: { alignItems: "center" },
       render: (rowData) => (
         <Box display="flex" justifyContent="center">
-          <Button
+          <NegativeButton
+            label="Loại khỏi lớp"
             className={classes.negativeBtn}
             onClick={() => onClickRemoveBtn(rowData)}
-          >
-            Loại khỏi lớp
-          </Button>
+          />
         </Box>
       ),
     },
@@ -283,7 +263,7 @@ function TClassDetail() {
       },
       {
         400: (e) => {
-          if ("not allowed" == e.response?.data?.error) {
+          if ("not allowed" == e.response.data?.error) {
             errorNoti("Không thể xoá bài tập vì đã có sinh viên nộp bài.");
           }
         },
@@ -441,32 +421,24 @@ function TClassDetail() {
                 Action: (props) => {
                   if (props.action.icon === "refuse") {
                     return (
-                      <Button
+                      <NegativeButton
+                        label="Từ chối"
                         className={classes.negativeBtn}
-                        style={{
-                          marginLeft: 10,
-                          marginRight: 10,
-                        }}
                         onClick={(event) =>
                           props.action.onClick(event, props.data)
                         }
-                      >
-                        Từ chối
-                      </Button>
+                      />
                     );
                   }
                   if (props.action.icon === "approve") {
                     return (
-                      <Button
-                        color="primary"
-                        variant="contained"
+                      <PositiveButton
+                        label="Phê duyệt"
                         className={classes.approveBtn}
                         onClick={(event) =>
                           props.action.onClick(event, props.data)
                         }
-                      >
-                        Phê duyệt
-                      </Button>
+                      />
                     );
                   }
                 },
@@ -524,30 +496,25 @@ function TClassDetail() {
               Action: (props) => {
                 if (props.action.icon === "create") {
                   return (
-                    <Button
-                      variant="contained"
-                      color="primary"
+                    <PositiveButton
+                      label="Tạo mới"
                       className={classes.approveBtn}
-                      style={{ marginTop: 16 }}
                       onClick={(event) =>
                         props.action.onClick(event, props.data)
                       }
-                    >
-                      Tạo mới
-                    </Button>
+                    />
                   );
                 }
                 if (props.action.icon === "delete") {
                   return (
-                    <Button
+                    <NegativeButton
+                      label="Xoá"
                       className={classes.negativeBtn}
                       onClick={(event) => {
                         props.action.onClick(event, props.data);
                         event.stopPropagation();
                       }}
-                    >
-                      Xoá
-                    </Button>
+                    />
                   );
                 }
               },
@@ -612,19 +579,16 @@ function TClassDetail() {
         }
         actions={
           <Fragment>
-            <Button
-              color="primary"
-              onClick={handleClose}
+            <NegativeDialogButton
+              label="Xoá"
               className={classes.dialogDeleteBtn}
               onClick={onClickDialogDeleteBtn}
-            >
-              Xoá
-            </Button>
+            />
+
             <PositiveButton
-              variant="contained"
-              color="primary"
               label="Huỷ"
               onClick={handleClose}
+              className={classes.dialogCancleBtn}
             />
           </Fragment>
         }
