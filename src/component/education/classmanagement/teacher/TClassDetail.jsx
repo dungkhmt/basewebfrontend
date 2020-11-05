@@ -38,6 +38,7 @@ import AddCircleOutlineIcon from "@material-ui/icons/AddCircleOutline";
 import { localization } from "../../../../utils/MaterialTableUtils";
 import { errorNoti } from "../../../../utils/Notification";
 import CustomizedDialogs from "../../../../utils/CustomizedDialogs";
+import PositiveButton from "../PositiveButton";
 
 const useStyles = makeStyles((theme) => ({
   card: {
@@ -47,20 +48,25 @@ const useStyles = makeStyles((theme) => ({
     paddingLeft: 56,
   },
   negativeBtn: {
+    minWidth: 124,
     borderRadius: "6px",
+    backgroundColor: "#e4e6eb",
     textTransform: "none",
     fontSize: "1rem",
+    fontWeight: 600,
     marginLeft: 10,
     marginRight: 10,
     "&:hover": {
-      backgroundColor: "#f3f4f6",
+      backgroundColor: "#CCD0D5",
     },
   },
   approveBtn: {
+    minWidth: 124,
     borderRadius: "6px",
     backgroundColor: "#1877f2",
     textTransform: "none",
     fontSize: "1rem",
+    fontWeight: 600,
     "&:hover": {
       backgroundColor: "#1834d2",
     },
@@ -69,6 +75,7 @@ const useStyles = makeStyles((theme) => ({
     borderRadius: "6px",
     textTransform: "none",
     fontSize: "1rem",
+    fontWeight: 600,
     "&:hover": {
       backgroundColor: "#e7f3ff",
     },
@@ -172,7 +179,6 @@ function TClassDetail() {
       render: (rowData) => (
         <Box display="flex" justifyContent="center">
           <Button
-            variant="outlined"
             className={classes.negativeBtn}
             onClick={() => onClickRemoveBtn(rowData)}
           >
@@ -436,7 +442,6 @@ function TClassDetail() {
                   if (props.action.icon === "refuse") {
                     return (
                       <Button
-                        variant="outlined"
                         className={classes.negativeBtn}
                         style={{
                           marginLeft: 10,
@@ -535,8 +540,7 @@ function TClassDetail() {
                 if (props.action.icon === "delete") {
                   return (
                     <Button
-                      variant="outlined"
-                      className={classes.refuseBtn}
+                      className={classes.negativeBtn}
                       onClick={(event) => {
                         props.action.onClick(event, props.data);
                         event.stopPropagation();
@@ -598,10 +602,12 @@ function TClassDetail() {
       <CustomizedDialogs
         open={open}
         handleClose={handleClose}
-        title="Xoá bài tập"
+        title="Xoá bài tập?"
         content={
           <Typography gutterBottom>
-            <b>Lưu ý:</b> Hành động này không thể hoàn tác sau khi thực hiện.
+            <b>
+              Cảnh báo: Bạn không thể hủy hành động này sau khi đã thực hiện.
+            </b>
           </Typography>
         }
         actions={
@@ -614,15 +620,12 @@ function TClassDetail() {
             >
               Xoá
             </Button>
-            <Button
+            <PositiveButton
               variant="contained"
               color="primary"
+              label="Huỷ"
               onClick={handleClose}
-              className={classes.approveBtn}
-              onClick={handleClose}
-            >
-              Huỷ
-            </Button>
+            />
           </Fragment>
         }
       />
