@@ -19,3 +19,7 @@ code {
 .Toastify__toast--error {
   border-radius: 6px !important;
 }
+
+.Toastify__toast--info {
+  border-radius: 6px !important;
+}
