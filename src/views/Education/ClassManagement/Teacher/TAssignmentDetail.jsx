@@ -30,8 +30,9 @@ import axios from "axios";
 import { green } from "@material-ui/core/colors";
 import { API_URL } from "../../../../config/config";
 import parse from "html-react-parser";
-import { localization } from "../../../../utils/MaterialTableUtils";
-import changePageSize from "../../../../utils/MaterialTableUtils";
+import changePageSize, {
+  localization,
+} from "../../../../utils/MaterialTableUtils";
 import displayTime from "../../../../utils/DateTimeUtils";
 
 const useStyles = makeStyles((theme) => ({
@@ -162,7 +163,6 @@ function TAssignmentDetail() {
   ];
 
   const [data, setData] = useState([]);
-  const [pageSize, setPageSize] = useState(5);
   const tableRef = useRef(null);
   const [selectedSubmissions, setSelectedSubmission] = useState([]);
   const [isZipping, setIsZipping] = useState(false);
@@ -185,6 +185,7 @@ function TAssignmentDetail() {
           submissionDate: new Date(submission.submissionDate),
         }));
 
+        changePageSize(data.length, tableRef);
         setData(data);
 
         setRemainingTime(
@@ -204,8 +205,6 @@ function TAssignmentDetail() {
           endTime: endTime,
           noSubmissions: res.data.noSubmissions,
         });
-
-        setPageSize(changePageSize(data.length, setPageSize));
       }
     );
   };
@@ -400,7 +399,7 @@ function TAssignmentDetail() {
               },
             }}
             options={{
-              pageSize: pageSize,
+              pageSize: 10,
               selection: true,
               debounceInterval: 500,
               headerStyle: {
