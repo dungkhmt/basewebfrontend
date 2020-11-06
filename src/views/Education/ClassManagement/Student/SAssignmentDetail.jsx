@@ -51,7 +51,7 @@ const useStyles = makeStyles((theme) => ({
   },
   card: {
     marginTop: theme.spacing(2),
-    minHeight: window.innerHeight - 133,
+    minHeight: 600,
   },
   remainingTime: {
     display: "flex",
@@ -201,40 +201,51 @@ function SAssignmentDetail() {
   };
 
   const onClickSubmitBtn = () => {
-    const data = new FormData();
-    data.append("file", file);
+    if (assignDetail.endTime.getTime() < new Date().getTime()) {
+      errorNoti("Đã quá hạn nộp bài.");
+      setRemainingTime(0);
+    } else {
+      const data = new FormData();
+      data.append("file", file);
 
-    request(
-      token,
-      history,
-      "post",
-      `/edu/assignment/${params.assignmentId}/submission`,
-      (res) => {
-        // setMessage(isUpdating ? "Chỉnh sửa thành công" : "Nộp bài thành công");
-        // setState({ ...state, open: true });
+      request(
+        token,
+        history,
+        "post",
+        `/edu/assignment/${params.assignmentId}/submission`,
+        (res) => {
+          // setMessage(isUpdating ? "Chỉnh sửa thành công" : "Nộp bài thành công");
+          // setState({ ...state, open: true });
 
-        successNoti(
-          isUpdating ? "Chỉnh sửa thành công." : "Nộp bài thành công."
-        );
+          successNoti(
+            isUpdating ? "Chỉnh sửa thành công." : "Nộp bài thành công."
+          );
 
-        setIsUpdating(false);
+          setIsUpdating(false);
 
-        setAssignDetail({
-          ...assignDetail,
-          submitedFileName: file.name,
-        });
-      },
-      {
-        400: (e) => {
-          if ("not exist" == e.response.data?.error) {
-            errorNoti("Bài tập này đã bị xoá trước đó.");
-          } else {
-            errorNoti("Rất tiếc! Đã có lỗi xảy ra. Vui lòng thử lại.");
-          }
+          setAssignDetail({
+            ...assignDetail,
+            submitedFileName: file.name,
+          });
         },
-      },
-      data
-    );
+        {
+          400: (e) => {
+            if ("not exist" == e.response.data?.error) {
+              errorNoti("Bài tập này đã bị xoá trước đó.");
+            } else if ("deadline exceeded" == e.response.data?.error) {
+              errorNoti("Đã quá hạn nộp bài.");
+              setRemainingTime(0);
+            } else {
+              errorNoti("Rất tiếc! Đã có lỗi xảy ra. Vui lòng thử lại.");
+            }
+          },
+          500: (e) => {
+            errorNoti("Rất tiếc! Đã có lỗi xảy ra. Vui lòng thử lại.");
+          },
+        },
+        data
+      );
+    }
   };
 
   useEffect(() => {
@@ -384,7 +395,7 @@ function SAssignmentDetail() {
                 getFileAddedMessage={(fileName) =>
                   `Tệp ${fileName} tải lên thành công`
                 }
-                showAlerts={["error", "success"]}
+                showAlerts={["error"]}
                 alertSnackbarProps={{
                   anchorOrigin: { vertical: "bottom", horizontal: "right" },
                 }}
