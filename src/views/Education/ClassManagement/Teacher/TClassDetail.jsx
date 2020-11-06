@@ -246,6 +246,14 @@ function TClassDetail() {
     setOpen(false);
   };
 
+  const handleSuccessDeleteAssign = () => {
+    setAssigns(
+      assign.filter((assign) => {
+        return assign.id != deletedAssignId;
+      })
+    );
+  };
+
   const onClickDialogDeleteBtn = () => {
     setOpen(false);
 
@@ -255,16 +263,21 @@ function TClassDetail() {
       "delete",
       `/edu/assignment/${deletedAssignId}`,
       (res) => {
-        setAssigns(
-          assign.filter((assign) => {
-            return assign.id != deletedAssignId;
-          })
-        );
+        handleSuccessDeleteAssign();
       },
       {
         400: (e) => {
           if ("not allowed" == e.response.data?.error) {
             errorNoti("Không thể xoá bài tập vì đã có sinh viên nộp bài.");
+          } else {
+            errorNoti("Rất tiếc! Đã có lỗi xảy ra. Vui lòng thử lại.");
+          }
+        },
+        404: (e) => {
+          if ("not exist" == e.response.data?.error) {
+            handleSuccessDeleteAssign();
+          } else {
+            errorNoti("Rất tiếc! Đã có lỗi xảy ra. Vui lòng thử lại.");
           }
         },
       }
