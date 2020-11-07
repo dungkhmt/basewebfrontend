@@ -158,6 +158,7 @@ function SClassList() {
                 color: "white",
               },
               sorting: false,
+              filterCellStyle: { textAlign: "center" },
               cellStyle: { fontSize: "1rem" },
             }}
             onRowClick={(event, rowData) => {
@@ -167,7 +168,8 @@ function SClassList() {
                 history.push(`/edu/student/class/${rowData.id}`);
               } else {
                 infoNoti(
-                  `Vui lòng chờ giảng viên phê duyệt để xem thông tin của lớp ${rowData.name}.`
+                  `Vui lòng chờ giảng viên phê duyệt để xem thông tin của lớp ${rowData.name}.`,
+                  3000
                 );
               }
             }}
