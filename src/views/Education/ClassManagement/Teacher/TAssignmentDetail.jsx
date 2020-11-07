@@ -7,9 +7,6 @@ import {
   CardHeader,
   Paper,
   Grid,
-  Tooltip,
-  Zoom,
-  IconButton,
   Box,
   Divider,
   CircularProgress,
@@ -24,9 +21,8 @@ import { BiDetail } from "react-icons/bi";
 import { CountdownCircleTimer } from "react-countdown-circle-timer";
 import { FcDownload } from "react-icons/fc";
 import EditIcon from "@material-ui/icons/Edit";
-import { useDispatch, useSelector } from "react-redux";
-import { authPost, axiosGet, axiosPost, request } from "../../../../api";
-import axios from "axios";
+import { useSelector } from "react-redux";
+import { request } from "../../../../api";
 import { green } from "@material-ui/core/colors";
 import { API_URL } from "../../../../config/config";
 import parse from "html-react-parser";
@@ -231,7 +227,7 @@ function TAssignmentDetail() {
         setIsZipping(false);
         window.location.href = `${API_URL}/edu/assignment/${params.assignmentId}/download-file/${res.data}`;
       },
-      { onError: (e) => setIsZipping(false) },
+      { onError: () => setIsZipping(false) },
       {
         studentIds: studentIds,
       }
