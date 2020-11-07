@@ -13,11 +13,8 @@ import {
 import { MuiThemeProvider } from "material-ui/styles";
 import { makeStyles } from "@material-ui/core/styles";
 import { Avatar } from "material-ui";
-import AddCircleOutlineIcon from "@material-ui/icons/AddCircleOutline";
 import AddIcon from "@material-ui/icons/Add";
 import { useForm } from "react-hook-form";
-import { DevTool } from "react-hook-form-devtools";
-import { motion } from "framer-motion";
 import { Editor } from "react-draft-wysiwyg";
 import "react-draft-wysiwyg/dist/react-draft-wysiwyg.css";
 import draftToHtml from "draftjs-to-html";
@@ -32,6 +29,8 @@ import _ from "lodash";
 import { request } from "../../../../api";
 import { useSelector } from "react-redux";
 import { errorNoti } from "../../../../utils/Notification";
+import EditIcon from "@material-ui/icons/Edit";
+import NegativeButton from "../../../../component/education/classmanagement/NegativeButton";
 
 const useStyles = makeStyles((theme) => ({
   card: {
@@ -41,19 +40,14 @@ const useStyles = makeStyles((theme) => ({
   textField: {
     width: 300,
   },
-  container: {
-    // minHeight: 1000,
-  },
+  container: {},
   cancelBtn: {
-    borderRadius: "6px",
-    textTransform: "none",
-    fontSize: "1rem",
+    minWidth: 112,
+    fontWeight: "normal",
     marginLeft: theme.spacing(2),
-    "&:hover": {
-      backgroundColor: "#f3f4f6",
-    },
   },
   createOrUpdateBtn: {
+    minWidth: 112,
     borderRadius: "6px",
     backgroundColor: "#1877f2",
     textTransform: "none",
@@ -77,36 +71,35 @@ const editorStyle = {
 function CreateAssignment() {
   const classes = useStyles();
   const params = useParams();
-  const assignmentId = params.assignmentId;
+  const assignId = params.assignmentId;
   const history = useHistory();
   const token = useSelector((state) => state.auth.token);
 
+  // Editor.
   const [editorState, setEditorState] = useState(EditorState.createEmpty());
-  const [isProcessing, setIsProcessing] = useState(false);
 
   // Form.
-  const {
-    register,
-    errors,
-    watch,
-    handleSubmit,
-    setValue,
-    setError,
-    control,
-  } = useForm({
-    defaultValues: {
-      deadline: (() => {
-        let date = new Date();
+  const { register, errors, watch, handleSubmit, setValue, setError } = useForm(
+    {
+      defaultValues: {
+        deadline: (() => {
+          let date = new Date();
 
-        date.setDate(date.getDate() + 1);
-        date.setHours(23);
-        date.setMinutes(59);
-        date.setSeconds(59);
+          date.setDate(date.getDate() + 1);
+          date.setHours(23);
+          date.setMinutes(59);
+          date.setSeconds(59);
 
-        return date;
-      })(),
-    },
-  });
+          return date;
+        })(),
+      },
+    }
+  );
+
+  const [isProcessing, setIsProcessing] = useState(false);
+
+  // Form field.
+  const [key, setKey] = useState("fieldName");
 
   // Functions.
   const getData = () => {
@@ -128,26 +121,38 @@ function CreateAssignment() {
         );
 
         setEditorState(EditorState.createWithContent(contentState));
+        setKey("updateData"); // To re-render textfield.
       },
       {}
     );
+  };
+
+  const onChangeDeadline = (newDate) => {
+    let date = new Date(newDate);
+
+    date.setSeconds(59);
+    setValue("deadline", date);
+  };
+
+  const onChangeEditorState = (editorState) => {
+    setEditorState(editorState);
   };
 
   const onSubmit = (formData) => {
     setIsProcessing(true);
     let subject = draftToHtml(convertToRaw(editorState.getCurrentContent()));
 
-    if (assignmentId) {
+    if (assignId) {
       request(
         token,
         history,
         "put",
-        `/edu/assignment/${assignmentId}`,
-        (res) => {
+        `/edu/assignment/${assignId}`,
+        () => {
           history.goBack();
         },
         {
-          commonTask: (e) => {
+          onError: () => {
             setIsProcessing(false);
           },
           400: (e) => {
@@ -165,7 +170,7 @@ function CreateAssignment() {
               errorNoti("Rất tiếc! Đã có lỗi xảy ra. Vui lòng thử lại.");
             }
           },
-          rest: (e) => {
+          rest: () => {
             errorNoti("Rất tiếc! Đã có lỗi xảy ra.");
           },
         },
@@ -177,11 +182,11 @@ function CreateAssignment() {
         history,
         "post",
         "/edu/assignment",
-        (res) => {
+        () => {
           history.goBack();
         },
         {
-          commonTask: (e) => {
+          onError: () => {
             setIsProcessing(false);
           },
           400: (e) => {
@@ -199,7 +204,7 @@ function CreateAssignment() {
               errorNoti("Rất tiếc! Đã có lỗi xảy ra. Vui lòng thử lại.");
             }
           },
-          rest: (e) => {
+          rest: () => {
             errorNoti("Rất tiếc! Đã có lỗi xảy ra.");
           },
         },
@@ -208,19 +213,8 @@ function CreateAssignment() {
     }
   };
 
-  const onEditorStateChange = (editorState) => {
-    setEditorState(editorState);
-  };
-
-  const onClickCancelBtn = () => {
+  const onCancel = () => {
     history.goBack();
-  };
-
-  const onChangeDeadline = (newDate) => {
-    let date = new Date(newDate);
-
-    date.setSeconds(59);
-    setValue("deadline", date);
   };
 
   useOnMount(() => {
@@ -228,7 +222,7 @@ function CreateAssignment() {
   });
 
   useEffect(() => {
-    if (assignmentId) getData();
+    if (assignId) getData();
   }, []);
 
   return (
@@ -237,12 +231,12 @@ function CreateAssignment() {
         <CardHeader
           avatar={
             <Avatar style={{ background: "#5e35b1" }}>
-              <AddIcon />
+              {assignId ? <EditIcon /> : <AddIcon />}
             </Avatar>
           }
           title={
             <Typography variant="h5">
-              {assignmentId ? "Chỉnh sửa thông tin bài tập" : "Tạo bài tập"}
+              {assignId ? "Chỉnh sửa thông tin bài tập" : "Tạo bài tập"}
             </Typography>
           }
         />
@@ -259,6 +253,7 @@ function CreateAssignment() {
               >
                 <Grid item>
                   <TextField
+                    key={key}
                     name="name"
                     label="Tên bài tập*"
                     variant="outlined"
@@ -322,7 +317,7 @@ function CreateAssignment() {
                 <Grid item>
                   <Editor
                     editorState={editorState}
-                    onEditorStateChange={onEditorStateChange}
+                    onEditorStateChange={onChangeEditorState}
                     toolbarStyle={editorStyle.toolbar}
                     editorStyle={editorStyle.editor}
                   />
@@ -335,15 +330,13 @@ function CreateAssignment() {
                     color="primary"
                     className={classes.createOrUpdateBtn}
                   >
-                    {assignmentId ? "Chỉnh sửa" : "Tạo bài tập"}
+                    {assignId ? "Chỉnh sửa" : "Tạo bài tập"}
                   </Button>
-                  <Button
-                    variant="outlined"
+                  <NegativeButton
+                    label="Huỷ"
                     className={classes.cancelBtn}
-                    onClick={onClickCancelBtn}
-                  >
-                    Huỷ
-                  </Button>
+                    onClick={onCancel}
+                  />
                 </Grid>
               </Grid>
             </Grid>
