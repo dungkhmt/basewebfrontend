@@ -1,46 +1,43 @@
-import React, { useRef, useEffect, useState, Fragment } from "react";
+import React, { useRef, useEffect, useState } from "react";
 import {
   Card,
   CardContent,
-  Button,
   Typography,
   CardHeader,
   Paper,
   Collapse,
-  Badge,
   CardActionArea,
   Grid,
-  Box,
   Link,
+  Avatar,
+  IconButton,
 } from "@material-ui/core";
-import MaterialTable, { MTableToolbar } from "material-table";
-import { useDispatch, useSelector } from "react-redux";
+import MaterialTable from "material-table";
+import { useSelector } from "react-redux";
 import { useHistory } from "react-router";
-import { authGet, axiosGet, axiosPut, request } from "../../../../api";
+import { request } from "../../../../api";
 import { MuiThemeProvider } from "material-ui/styles";
 import { useParams } from "react-router";
-import { makeStyles, useTheme, withStyles } from "@material-ui/core/styles";
-import PeopleAltRoundedIcon from "@material-ui/icons/PeopleAltRounded";
-import { Avatar, IconButton } from "material-ui";
+import { makeStyles } from "@material-ui/core/styles";
 import {
   FcApproval,
   FcMindMap,
-  FcViewDetails,
   FcCollapse,
   FcExpand,
   FcConferenceCall,
 } from "react-icons/fc";
-import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
-import ExpandLessIcon from "@material-ui/icons/ExpandLess";
-import { motion } from "framer-motion";
 import { BiDetail } from "react-icons/bi";
-import AddCircleOutlineIcon from "@material-ui/icons/AddCircleOutline";
-import { localization } from "../../../../utils/MaterialTableUtils";
+import changePageSize, {
+  localization,
+  tableIcons,
+} from "../../../../utils/MaterialTableUtils";
 import { errorNoti } from "../../../../utils/Notification";
 import CustomizedDialogs from "../../../../utils/CustomizedDialogs";
 import PositiveButton from "../../../../component/education/classmanagement/PositiveButton";
 import NegativeDialogButton from "../../../../component/education/classmanagement/NegativeDialogButton";
 import NegativeButton from "../../../../component/education/classmanagement/NegativeButton";
+import displayTime from "../../../../utils/DateTimeUtils";
+import { StyledBadge } from "../../../../component/education/classmanagement/StyledBadge";
 
 const useStyles = makeStyles((theme) => ({
   card: {
@@ -54,25 +51,13 @@ const useStyles = makeStyles((theme) => ({
     marginLeft: 10,
     marginRight: 10,
   },
-  approveBtn: {
+  positiveBtn: {
     minWidth: 112,
-    marginTop: 16,
   },
   dialogCancleBtn: {
     fontWeight: "normal",
   },
 }));
-
-const StyledBadge = withStyles((theme) => ({
-  badge: {
-    right: -10,
-    top: 5,
-    border: `2px solid ${theme.palette.background.paper}`,
-    padding: "0 4px",
-  },
-}))(Badge);
-
-const formatTime = (n) => (Number(n) < 10 ? "0" + Number(n) : "" + Number(n));
 
 function TClassDetail() {
   const classes = useStyles();
@@ -80,8 +65,17 @@ function TClassDetail() {
   const history = useHistory();
   const token = useSelector((state) => state.auth.token);
 
+  // Class.
   const [classDetail, setClassDetail] = useState({});
-  const [selectedStudents, setSelectedStudents] = useState([]);
+
+  // Student.
+  const [students, setStudents] = useState([]);
+  const [stuWillBeDeleted, setStuWillBeDeleted] = useState();
+  const [fetchedStudents, setFetchedStudents] = useState(false);
+
+  // Regist.
+  const [registStudents, setRegistStudents] = useState([]);
+  const [selectedRegists, setSelectedRegists] = useState([]);
 
   // Assignment.
   const [assign, setAssigns] = useState([]);
@@ -89,13 +83,16 @@ function TClassDetail() {
 
   // Dialog.
   const [open, setOpen] = useState(false);
+  const [openDelStuDialog, setOpenDelStuDialog] = useState(false);
 
   // Tables.
-  const [students, setStudents] = useState([]);
-  const [registStudents, setRegistStudents] = useState([]);
   const [openClassStuCard, setOpenClassStuCard] = useState(false);
   const [openRegistCard, setOpenRegistCard] = useState(false);
-  const tableRef = useRef(null);
+
+  // Tables's ref.
+  const studentTableRef = useRef(null);
+  const registTableRef = useRef(null);
+  const assignTableRef = useRef(null);
 
   const headerProperties = {
     headerStyle: {
@@ -107,6 +104,7 @@ function TClassDetail() {
     },
   };
 
+  // Column.
   const assignCols = [
     {
       field: "name",
@@ -118,19 +116,7 @@ function TClassDetail() {
       title: "Hạn nộp",
       ...headerProperties,
       render: (rowData) => {
-        let deadLine = new Date(rowData.deadLine);
-        return (
-          <Typography>
-            {deadLine.getFullYear()}-{formatTime(deadLine.getMonth() + 1)}-
-            {formatTime(deadLine.getDate())}
-            &nbsp;&nbsp;
-            {formatTime(deadLine.getHours())}
-            <b>:</b>
-            {formatTime(deadLine.getMinutes())}
-            <b>:</b>
-            {formatTime(deadLine.getSeconds())}
-          </Typography>
-        );
+        return displayTime(new Date(rowData.deadLine));
       },
     },
   ];
@@ -156,15 +142,13 @@ function TClassDetail() {
     {
       field: "",
       title: "",
-      cellStyle: { alignItems: "center" },
+      ...headerProperties,
       render: (rowData) => (
-        <Box display="flex" justifyContent="center">
-          <NegativeButton
-            label="Loại khỏi lớp"
-            className={classes.negativeBtn}
-            onClick={() => onClickRemoveBtn(rowData)}
-          />
-        </Box>
+        <NegativeButton
+          label="Loại khỏi lớp"
+          className={classes.negativeBtn}
+          onClick={() => onClickRemoveBtn(rowData)}
+        />
       ),
     },
   ];
@@ -178,72 +162,148 @@ function TClassDetail() {
 
   const getStudents = (type) => {
     if (type === "register") {
-      axiosGet(token, `/edu/class/${params.id}/registered-students`)
-        .then((res) => setRegistStudents(res.data))
-        .catch((e) => alert("error"));
+      request(
+        token,
+        history,
+        "get",
+        `/edu/class/${params.id}/registered-students`,
+        (res) => {
+          changePageSize(res.data.length, registTableRef);
+          setRegistStudents(res.data);
+        }
+      );
     } else {
-      axiosGet(token, `/edu/class/${params.id}/students`)
-        .then((res) => setStudents(res.data))
-        .catch((e) => alert("error"));
+      request(
+        token,
+        history,
+        "get",
+        `/edu/class/${params.id}/students`,
+        (res) => {
+          changePageSize(res.data.length, studentTableRef);
+          setStudents(res.data);
+          setFetchedStudents(true);
+        }
+      );
     }
   };
 
-  const getAssignments = () => {
-    axiosGet(token, `/edu/class/${params.id}/assignments`)
-      .then((res) => setAssigns(res.data))
-      .catch((e) => alert("error"));
+  const getAssigns = () => {
+    request(
+      token,
+      history,
+      "get",
+      `/edu/class/${params.id}/assignments`,
+      (res) => {
+        changePageSize(res.data.length, assignTableRef);
+        setAssigns(res.data);
+      }
+    );
   };
 
   const onClickStuCard = () => {
-    if (false == openClassStuCard && 0 == students.length) {
+    setOpenClassStuCard(!openClassStuCard);
+
+    if (fetchedStudents == false) {
       getStudents("class");
     }
-
-    setOpenClassStuCard(!openClassStuCard);
   };
 
-  const onClickRemoveBtn = (e) => {
-    console.log("Click button", e);
+  // Delete student.
+  const onClickRemoveBtn = (rowData) => {
+    setOpenDelStuDialog(true);
+    setStuWillBeDeleted({ id: rowData.id, name: rowData.name });
   };
 
+  const onDeleteStudent = () => {
+    setOpenDelStuDialog(false);
+    let id = stuWillBeDeleted.id;
+
+    request(
+      token,
+      history,
+      "put",
+      "/edu/class/registration-status",
+      (res) => {
+        if (res.data[id].status == 200) {
+          // Remove student in student list.
+          setStudents(students.filter((student) => student.id != id));
+        } else {
+          // The student may have been removed previously.
+          errorNoti("Rất tiếc! Đã có lỗi xảy ra. Vui lòng thử lại.");
+        }
+      },
+      {},
+      {
+        classId: params.id,
+        studentIds: [id],
+        status: "REMOVED",
+      }
+    );
+  };
+
+  // Aprrove or deny registrations.
   const onSelectionChange = (rows) => {
-    let studentIds = rows.map((row) => row.id);
-    setSelectedStudents(studentIds);
+    setSelectedRegists(rows.map((row) => row.id));
   };
 
-  const onClickUpdateStatusBtn = (type) => {
-    axiosPut(token, "/edu/class/registration-status", {
-      classId: params.id,
-      studentIds: selectedStudents,
-      status: type,
-    })
-      .then((res) => {
+  const onUpdateStatus = (type) => {
+    request(
+      token,
+      history,
+      "put",
+      "/edu/class/registration-status",
+      (res) => {
         let data = res.data;
         let tmp = [];
+        let result;
 
-        for (let i = 0; i < registStudents.length; i++) {
-          if (
-            data[registStudents[i].id] == undefined ||
-            data[registStudents[i].id].status != 200
-          ) {
-            tmp.push(registStudents[i]);
-          } else {
-            // Phe duyet thanh cong thi them luon len bang danh sach lop
+        // In case it is necessary to update the student list.
+        if (type == "APPROVED" && fetchedStudents) {
+          let newStudents = [];
+
+          for (let i = 0; i < registStudents.length; i++) {
+            result = data[registStudents[i].id];
+
+            if (result == undefined || result.status != 200) {
+              // Not selected or status update failed.
+              tmp.push(registStudents[i]);
+            } else {
+              // Successfully update.
+              newStudents.push({
+                name: registStudents[i].name,
+                id: registStudents[i].id,
+                email: registStudents[i].email,
+              });
+            }
+          }
+
+          setStudents([...students, ...newStudents]);
+        } else {
+          for (let i = 0; i < registStudents.length; i++) {
+            result = data[registStudents[i].id];
+
+            if (result == undefined || result.status != 200) {
+              // Not selected or status update failed.
+              tmp.push(registStudents[i]);
+            }
           }
         }
 
         setRegistStudents(tmp);
-      })
-      .catch((e) => alert("error"));
+      },
+      {},
+      {
+        classId: params.id,
+        studentIds: selectedRegists,
+        status: type,
+      }
+    );
   };
 
-  const onDeleteAssignment = (rowData) => {
+  // Delete assignment.
+  const onClickDeleteBtn = (rowData) => {
     setOpen(true);
     setDeletedAssignId(rowData.id);
-  };
-
-  const handleClose = () => {
-    setOpen(false);
   };
 
   const handleSuccessDeleteAssign = () => {
@@ -254,7 +314,7 @@ function TClassDetail() {
     );
   };
 
-  const onClickDialogDeleteBtn = () => {
+  const onDeleteAssign = () => {
     setOpen(false);
 
     request(
@@ -262,7 +322,7 @@ function TClassDetail() {
       history,
       "delete",
       `/edu/assignment/${deletedAssignId}`,
-      (res) => {
+      () => {
         handleSuccessDeleteAssign();
       },
       {
@@ -284,9 +344,14 @@ function TClassDetail() {
     );
   };
 
+  const handleClose = () => {
+    setOpen(false);
+    setOpenDelStuDialog(false);
+  };
+
   useEffect(() => {
     getClassDetail();
-    getAssignments();
+    getAssigns();
     getStudents("register");
   }, []);
 
@@ -303,34 +368,22 @@ function TClassDetail() {
         />
         <CardContent>
           <Grid container className={classes.grid}>
-            <Grid item md={3} sm={3} xs={3}>
+            <Grid item md={3} sm={3} xs={3} direction="column">
               <Typography>Mã lớp</Typography>
+              <Typography>Mã học phần</Typography>
+              <Typography>Tên học phần</Typography>
+              <Typography>Loại lớp</Typography>
             </Grid>
-            <Grid item md={8} sm={8} xs={8}>
+            <Grid item md={8} sm={8} xs={8} direction="column">
               <Typography>
                 <b>:</b> {classDetail.code}
               </Typography>
-            </Grid>
-            <Grid item md={3} sm={3} xs={3}>
-              <Typography>Mã học phần</Typography>
-            </Grid>
-            <Grid item md={8} sm={8} xs={8}>
               <Typography>
                 <b>:</b> {classDetail.courseId}
               </Typography>
-            </Grid>
-            <Grid item md={3} sm={3} xs={3}>
-              <Typography>Tên học phần</Typography>
-            </Grid>
-            <Grid item md={8} sm={8} xs={8}>
               <Typography>
                 <b>:</b> {classDetail.name}
               </Typography>
-            </Grid>
-            <Grid item md={3} sm={3} xs={3}>
-              <Typography>Loại lớp</Typography>
-            </Grid>
-            <Grid item md={8} sm={8} xs={8}>
               <Typography>
                 <b>:</b> {classDetail.classType}
               </Typography>
@@ -338,6 +391,7 @@ function TClassDetail() {
           </Grid>
         </CardContent>
       </Card>
+
       <Card className={classes.card}>
         <CardActionArea disableRipple onClick={onClickStuCard}>
           <CardHeader
@@ -366,14 +420,17 @@ function TClassDetail() {
             <MaterialTable
               title=""
               columns={stuCols}
-              tableRef={tableRef}
+              icons={tableIcons}
+              tableRef={studentTableRef}
               localization={localization}
               data={students}
               components={{
                 Container: (props) => <Paper {...props} elevation={0} />,
               }}
               options={{
-                pageSize: 20,
+                filtering: true,
+                search: false,
+                pageSize: 10,
                 debounceInterval: 500,
                 headerStyle: {
                   backgroundColor: "#673ab7",
@@ -381,14 +438,15 @@ function TClassDetail() {
                   fontSize: "1rem",
                   color: "white",
                 },
-                sorting: false,
-                cellStyle: { fontSize: "1rem" },
+                filterCellStyle: { textAlign: "center" },
+                cellStyle: { fontSize: "1rem", textAlign: "center" },
                 toolbarButtonAlignment: "left",
               }}
             />
           </CardContent>
         </Collapse>
       </Card>
+
       <Card className={classes.card}>
         <CardActionArea
           disableRipple
@@ -426,7 +484,7 @@ function TClassDetail() {
             <MaterialTable
               title=""
               columns={registCols}
-              tableRef={tableRef}
+              tableRef={registTableRef}
               data={registStudents}
               localization={localization}
               components={{
@@ -447,7 +505,7 @@ function TClassDetail() {
                     return (
                       <PositiveButton
                         label="Phê duyệt"
-                        className={classes.approveBtn}
+                        className={classes.positiveBtn}
                         onClick={(event) =>
                           props.action.onClick(event, props.data)
                         }
@@ -457,6 +515,7 @@ function TClassDetail() {
                 },
               }}
               options={{
+                search: false,
                 pageSize: 10,
                 selection: true,
                 debounceInterval: 500,
@@ -475,12 +534,12 @@ function TClassDetail() {
                 {
                   icon: "approve",
                   position: "toolbarOnSelect",
-                  onClick: (event, data) => onClickUpdateStatusBtn("APPROVED"),
+                  onClick: () => onUpdateStatus("APPROVED"),
                 },
                 {
                   icon: "refuse",
                   position: "toolbarOnSelect",
-                  onClick: (event, data) => onClickUpdateStatusBtn("REFUSED"),
+                  onClick: () => onUpdateStatus("REFUSED"),
                 },
               ]}
               onSelectionChange={(rows) => onSelectionChange(rows)}
@@ -488,6 +547,7 @@ function TClassDetail() {
           </CardContent>
         </Collapse>
       </Card>
+
       <Card className={classes.card}>
         <CardHeader
           avatar={
@@ -501,7 +561,7 @@ function TClassDetail() {
           <MaterialTable
             title=""
             columns={assignCols}
-            tableRef={tableRef}
+            tableRef={assignTableRef}
             localization={localization}
             data={assign}
             components={{
@@ -511,7 +571,7 @@ function TClassDetail() {
                   return (
                     <PositiveButton
                       label="Tạo mới"
-                      className={classes.approveBtn}
+                      className={classes.positiveBtn}
                       onClick={(event) =>
                         props.action.onClick(event, props.data)
                       }
@@ -533,6 +593,7 @@ function TClassDetail() {
               },
             }}
             options={{
+              search: false,
               pageSize: 10,
               actionsColumnIndex: -1,
               debounceInterval: 500,
@@ -557,7 +618,7 @@ function TClassDetail() {
               {
                 icon: "create",
                 position: "toolbar",
-                onClick: (event) => {
+                onClick: () => {
                   history.push(
                     `/edu/teacher/class/${params.id}/assignment/create`
                   );
@@ -566,7 +627,7 @@ function TClassDetail() {
               {
                 icon: "delete",
                 onClick: (event, rowData) => {
-                  onDeleteAssignment(rowData);
+                  onClickDeleteBtn(rowData);
                 },
               },
             ]}
@@ -579,6 +640,36 @@ function TClassDetail() {
           />
         </CardContent>
       </Card>
+
+      {/* Dialogs */}
+      <CustomizedDialogs
+        open={openDelStuDialog}
+        handleClose={handleClose}
+        title="Loại sinh viên?"
+        content={
+          <Typography gutterBottom>
+            Loại sinh viên <b>{stuWillBeDeleted?.name}</b> khỏi lớp.
+            <br />
+            <b>
+              Cảnh báo: Bạn không thể hủy hành động này sau khi đã thực hiện.
+            </b>
+          </Typography>
+        }
+        actions={
+          // <Fragment>
+          <NegativeDialogButton
+            label="Loại khỏi lớp"
+            className={classes.dialogDeleteBtn}
+            onClick={onDeleteStudent}
+          />
+          //   <PositiveButton
+          //     label="Huỷ"
+          //     onClick={handleClose}
+          //     className={classes.dialogCancleBtn}
+          //   />
+          // </Fragment>
+        }
+      />
       <CustomizedDialogs
         open={open}
         handleClose={handleClose}
@@ -591,19 +682,18 @@ function TClassDetail() {
           </Typography>
         }
         actions={
-          <Fragment>
-            <NegativeDialogButton
-              label="Xoá"
-              className={classes.dialogDeleteBtn}
-              onClick={onClickDialogDeleteBtn}
-            />
-
-            <PositiveButton
-              label="Huỷ"
-              onClick={handleClose}
-              className={classes.dialogCancleBtn}
-            />
-          </Fragment>
+          // <Fragment>
+          <NegativeDialogButton
+            label="Xoá"
+            className={classes.dialogDeleteBtn}
+            onClick={onDeleteAssign}
+          />
+          //    <PositiveButton
+          //     label="Huỷ"
+          //     onClick={handleClose}
+          //     className={classes.dialogCancleBtn}
+          //   />
+          // </Fragment>
         }
       />
     </MuiThemeProvider>
