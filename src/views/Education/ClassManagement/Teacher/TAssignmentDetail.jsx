@@ -32,8 +32,11 @@ import { API_URL } from "../../../../config/config";
 import parse from "html-react-parser";
 import changePageSize, {
   localization,
+  tableIcons,
 } from "../../../../utils/MaterialTableUtils";
 import displayTime from "../../../../utils/DateTimeUtils";
+import PositiveButton from "../../../../component/education/classmanagement/PositiveButton";
+import NegativeDialogButton from "../../../../component/education/classmanagement/NegativeDialogButton";
 
 const useStyles = makeStyles((theme) => ({
   card: {
@@ -59,10 +62,7 @@ const useStyles = makeStyles((theme) => ({
     fontSize: "1rem",
   },
   editBtn: {
-    textTransform: "none",
-    // fontWeight: "bold",
-    fontSize: "1rem",
-    borderRadius: 6,
+    fontWeight: "normal",
   },
   divider: {
     width: "91.67%",
@@ -81,10 +81,9 @@ const useStyles = makeStyles((theme) => ({
     marginLeft: -12,
   },
   downloadBtn: {
-    width: 176,
+    minWidth: 176,
     borderRadius: 6,
     textTransform: "none",
-    // fontWeight: "bold",
     fontSize: "1rem",
   },
   wrapper: {
@@ -94,6 +93,10 @@ const useStyles = makeStyles((theme) => ({
   assignDetail: {
     display: "flex",
     // whiteSpace: "pre-wrap",
+  },
+  hideSubjectBtn: {
+    marginLeft: 29,
+    paddingBottom: 10,
   },
 }));
 
@@ -133,6 +136,10 @@ function TAssignmentDetail() {
   const [hideSubject, setHideSubject] = useState(true);
   const [assignDetail, setAssignDetail] = useState({});
 
+  //Submission.
+  const [selectedSubmissions, setSelectedSubmission] = useState([]);
+  const [isZipping, setIsZipping] = useState(false);
+
   // Table.
   const headerProperties = {
     headerStyle: {
@@ -154,6 +161,7 @@ function TAssignmentDetail() {
       field: "submissionDate",
       title: "Ngày nộp",
       ...headerProperties,
+      filtering: false,
       render: (rowData) => {
         let date = rowData.submissionDate;
 
@@ -164,20 +172,18 @@ function TAssignmentDetail() {
 
   const [data, setData] = useState([]);
   const tableRef = useRef(null);
-  const [selectedSubmissions, setSelectedSubmission] = useState([]);
-  const [isZipping, setIsZipping] = useState(false);
 
   // Functions.
-  const getExerciseDetail = () => {
+  const getAssignDetail = () => {
     request(
       token,
       history,
       "get",
       `/edu/assignment/${params.assignmentId}/teacher`,
       (res) => {
-        let assignmentDetail = res.data.assignmentDetail;
-        let startTime = new Date(assignmentDetail.createdStamp);
-        let endTime = new Date(assignmentDetail.deadLine);
+        let assignDetail = res.data.assignmentDetail;
+        let startTime = new Date(assignDetail.createdStamp);
+        let endTime = new Date(assignDetail.deadLine);
         let data = res.data.submissions;
 
         data = data.map((submission) => ({
@@ -199,8 +205,8 @@ function TAssignmentDetail() {
         setKey("update-params");
 
         setAssignDetail({
-          name: assignmentDetail.name,
-          subject: assignmentDetail.subject,
+          name: assignDetail.name,
+          subject: assignDetail.subject,
           startTime: startTime,
           endTime: endTime,
           noSubmissions: res.data.noSubmissions,
@@ -209,26 +215,31 @@ function TAssignmentDetail() {
     );
   };
 
-  const onClickDownloadButton = () => {
+  const onDownload = () => {
     setIsZipping(true);
 
     let studentIds = selectedSubmissions.map(
       (submission) => submission.studentId
     );
 
-    axiosPost(token, `/edu/assignment/${params.assignmentId}/submissions`, {
-      studentIds: studentIds,
-    })
-      .then((res) => {
+    request(
+      token,
+      history,
+      "post",
+      `/edu/assignment/${params.assignmentId}/submissions`,
+      (res) => {
         setIsZipping(false);
         window.location.href = `${API_URL}/edu/assignment/${params.assignmentId}/download-file/${res.data}`;
-      })
-      .catch((e) => console.log(e));
+      },
+      { onError: (e) => setIsZipping(false) },
+      {
+        studentIds: studentIds,
+      }
+    );
   };
 
   useEffect(() => {
-    // tableRef.current.dataManager.changePageSize(20);
-    getExerciseDetail();
+    getAssignDetail();
   }, []);
 
   return (
@@ -241,9 +252,8 @@ function TAssignmentDetail() {
             </Avatar>
           }
           action={
-            <Button
-              variant="outlined"
-              color="primary"
+            <PositiveButton
+              label="Chỉnh sửa"
               startIcon={<EditIcon />}
               className={classes.editBtn}
               onClick={() =>
@@ -251,9 +261,7 @@ function TAssignmentDetail() {
                   `/edu/teacher/class/${params.classId}/assignment/${params.assignmentId}/edit`
                 )
               }
-            >
-              Chỉnh sửa
-            </Button>
+            />
           }
           title={<Typography variant="h5">Thông tin bài tập</Typography>}
         />
@@ -334,18 +342,11 @@ function TAssignmentDetail() {
             </Grid>
             <Grid item md={11} className={classes.exercise}>
               <Box display="flex" fullWidth>
-                <Button
-                  style={{
-                    textTransform: "none",
-                    fontSize: "bold",
-                    color: "blue",
-                    marginLeft: 29,
-                    paddingBottom: 10,
-                  }}
+                <NegativeDialogButton
+                  label={hideSubject ? "Hiện đề bài" : "Ẩn đề bài"}
+                  className={classes.hideSubjectBtn}
                   onClick={() => setHideSubject(!hideSubject)}
-                >
-                  {hideSubject ? "Hiện đề bài" : "Ẩn đề bài"}
-                </Button>
+                />
               </Box>
               {hideSubject ? null : parse(assignDetail.subject)}
             </Grid>
@@ -366,6 +367,7 @@ function TAssignmentDetail() {
           <MaterialTable
             title=""
             columns={cols}
+            icons={tableIcons}
             tableRef={tableRef}
             localization={localization}
             data={data}
@@ -399,6 +401,8 @@ function TAssignmentDetail() {
               },
             }}
             options={{
+              search: false,
+              filtering: true,
               pageSize: 10,
               selection: true,
               debounceInterval: 500,
@@ -408,7 +412,7 @@ function TAssignmentDetail() {
                 fontSize: "1rem",
                 color: "white",
               },
-              sorting: false,
+              filterCellStyle: { textAlign: "center" },
               cellStyle: { fontSize: "1rem" },
               toolbarButtonAlignment: "left",
               showTextRowsSelected: false,
@@ -417,7 +421,7 @@ function TAssignmentDetail() {
               {
                 icon: "download",
                 position: "toolbarOnSelect",
-                onClick: () => onClickDownloadButton(),
+                onClick: () => onDownload(),
               },
             ]}
             onSelectionChange={(rows) => {
