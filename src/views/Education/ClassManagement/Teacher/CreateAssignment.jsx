@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   Card,
   CardContent,
@@ -13,11 +13,8 @@ import {
 import { MuiThemeProvider } from "material-ui/styles";
 import { makeStyles } from "@material-ui/core/styles";
 import { Avatar } from "material-ui";
-import AddCircleOutlineIcon from "@material-ui/icons/AddCircleOutline";
 import AddIcon from "@material-ui/icons/Add";
 import { useForm } from "react-hook-form";
-import { DevTool } from "react-hook-form-devtools";
-import { motion } from "framer-motion";
 import { Editor } from "react-draft-wysiwyg";
 import "react-draft-wysiwyg/dist/react-draft-wysiwyg.css";
 import draftToHtml from "draftjs-to-html";
@@ -27,12 +24,13 @@ import { useHistory, useParams } from "react-router";
 import { MuiPickersUtilsProvider, DateTimePicker } from "@material-ui/pickers";
 import DateFnsUtils from "@date-io/date-fns";
 import { FcCalendar } from "react-icons/fc";
-import useOnMount from "./onMount";
+import useOnMount from "../../../../component/education/classmanagement/onMount";
 import _ from "lodash";
 import { request } from "../../../../api";
 import { useSelector } from "react-redux";
 import { errorNoti } from "../../../../utils/Notification";
-import { useEffect } from "react";
+import EditIcon from "@material-ui/icons/Edit";
+import NegativeButton from "../../../../component/education/classmanagement/NegativeButton";
 
 const useStyles = makeStyles((theme) => ({
   card: {
@@ -42,19 +40,14 @@ const useStyles = makeStyles((theme) => ({
   textField: {
     width: 300,
   },
-  container: {
-    // minHeight: 1000,
-  },
+  container: {},
   cancelBtn: {
-    borderRadius: "6px",
-    textTransform: "none",
-    fontSize: "1rem",
+    minWidth: 112,
+    fontWeight: "normal",
     marginLeft: theme.spacing(2),
-    "&:hover": {
-      backgroundColor: "#f3f4f6",
-    },
   },
-  createBtn: {
+  createOrUpdateBtn: {
+    minWidth: 112,
     borderRadius: "6px",
     backgroundColor: "#1877f2",
     textTransform: "none",
@@ -75,85 +68,91 @@ const editorStyle = {
   },
 };
 
-function CreateExercise() {
+function CreateAssignment() {
   const classes = useStyles();
   const params = useParams();
-  const assignmentId = params.assignmentId;
+  const assignId = params.assignmentId;
   const history = useHistory();
   const token = useSelector((state) => state.auth.token);
 
+  // Editor.
   const [editorState, setEditorState] = useState(EditorState.createEmpty());
-  const [isProcessing, setIsProcessing] = useState(false);
 
   // Form.
-  const {
-    register,
-    errors,
-    watch,
-    handleSubmit,
-    setValue,
-    setError,
-    control,
-  } = useForm({
-    defaultValues: {
-      deadline: (() => {
-        let date = new Date();
+  const { register, errors, watch, handleSubmit, setValue, setError } = useForm(
+    {
+      defaultValues: {
+        deadline: (() => {
+          let date = new Date();
 
-        date.setDate(date.getDate() + 1);
-        date.setHours(23);
-        date.setMinutes(59);
-        date.setSeconds(59);
+          date.setDate(date.getDate() + 1);
+          date.setHours(23);
+          date.setMinutes(59);
+          date.setSeconds(59);
 
-        return date;
-      })(),
-    },
-  });
+          return date;
+        })(),
+      },
+    }
+  );
+
+  const [isProcessing, setIsProcessing] = useState(false);
+
+  // Form field.
+  const [key, setKey] = useState("fieldName");
 
   // Functions.
   const getData = () => {
-    if (assignmentId) {
-      request(
-        token,
-        history,
-        "get",
-        `/edu/assignment/${params.assignmentId}/student`,
-        (res) => {
-          let data = res.data.assignmentDetail;
+    request(
+      token,
+      history,
+      "get",
+      `/edu/assignment/${params.assignmentId}/student`,
+      (res) => {
+        let data = res.data.assignmentDetail;
 
-          setValue([
-            { name: data.name },
-            { deadline: new Date(data.deadLine) },
-          ]);
+        setValue([{ name: data.name }, { deadline: new Date(data.deadLine) }]);
 
-          const blocksFromHtml = htmlToDraft(data.subject);
-          const { contentBlocks, entityMap } = blocksFromHtml;
-          const contentState = ContentState.createFromBlockArray(
-            contentBlocks,
-            entityMap
-          );
+        const blocksFromHtml = htmlToDraft(data.subject);
+        const { contentBlocks, entityMap } = blocksFromHtml;
+        const contentState = ContentState.createFromBlockArray(
+          contentBlocks,
+          entityMap
+        );
 
-          setEditorState(EditorState.createWithContent(contentState));
-        },
-        {}
-      );
-    }
+        setEditorState(EditorState.createWithContent(contentState));
+        setKey("updateData"); // To re-render textfield.
+      },
+      {}
+    );
+  };
+
+  const onChangeDeadline = (newDate) => {
+    let date = new Date(newDate);
+
+    date.setSeconds(59);
+    setValue("deadline", date);
+  };
+
+  const onChangeEditorState = (editorState) => {
+    setEditorState(editorState);
   };
 
   const onSubmit = (formData) => {
     setIsProcessing(true);
     let subject = draftToHtml(convertToRaw(editorState.getCurrentContent()));
 
-    if (assignmentId) {
+    if (assignId) {
       request(
         token,
         history,
         "put",
-        `/edu/assignment/${assignmentId}`,
-        (res) => {
+        `/edu/assignment/${assignId}`,
+        () => {
           history.goBack();
         },
         {
-          commonTask: (e) => {
+          onError: () => {
             setIsProcessing(false);
           },
           400: (e) => {
@@ -171,7 +170,7 @@ function CreateExercise() {
               errorNoti("Rất tiếc! Đã có lỗi xảy ra. Vui lòng thử lại.");
             }
           },
-          rest: (e) => {
+          rest: () => {
             errorNoti("Rất tiếc! Đã có lỗi xảy ra.");
           },
         },
@@ -183,12 +182,14 @@ function CreateExercise() {
         history,
         "post",
         "/edu/assignment",
-        (res) => {
+        () => {
           history.goBack();
         },
         {
-          400: (e) => {
+          onError: () => {
             setIsProcessing(false);
+          },
+          400: (e) => {
             let data = e.response.data;
 
             if ("require future date" == data?.error) {
@@ -203,32 +204,17 @@ function CreateExercise() {
               errorNoti("Rất tiếc! Đã có lỗi xảy ra. Vui lòng thử lại.");
             }
           },
-          noResponse: (e) => {
-            setIsProcessing(false);
-          },
-          rest: (e) => {
-            setIsProcessing(false);
+          rest: () => {
             errorNoti("Rất tiếc! Đã có lỗi xảy ra.");
           },
         },
-        { ...formData, classId: params.classId, subject: subject }
+        { ...formData, subject: subject, classId: params.classId }
       );
     }
   };
 
-  const onEditorStateChange = (editorState) => {
-    setEditorState(editorState);
-  };
-
-  const onClickCancelBtn = () => {
+  const onCancel = () => {
     history.goBack();
-  };
-
-  const onDeadlineChange = (newDate) => {
-    let date = new Date(newDate);
-
-    date.setSeconds(59);
-    setValue("deadline", date);
   };
 
   useOnMount(() => {
@@ -236,7 +222,7 @@ function CreateExercise() {
   });
 
   useEffect(() => {
-    getData();
+    if (assignId) getData();
   }, []);
 
   return (
@@ -245,12 +231,12 @@ function CreateExercise() {
         <CardHeader
           avatar={
             <Avatar style={{ background: "#5e35b1" }}>
-              <AddIcon />
+              {assignId ? <EditIcon /> : <AddIcon />}
             </Avatar>
           }
           title={
             <Typography variant="h5">
-              {assignmentId ? "Chỉnh sửa thông tin bài tập" : "Tạo bài tập"}
+              {assignId ? "Chỉnh sửa thông tin bài tập" : "Tạo bài tập"}
             </Typography>
           }
         />
@@ -267,6 +253,7 @@ function CreateExercise() {
               >
                 <Grid item>
                   <TextField
+                    key={key}
                     name="name"
                     label="Tên bài tập*"
                     variant="outlined"
@@ -301,7 +288,7 @@ function CreateExercise() {
                       format="yyyy-MM-dd  HH:mm:ss"
                       label="Hạn nộp bài"
                       value={watch("deadline")}
-                      onChange={onDeadlineChange}
+                      onChange={onChangeDeadline}
                       strictCompareDates
                       error={!!errors.deadline}
                       helperText={errors.deadline?.message}
@@ -330,7 +317,7 @@ function CreateExercise() {
                 <Grid item>
                   <Editor
                     editorState={editorState}
-                    onEditorStateChange={onEditorStateChange}
+                    onEditorStateChange={onChangeEditorState}
                     toolbarStyle={editorStyle.toolbar}
                     editorStyle={editorStyle.editor}
                   />
@@ -341,17 +328,15 @@ function CreateExercise() {
                     type="submit"
                     variant="contained"
                     color="primary"
-                    className={classes.createBtn}
+                    className={classes.createOrUpdateBtn}
                   >
-                    {assignmentId ? "Chỉnh sửa" : "Tạo bài tập"}
+                    {assignId ? "Chỉnh sửa" : "Tạo bài tập"}
                   </Button>
-                  <Button
-                    variant="outlined"
+                  <NegativeButton
+                    label="Huỷ"
                     className={classes.cancelBtn}
-                    onClick={onClickCancelBtn}
-                  >
-                    Huỷ
-                  </Button>
+                    onClick={onCancel}
+                  />
                 </Grid>
               </Grid>
             </Grid>
@@ -363,4 +348,4 @@ function CreateExercise() {
   );
 }
 
-export default CreateExercise;
+export default CreateAssignment;

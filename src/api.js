@@ -150,8 +150,8 @@ export const request = async (
     }
   } catch (e) {
     // Handling work to do when encountering all kinds of errors, e.g turn off the loading icon.
-    if (isFunction(errorHandlers['commonTask'])) {
-      errorHandlers['commonTask'](e)
+    if (isFunction(errorHandlers['onError'])) {
+      errorHandlers['onError'](e)
     }
 
     if (e.response) {

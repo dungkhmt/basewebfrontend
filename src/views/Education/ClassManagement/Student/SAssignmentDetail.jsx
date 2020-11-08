@@ -30,10 +30,15 @@ import AudiotrackIcon from "@material-ui/icons/Audiotrack";
 import DescriptionIcon from "@material-ui/icons/Description";
 import PictureAsPdfIcon from "@material-ui/icons/PictureAsPdf";
 import TheatersIcon from "@material-ui/icons/Theaters";
-import { axiosGet, axiosPost } from "../../../../api";
+import { axiosGet, axiosPost, request } from "../../../../api";
 import { useDispatch, useSelector } from "react-redux";
 import Snackbar from "@material-ui/core/Snackbar";
 import MuiAlert from "@material-ui/lab/Alert";
+import parse from "html-react-parser";
+import displayTime from "../../../../utils/DateTimeUtils";
+import PositiveButton from "../../../../component/education/classmanagement/PositiveButton";
+import NegativeButton from "../../../../component/education/classmanagement/NegativeButton";
+import { errorNoti, successNoti } from "../../../../utils/Notification";
 
 const useStyles = makeStyles((theme) => ({
   divider: {
@@ -46,7 +51,7 @@ const useStyles = makeStyles((theme) => ({
   },
   card: {
     marginTop: theme.spacing(2),
-    minHeight: window.innerHeight - 133,
+    minHeight: 600,
   },
   remainingTime: {
     display: "flex",
@@ -76,19 +81,23 @@ const useStyles = makeStyles((theme) => ({
     marginBottom: 16,
   },
   cancleBtn: {
+    width: 112,
     marginTop: 16,
     marginRight: 16,
-    textTransform: "none",
+    fontWeight: "normal",
   },
   submitBtn: {
-    borderRadius: "6px",
+    width: 112,
     marginTop: 16,
-    textTransform: "none",
+    fontWeight: "normal",
   },
   editBtn: {
     marginLeft: 16,
-    borderRadius: "6px",
-    textTransform: "none",
+    fontWeight: "normal",
+  },
+  assignDetail: {
+    display: "flex",
+    // whiteSpace: "pre-wrap",
   },
 }));
 
@@ -113,17 +122,14 @@ const children = ({ remainingTime }) => {
   }
 };
 
-const formatTime = (n) => (Number(n) < 10 ? "0" + Number(n) : "" + Number(n));
+// const Alert = (props) => {
+//   return <MuiAlert elevation={6} variant="filled" {...props} />;
+// };
 
-const Alert = (props) => {
-  return <MuiAlert elevation={6} variant="filled" {...props} />;
-};
-
-function SExerciseDetail() {
+function SAssignmentDetail() {
   const classes = useStyles();
   const params = useParams();
   const history = useHistory();
-  const dispatch = useDispatch();
   const token = useSelector((state) => state.auth.token);
 
   // Countdown.
@@ -133,32 +139,33 @@ function SExerciseDetail() {
 
   // Assignment detail.
   const [hideSubject, setHideSubject] = useState(true);
-  const [assignmentDetail, setAssignmentDetail] = useState({});
+  const [assignDetail, setAssignDetail] = useState({});
 
   // Submit and edit submission.
   const [file, setFile] = useState();
   const [isUpdating, setIsUpdating] = useState(false);
 
-  // Snackbar.
-  const [state, setState] = React.useState({
-    open: false,
-    vertical: "top",
-    horizontal: "center",
-  });
+  // // Snackbar.
+  // const [state, setState] = React.useState({
+  //   open: false,
+  //   vertical: "top",
+  //   horizontal: "center",
+  // });
 
-  const { vertical, horizontal, open } = state;
-  const [message, setMessage] = useState("");
+  // const { vertical, horizontal, open } = state;
+  // const [message, setMessage] = useState("");
 
   // Functions.
-  const getExerciseDetail = () => {
-    axiosGet(
+  const getAssignDetail = () => {
+    request(
       token,
-      "/edu/assignment/717729ee-fe55-11ea-8b6c-0862665303f9/student"
-    )
-      .then((res) => {
-        let assignmentDetail = res.data.assignmentDetail;
-        let startTime = new Date(assignmentDetail.createdStamp);
-        let endTime = new Date(assignmentDetail.deadLine);
+      history,
+      "get",
+      `/edu/assignment/${params.assignmentId}/student`,
+      (res) => {
+        let assignDetail = res.data.assignmentDetail;
+        let startTime = new Date(assignDetail.createdStamp);
+        let endTime = new Date(assignDetail.deadLine);
 
         setRemainingTime(
           endTime.getTime() < Date.now()
@@ -170,51 +177,79 @@ function SExerciseDetail() {
 
         setKey("update-params");
 
-        setAssignmentDetail({
-          name: assignmentDetail.name,
-          subject: assignmentDetail.subject,
+        setAssignDetail({
+          name: assignDetail.name,
+          subject: assignDetail.subject,
           startTime: startTime,
           endTime: endTime,
           submitedFileName: res.data.submitedFileName,
         });
-      })
-      .catch((e) => console.log(e));
+      }
+    );
   };
 
-  const handleClose = (event, reason) => {
-    if (reason === "clickaway") {
-      return;
-    }
+  // const handleClose = (event, reason) => {
+  //   if (reason === "clickaway") {
+  //     return;
+  //   }
 
-    setState({ ...state, open: false });
-  };
+  //   setState({ ...state, open: false });
+  // };
 
   const onClickCancleBtn = () => {
     setIsUpdating(false);
   };
 
   const onClickSubmitBtn = () => {
-    const data = new FormData();
-    data.append("file", file);
+    if (assignDetail.endTime.getTime() < new Date().getTime()) {
+      errorNoti("Đã quá hạn nộp bài.");
+      setRemainingTime(0);
+    } else {
+      const data = new FormData();
+      data.append("file", file);
 
-    axiosPost(token, `/edu/assignment/${params.assignmentId}/submission`, data)
-      .then((res) => {
-        setMessage(isUpdating ? "Chỉnh sửa thành công" : "Nộp bài thành công");
+      request(
+        token,
+        history,
+        "post",
+        `/edu/assignment/${params.assignmentId}/submission`,
+        (res) => {
+          // setMessage(isUpdating ? "Chỉnh sửa thành công" : "Nộp bài thành công");
+          // setState({ ...state, open: true });
 
-        setState({ ...state, open: true });
+          successNoti(
+            isUpdating ? "Chỉnh sửa thành công." : "Nộp bài thành công."
+          );
 
-        setIsUpdating(false);
+          setIsUpdating(false);
 
-        setAssignmentDetail({
-          ...assignmentDetail,
-          submitedFileName: file.name,
-        });
-      })
-      .catch((e) => alert("error"));
+          setAssignDetail({
+            ...assignDetail,
+            submitedFileName: file.name,
+          });
+        },
+        {
+          400: (e) => {
+            if ("not exist" == e.response.data?.error) {
+              errorNoti("Bài tập này đã bị xoá trước đó.");
+            } else if ("deadline exceeded" == e.response.data?.error) {
+              errorNoti("Đã quá hạn nộp bài.");
+              setRemainingTime(0);
+            } else {
+              errorNoti("Rất tiếc! Đã có lỗi xảy ra. Vui lòng thử lại.");
+            }
+          },
+          500: (e) => {
+            errorNoti("Rất tiếc! Đã có lỗi xảy ra. Vui lòng thử lại.");
+          },
+        },
+        data
+      );
+    }
   };
 
   useEffect(() => {
-    getExerciseDetail();
+    getAssignDetail();
   }, []);
 
   return (
@@ -250,64 +285,36 @@ function SExerciseDetail() {
               <Grid container>
                 <Grid item md={3} sm={3} xs={3}>
                   <Typography>Tên bài tập</Typography>
-                </Grid>
-                <Grid item md={8} sm={8} xs={8}>
-                  <div
-                    style={{
-                      display: "flex",
-                      // whiteSpace: "pre-wrap",
-                    }}
-                  >
-                    <b>:&nbsp;</b>
-                    {assignmentDetail.name === undefined ? null : (
-                      <Typography>{assignmentDetail.name}</Typography>
-                    )}
-                  </div>
-                </Grid>
-                <Grid item md={3} sm={3} xs={3}>
                   <Typography>Ngày giao</Typography>
-                </Grid>
-                <Grid item md={8} sm={8} xs={8}>
-                  {assignmentDetail.startTime == undefined ||
-                  assignmentDetail.startTime == null ? (
-                    <b>:</b>
-                  ) : (
-                    <Typography>
-                      <b>:</b>&nbsp;{assignmentDetail.startTime.getFullYear()}-
-                      {formatTime(assignmentDetail.startTime.getMonth() + 1)}-
-                      {formatTime(assignmentDetail.startTime.getDate())}
-                      &nbsp;&nbsp;
-                      {formatTime(assignmentDetail.startTime.getHours())}
-                      <b>:</b>
-                      {formatTime(assignmentDetail.startTime.getMinutes())}
-                      <b>:</b>
-                      {formatTime(assignmentDetail.startTime.getSeconds())}
-                    </Typography>
-                  )}
-                </Grid>
-                <Grid item md={3} sm={3} xs={3}>
                   <Typography>Hạn nộp</Typography>
                 </Grid>
-                <Grid item md={8} sm={8} xs={8}>
-                  {assignmentDetail.endTime == undefined ||
-                  assignmentDetail.endTime == null ? (
-                    <b>:</b>
+                <Grid item md={8} sm={8} xs={8} direction="column">
+                  <div className={classes.assignDetail}>
+                    <b>:&nbsp;</b>
+                    {assignDetail.name ? (
+                      <Typography>{assignDetail.name}</Typography>
+                    ) : null}
+                  </div>
+
+                  {assignDetail.startTime ? (
+                    <div className={classes.assignDetail}>
+                      <b>:</b>&nbsp;{displayTime(assignDetail.startTime)}
+                    </div>
                   ) : (
-                    <Typography>
-                      <b>:</b>&nbsp;{assignmentDetail.endTime.getFullYear()}-
-                      {formatTime(assignmentDetail.endTime.getMonth() + 1)}-
-                      {formatTime(assignmentDetail.endTime.getDate())}
-                      &nbsp;&nbsp;
-                      {formatTime(assignmentDetail.endTime.getHours())}
-                      <b>:</b>
-                      {formatTime(assignmentDetail.endTime.getMinutes())}
-                      <b>:</b>
-                      {formatTime(assignmentDetail.endTime.getSeconds())}
-                    </Typography>
+                    <b>:</b>
+                  )}
+
+                  {assignDetail.endTime ? (
+                    <div className={classes.assignDetail}>
+                      <b>:</b>&nbsp;{displayTime(assignDetail.endTime)}
+                    </div>
+                  ) : (
+                    <b>
+                      <br />:
+                    </b>
                   )}
                 </Grid>
-                {assignmentDetail.submitedFileName != undefined &&
-                assignmentDetail.submitedFileName != null ? (
+                {assignDetail.submitedFileName ? (
                   <Grid item md={12}>
                     <div className={classes.divider}>
                       <Divider
@@ -328,17 +335,14 @@ function SExerciseDetail() {
                             variant="outlined"
                             clickable
                             color="primary"
-                            label={assignmentDetail.submitedFileName}
+                            label={assignDetail.submitedFileName}
                           />
                           {remainingTime > 0 && isUpdating == false ? (
-                            <Button
-                              variant="outlined"
+                            <PositiveButton
+                              label="Chỉnh sửa"
                               className={classes.editBtn}
-                              style={{ background: "#2ea44f", color: "white" }}
                               onClick={() => setIsUpdating(true)}
-                            >
-                              Chỉnh sửa
-                            </Button>
+                            />
                           ) : null}
                         </Box>
                       </Grid>
@@ -362,16 +366,16 @@ function SExerciseDetail() {
                   {hideSubject ? "Hiện đề bài" : "Ẩn đề bài"}
                 </Button>
               </Box>
-              {hideSubject ? null : assignmentDetail.subject}
+              {hideSubject ? null : parse(assignDetail.subject)}
             </Grid>
           </Grid>
         </CardContent>
         {remainingTime > 0 &&
-        (assignmentDetail.submitedFileName == null || isUpdating == true) ? (
+        (assignDetail.submitedFileName == null || isUpdating == true) ? (
           <Fragment>
             <CardHeader
               avatar={
-                <Avatar style={{ background: '#e7f3ff' }}>
+                <Avatar style={{ background: "#e7f3ff" }}>
                   <FcUpload size={32} />
                 </Avatar>
               }
@@ -391,7 +395,7 @@ function SExerciseDetail() {
                 getFileAddedMessage={(fileName) =>
                   `Tệp ${fileName} tải lên thành công`
                 }
-                showAlerts={["error", "success"]}
+                showAlerts={["error"]}
                 alertSnackbarProps={{
                   anchorOrigin: { vertical: "bottom", horizontal: "right" },
                 }}
@@ -424,28 +428,22 @@ function SExerciseDetail() {
                 onChange={(files) => setFile(files[0])}
               />
               {isUpdating ? (
-                <Button
-                  variant="text"
-                  color="secondary"
+                <NegativeButton
+                  label="Huỷ"
                   className={classes.cancleBtn}
                   onClick={onClickCancleBtn}
-                >
-                  Huỷ
-                </Button>
+                />
               ) : null}
-              <Button
-                variant="outlined"
-                style={{ background: "#2ea44f", color: "white" }}
+              <PositiveButton
+                label={isUpdating ? "Cập nhật" : "Nộp bài"}
                 className={classes.submitBtn}
                 onClick={onClickSubmitBtn}
-              >
-                {isUpdating ? "Cập nhật" : "Nộp bài"}
-              </Button>
+              />
             </CardContent>
           </Fragment>
         ) : null}
       </Card>
-      <Snackbar
+      {/* <Snackbar
         autoHideDuration={3000}
         anchorOrigin={{ vertical, horizontal }}
         open={open}
@@ -455,9 +453,9 @@ function SExerciseDetail() {
         <Alert onClose={handleClose} severity="success">
           {message}
         </Alert>
-      </Snackbar>
+      </Snackbar> */}
     </MuiThemeProvider>
   );
 }
 
-export default SExerciseDetail;
+export default SAssignmentDetail;

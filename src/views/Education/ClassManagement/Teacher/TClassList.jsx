@@ -2,22 +2,22 @@ import React, { useRef, useEffect, useState } from "react";
 import {
   Card,
   CardContent,
-  Button,
   Typography,
-  Box,
   CardHeader,
   Paper,
-  Grid,
 } from "@material-ui/core";
 import MaterialTable from "material-table";
-import { useDispatch, useSelector } from "react-redux";
+import { useSelector } from "react-redux";
 import { useHistory } from "react-router";
-import { authGet, axiosGet } from "../../../../api";
+import { request } from "../../../../api";
 import { MuiThemeProvider } from "material-ui/styles";
-import { FcViewDetails } from "react-icons/fc";
 import { Avatar } from "material-ui";
 import { makeStyles } from "@material-ui/core/styles";
 import { FaListUl } from "react-icons/fa";
+import changePageSize, {
+  localization,
+  tableIcons,
+} from "../../../../utils/MaterialTableUtils";
 
 const useStyles = makeStyles((theme) => ({
   card: {
@@ -27,9 +27,8 @@ const useStyles = makeStyles((theme) => ({
 
 function ClassList() {
   const classes = useStyles();
-  const dispatch = useDispatch();
-  const token = useSelector((state) => state.auth.token);
   const history = useHistory();
+  const token = useSelector((state) => state.auth.token);
 
   // Table.
   const headerProperties = {
@@ -41,7 +40,7 @@ function ClassList() {
       fontSize: "1rem",
     },
   };
-  const columns = [
+  const cols = [
     {
       field: "code",
       title: "Mã lớp",
@@ -77,14 +76,14 @@ function ClassList() {
   ];
 
   const [data, setData] = useState([]);
-
   const tableRef = useRef(null);
 
   // Functions.
   const getClasses = () => {
-    axiosGet(token, "/edu/class/list/teacher")
-      .then((res) => setData(res.data))
-      .catch((e) => alert(e.response.body));
+    request(token, history, "get", "/edu/class/list/teacher", (res) => {
+      changePageSize(res.data.length, tableRef);
+      setData(res.data);
+    });
   };
 
   useEffect(() => {
@@ -105,32 +104,18 @@ function ClassList() {
         <CardContent>
           <MaterialTable
             title=""
-            columns={columns}
+            columns={cols}
+            icons={tableIcons}
             tableRef={tableRef}
-            localization={{
-              body: {
-                emptyDataSourceMessage: "Không có bản ghi nào để hiển thị",
-              },
-              toolbar: {
-                searchPlaceholder: "Tìm kiếm",
-                searchTooltip: "Tìm kiếm",
-              },
-              pagination: {
-                hover: "pointer",
-                labelRowsSelect: "hàng",
-                labelDisplayedRows: "{from}-{to} của {count}",
-                nextTooltip: "Trang tiếp",
-                lastTooltip: "Trang cuối",
-                firstTooltip: "Trang đầu",
-                previousTooltip: "Trang trước",
-              },
-            }}
+            localization={localization}
             data={data}
             components={{
               Container: (props) => <Paper {...props} elevation={0} />,
             }}
             options={{
-              pageSize: 20,
+              filtering: true,
+              search: false,
+              pageSize: 10,
               debounceInterval: 500,
               headerStyle: {
                 backgroundColor: "#673ab7",
@@ -138,11 +123,11 @@ function ClassList() {
                 fontSize: "1rem",
                 color: "white",
               },
-              sorting: false,
+              filterCellStyle: { textAlign: "center" },
               cellStyle: { fontSize: "1rem" },
             }}
             onRowClick={(event, rowData) => {
-              console.log(rowData);
+              // console.log(rowData);
               history.push({
                 pathname: `/edu/teacher/class/${rowData.id}`,
                 state: {},

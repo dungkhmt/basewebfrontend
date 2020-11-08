@@ -85,12 +85,12 @@ export const tableIcons = {
   ViewColumn: forwardRef((props, ref) => <ViewColumn {...props} ref={ref} />),
 };
 
-export default function changePageSize(totalCount, setPageSize) {
+export default function changePageSize(totalCount, tableRef) {
   if (totalCount < 6) {
-    setPageSize(5);
+    tableRef.current.dataManager.changePageSize(5);
   } else if (totalCount < 11) {
-    setPageSize(10);
+    tableRef.current.dataManager.changePageSize(10);
   } else {
-    setPageSize(20);
+    tableRef.current.dataManager.changePageSize(20);
   }
 }
