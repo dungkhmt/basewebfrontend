@@ -16,6 +16,8 @@ import Geocoder from "react-native-geocoding";
 import { useParams } from "react-router-dom";
 import MaterialTable from "material-table";
 import { tableIcons } from "../../utils/iconutil";
+import { Line } from "react-chartjs-2";
+
 
 
 const useStyles = makeStyles((theme) => ({
@@ -71,7 +73,53 @@ function LakeLiveInfo(props) {
   }]
 
   const [data, setData] = useState([])
+  const [mucNuocLuKiemTraHistory, setMucNuocLuKiemTraHistory] = useState([]);
+  const [luuLuongXaLuKiemTraHistory, setLuuLuongXaLuKiemTraHistory] = useState([]);
 
+  const dataChart = {
+    labels: ['1', '2', '3', '4', '5', '6','7','8','9','10'],
+    datasets: [
+      {
+        label: 'mực nước lũ',
+        data: mucNuocLuKiemTraHistory,
+        fill: false,
+        backgroundColor: 'rgb(255, 99, 132)',
+        borderColor: 'rgba(255, 99, 132, 0.2)',
+        yAxisID: 'y-axis-1',
+      },
+      {
+        label: '#lưu lượng xả lũ',
+        data: luuLuongXaLuKiemTraHistory,
+        fill: false,
+        backgroundColor: 'rgb(54, 162, 235)',
+        borderColor: 'rgba(54, 162, 235, 0.2)',
+        yAxisID: 'y-axis-2',
+      },
+    ],
+  }
+  
+  const optionsChart = {
+    scales: {
+      yAxes: [
+        {
+          type: 'linear',
+          display: true,
+          position: 'left',
+          id: 'y-axis-1',
+        },
+        {
+          type: 'linear',
+          display: true,
+          position: 'right',
+          id: 'y-axis-2',
+          gridLines: {
+            drawOnArea: false,
+          },
+        },
+      ],
+    },
+  }
+  
   useEffect(() => {
     authGet(dispatch, token, "/lake/" + lakeId).then(
       res => {
@@ -107,6 +155,8 @@ function LakeLiveInfo(props) {
       const data = await res.json();
       console.log("GOT data " + data);
       setLake(data)
+      
+
       //setData([{'attribute': 'Diện tích lưu vực', value: data.dienTichLuuVuc},
       //{'attribute': 'Mức đảm bảo tưới', value: data.mucDamBaoTuoi}])
     
@@ -124,7 +174,10 @@ function LakeLiveInfo(props) {
   
         const data = await res.json();
         console.log("GOT data " + data);
-        setLake(data)
+        setLake(data.lake);
+        setLuuLuongXaLuKiemTraHistory(data.luuLuongXaLuKiemTraHistory) ; 
+        setMucNuocLuKiemTraHistory(data.mucNuocLuKiemTraHistory);
+
         //setData([{'attribute': 'Diện tích lưu vực', value: data.dienTichLuuVuc},
         //{'attribute': 'Mức đảm bảo tưới', value: data.mucDamBaoTuoi}])
       
@@ -240,7 +293,16 @@ function LakeLiveInfo(props) {
 
           </Map>
         </Grid>
-
+        <Grid item xs={5}>
+              <Card>
+                <CardHeader>
+                  Bieu do
+                </CardHeader>
+                <CardContent>
+                <Line data={dataChart} options={optionsChart} />
+                </CardContent>
+              </Card>
+        </Grid>
       </Grid>
     
     </div>
