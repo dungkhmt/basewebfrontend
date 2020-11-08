@@ -8,6 +8,7 @@ import error from "../component/common/errornotfound";
 import Loading from "../component/common/Loading";
 import { mapPathMenu } from "../config/menuconfig";
 import { Layout } from "../layout";
+import NotFound from "../views/errors/NotFound";
 
 const DepotContainerFuncRoute = lazy(() => import("./DepotContainerFuncRoute"));
 const DepotTrailerFuncRoute = lazy(() => import("./DepotTrailerFuncRoute"));
@@ -238,7 +239,8 @@ function MainAppRoute(props) {
             path="/schedule"
           />
 
-          <Route component={error} path="*" />
+          {/* <Route component={error} path="*" /> */}
+          <Route component={NotFound }/>
         </Switch>
       </Suspense>
     </Layout>

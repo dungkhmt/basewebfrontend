@@ -20,6 +20,7 @@ import SClassDetail from "../views/Education/ClassManagement/Student/SClassDetai
 import SClassList from "../views/Education/ClassManagement/Student/SClassList";
 import SAssignmentDetail from "../views/Education/ClassManagement/Student/SAssignmentDetail";
 import CreateAssignment from "../views/Education/ClassManagement/Teacher/CreateAssignment";
+import NotFound from "../views/errors/NotFound";
 
 export default function EduRoute() {
   let { path, url } = useRouteMatch();
@@ -48,35 +49,42 @@ export default function EduRoute() {
 
         <Route component={ClassCreate} path={`${path}/class/add`} />
 
-        <Route component={ClassRegistration} path={`${path}/class/register`} />
+        {/* Class management. */}
+        <Route component={ClassRegistration} path={`${path}/class/register`} exact/>
 
-        <Route component={SClassList} path={`${path}/student/class/list`} />
+        <Route component={SClassList} path={`${path}/student/class/list`} exact/>
 
         <Route
           component={SAssignmentDetail}
           path={`${path}/student/class/:classId/assignment/:assignmentId`}
+          exact
         />
 
-        <Route component={SClassDetail} path={`${path}/student/class/:id`} />
+        <Route component={SClassDetail} path={`${path}/student/class/:id`} exact/>
 
-        <Route component={TClassList} path={`${path}/teacher/class/list`} />
+        <Route component={TClassList} path={`${path}/teacher/class/list`} exact/>
 
         <Route
           component={CreateAssignment}
           path={`${path}/teacher/class/:classId/assignment/create`}
+          exact
         />
 
         <Route
           component={CreateAssignment}
           path={`${path}/teacher/class/:classId/assignment/:assignmentId/edit`}
+          exact
         />
 
         <Route
           component={TAssignmentDetail}
           path={`${path}/teacher/class/:classId/assignment/:assignmentId`}
+          exact
         />
 
-        <Route component={TClassDetail} path={`${path}/teacher/class/:id`} />
+        <Route component={TClassDetail} path={`${path}/teacher/class/:id`} exact/>
+
+        <Route component={NotFound}/>
       </Switch>
     </div>
   );
