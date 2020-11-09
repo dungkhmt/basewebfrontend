@@ -31,6 +31,7 @@ import { useSelector } from "react-redux";
 import { errorNoti } from "../../../../utils/Notification";
 import EditIcon from "@material-ui/icons/Edit";
 import NegativeButton from "../../../../component/education/classmanagement/NegativeButton";
+import { DevTool } from "react-hook-form-devtools";
 
 const useStyles = makeStyles((theme) => ({
   card: {
@@ -79,27 +80,30 @@ function CreateAssignment() {
   const [editorState, setEditorState] = useState(EditorState.createEmpty());
 
   // Form.
-  const { register, errors, watch, handleSubmit, setValue, setError } = useForm(
-    {
-      defaultValues: {
-        deadline: (() => {
-          let date = new Date();
+  const {
+    register,
+    errors,
+    watch,
+    handleSubmit,
+    setValue,
+    setError,
+    control,
+  } = useForm({
+    defaultValues: {
+      deadline: (() => {
+        let date = new Date();
 
-          date.setDate(date.getDate() + 1);
-          date.setHours(23);
-          date.setMinutes(59);
-          date.setSeconds(59);
+        date.setDate(date.getDate() + 1);
+        date.setHours(23);
+        date.setMinutes(59);
+        date.setSeconds(59);
 
-          return date;
-        })(),
-      },
-    }
-  );
+        return date;
+      })(),
+    },
+  });
 
   const [isProcessing, setIsProcessing] = useState(false);
-
-  // Form field.
-  const [key, setKey] = useState("fieldName");
 
   // Functions.
   const getData = () => {
@@ -121,7 +125,6 @@ function CreateAssignment() {
         );
 
         setEditorState(EditorState.createWithContent(contentState));
-        setKey("updateData"); // To re-render textfield.
       },
       {}
     );
@@ -253,7 +256,6 @@ function CreateAssignment() {
               >
                 <Grid item>
                   <TextField
-                    key={key}
                     name="name"
                     label="Tên bài tập*"
                     variant="outlined"
