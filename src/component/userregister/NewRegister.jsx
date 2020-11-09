@@ -165,7 +165,19 @@ export default function NewRegister() {
       "get",
       "/roles",
       (res) => {
-        setRoles(res.data);
+        setRoles(
+          res.data.sort((firstRole, secondRole) => {
+            if (firstRole.name < secondRole.name) {
+              return -1;
+            }
+
+            if (firstRole.name > secondRole.name) {
+              return 1;
+            }
+
+            return 0;
+          })
+        );
       },
       {}
     );
