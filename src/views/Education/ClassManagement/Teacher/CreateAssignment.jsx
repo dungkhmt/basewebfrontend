@@ -90,6 +90,7 @@ function CreateAssignment() {
     control,
   } = useForm({
     defaultValues: {
+      name: "",
       deadline: (() => {
         let date = new Date();
 
