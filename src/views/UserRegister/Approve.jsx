@@ -1,28 +1,26 @@
-import React, { useRef, useState, forwardRef, useEffect } from "react";
+import React, { useRef, useState, useEffect } from "react";
 import {
   Card,
   CardContent,
-  Button,
   Typography,
-  Box,
   CardHeader,
   Paper,
   Avatar,
   Link,
-  Grid,
-  TextField,
-  MenuItem,
 } from "@material-ui/core";
 import MaterialTable from "material-table";
-import { request } from "../../../api";
+import { request } from "../../api";
 import { MuiThemeProvider } from "material-ui/styles";
 import { makeStyles } from "@material-ui/core/styles";
 import { FcApproval } from "react-icons/fc";
-import { errorNoti, successNoti } from "../../../utils/Notification";
+import { errorNoti } from "../../utils/Notification";
 import { useSelector } from "react-redux";
 import { useHistory } from "react-router";
-import RegistrationDetail from "./RegistrationDetail";
-import { localization, tableIcons } from "../../../utils/MaterialTableUtils";
+import RegistrationDetail from "../../component/userregister/RegistrationDetail";
+import changePageSize, {
+  localization,
+  tableIcons,
+} from "../../utils/MaterialTableUtils";
 
 const useStyles = makeStyles((theme) => ({
   card: {
@@ -35,8 +33,8 @@ function NewApprove() {
   const history = useHistory();
   const token = useSelector((state) => state.auth.token);
 
-  const [rolesArr, setRolesArr] = useState([]); // for rendering select-box.
-  const [rolesMap, setRolesMap] = useState({}); // for displaying roles.
+  const [rolesArr, setRolesArr] = useState([]); // For rendering select-box.
+  const [rolesMap, setRolesMap] = useState({}); // For displaying roles.
   const [grantedRoles, setGrantedRoles] = useState({});
   const [currRowChanged, setCurrRowChanged] = useState();
 
@@ -80,41 +78,35 @@ function NewApprove() {
 
   // Functions.
   const getData = () => {
-    request(
-      token,
-      history,
-      "get",
-      `/user/registration-list`,
-      (res) => {
-        let registrations;
-        let roles = {};
+    request(token, history, "get", `/user/registration-list`, (res) => {
+      let registrations;
+      let roles = {};
 
-        res.data.roles.forEach((role) => {
-          roles[role.id] = role.name;
-        });
+      res.data.roles.forEach((role) => {
+        roles[role.id] = role.name;
+      });
 
-        // Convert registered roles from string to array.
-        registrations = res.data.regists.map((regist) => {
-          return {
-            ...regist,
-            roleIds: regist.roles.split(","),
-            roleNames: regist.roles
-              .split(",")
-              .map((id) => roles[id])
-              .join(", "),
-          };
-        });
+      // Convert registered roles from string to array.
+      registrations = res.data.regists.map((regist) => {
+        return {
+          ...regist,
+          roleIds: regist.roles.split(","),
+          roleNames: regist.roles
+            .split(",")
+            .map((id) => roles[id])
+            .join(", "),
+        };
+      });
 
-        setRegistrations(registrations);
-        setRolesArr(res.data.roles);
-        setRolesMap(roles);
-      },
-      {
-        rest: (error) => {
-          console.log(error);
-        },
-      }
-    );
+      changePageSize(registrations.length, tableRef);
+      setRegistrations(registrations);
+      setRolesArr(
+        res.data.roles.sort((firstRole, secondRole) =>
+          firstRole.name.localeCompare(secondRole.name)
+        )
+      );
+      setRolesMap(roles);
+    });
   };
 
   const handleApprove = (currRowChanged, userLoginId, assignedRoles) => {
@@ -123,7 +115,7 @@ function NewApprove() {
       history,
       "post",
       `/user/approve-registration`,
-      (res) => {
+      () => {
         let change = {};
 
         change[userLoginId] = assignedRoles
@@ -148,7 +140,7 @@ function NewApprove() {
             errorNoti("Rất tiếc! Đã có lỗi xảy ra. Vui lòng thử lại.");
           }
         },
-        rest: (error) => {
+        rest: () => {
           errorNoti("Rất tiếc! Đã có lỗi xảy ra. Vui lòng thử lại.");
         },
       },
@@ -221,7 +213,7 @@ function NewApprove() {
             options={{
               filtering: true,
               search: false,
-              pageSize: 20,
+              pageSize: 10,
               debounceInterval: 500,
               headerStyle: {
                 backgroundColor: "#673ab7",

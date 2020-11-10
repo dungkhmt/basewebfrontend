@@ -1,13 +1,11 @@
-import React, { Fragment, useEffect } from "react";
+import React, { useEffect } from "react";
 import Button from "@material-ui/core/Button";
 import { useHistory } from "react-router-dom";
 import { Controller, useForm } from "react-hook-form";
-import { DevTool } from "react-hook-form-devtools";
 import {
   Box,
   CardMedia,
   CircularProgress,
-  Divider,
   FormControl,
   FormHelperText,
   Grid,
@@ -16,7 +14,6 @@ import {
   InputAdornment,
   InputLabel,
   MenuItem,
-  Paper,
   TextField,
   Typography,
 } from "@material-ui/core";
@@ -29,7 +26,7 @@ import { motion } from "framer-motion";
 import _ from "lodash";
 import { request } from "../../api";
 import { useState } from "react";
-import { errorNoti, successNoti } from "../../utils/Notification";
+import { errorNoti } from "../../utils/Notification";
 import { useSelector } from "react-redux";
 import Visibility from "@material-ui/icons/Visibility";
 import VisibilityOff from "@material-ui/icons/VisibilityOff";
@@ -52,7 +49,7 @@ const theme = createMuiTheme({
   },
 });
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles(() => ({
   img: {
     width: "100%",
     height: "100%",
@@ -166,17 +163,9 @@ export default function NewRegister() {
       "/roles",
       (res) => {
         setRoles(
-          res.data.sort((firstRole, secondRole) => {
-            if (firstRole.name < secondRole.name) {
-              return -1;
-            }
-
-            if (firstRole.name > secondRole.name) {
-              return 1;
-            }
-
-            return 0;
-          })
+          res.data.sort((firstRole, secondRole) =>
+            firstRole.name.localeCompare(secondRole.name)
+          )
         );
       },
       {}
@@ -589,7 +578,7 @@ export default function NewRegister() {
           </Grid>
           <Grid item md={7} xs={7} sm={7} className={classes.imgWrapper}>
             <CardMedia
-              image={require("./sign_up.jpg")}
+              image="/static/images/sign_up.jpg"
               className={classes.img}
             />
           </Grid>
