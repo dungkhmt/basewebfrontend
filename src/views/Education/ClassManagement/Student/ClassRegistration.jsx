@@ -118,7 +118,6 @@ function ClassRegistration() {
         `/edu/class?page=${query.page}&size=${query.pageSize}`,
         (res) => {
           let { content, number, totalElements } = res.data.page;
-          changePageSize(content.length, tableRef);
 
           setFilterParams({
             code: "",
@@ -131,6 +130,7 @@ function ClassRegistration() {
           setSemester(res.data.semesterId);
           setRegisteredClasses(new Set(res.data.registeredClasses));
 
+          changePageSize(content.length, tableRef);
           resolve({
             data: content,
             page: number,
@@ -138,8 +138,9 @@ function ClassRegistration() {
           });
         },
         {
-          rest: (error) => {
-            console.log(error);
+          onError: (e) => {
+            console.log(e);
+            changePageSize(5, tableRef);
             reject({
               message: "Đã có lỗi xảy ra trong quá trình tải dữ liệu. Thử lại ",
               errorCause: "query",
