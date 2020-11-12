@@ -47,6 +47,8 @@ import { eduTeachingManagement } from "./menuconfig/classmanagement/teacher";
 import { eduLearningManagement } from "./menuconfig/classmanagement/student";
 import {schedule} from "./menuconfig/schedule"
 import { lake_mgr } from "./menuconfig/water-resources-management/lakemanagement";
+import {GiTeacher} from "react-icons/gi"
+import LocalLibraryIcon from '@material-ui/icons/LocalLibrary';
 
 export const MENU_LIST = [];
 MENU_LIST.push(department);
@@ -98,5 +100,7 @@ menuIconMap.set("HomeSharpIcon", <HomeSharpIcon />);
 menuIconMap.set("FastfoodIcon", <FastfoodIcon />);
 menuIconMap.set("LocalGroceryStoreIcon", <LocalGroceryStoreIcon />);
 menuIconMap.set("BlurOnIcon", <BlurOnIcon />);
+menuIconMap.set("GiTeacher", <GiTeacher size={24}/>)
+menuIconMap.set("LocalLibraryIcon", <LocalLibraryIcon/>)
 
 export const mapPathMenu = buildMapPathMenu(MENU_LIST);
