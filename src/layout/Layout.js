@@ -108,7 +108,7 @@ function Layout(props) {
           </IconButton>
           {open ? (
             <Typography variant="h6" noWrap>
-              Daily Opt
+              HUST
               <IconButton
                 color="inherit"
                 aria-label="open drawer"
@@ -135,7 +135,7 @@ function Layout(props) {
             })}
           >
             <Typography variant="h6" noWrap>
-              Quản lý chuỗi cung ứng
+              Hệ thống quản trị nghiệp vụ
             </Typography>
           </div>
           <span className={classes.toolbarButtons}>
