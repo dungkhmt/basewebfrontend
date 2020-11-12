@@ -32,6 +32,7 @@ import Visibility from "@material-ui/icons/Visibility";
 import VisibilityOff from "@material-ui/icons/VisibilityOff";
 import CustomizedDialogs from "../../utils/CustomizedDialogs";
 import { green } from "@material-ui/core/colors";
+import PositiveButton from "../../component/education/classmanagement/PositiveButton";
 
 const theme = createMuiTheme({
   overrides: {
@@ -121,9 +122,7 @@ const useStyles = makeStyles(() => ({
     fontFamily: "'Roboto', sans-serif",
   },
   confirmBtn: {
-    "&:hover": {
-      backgroundColor: "#e7f3ff",
-    },
+    fontWeight: "normal",
   },
 }));
 
@@ -591,18 +590,16 @@ export default function NewRegister() {
         title=""
         content={
           <Typography gutterBottom>
-            Đăng ký tài khoản thành công. Vui lòng chờ quản trị duyên phê duyệt
+            Đăng ký tài khoản thành công. Vui lòng chờ quản trị viên phê duyệt
             để sử dụng các tính năng của hệ thống.
           </Typography>
         }
         actions={
-          <Button
+          <PositiveButton
+            label="Đã hiểu"
             onClick={handleClose}
-            color="primary"
             className={classes.confirmBtn}
-          >
-            OK
-          </Button>
+          />
         }
         style={{ title: { height: 24 }, actions: { height: 40 } }}
       />
