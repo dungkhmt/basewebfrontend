@@ -245,11 +245,7 @@ function SClassDetail() {
                 <FcConferenceCall size={40} />
               </Avatar>
             }
-            title={
-              <Typography variant="h5">
-                Danh sách sinh viên cùng cảnh ngộ
-              </Typography>
-            }
+            title={<Typography variant="h5">Danh sách sinh viên</Typography>}
             action={
               <div>
                 <IconButton aria-label="show more">
