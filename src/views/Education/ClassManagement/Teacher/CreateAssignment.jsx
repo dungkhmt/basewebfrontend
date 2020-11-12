@@ -320,6 +320,7 @@ function CreateAssignment() {
                 <Grid item>
                   <Editor
                     editorState={editorState}
+                    handlePastedText={() => false}
                     onEditorStateChange={onChangeEditorState}
                     toolbarStyle={editorStyle.toolbar}
                     editorStyle={editorStyle.editor}
