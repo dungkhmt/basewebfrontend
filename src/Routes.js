@@ -8,12 +8,13 @@ import Register from "../src/views/UserRegister/Register";
 import SignInContainer from "./container/SignInContainer";
 import { Layout } from "./layout";
 import MainAppRoute from "./routers/MainAppRoutes";
+import BouncingBallsLoader from "./views/common/BouncingBallsLoader";
 
 function Routes(props) {
   //const isError = useSelector((state) => state.error.isError);
   //if (isError) return <Route component={Error500} path="*" />;
   return (
-    <Suspense fallback={<Loading />}>
+    <Suspense fallback={<BouncingBallsLoader />}>
       <Switch>
         <Route component={Register} layout={Layout} path="/user/register" />
         <PrivateRoute

@@ -10,6 +10,7 @@ import {
   getScrSecurInfoFailure,
   getScrSecurInfoSuccess,
 } from "../../../action/Screen";
+import BouncingBallsLoader from "../../../views/common/BouncingBallsLoader";
 
 function withAsynchScreenSecurity(SecuredScreen, id) {
   return function AsynchSecuredScreen(props) {
@@ -56,7 +57,7 @@ function withAsynchScreenSecurity(SecuredScreen, id) {
     }, []);
 
     if (isRequesting) {
-      return <Loading />;
+      return <BouncingBallsLoader />;
     } else {
       if (requestSuccess) {
         if (permissions.has(id)) {

@@ -8,6 +8,7 @@ import error from "../component/common/errornotfound";
 import Loading from "../component/common/Loading";
 import { mapPathMenu } from "../config/menuconfig";
 import { Layout } from "../layout";
+import BouncingBallsLoader from "../views/common/BouncingBallsLoader";
 import NotFound from "../views/errors/NotFound";
 
 const DepotContainerFuncRoute = lazy(() => import("./DepotContainerFuncRoute"));
@@ -70,7 +71,7 @@ function MainAppRoute(props) {
   }, [location]);
   return (
     <Layout>
-      <Suspense fallback={<Loading />}>
+      <Suspense fallback={<BouncingBallsLoader />}>
         <Switch>
           <PrivateRoute component={Home} exact path="/" />
 
