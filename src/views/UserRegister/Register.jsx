@@ -306,7 +306,7 @@ export default function NewRegister() {
                     name="firstName"
                     control={control}
                     onChange={([event]) => {
-                      return event.target.value.trim();
+                      return event.target.value.trimLeft();
                     }}
                     rules={{
                       required: "Trường này được yêu cầu",
@@ -357,7 +357,7 @@ export default function NewRegister() {
                     name="lastName"
                     control={control}
                     onChange={([event]) => {
-                      return event.target.value.trim();
+                      return event.target.value.trimLeft();
                     }}
                     rules={{
                       required: "Trường này được yêu cầu",
