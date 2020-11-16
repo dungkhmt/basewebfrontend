@@ -131,7 +131,7 @@ function PlanPeriod(props) {
   const onClickEditButton = (rowData) => {
     console.log("onClickEditButton, rowData ", rowData);
 
-    axiosPost(dispatch, token, "/get-list-sales-route-config", {
+    axiosPost(token, "/get-list-sales-route-config", {
       statusId: null,
     })
       .then((res) => {

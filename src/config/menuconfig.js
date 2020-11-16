@@ -44,6 +44,12 @@ import {warehouse} from "./menuconfig/warehouse";
 import {webcam} from "./menuconfig/webcam";
 import {promotax} from "./menuconfig/promotax";
 import {backlog} from "./menuconfig/backlog";
+import { eduTeachingManagement } from "./menuconfig/classmanagement/teacher";
+import { eduLearningManagement } from "./menuconfig/classmanagement/student";
+import {schedule} from "./menuconfig/schedule"
+import { lake_mgr } from "./menuconfig/water-resources-management/lakemanagement";
+import {GiTeacher} from "react-icons/gi"
+import LocalLibraryIcon from '@material-ui/icons/LocalLibrary';
 
 export const MENU_LIST = [];
 MENU_LIST.push(department);
@@ -71,26 +77,32 @@ MENU_LIST.push(salereport);
 MENU_LIST.push(facilityreport);
 MENU_LIST.push(tmsreport);
 MENU_LIST.push(tmscontainer);
-MENU_LIST.push(teachingassignment);
+// MENU_LIST.push(teachingassignment);
 MENU_LIST.push(webcam);
 MENU_LIST.push(backlog);
+MENU_LIST.push(eduTeachingManagement);
+MENU_LIST.push(schedule);
+MENU_LIST.push(eduLearningManagement);
+MENU_LIST.push(lake_mgr);
 
 export const menuIconMap = new Map();
-menuIconMap.set("InboxIcon", <InboxIcon/>);
-menuIconMap.set("StarBorder", <StarBorder/>);
-menuIconMap.set("PeopleIcon", <PeopleIcon/>);
-menuIconMap.set("AirportShuttleIcon", <AirportShuttleIcon/>);
-menuIconMap.set("PeopleOutlineIcon", <PeopleOutlineIcon/>);
-menuIconMap.set("PersonIcon", <PersonIcon/>);
-menuIconMap.set("FormatListNumberedIcon", <FormatListNumberedIcon/>);
-menuIconMap.set("DescriptionIcon", <DescriptionIcon/>);
-menuIconMap.set("DescriptionOutlinedIcon", <DescriptionOutlinedIcon/>);
-menuIconMap.set("ApartmentSharpIcon", <ApartmentSharpIcon/>);
-menuIconMap.set("AttachMoneySharpIcon", <AttachMoneySharpIcon/>);
-menuIconMap.set("StoreMallDirectorySharpIcon", <StoreMallDirectorySharpIcon/>);
-menuIconMap.set("HomeSharpIcon", <HomeSharpIcon/>);
-menuIconMap.set("FastfoodIcon", <FastfoodIcon/>);
-menuIconMap.set("LocalGroceryStoreIcon", <LocalGroceryStoreIcon/>);
-menuIconMap.set("BlurOnIcon", <BlurOnIcon/>);
+menuIconMap.set("InboxIcon", <InboxIcon />);
+menuIconMap.set("StarBorder", <StarBorder />);
+menuIconMap.set("PeopleIcon", <PeopleIcon />);
+menuIconMap.set("AirportShuttleIcon", <AirportShuttleIcon />);
+menuIconMap.set("PeopleOutlineIcon", <PeopleOutlineIcon />);
+menuIconMap.set("PersonIcon", <PersonIcon />);
+menuIconMap.set("FormatListNumberedIcon", <FormatListNumberedIcon />);
+menuIconMap.set("DescriptionIcon", <DescriptionIcon />);
+menuIconMap.set("DescriptionOutlinedIcon", <DescriptionOutlinedIcon />);
+menuIconMap.set("ApartmentSharpIcon", <ApartmentSharpIcon />);
+menuIconMap.set("AttachMoneySharpIcon", <AttachMoneySharpIcon />);
+menuIconMap.set("StoreMallDirectorySharpIcon", <StoreMallDirectorySharpIcon />);
+menuIconMap.set("HomeSharpIcon", <HomeSharpIcon />);
+menuIconMap.set("FastfoodIcon", <FastfoodIcon />);
+menuIconMap.set("LocalGroceryStoreIcon", <LocalGroceryStoreIcon />);
+menuIconMap.set("BlurOnIcon", <BlurOnIcon />);
+menuIconMap.set("GiTeacher", <GiTeacher size={24}/>)
+menuIconMap.set("LocalLibraryIcon", <LocalLibraryIcon/>)
 
 export const mapPathMenu = buildMapPathMenu(MENU_LIST);

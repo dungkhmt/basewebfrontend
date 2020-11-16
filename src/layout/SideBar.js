@@ -103,6 +103,7 @@ export default function SideBar(props) {
 function ListMenuItem(props) {
   let menuItems = props.configs.map((config) => (
     <MenuItem
+      key={config.id}
       config={config}
       openCollapse={props.openCollapse}
       menu={props.menu}

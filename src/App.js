@@ -13,7 +13,8 @@ class App extends Component {
         <ToastContainer
           position="bottom-left"
           transition={Slide}
-          autoClose={2000}
+          autoClose={3000}
+          limit={3}
           hideProgressBar={true}
           newestOnTop
           closeOnClick

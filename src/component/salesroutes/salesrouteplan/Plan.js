@@ -34,7 +34,7 @@ import {
   processingNoti,
   updateSuccessNoti,
   updateErrorNoti,
-} from "../Notification";
+} from "../../../utils/Notification";
 
 // const Transition = forwardRef((props, ref) => <Slide direction="down" ref={ref} {...props}/>);
 
@@ -87,7 +87,7 @@ function Plan() {
   ];
 
   const getListSalesRoutePlanningPeriod = () => {
-    axiosPost(dispatch, token, "/get-list-sales-route-planning-period", {
+    axiosPost(token, "/get-list-sales-route-planning-period", {
       statusId: null,
     })
       .then((res) => {
@@ -133,7 +133,7 @@ function Plan() {
     setCreationDialogOpen(false);
     processingNoti(toastId, false);
 
-    axiosPost(dispatch, token, "/create-sales-route-planning-period", {
+    axiosPost(token, "/create-sales-route-planning-period", {
       fromDate,
       toDate,
       description: data["Description"],

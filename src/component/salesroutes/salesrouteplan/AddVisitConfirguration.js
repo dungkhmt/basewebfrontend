@@ -17,7 +17,7 @@ import { Box, Menu } from "@material-ui/core";
 import { IconContext } from "react-icons/lib/cjs";
 import { MdCancel } from "react-icons/md";
 import { CircularProgress } from "material-ui";
-import { errorNoti } from "../Notification";
+import { errorNoti } from "../../../utils/Notification";
 import { object, string } from "yup";
 
 function AddVisitConfirguration(props) {
@@ -74,7 +74,7 @@ function AddVisitConfirguration(props) {
 
   // Functions.
   const getSalesmans = () => {
-    axiosPost(dispatch, token, "/get-list-all-salesmans", { statusId: null })
+    axiosPost(token, "/get-list-all-salesmans", { statusId: null })
       .then((res) => {
         setSalesmans(res.data);
         console.log("Salesmans ", res.data);
@@ -83,7 +83,7 @@ function AddVisitConfirguration(props) {
   };
 
   const getVisitFrequencies = () => {
-    axiosGet(dispatch, token, "/get-list-sales-route-visit-frequency")
+    axiosGet(token, "/get-list-sales-route-visit-frequency")
       .then((res) => {
         setFrequencies(res.data);
         console.log("Frequencies ", res.data);
@@ -94,7 +94,7 @@ function AddVisitConfirguration(props) {
   };
 
   const getConfigs = () => {
-    axiosPost(dispatch, token, "/get-list-sales-route-config", {
+    axiosPost(token, "/get-list-sales-route-config", {
       statusId: null,
     })
       .then((res) => {
@@ -183,7 +183,7 @@ function AddVisitConfirguration(props) {
     setValue([{ distributor: "" }, { retailOutlet: "" }]);
     setRetailOutlets([]);
 
-    axiosPost(dispatch, token, "/get-distributors-of-salesman", {
+    axiosPost(token, "/get-distributors-of-salesman", {
       partySalesmanId: salesmanId,
     })
       .then((res) => {
@@ -199,15 +199,10 @@ function AddVisitConfirguration(props) {
   const onChangeDistributor = (distributorId) => {
     setLoadingRetailOutlets(true);
 
-    axiosPost(
-      dispatch,
-      token,
-      "/get-list-retail-outlets-of-salesman-and-distributor",
-      {
-        partySalesmanId: watch("salesman"),
-        partyDistributorId: distributorId,
-      }
-    )
+    axiosPost(token, "/get-list-retail-outlets-of-salesman-and-distributor", {
+      partySalesmanId: watch("salesman"),
+      partyDistributorId: distributorId,
+    })
       .then((res) => {
         setRetailOutlets(res.data);
         console.log("Retail outlets of salesman and distributor: ", res.data);
@@ -249,7 +244,7 @@ function AddVisitConfirguration(props) {
     console.log("Form data ", data);
     // notify()
 
-    axiosPost(dispatch, token, "/create-sales-route-config-retail-outlet", {
+    axiosPost(token, "/create-sales-route-config-retail-outlet", {
       retailOutletSalesmanVendorId: data.retailOutlet,
       salesRoutePlanningPeriodId:
         props.location.state.salesRoutePlanningPeriodId,
