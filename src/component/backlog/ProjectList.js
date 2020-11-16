@@ -18,6 +18,7 @@ export default function ProjectList() {
     {
       title: 'Mã dự án',
       field: 'backlogProjectId',
+      // render: rowData => <Link to={"/backlog/project/" + rowData.backlogProjectId}>{rowData.backlogProjectId}</Link>
     },
     { title: 'Tên dự án', field: 'backlogProjectName' },
   ];

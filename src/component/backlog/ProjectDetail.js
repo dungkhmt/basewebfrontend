@@ -18,14 +18,8 @@ import FormGroup from '@material-ui/core/FormGroup';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Checkbox from '@material-ui/core/Checkbox';
 import { makeStyles } from "@material-ui/core/styles";
-import { TextField } from "@material-ui/core";
 
 const useStyles = makeStyles((theme) => ({
-  root: {
-    "& .MuiInputBase-root.Mui-disabled": {
-      color: "rgba(0, 0, 0, 1)"
-    }
-  },
   dialogPaper: {
     minHeight: '50vh',
     maxHeight: '70vh',
@@ -41,8 +35,8 @@ const useStyles = makeStyles((theme) => ({
     wordWrap: 'break-word'
   },
   grid: {
-    verticalAlign: 'text-bottom',
-    textAlign: 'right',
+    verticalAlign: 'text-bottom', 
+    textAlign: 'right', 
     padding: '0px 50px 10px 30px'
   }
 }));
@@ -83,6 +77,7 @@ export default function ProjectDetail(props) {
     );
     let tasks = await authGet(dispatch, token, "/backlog/get-project-detail/" + projectId);
     let myAccount = await authGet(dispatch, token, "/my-account/");
+    console.log(JSON.stringify(myAccount.user));
     let myTasks = tasks.filter(task => {
       return task.assignment.filter(element => { return element.userLoginId === myAccount.user }).length > 0;
     });
@@ -176,6 +171,7 @@ export default function ProjectDetail(props) {
   }
 
   const taskListColumn = [
+    { title: "ID", field: "backlogTask.backlogTaskId" },
     { title: "Chủ đề", field: "backlogTask.backlogTaskName" },
     {
       title: "Loại", field: "backlogTask.backlogTaskCategoryId",
@@ -221,22 +217,12 @@ export default function ProjectDetail(props) {
       title: "Hạn cuối", field: "backlogTask.dueDate",
       render: rowData => toFormattedDateTime(rowData.backlogTask['dueDate'])
     },
-  ];
-
-  const detailTaskColumn = [
-    { title: 'ID', field: "backlogTask.backlogTaskId" },
     {
-      title: 'Ngày cập nhật', field: "backlogTask.lastUpdateStamp",
+      title: "Ngày cập nhật", field: "backlogTask.lastUpdateStamp",
       render: rowData => toFormattedDateTime(rowData.backlogTask['lastUpdateStamp'])
     },
-    { title: 'Người tạo', field: "backlogTask.createdByUserLoginId" },
-    {
-      title: "Phân công", field: "assignment",
-      render: rowData => {
-        return rowData['assignment'].toString();
-      }
-    },
-  ]
+    { title: "Người tạo", field: "backlogTask.createdByUserLoginId" }
+  ];
 
   if (!isPermissive) {
     return (
@@ -269,9 +255,10 @@ export default function ProjectDetail(props) {
                   <Button className={classes.functionBtn} color={'primary'} variant={'contained'} onClick={() => history.push("/backlog/add-task/" + project.backlogProjectId)}>
                     Thêm task
                   </Button>
-                  <Button className={classes.functionBtn} color={'primary'} variant={'contained'} onClick={() => history.push("/backlog/project-list")}>
+                  <Button className={classes.functionBtn} color={'primary'} variant={'contained'} onClick={() => history.push("/backlog/list")}>
                     Danh sách dự án
                   </Button>
+
 
                   {/* add member dialog */}
                   <Dialog
@@ -290,7 +277,9 @@ export default function ProjectDetail(props) {
                           <FormControlLabel
                             control={
                               <Checkbox
-                                checked={isMember[key]}
+                                checked={
+                                  isMember[key]
+                                }
                                 onChange={handleChangeAddMember}
                                 name={key}
                               />
@@ -335,7 +324,6 @@ export default function ProjectDetail(props) {
                 </Grid>
               </Grid>
             </div>
-
             <p></p>
             <MaterialTable
               className={classes.table}
@@ -343,49 +331,13 @@ export default function ProjectDetail(props) {
               columns={taskListColumn}
               options={{
                 filtering: true,
-                search: false,
-                rowStyle: { backgroundColor: "#fcfcfc" }
+                search: false
               }}
               data={taskList}
-              detailPanel={
-                [{
-                  tooltip: "Chi tiết",
-                  render: rowData => {
-                    let data = JSON.parse(JSON.stringify([rowData]));
-                    return (
-                      <div style={{ padding: '10px 50px 10px 50px' }}>
-                        <MaterialTable
-                          options={{
-                            filtering: false,
-                            search: false,
-                            toolbar: false,
-                            paging: false,
-                            sorting: false
-                          }}
-                          columns={detailTaskColumn}
-                          data={data}
-                        />
-                        <p></p>
-                        <TextField
-                          className={classes.root}
-                          id="taskDescription"
-                          label="Mô tả"
-                          variant="outlined"
-                          value={rowData.backlogTask.backlogDescription === null || rowData.backlogTask.backlogDescription === undefined ? '' : rowData.backlogTask.backlogDescription}
-                          multiline={true}
-                          rows="5"
-                          fullWidth
-                          disabled
-                        />
-                      </div>
-                    )
-                  }
-                }]
-              }
-            // icons={tableIcons}
-            onRowClick={(event, rowData) => {
-              history.push("/backlog/edit-task/" + backlogProjectId + "/" + rowData.backlogTask.backlogTaskId);
-            }}
+              // icons={tableIcons}
+              onRowClick={(event, rowData) => {
+                history.push("/backlog/view-task/" + backlogProjectId + "/" + rowData.backlogTask.backlogTaskId);
+              }}
             />
           </CardContent>
         </Card>

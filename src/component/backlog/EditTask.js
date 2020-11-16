@@ -7,8 +7,6 @@ import { makeStyles } from "@material-ui/core/styles";
 import TextField from "@material-ui/core/TextField";
 import Typography from "@material-ui/core/Typography";
 import MenuItem from "@material-ui/core/MenuItem";
-import Checkbox from '@material-ui/core/Checkbox';
-import { ListItemText } from '@material-ui/core';
 
 import {
   KeyboardDateTimePicker,
@@ -119,7 +117,6 @@ export default function EditTask(props) {
 
   const handleTaskAssignmentChange = (event) => {
     setTaskAssignment(event.target.value);
-    if(event.target.value === '') setTaskField("statusId", "TASK_OPEN");
   }
 
   const handleTaskAssignableChange = (event) => {
@@ -175,7 +172,7 @@ export default function EditTask(props) {
               label="Mô tả"
               placeholder="Mô tả công việc"
               value={taskDetail.backlogDescription === null || taskDetail.backlogDescription === undefined ? '' : taskDetail.backlogDescription}
-              multiline={true}
+              multiline="true"
               rows="5"
               fullWidth
               onChange={(event) => {
@@ -236,6 +233,7 @@ export default function EditTask(props) {
             </div>
             <div>
               <KeyboardDateTimePicker
+                showTodayButton={true}
                 variant="inline"
                 format="dd/MM/yyyy HH:mm"
                 margin="normal"
@@ -248,6 +246,7 @@ export default function EditTask(props) {
               />
 
               <KeyboardDateTimePicker
+                showTodayButton={true}
                 variant="inline"
                 format="dd/MM/yyyy HH:mm"
                 margin="normal"
@@ -263,9 +262,8 @@ export default function EditTask(props) {
             <TextField
               id="taskAssignment"
               select={true}
-              disabled={taskAssignable.length > 0}
               SelectProps={{
-                multiple: false,
+                multiple: true,
                 value: taskAssignment === null || taskAssignment === undefined ? '' : taskAssignment,
                 onChange: handleTaskAssignmentChange
               }}
@@ -273,7 +271,7 @@ export default function EditTask(props) {
               label="Người thực hiện"
             >
               {projectMember.map((item) => (
-                <MenuItem key={item.partyId} value={item.partyId} >
+                <MenuItem key={item.partyId} value={item.partyId}>
                   {item.userLoginId}
                 </MenuItem>
               ))}
@@ -282,21 +280,17 @@ export default function EditTask(props) {
             <TextField
               id="taskAssignable"
               select={true}
-              disabled={taskAssignment !== ''}
               SelectProps={{
                 multiple: true,
                 value: taskAssignable === null || taskAssignable === undefined ? '' : taskAssignable,
-                onChange: handleTaskAssignableChange,
-                renderValue: projectMember.length <= 0 ? ()=>{} : (taskAssignable) =>
-                  taskAssignable.map((x) => projectMember.find(member => member.partyId === x).userLoginId).join(", ")
+                onChange: handleTaskAssignableChange
               }}
               fullWidth
               label="Người có thể thực hiện"
             >
               {projectMember.map((item) => (
                 <MenuItem key={item.partyId} value={item.partyId}>
-                  <Checkbox checked={taskAssignable.includes(item.partyId)} />
-                  <ListItemText primary={item.userLoginId} />
+                  {item.userLoginId}
                 </MenuItem>
               ))}
             </TextField>

@@ -55,7 +55,7 @@ export default function CreateProject() {
 		} else {
 			alert('Tạo dự án mới thất bại. Mã dự án đã tồn tại');
 		}
-		history.push('/backlog/project-list');
+		history.push('/backlog/list');
 	}
 
 	return (
@@ -104,7 +104,7 @@ export default function CreateProject() {
           </Button>
           <Button
             variant="contained"
-            onClick={() => history.push("/backlog/project-list")}
+            onClick={() => history.push("/backlog/list")}
           >
             Hủy
           </Button>

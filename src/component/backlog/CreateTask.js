@@ -7,8 +7,7 @@ import { makeStyles } from "@material-ui/core/styles";
 import TextField from "@material-ui/core/TextField";
 import Typography from "@material-ui/core/Typography";
 import MenuItem from "@material-ui/core/MenuItem";
-import Checkbox from '@material-ui/core/Checkbox';
-import { ListItemText } from '@material-ui/core';
+
 import {
   KeyboardDateTimePicker,
   MuiPickersUtilsProvider,
@@ -35,14 +34,14 @@ export default function CreateTask(props) {
   const dispatch = useDispatch();
   const token = useSelector(state => state.auth.token);
   const classes = useStyles();
-  const [taskName, setTaskName] = useState('');
-  const [taskDescription, setTaskDescription] = useState('');
+  const [taskName, setTaskName] = useState(null);
+  const [taskDescription, setTaskDescription] = useState(null);
   const [taskStatus, setTaskStatus] = useState(null);
   const [taskPriority, setTaskPriority] = useState(null);
   const [taskType, setTaskType] = useState(null);
   const [taskDueDate, setTaskDueDate] = useState(null);
   const [taskFromDate, setTaskFromDate] = useState(null);
-  const [taskAssignment, setTaskAssignment] = useState('');
+  const [taskAssignment, setTaskAssignment] = useState([]);
   const [taskAssignable, setTaskAssignable] = useState([]);
   const [projectMember, setProjectMember] = useState([]);
   const history = useHistory();
@@ -96,7 +95,7 @@ export default function CreateTask(props) {
       res => {
         if (res != null) {
           setStatusPool(res);
-          setTaskStatus("TASK_OPEN");
+          setTaskStatus(res[0] === undefined ? '' : res[0].statusId);
         }
       }
     )
@@ -112,8 +111,6 @@ export default function CreateTask(props) {
 
   const handleTaskAssignmentChange = (event) => {
     setTaskAssignment(event.target.value);
-    if(event.target.value === '') setTaskStatus("TASK_OPEN");
-    else setTaskStatus("TASK_INPROGRESS");
   }
 
   const handleTaskAssignableChange = (event) => {
@@ -140,7 +137,7 @@ export default function CreateTask(props) {
 
     let addAssignmentBody = {
       backlogTaskId: task.backlogTaskId,
-      assignedToPartyId: [taskAssignment],
+      assignedToPartyId: taskAssignment,
       statusId: taskStatus
     };
     authPost(dispatch, token, '/backlog/add-assignments', addAssignmentBody).then(r => r.json());
@@ -180,7 +177,7 @@ export default function CreateTask(props) {
               label="Mô tả"
               placeholder="Mô tả công việc"
               value={taskDescription}
-              multiline={true}
+              multiline="true"
               rows="5"
               fullWidth
               onChange={(event) => {
@@ -243,6 +240,7 @@ export default function CreateTask(props) {
 
             <div>
               <KeyboardDateTimePicker
+                showTodayButton={true}
                 variant="inline"
                 format="dd/MM/yyyy HH:mm"
                 margin="normal"
@@ -255,6 +253,7 @@ export default function CreateTask(props) {
               />
 
               <KeyboardDateTimePicker
+                showTodayButton={true}
                 variant="inline"
                 format="dd/MM/yyyy HH:mm"
                 margin="normal"
@@ -270,18 +269,14 @@ export default function CreateTask(props) {
             <TextField
               id="taskAssignment"
               select={true}
-              disabled={taskAssignable.length > 0}
               SelectProps={{
-                multiple: false,
+                multiple: true,
                 value: taskAssignment,
                 onChange: handleTaskAssignmentChange
               }}
               fullWidth
               label="Người thực hiện"
             >
-              <MenuItem key='' value=''>
-                &nbsp;
-              </MenuItem>
               {projectMember.map((item) => (
                 <MenuItem key={item.partyId} value={item.partyId}>
                   {item.userLoginId}
@@ -292,21 +287,17 @@ export default function CreateTask(props) {
             <TextField
               id="taskAssignable"
               select={true}
-              disabled={taskAssignment !== ''}
               SelectProps={{
                 multiple: true,
                 value: taskAssignable,
-                onChange: handleTaskAssignableChange,
-                renderValue: projectMember.length <= 0 ? () => { } : (taskAssignable) =>
-                  taskAssignable.map((x) => projectMember.find(member => member.partyId === x).userLoginId).join(", ")
+                onChange: handleTaskAssignableChange
               }}
               fullWidth
               label="Người có thể thực hiện"
             >
               {projectMember.map((item) => (
                 <MenuItem key={item.partyId} value={item.partyId}>
-                  <Checkbox checked={taskAssignable.includes(item.partyId)} />
-                  <ListItemText primary={item.userLoginId} />
+                  {item.userLoginId}
                 </MenuItem>
               ))}
             </TextField>
