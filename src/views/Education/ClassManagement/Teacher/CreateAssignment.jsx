@@ -32,6 +32,7 @@ import { errorNoti } from "../../../../utils/Notification";
 import EditIcon from "@material-ui/icons/Edit";
 import NegativeButton from "../../../../component/education/classmanagement/NegativeButton";
 import { DevTool } from "react-hook-form-devtools";
+import PositiveButton from "../../../../component/education/classmanagement/PositiveButton";
 
 const useStyles = makeStyles((theme) => ({
   card: {
@@ -45,17 +46,11 @@ const useStyles = makeStyles((theme) => ({
   cancelBtn: {
     minWidth: 112,
     fontWeight: "normal",
-    marginLeft: theme.spacing(2),
+    marginRight: 10,
   },
   createOrUpdateBtn: {
     minWidth: 112,
-    borderRadius: "6px",
-    backgroundColor: "#1877f2",
-    textTransform: "none",
-    fontSize: "1rem",
-    "&:hover": {
-      backgroundColor: "#1834d2",
-    },
+    fontWeight: "normal",
   },
 }));
 
@@ -79,7 +74,32 @@ function CreateAssignment() {
   // Editor.
   const [editorState, setEditorState] = useState(EditorState.createEmpty());
 
+  // Pickers.
+  const pickerProps = {
+    inputVariant: "outlined",
+    size: "small",
+    cancelLabel: "Huỷ",
+    okLabel: "Chọn",
+    ampm: false,
+    disablePast: true,
+    format: "yyyy-MM-dd  HH:mm:ss",
+    strictCompareDates: true,
+    InputProps: {
+      endAdornment: (
+        <InputAdornment position="end">
+          <IconButton>
+            <FcCalendar size={32} />
+          </IconButton>
+        </InputAdornment>
+      ),
+    },
+    TextFieldComponent: (props) => (
+      <TextField disabled className={classes.textField} {...props} />
+    ),
+  };
+
   // Form.
+  const [isProcessing, setIsProcessing] = useState(false);
   const {
     register,
     errors,
@@ -87,11 +107,22 @@ function CreateAssignment() {
     handleSubmit,
     setValue,
     setError,
+    clearError,
     control,
   } = useForm({
     defaultValues: {
       name: "",
-      deadline: (() => {
+      openTime: (() => {
+        let date = new Date();
+
+        date.setDate(date.getDate() + 1);
+        date.setHours(0);
+        date.setMinutes(0);
+        date.setSeconds(0);
+
+        return date;
+      })(),
+      closeTime: (() => {
         let date = new Date();
 
         date.setDate(date.getDate() + 1);
@@ -104,8 +135,6 @@ function CreateAssignment() {
     },
   });
 
-  const [isProcessing, setIsProcessing] = useState(false);
-
   // Functions.
   const getData = () => {
     request(
@@ -116,7 +145,11 @@ function CreateAssignment() {
       (res) => {
         let data = res.data.assignmentDetail;
 
-        setValue([{ name: data.name }, { deadline: new Date(data.deadLine) }]);
+        setValue([
+          { name: data.name },
+          { openTime: new Date(data.openTime) },
+          { closeTime: new Date(data.closeTime) },
+        ]);
 
         const blocksFromHtml = htmlToDraft(data.subject);
         const { contentBlocks, entityMap } = blocksFromHtml;
@@ -131,11 +164,42 @@ function CreateAssignment() {
     );
   };
 
-  const onChangeDeadline = (newDate) => {
-    let date = new Date(newDate);
+  // onChangeHandlers.
+  const onChangeOpenTime = (newDate) => {
+    let close = new Date(watch("closeTime"));
 
-    date.setSeconds(59);
-    setValue("deadline", date);
+    if (newDate.getTime() > close.getTime()) {
+      setError(
+        "closeTime",
+        "require subsequent date",
+        "Vui lòng chọn thời điểm sau ngày giao"
+      );
+    } else {
+      clearError("closeTime");
+    }
+
+    if (errors.openTime?.type == "require future date") {
+      clearError("openTime");
+    }
+
+    setValue("openTime", newDate);
+  };
+
+  const onChangeCloseTime = (newDate) => {
+    let open = new Date(watch("openTime"));
+
+    if (open.getTime() > newDate.getTime()) {
+      setError(
+        "closeTime",
+        "require subsequent date",
+        "Vui lòng chọn thời điểm sau ngày giao"
+      );
+    } else {
+      clearError("closeTime");
+    }
+
+    newDate.setSeconds(59);
+    setValue("closeTime", newDate);
   };
 
   const onChangeEditorState = (editorState) => {
@@ -160,22 +224,28 @@ function CreateAssignment() {
             setIsProcessing(false);
           },
           400: (e) => {
-            let data = e.response.data;
+            let errors = e.response.data?.errors;
 
-            if ("require future date" == data?.error) {
-              setError(
-                "deadline",
-                "require future date ",
-                "Vui lòng chọn thời điểm trong tương lai"
-              );
-            } else if ("not exist" == data?.error) {
-              errorNoti("Bài tập đã bị xoá trước đó.");
+            if (errors) {
+              errors.forEach((error) => {
+                switch (error.location) {
+                  case "openTime":
+                    setError("openTime", error.type, error.message);
+                    break;
+                  case "closeTime":
+                    setError("closeTime", error.type, error.message);
+                    break;
+                  case "id":
+                    errorNoti("Bài tập đã bị xoá trước đó.");
+                    break;
+                }
+              });
             } else {
               errorNoti("Rất tiếc! Đã có lỗi xảy ra. Vui lòng thử lại.");
             }
           },
           rest: () => {
-            errorNoti("Rất tiếc! Đã có lỗi xảy ra.");
+            errorNoti("Rất tiếc! Đã có lỗi xảy ra. Vui lòng thử lại.");
           },
         },
         { ...formData, subject: subject }
@@ -194,22 +264,28 @@ function CreateAssignment() {
             setIsProcessing(false);
           },
           400: (e) => {
-            let data = e.response.data;
+            let errors = e.response.data?.errors;
 
-            if ("require future date" == data?.error) {
-              setError(
-                "deadline",
-                "require future date ",
-                "Vui lòng chọn thời điểm trong tương lai"
-              );
-            } else if ("class not exist" == data?.error) {
-              errorNoti("Lớp đã bị xoá trước đó.");
+            if (errors) {
+              errors.forEach((error) => {
+                switch (error.location) {
+                  case "openTime":
+                    setError("openTime", error.type, error.message);
+                    break;
+                  case "closeTime":
+                    setError("closeTime", error.type, error.message);
+                    break;
+                  case "classId":
+                    errorNoti("Lớp đã bị xoá trước đó.");
+                    break;
+                }
+              });
             } else {
               errorNoti("Rất tiếc! Đã có lỗi xảy ra. Vui lòng thử lại.");
             }
           },
           rest: () => {
-            errorNoti("Rất tiếc! Đã có lỗi xảy ra.");
+            errorNoti("Rất tiếc! Đã có lỗi xảy ra. Vui lòng thử lại.");
           },
         },
         { ...formData, subject: subject, classId: params.classId }
@@ -222,7 +298,8 @@ function CreateAssignment() {
   };
 
   useOnMount(() => {
-    register({ name: "deadline", type: "text" });
+    register({ name: "openTime", type: "text" });
+    register({ name: "closeTime", type: "text" });
   });
 
   useEffect(() => {
@@ -281,39 +358,32 @@ function CreateAssignment() {
                 <Grid item>
                   <MuiPickersUtilsProvider utils={DateFnsUtils}>
                     <DateTimePicker
-                      name="deadline"
-                      inputVariant="outlined"
-                      size="small"
-                      cancelLabel="Huỷ"
-                      okLabel="Chọn"
-                      ampm={false}
-                      disablePast={true}
-                      format="yyyy-MM-dd  HH:mm:ss"
-                      label="Hạn nộp bài"
-                      value={watch("deadline")}
-                      onChange={onChangeDeadline}
-                      strictCompareDates
-                      error={!!errors.deadline}
-                      helperText={errors.deadline?.message}
-                      InputProps={{
-                        endAdornment: (
-                          <InputAdornment position="end">
-                            <IconButton>
-                              <FcCalendar size={32} />
-                            </IconButton>
-                          </InputAdornment>
-                        ),
-                      }}
-                      TextFieldComponent={(props) => (
-                        <TextField
-                          disabled
-                          className={classes.textField}
-                          {...props}
-                        />
-                      )}
+                      name="openTime"
+                      label="Ngày giao"
+                      value={watch("openTime")}
+                      error={!!errors.openTime}
+                      helperText={errors.openTime?.message}
+                      onChange={onChangeOpenTime}
                       KeyboardButtonProps={{
-                        "aria-label": "deadline",
+                        "aria-label": "openTime",
                       }}
+                      {...pickerProps}
+                    />
+                  </MuiPickersUtilsProvider>
+                </Grid>
+                <Grid item>
+                  <MuiPickersUtilsProvider utils={DateFnsUtils}>
+                    <DateTimePicker
+                      name="closeTime"
+                      label="Hạn nộp bài"
+                      value={watch("closeTime")}
+                      error={!!errors.closeTime}
+                      helperText={errors.closeTime?.message}
+                      onChange={onChangeCloseTime}
+                      KeyboardButtonProps={{
+                        "aria-label": "closeTime",
+                      }}
+                      {...pickerProps}
                     />
                   </MuiPickersUtilsProvider>
                 </Grid>
@@ -327,19 +397,16 @@ function CreateAssignment() {
                   />
                 </Grid>
                 <Grid item md={10}>
-                  <Button
-                    disabled={isProcessing}
-                    type="submit"
-                    variant="contained"
-                    color="primary"
-                    className={classes.createOrUpdateBtn}
-                  >
-                    {assignId ? "Chỉnh sửa" : "Tạo bài tập"}
-                  </Button>
                   <NegativeButton
                     label="Huỷ"
                     className={classes.cancelBtn}
                     onClick={onCancel}
+                  />
+                  <PositiveButton
+                    disabled={isProcessing}
+                    type="submit"
+                    label={assignId ? "Chỉnh sửa" : "Tạo bài tập"}
+                    className={classes.createOrUpdateBtn}
                   />
                 </Grid>
               </Grid>
