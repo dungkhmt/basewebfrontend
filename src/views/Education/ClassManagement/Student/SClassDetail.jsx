@@ -97,12 +97,12 @@ function SClassDetail() {
       ...headerProperties,
     },
     {
-      field: "deadLine",
+      field: "closeTime",
       title: "Hạn nộp",
       ...headerProperties,
       render: (rowData) => {
-        let deadline = new Date(rowData.deadLine);
-        return displayTime(deadline);
+        let closeTime = new Date(rowData.closeTime);
+        return displayTime(closeTime);
       },
     },
   ];
@@ -143,12 +143,12 @@ function SClassDetail() {
     );
   };
 
-  const getAssignments = () => {
+  const getAssign = () => {
     request(
       token,
       history,
       "get",
-      `/edu/class/${params.id}/assignments`,
+      `/edu/class/${params.id}/assignments/student`,
       (res) => {
         changePageSize(res.data.length, assignTableRef);
         setAssigns(res.data);
@@ -166,7 +166,7 @@ function SClassDetail() {
 
   useEffect(() => {
     getClassDetail();
-    getAssignments();
+    getAssign();
   }, []);
 
   return (
