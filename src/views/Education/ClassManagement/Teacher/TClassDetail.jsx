@@ -1,4 +1,4 @@
-import React, { useRef, useEffect, useState } from "react";
+import React, { useRef, useEffect, useState, Fragment } from "react";
 import {
   Card,
   CardContent,
@@ -38,6 +38,7 @@ import NegativeDialogButton from "../../../../component/education/classmanagemen
 import NegativeButton from "../../../../component/education/classmanagement/NegativeButton";
 import displayTime from "../../../../utils/DateTimeUtils";
 import { StyledBadge } from "../../../../component/education/classmanagement/StyledBadge";
+// import withAsynchScreenSecurity from "../../../../component/education/classmanagement/withAsynchScreenSecurity";
 
 const useStyles = makeStyles((theme) => ({
   card: {
@@ -54,7 +55,7 @@ const useStyles = makeStyles((theme) => ({
   positiveBtn: {
     minWidth: 112,
   },
-  dialogCancleBtn: {
+  dialogRemoveBtn: {
     fontWeight: "normal",
   },
 }));
@@ -79,10 +80,9 @@ function TClassDetail() {
 
   // Assignment.
   const [assign, setAssigns] = useState([]);
-  const [deletedAssignId, setDeletedAssignId] = useState();
+  // const [deletedAssignId, setDeletedAssignId] = useState();
 
   // Dialog.
-  const [open, setOpen] = useState(false);
   const [openDelStuDialog, setOpenDelStuDialog] = useState(false);
 
   // Tables.
@@ -112,11 +112,11 @@ function TClassDetail() {
       ...headerProperties,
     },
     {
-      field: "deadLine",
+      field: "closeTime",
       title: "Hạn nộp",
       ...headerProperties,
       render: (rowData) => {
-        return displayTime(new Date(rowData.deadLine));
+        return displayTime(new Date(rowData.closeTime));
       },
     },
   ];
@@ -192,7 +192,7 @@ function TClassDetail() {
       token,
       history,
       "get",
-      `/edu/class/${params.id}/assignments`,
+      `/edu/class/${params.id}/assignments/teacher`,
       (res) => {
         changePageSize(res.data.length, assignTableRef);
         setAssigns(res.data);
@@ -300,52 +300,15 @@ function TClassDetail() {
     );
   };
 
-  // Delete assignment.
-  const onClickDeleteBtn = (rowData) => {
-    setOpen(true);
-    setDeletedAssignId(rowData.id);
-  };
-
-  const handleSuccessDeleteAssign = () => {
-    setAssigns(
-      assign.filter((assign) => {
-        return assign.id != deletedAssignId;
-      })
-    );
-  };
-
-  const onDeleteAssign = () => {
-    setOpen(false);
-
-    request(
-      token,
-      history,
-      "delete",
-      `/edu/assignment/${deletedAssignId}`,
-      () => {
-        handleSuccessDeleteAssign();
-      },
-      {
-        400: (e) => {
-          if ("not allowed" == e.response.data?.error) {
-            errorNoti("Không thể xoá bài tập vì đã có sinh viên nộp bài.");
-          } else {
-            errorNoti("Rất tiếc! Đã có lỗi xảy ra. Vui lòng thử lại.");
-          }
-        },
-        404: (e) => {
-          if ("not exist" == e.response.data?.error) {
-            handleSuccessDeleteAssign();
-          } else {
-            errorNoti("Rất tiếc! Đã có lỗi xảy ra. Vui lòng thử lại.");
-          }
-        },
-      }
-    );
-  };
+  // const handleSuccessDeleteAssign = () => {
+  //   setAssigns(
+  //     assign.filter((assign) => {
+  //       return assign.id != deletedAssignId;
+  //     })
+  //   );
+  // };
 
   const handleClose = () => {
-    setOpen(false);
     setOpenDelStuDialog(false);
   };
 
@@ -356,7 +319,7 @@ function TClassDetail() {
   }, []);
 
   return (
-    <MuiThemeProvider>
+    <Fragment>
       <Card className={classes.card}>
         <CardHeader
           avatar={
@@ -368,13 +331,13 @@ function TClassDetail() {
         />
         <CardContent>
           <Grid container className={classes.grid}>
-            <Grid item md={3} sm={3} xs={3} direction="column">
+            <Grid item md={3} sm={3} xs={3} container direction="column">
               <Typography>Mã lớp</Typography>
               <Typography>Mã học phần</Typography>
               <Typography>Tên học phần</Typography>
               <Typography>Loại lớp</Typography>
             </Grid>
-            <Grid item md={8} sm={8} xs={8} direction="column">
+            <Grid item md={8} sm={8} xs={8} container direction="column">
               <Typography>
                 <b>:</b> {classDetail.code}
               </Typography>
@@ -429,6 +392,7 @@ function TClassDetail() {
               }}
               options={{
                 filtering: true,
+                sorting: false,
                 search: false,
                 pageSize: 10,
                 debounceInterval: 500,
@@ -578,18 +542,6 @@ function TClassDetail() {
                     />
                   );
                 }
-                if (props.action.icon === "delete") {
-                  return (
-                    <NegativeButton
-                      label="Xoá"
-                      className={classes.negativeBtn}
-                      onClick={(event) => {
-                        props.action.onClick(event, props.data);
-                        event.stopPropagation();
-                      }}
-                    />
-                  );
-                }
               },
             }}
             options={{
@@ -624,12 +576,6 @@ function TClassDetail() {
                   );
                 },
               },
-              {
-                icon: "delete",
-                onClick: (event, rowData) => {
-                  onClickDeleteBtn(rowData);
-                },
-              },
             ]}
             onRowClick={(event, rowData) => {
               console.log(rowData);
@@ -656,48 +602,16 @@ function TClassDetail() {
           </Typography>
         }
         actions={
-          // <Fragment>
-          <NegativeDialogButton
+          <PositiveButton
             label="Loại khỏi lớp"
-            className={classes.dialogDeleteBtn}
+            className={classes.dialogRemoveBtn}
             onClick={onDeleteStudent}
           />
-          //   <PositiveButton
-          //     label="Huỷ"
-          //     onClick={handleClose}
-          //     className={classes.dialogCancleBtn}
-          //   />
-          // </Fragment>
         }
       />
-      <CustomizedDialogs
-        open={open}
-        handleClose={handleClose}
-        title="Xoá bài tập?"
-        content={
-          <Typography gutterBottom>
-            <b>
-              Cảnh báo: Bạn không thể hủy hành động này sau khi đã thực hiện.
-            </b>
-          </Typography>
-        }
-        actions={
-          // <Fragment>
-          <NegativeDialogButton
-            label="Xoá"
-            className={classes.dialogDeleteBtn}
-            onClick={onDeleteAssign}
-          />
-          //    <PositiveButton
-          //     label="Huỷ"
-          //     onClick={handleClose}
-          //     className={classes.dialogCancleBtn}
-          //   />
-          // </Fragment>
-        }
-      />
-    </MuiThemeProvider>
+    </Fragment>
   );
 }
 
 export default TClassDetail;
+// export default withAsynchScreenSecurity(TClassDetail, "SCR_TCLASSDETAIL");
