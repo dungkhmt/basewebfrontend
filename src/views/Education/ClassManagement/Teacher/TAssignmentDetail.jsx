@@ -1,4 +1,4 @@
-import React, { useRef, useEffect, useState } from "react";
+import React, { useRef, useEffect, useState, Fragment } from "react";
 import {
   Card,
   CardContent,
@@ -33,6 +33,9 @@ import changePageSize, {
 import displayTime from "../../../../utils/DateTimeUtils";
 import PositiveButton from "../../../../component/education/classmanagement/PositiveButton";
 import NegativeDialogButton from "../../../../component/education/classmanagement/NegativeDialogButton";
+import NegativeButton from "../../../../component/education/classmanagement/NegativeButton";
+import { errorNoti } from "../../../../utils/Notification";
+import CustomizedDialogs from "../../../../utils/CustomizedDialogs";
 
 const useStyles = makeStyles((theme) => ({
   card: {
@@ -58,7 +61,7 @@ const useStyles = makeStyles((theme) => ({
     fontSize: "1rem",
   },
   editBtn: {
-    fontWeight: "normal",
+    // fontWeight: "normal",
   },
   divider: {
     width: "91.67%",
@@ -93,6 +96,9 @@ const useStyles = makeStyles((theme) => ({
   hideSubjectBtn: {
     marginLeft: 29,
     paddingBottom: 10,
+  },
+  deleteBtn: {
+    marginRight: 10,
   },
 }));
 
@@ -136,6 +142,9 @@ function TAssignmentDetail() {
   const [selectedSubmissions, setSelectedSubmission] = useState([]);
   const [isZipping, setIsZipping] = useState(false);
 
+  // Dialog.
+  const [open, setOpen] = useState(false);
+
   // Table.
   const headerProperties = {
     headerStyle: {
@@ -178,8 +187,8 @@ function TAssignmentDetail() {
       `/edu/assignment/${params.assignmentId}/teacher`,
       (res) => {
         let assignDetail = res.data.assignmentDetail;
-        let startTime = new Date(assignDetail.createdStamp);
-        let endTime = new Date(assignDetail.deadLine);
+        let startTime = new Date(assignDetail.openTime);
+        let endTime = new Date(assignDetail.closeTime);
         let data = res.data.submissions;
 
         data = data.map((submission) => ({
@@ -206,6 +215,7 @@ function TAssignmentDetail() {
           startTime: startTime,
           endTime: endTime,
           noSubmissions: res.data.noSubmissions,
+          deleted: assignDetail.deleted,
         });
       }
     );
@@ -234,6 +244,45 @@ function TAssignmentDetail() {
     );
   };
 
+  // Delete assignment.
+  const onDeleteAssign = () => {
+    setOpen(false);
+
+    request(
+      token,
+      history,
+      "delete",
+      `/edu/assignment/${params.assignmentId}`,
+      () => {
+        history.goBack();
+      },
+      {
+        rest: (e) => {
+          errorNoti("Rất tiếc! Đã có lỗi xảy ra. Vui lòng thử lại.");
+        },
+        // 400: (e) => {
+        //   if ("not allowed" == e.response.data?.error) {
+        //     errorNoti("Không thể xoá bài tập vì đã có sinh viên nộp bài.");
+        //   } else {
+        //     errorNoti("Rất tiếc! Đã có lỗi xảy ra. Vui lòng thử lại.");
+        //   }
+        // },
+        // 404: (e) => {
+        //   if ("not exist" == e.response.data?.error) {
+        //     history.goBack();
+        //   } else {
+        //     errorNoti("Rất tiếc! Đã có lỗi xảy ra. Vui lòng thử lại.");
+        //   }
+        // },
+      }
+    );
+  };
+
+  // Dialog.
+  const handleClose = () => {
+    setOpen(false);
+  };
+
   useEffect(() => {
     getAssignDetail();
   }, []);
@@ -248,16 +297,25 @@ function TAssignmentDetail() {
             </Avatar>
           }
           action={
-            <PositiveButton
-              label="Chỉnh sửa"
-              startIcon={<EditIcon />}
-              className={classes.editBtn}
-              onClick={() =>
-                history.push(
-                  `/edu/teacher/class/${params.classId}/assignment/${params.assignmentId}/edit`
-                )
-              }
-            />
+            assignDetail.deleted ? null : (
+              <Fragment>
+                <NegativeButton
+                  label="Xoá"
+                  className={classes.deleteBtn}
+                  onClick={() => setOpen(true)}
+                />
+                <PositiveButton
+                  label="Chỉnh sửa"
+                  // startIcon={<EditIcon />}
+                  className={classes.editBtn}
+                  onClick={() =>
+                    history.push(
+                      `/edu/teacher/class/${params.classId}/assignment/${params.assignmentId}/edit`
+                    )
+                  }
+                />
+              </Fragment>
+            )
           }
           title={<Typography variant="h5">Thông tin bài tập</Typography>}
         />
@@ -426,6 +484,30 @@ function TAssignmentDetail() {
           />
         </CardContent>
       </Card>
+
+      {/* Dialog */}
+      <CustomizedDialogs
+        open={open}
+        handleClose={handleClose}
+        title="Xoá bài tập?"
+        content={
+          <Typography gutterBottom>
+            Giảng viên vẫn có thể xem nhưng <b>không</b> thể chỉnh sửa thông tin
+            bài tập này sau khi đã xoá.
+            <br />
+            <b>
+              Cảnh báo: Bạn không thể hủy hành động này sau khi đã thực hiện.
+            </b>
+          </Typography>
+        }
+        actions={
+          <PositiveButton
+            label="Xoá"
+            className={classes.dialogDeleteBtn}
+            onClick={onDeleteAssign}
+          />
+        }
+      />
     </MuiThemeProvider>
   );
 }
