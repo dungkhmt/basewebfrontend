@@ -164,8 +164,8 @@ function SAssignmentDetail() {
       `/edu/assignment/${params.assignmentId}/student`,
       (res) => {
         let assignDetail = res.data.assignmentDetail;
-        let startTime = new Date(assignDetail.createdStamp);
-        let endTime = new Date(assignDetail.deadLine);
+        let startTime = new Date(assignDetail.openTime);
+        let endTime = new Date(assignDetail.closeTime);
 
         setRemainingTime(
           endTime.getTime() < Date.now()
