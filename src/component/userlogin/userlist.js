@@ -5,9 +5,13 @@ import { Link } from "react-router-dom";
 import { authGet } from "../../api";
 import { tableIcons } from "../../utils/iconutil";
 import withScreenSecurity from "../withScreenSecurity";
+import Button from "@material-ui/core/Button";
+import {useHistory} from "react-router-dom";
 
 function UserList() {
   const dispatch = useDispatch();
+  const history = useHistory();
+
   const token = useSelector((state) => state.auth.token);
   const columns = [
     { title: "Full Name", field: "fullName" },
@@ -31,6 +35,7 @@ function UserList() {
     { title: "Party Code", field: "partyCode" },
   ];
   return (
+    <div>
     <MaterialTable
       title="List Users"
       columns={columns}
@@ -86,6 +91,14 @@ function UserList() {
       }
       icons={tableIcons}
     />
+
+<Button color={'primary'} variant={'contained'} onClick={() =>
+   history.push('/userlogin/Update')}>
+          Thay đổi mật khẩu
+        </Button>
+    </div>
+
+
   );
 }
 const screenName = "SCREEN_USER_LIST";
