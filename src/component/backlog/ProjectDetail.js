@@ -2,23 +2,20 @@ import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import MaterialTable from "material-table";
 import { authPost, authGet } from "../../api";
-import Grid from "@material-ui/core/Grid";
-import Button from "@material-ui/core/Button";
 import { Redirect, useHistory } from "react-router-dom";
-import Card from "@material-ui/core/Card";
-import CardContent from "@material-ui/core/CardContent";
 import { toFormattedDateTime, toFormattedDate } from "../../utils/dateutils";
-import Dialog from "@material-ui/core/Dialog";
-import DialogActions from "@material-ui/core/DialogActions";
-import DialogContent from "@material-ui/core/DialogContent";
-import DialogTitle from "@material-ui/core/DialogTitle";
-import List from '@material-ui/core/List';
-import ListItem from '@material-ui/core/ListItem';
-import FormGroup from '@material-ui/core/FormGroup';
-import FormControlLabel from '@material-ui/core/FormControlLabel';
-import Checkbox from '@material-ui/core/Checkbox';
+import {Grid, Button, Card, CardContent, Dialog, 
+  DialogActions, DialogContent, DialogTitle, List,
+  ListItem, FormGroup, FormControlLabel, Checkbox, 
+  TextField, Tooltip, IconButton
+} from "@material-ui/core";
+
 import { makeStyles } from "@material-ui/core/styles";
-import { TextField } from "@material-ui/core";
+import AddBoxIcon from '@material-ui/icons/AddBox';
+import ListAltIcon from '@material-ui/icons/ListAlt';
+import PersonAddIcon from '@material-ui/icons/PersonAdd';
+import PeopleIcon from '@material-ui/icons/People';
+import BarChartIcon from '@material-ui/icons/BarChart';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -61,6 +58,8 @@ export default function ProjectDetail(props) {
   const [isPermissive, setIsPermissive] = useState(true);
   const [allUser, setAllUser] = useState([]);
   const [isMember, setIsMember] = useState({});
+  const [isShowMyTask, setIsShowMyTask] = useState(false);
+  const [myTask, setMyTask] = useState([]);
 
   const [categoryPool, setCategoryPool] = useState([]);
   const [priorityPool, setPriorityPool] = useState([]);
@@ -83,13 +82,14 @@ export default function ProjectDetail(props) {
     );
     let tasks = await authGet(dispatch, token, "/backlog/get-project-detail/" + projectId);
     let myAccount = await authGet(dispatch, token, "/my-account/");
-    let myTasks = tasks.filter(task => {
-      return task.assignment.filter(element => { return element.userLoginId === myAccount.user }).length > 0;
-    });
-    myTasks.forEach(task => {
+    tasks.forEach(task => {
       task.assignment = task.assignment.map(element => element.userLoginId);
     });
-    setTaskList(myTasks);
+    let myTasks = tasks.filter(task => {
+      return task.assignment.filter(element => { return element === myAccount.user }).length > 0;
+    });
+    setTaskList(tasks);
+    setMyTask(myTasks);
   }
 
   async function getUser() {
@@ -260,15 +260,21 @@ export default function ProjectDetail(props) {
 
                 <Grid item xs={4}
                   className={classes.grid}>
-                  <Button className={classes.functionBtn} color={'primary'} variant={'contained'} onClick={event => { setShowMemberListDialogOpen(true) }}>
-                    Danh sách thành viên
-                  </Button>
-                  <Button className={classes.functionBtn} color={'primary'} variant={'contained'} onClick={event => { setAddMemberDialogOpen(true) }}>
-                    Thêm thành viên
-                  </Button>
-                  <Button className={classes.functionBtn} color={'primary'} variant={'contained'} onClick={() => history.push("/backlog/add-task/" + project.backlogProjectId)}>
-                    Thêm task
-                  </Button>
+                  <Tooltip title="Biểu đồ dự án">
+                    <IconButton aria-label="projectChart" onClick={() => { }}>
+                      <BarChartIcon color='primary' fontSize='large' />
+                    </IconButton>
+                  </Tooltip>
+                  <Tooltip title="Danh sách thành viên">
+                    <IconButton aria-label="memberList" onClick={event => { setShowMemberListDialogOpen(true) }}>
+                      <PeopleIcon color='primary' fontSize='large' />
+                    </IconButton>
+                  </Tooltip>
+                  <Tooltip title="Thêm thành viên">
+                    <IconButton aria-label="addMember" onClick={event => { setAddMemberDialogOpen(true) }}>
+                      <PersonAddIcon color='primary' fontSize='large' />
+                    </IconButton>
+                  </Tooltip>
 
                   {/* add member dialog */}
                   <Dialog
@@ -343,7 +349,7 @@ export default function ProjectDetail(props) {
                 search: false,
                 rowStyle: { backgroundColor: "#fcfcfc" }
               }}
-              data={taskList}
+              data={isShowMyTask ? myTask : taskList}
               detailPanel={
                 [{
                   tooltip: "Chi tiết",
@@ -379,10 +385,23 @@ export default function ProjectDetail(props) {
                   }
                 }]
               }
-            // icons={tableIcons}
-            onRowClick={(event, rowData) => {
-              history.push("/backlog/edit-task/" + backlogProjectId + "/" + rowData.backlogTask.backlogTaskId);
-            }}
+              actions={[
+                {
+                  icon: () => { return <ListAltIcon color={isShowMyTask ? 'primary':'default' } fontSize='large' /> },
+                  tooltip: 'Task của tôi',
+                  isFreeAction: true,
+                  onClick: () => {setIsShowMyTask(!isShowMyTask)}
+                },
+                {
+                  icon: () => { return <AddBoxIcon color='primary' fontSize='large' /> },
+                  tooltip: 'Thêm task',
+                  isFreeAction: true,
+                  onClick: (event) => history.push("/backlog/add-task/" + project.backlogProjectId)
+                },
+              ]}
+              onRowClick={(event, rowData) => {
+                history.push("/backlog/edit-task/" + backlogProjectId + "/" + rowData.backlogTask.backlogTaskId);
+              }}
             />
           </CardContent>
         </Card>
