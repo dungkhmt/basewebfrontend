@@ -1,8 +1,7 @@
-import React, { useRef, useState, forwardRef, useEffect } from "react";
+import React, { useRef, useState, useEffect } from "react";
 import {
   Card,
   CardContent,
-  Button,
   Typography,
   Box,
   CardHeader,
@@ -13,24 +12,21 @@ import MaterialTable from "material-table";
 import { request } from "../../../../api";
 import { MuiThemeProvider } from "material-ui/styles";
 import { makeStyles } from "@material-ui/core/styles";
-import { FcFilledFilter } from "react-icons/fc";
 import { errorNoti, successNoti } from "../../../../utils/Notification";
 import { useSelector } from "react-redux";
 import { useHistory } from "react-router";
+import changePageSize, {
+  localization,
+  tableIcons,
+} from "../../../../utils/MaterialTableUtils";
+import PositiveButton from "../../../../component/education/classmanagement/PositiveButton";
 
 const useStyles = makeStyles((theme) => ({
   card: {
     marginTop: theme.spacing(2),
-  },
-  registrationBtn: {
     borderRadius: "6px",
-    backgroundColor: "#1877f2",
-    textTransform: "none",
-    fontSize: "1rem",
-    "&:hover": {
-      backgroundColor: "#1834d2",
-    },
   },
+  registrationBtn: {},
 }));
 
 function ClassRegistration() {
@@ -40,6 +36,9 @@ function ClassRegistration() {
 
   const [semester, setSemester] = useState("");
   const [registeredClasses, setRegisteredClasses] = useState(new Set());
+
+  // Table.
+  const tableRef = useRef(null);
   const [filterParams, setFilterParams] = useState({
     code: "",
     courseId: "",
@@ -48,7 +47,6 @@ function ClassRegistration() {
     departmentId: "",
   });
 
-  // Table.
   const headerProperties = {
     headerStyle: {
       textAlign: "center",
@@ -86,37 +84,18 @@ function ClassRegistration() {
     {
       field: "",
       title: "",
-      cellStyle: { alignItems: "center" },
+      cellStyle: { textAlign: "center" },
       render: (rowData) =>
         registeredClasses.has(rowData.id) ? null : (
-          <Box display="flex" justifyContent="center">
-            <Button
-              variant="contained"
-              color="primary"
-              disableRipple
-              className={classes.registrationBtn}
-              onClick={() => onClickRegistBtn(rowData)}
-            >
-              Tham gia
-            </Button>
-          </Box>
+          <PositiveButton
+            label="Tham gia"
+            disableRipple
+            className={classes.registrationBtn}
+            onClick={() => onRegist(rowData)}
+          />
         ),
     },
   ];
-
-  const tableRef = useRef(null);
-
-  useEffect(() => {
-    let cols = tableRef.current.dataManager.columns;
-
-    cols[0].tableData.filterValue = filterParams.code;
-    cols[1].tableData.filterValue = filterParams.courseId;
-    cols[2].tableData.filterValue = filterParams.courseName;
-    cols[3].tableData.filterValue = filterParams.classType;
-    cols[4].tableData.filterValue = filterParams.departmentId;
-
-    console.log("filter params", filterParams);
-  }, [registeredClasses]);
 
   // Functions.
   const getData = (query) =>
@@ -151,6 +130,7 @@ function ClassRegistration() {
           setSemester(res.data.semesterId);
           setRegisteredClasses(new Set(res.data.registeredClasses));
 
+          changePageSize(content.length, tableRef);
           resolve({
             data: content,
             page: number,
@@ -158,9 +138,9 @@ function ClassRegistration() {
           });
         },
         {
-          noResponse: (error) => {},
-          rest: (error) => {
-            console.log(error);
+          onError: (e) => {
+            console.log(e);
+            changePageSize(5, tableRef);
             reject({
               message: "Đã có lỗi xảy ra trong quá trình tải dữ liệu. Thử lại ",
               errorCause: "query",
@@ -171,7 +151,7 @@ function ClassRegistration() {
       );
     });
 
-  const onClickRegistBtn = (rowData) => {
+  const onRegist = (rowData) => {
     let tmp = new Set(registeredClasses);
     tmp.add(rowData.id);
     setRegisteredClasses(tmp);
@@ -194,23 +174,19 @@ function ClassRegistration() {
       },
       { classId: rowData.id }
     );
-    // axiosPost(token, "/edu/class/register", { classId: rowData.id })
-    //   .then((res) => {
-    //     successNoti(
-    //       "Đăng ký thành công. Vui lòng chờ giảng viên phê duyệt.",
-    //       2000
-    //     );
-    //   })
-    //   .catch((e) => {
-    //     let res = e.response;
-
-    //     if (400 == res.status) {
-    //       errorNoti(res.body);
-    //     } else {
-    //       errorNoti("Rất tiếc! Đã có lỗi xảy ra.");
-    //     }
-    //   });
   };
+
+  useEffect(() => {
+    let cols = tableRef.current.dataManager.columns;
+
+    cols[0].tableData.filterValue = filterParams.code;
+    cols[1].tableData.filterValue = filterParams.courseId;
+    cols[2].tableData.filterValue = filterParams.courseName;
+    cols[3].tableData.filterValue = filterParams.classType;
+    cols[4].tableData.filterValue = filterParams.departmentId;
+
+    console.log("filter params", filterParams);
+  }, [registeredClasses]);
 
   return (
     <MuiThemeProvider>
@@ -229,29 +205,8 @@ function ClassRegistration() {
             columns={columns}
             tableRef={tableRef}
             data={getData}
-            icons={{
-              Filter: forwardRef((props, ref) => (
-                <FcFilledFilter {...props} ref={ref} />
-              )),
-            }}
-            localization={{
-              body: {
-                emptyDataSourceMessage: "",
-              },
-              toolbar: {
-                searchPlaceholder: "Tìm kiếm",
-                searchTooltip: "Tìm kiếm",
-              },
-              pagination: {
-                hover: "pointer",
-                labelRowsSelect: "hàng",
-                labelDisplayedRows: "{from}-{to} của {count}",
-                nextTooltip: "Trang tiếp",
-                lastTooltip: "Trang cuối",
-                firstTooltip: "Trang đầu",
-                previousTooltip: "Trang trước",
-              },
-            }}
+            icons={tableIcons}
+            localization={localization}
             components={{
               Container: (props) => <Paper {...props} elevation={0} />,
             }}
@@ -267,6 +222,7 @@ function ClassRegistration() {
                 color: "white",
               },
               sorting: false,
+              filterCellStyle: { textAlign: "center" },
               cellStyle: { fontSize: "1rem" },
             }}
           />

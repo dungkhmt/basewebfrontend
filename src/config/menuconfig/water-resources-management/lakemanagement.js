@@ -1,7 +1,7 @@
 export const lake_mgr = {
     id: "MENU_LAKE_MANAGEMENT",
     path: "",
-    isPublic: true,
+    isPublic: false,
     icon: "InboxIcon",
     text: "QL hồ đập",
     child: [

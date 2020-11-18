@@ -1,4 +1,4 @@
-import React, { useRef, useEffect, useState } from "react";
+import React, { useRef, useEffect, useState, Fragment } from "react";
 import {
   Card,
   CardContent,
@@ -7,9 +7,6 @@ import {
   CardHeader,
   Paper,
   Grid,
-  Tooltip,
-  Zoom,
-  IconButton,
   Box,
   Divider,
   CircularProgress,
@@ -24,11 +21,21 @@ import { BiDetail } from "react-icons/bi";
 import { CountdownCircleTimer } from "react-countdown-circle-timer";
 import { FcDownload } from "react-icons/fc";
 import EditIcon from "@material-ui/icons/Edit";
-import { useDispatch, useSelector } from "react-redux";
-import { authPost, axiosGet, axiosPost } from "../../../../api";
-import axios from "axios";
+import { useSelector } from "react-redux";
+import { request } from "../../../../api";
 import { green } from "@material-ui/core/colors";
 import { API_URL } from "../../../../config/config";
+import parse from "html-react-parser";
+import changePageSize, {
+  localization,
+  tableIcons,
+} from "../../../../utils/MaterialTableUtils";
+import displayTime from "../../../../utils/DateTimeUtils";
+import PositiveButton from "../../../../component/education/classmanagement/PositiveButton";
+import NegativeDialogButton from "../../../../component/education/classmanagement/NegativeDialogButton";
+import NegativeButton from "../../../../component/education/classmanagement/NegativeButton";
+import { errorNoti } from "../../../../utils/Notification";
+import CustomizedDialogs from "../../../../utils/CustomizedDialogs";
 
 const useStyles = makeStyles((theme) => ({
   card: {
@@ -54,10 +61,7 @@ const useStyles = makeStyles((theme) => ({
     fontSize: "1rem",
   },
   editBtn: {
-    textTransform: "none",
-    // fontWeight: "bold",
-    fontSize: "1rem",
-    borderRadius: 6,
+    // fontWeight: "normal",
   },
   divider: {
     width: "91.67%",
@@ -76,15 +80,25 @@ const useStyles = makeStyles((theme) => ({
     marginLeft: -12,
   },
   downloadBtn: {
-    width: 176,
+    minWidth: 176,
     borderRadius: 6,
     textTransform: "none",
-    // fontWeight: "bold",
     fontSize: "1rem",
   },
   wrapper: {
     margin: theme.spacing(1),
     position: "relative",
+  },
+  assignDetail: {
+    display: "flex",
+    // whiteSpace: "pre-wrap",
+  },
+  hideSubjectBtn: {
+    marginLeft: 29,
+    paddingBottom: 10,
+  },
+  deleteBtn: {
+    marginRight: 10,
   },
 }));
 
@@ -109,9 +123,7 @@ const children = ({ remainingTime }) => {
   }
 };
 
-const formatTime = (n) => (Number(n) < 10 ? "0" + Number(n) : "" + Number(n));
-
-function TExerciseDetail() {
+function TAssignmentDetail() {
   const classes = useStyles();
   const params = useParams();
   const history = useHistory();
@@ -124,7 +136,14 @@ function TExerciseDetail() {
 
   // Assignment detail.
   const [hideSubject, setHideSubject] = useState(true);
-  const [assignmentDetail, setAssignmentDetail] = useState({});
+  const [assignDetail, setAssignDetail] = useState({});
+
+  //Submission.
+  const [selectedSubmissions, setSelectedSubmission] = useState([]);
+  const [isZipping, setIsZipping] = useState(false);
+
+  // Dialog.
+  const [open, setOpen] = useState(false);
 
   // Table.
   const headerProperties = {
@@ -137,7 +156,7 @@ function TExerciseDetail() {
     },
   };
 
-  const columns = [
+  const cols = [
     {
       field: "name",
       title: "Họ và tên",
@@ -147,36 +166,29 @@ function TExerciseDetail() {
       field: "submissionDate",
       title: "Ngày nộp",
       ...headerProperties,
+      filtering: false,
       render: (rowData) => {
         let date = rowData.submissionDate;
-        return (
-          <Typography>
-            {date.getFullYear()}-{formatTime(date.getMonth() + 1)}-
-            {formatTime(date.getDate())}
-            &nbsp;&nbsp;
-            {formatTime(date.getHours())}
-            <b>:</b>
-            {formatTime(date.getMinutes())}
-            <b>:</b>
-            {formatTime(date.getSeconds())}
-          </Typography>
-        );
+
+        return displayTime(date);
       },
     },
   ];
 
   const [data, setData] = useState([]);
   const tableRef = useRef(null);
-  const [selectedSubmissions, setSelectedSubmission] = useState([]);
-  const [isZipping, setIsZipping] = useState(false);
 
   // Functions.
-  const getExerciseDetail = () => {
-    axiosGet(token, `/edu/assignment/${params.assignmentId}/teacher`)
-      .then((res) => {
-        let assignmentDetail = res.data.assignmentDetail;
-        let startTime = new Date(assignmentDetail.createdStamp);
-        let endTime = new Date(assignmentDetail.deadLine);
+  const getAssignDetail = () => {
+    request(
+      token,
+      history,
+      "get",
+      `/edu/assignment/${params.assignmentId}/teacher`,
+      (res) => {
+        let assignDetail = res.data.assignmentDetail;
+        let startTime = new Date(assignDetail.openTime);
+        let endTime = new Date(assignDetail.closeTime);
         let data = res.data.submissions;
 
         data = data.map((submission) => ({
@@ -184,6 +196,7 @@ function TExerciseDetail() {
           submissionDate: new Date(submission.submissionDate),
         }));
 
+        changePageSize(data.length, tableRef);
         setData(data);
 
         setRemainingTime(
@@ -196,39 +209,82 @@ function TExerciseDetail() {
 
         setKey("update-params");
 
-        setAssignmentDetail({
-          name: assignmentDetail.name,
-          subject: assignmentDetail.subject,
+        setAssignDetail({
+          name: assignDetail.name,
+          subject: assignDetail.subject,
           startTime: startTime,
           endTime: endTime,
           noSubmissions: res.data.noSubmissions,
+          deleted: assignDetail.deleted,
         });
-      })
-      .catch((e) => {
-        console.log(e);
-      });
+      }
+    );
   };
 
-  const onClickDownloadButton = () => {
+  const onDownload = () => {
     setIsZipping(true);
 
     let studentIds = selectedSubmissions.map(
       (submission) => submission.studentId
     );
 
-    axiosPost(token, `/edu/assignment/${params.assignmentId}/submissions`, {
-      studentIds: studentIds,
-    })
-      .then((res) => {
+    request(
+      token,
+      history,
+      "post",
+      `/edu/assignment/${params.assignmentId}/submissions`,
+      (res) => {
         setIsZipping(false);
         window.location.href = `${API_URL}/edu/assignment/${params.assignmentId}/download-file/${res.data}`;
-      })
-      .catch((e) => console.log(e));
+      },
+      { onError: () => setIsZipping(false) },
+      {
+        studentIds: studentIds,
+      }
+    );
+  };
+
+  // Delete assignment.
+  const onDeleteAssign = () => {
+    setOpen(false);
+
+    request(
+      token,
+      history,
+      "delete",
+      `/edu/assignment/${params.assignmentId}`,
+      () => {
+        history.goBack();
+      },
+      {
+        rest: (e) => {
+          errorNoti("Rất tiếc! Đã có lỗi xảy ra. Vui lòng thử lại.");
+        },
+        // 400: (e) => {
+        //   if ("not allowed" == e.response.data?.error) {
+        //     errorNoti("Không thể xoá bài tập vì đã có sinh viên nộp bài.");
+        //   } else {
+        //     errorNoti("Rất tiếc! Đã có lỗi xảy ra. Vui lòng thử lại.");
+        //   }
+        // },
+        // 404: (e) => {
+        //   if ("not exist" == e.response.data?.error) {
+        //     history.goBack();
+        //   } else {
+        //     errorNoti("Rất tiếc! Đã có lỗi xảy ra. Vui lòng thử lại.");
+        //   }
+        // },
+      }
+    );
+  };
+
+  // Dialog.
+  const handleClose = () => {
+    setOpen(false);
   };
 
   useEffect(() => {
-    tableRef.current.dataManager.changePageSize(20);
-    getExerciseDetail();
+    getAssignDetail();
   }, []);
 
   return (
@@ -241,14 +297,25 @@ function TExerciseDetail() {
             </Avatar>
           }
           action={
-            <Button
-              variant="outlined"
-              color="primary"
-              startIcon={<EditIcon />}
-              className={classes.editBtn}
-            >
-              Chỉnh sửa
-            </Button>
+            assignDetail.deleted ? null : (
+              <Fragment>
+                <NegativeButton
+                  label="Xoá"
+                  className={classes.deleteBtn}
+                  onClick={() => setOpen(true)}
+                />
+                <PositiveButton
+                  label="Chỉnh sửa"
+                  // startIcon={<EditIcon />}
+                  className={classes.editBtn}
+                  onClick={() =>
+                    history.push(
+                      `/edu/teacher/class/${params.classId}/assignment/${params.assignmentId}/edit`
+                    )
+                  }
+                />
+              </Fragment>
+            )
           }
           title={<Typography variant="h5">Thông tin bài tập</Typography>}
         />
@@ -271,63 +338,36 @@ function TExerciseDetail() {
               />
             </Grid>
             <Grid item md={9}>
-              <Grid container>
-                <Grid item md={3} sm={3} xs={3}>
+              <Grid container md={12}>
+                <Grid item md={3} sm={3} xs={3} direction="column">
                   <Typography>Tên bài tập</Typography>
-                </Grid>
-                <Grid item md={8} sm={8} xs={8}>
-                  <div
-                    style={{
-                      display: "flex",
-                      // whiteSpace: "pre-wrap",
-                    }}
-                  >
-                    <b>:&nbsp;</b>
-                    {assignmentDetail.name === undefined ? null : (
-                      <Typography>{assignmentDetail.name}</Typography>
-                    )}
-                  </div>
-                </Grid>
-                <Grid item md={3} sm={3} xs={3}>
                   <Typography>Ngày giao</Typography>
-                </Grid>
-                <Grid item md={8} sm={8} xs={8}>
-                  {assignmentDetail.startTime == undefined ||
-                  assignmentDetail.startTime == null ? (
-                    <b>:</b>
-                  ) : (
-                    <Typography>
-                      <b>:</b>&nbsp;{assignmentDetail.startTime.getFullYear()}-
-                      {formatTime(assignmentDetail.startTime.getMonth() + 1)}-
-                      {formatTime(assignmentDetail.startTime.getDate())}
-                      &nbsp;&nbsp;
-                      {formatTime(assignmentDetail.startTime.getHours())}
-                      <b>:</b>
-                      {formatTime(assignmentDetail.startTime.getMinutes())}
-                      <b>:</b>
-                      {formatTime(assignmentDetail.startTime.getSeconds())}
-                    </Typography>
-                  )}
-                </Grid>
-                <Grid item md={3} sm={3} xs={3}>
                   <Typography>Hạn nộp</Typography>
                 </Grid>
-                <Grid item md={8} sm={8} xs={8}>
-                  {assignmentDetail.endTime == undefined ||
-                  assignmentDetail.endTime == null ? (
-                    <b>:</b>
+                <Grid item md={8} sm={8} xs={8} direction="column">
+                  <div className={classes.assignDetail}>
+                    <b>:&nbsp;</b>
+                    {assignDetail.name ? (
+                      <Typography>{assignDetail.name}</Typography>
+                    ) : null}
+                  </div>
+
+                  {assignDetail.startTime ? (
+                    <div className={classes.assignDetail}>
+                      <b>:</b>&nbsp;{displayTime(assignDetail.startTime)}
+                    </div>
                   ) : (
-                    <Typography>
-                      <b>:</b>&nbsp;{assignmentDetail.endTime.getFullYear()}-
-                      {formatTime(assignmentDetail.endTime.getMonth() + 1)}-
-                      {formatTime(assignmentDetail.endTime.getDate())}
-                      &nbsp;&nbsp;
-                      {formatTime(assignmentDetail.endTime.getHours())}
-                      <b>:</b>
-                      {formatTime(assignmentDetail.endTime.getMinutes())}
-                      <b>:</b>
-                      {formatTime(assignmentDetail.endTime.getSeconds())}
-                    </Typography>
+                    <b>:</b>
+                  )}
+
+                  {assignDetail.endTime ? (
+                    <div className={classes.assignDetail}>
+                      <b>:</b>&nbsp;{displayTime(assignDetail.endTime)}
+                    </div>
+                  ) : (
+                    <b>
+                      <br />:
+                    </b>
                   )}
                 </Grid>
               </Grid>
@@ -338,16 +378,16 @@ function TExerciseDetail() {
                     classes={{ root: classes.rootDivider }}
                   />
                 </div>
-                <Box display="flex" fullWidth>
+                <Box display="flex" width="100%">
                   <Grid item md={3} sm={3} xs={3}>
                     <Typography>Sinh viên đã nộp bài</Typography>
                   </Grid>
                   <Grid item md={8} sm={8} xs={8}>
-                    {assignmentDetail.noSubmissions === undefined ? (
+                    {assignDetail.noSubmissions === undefined ? (
                       <b>:</b>
                     ) : (
                       <Typography>
-                        <b>:</b> {assignmentDetail.noSubmissions}
+                        <b>:</b> {assignDetail.noSubmissions}
                       </Typography>
                     )}
                   </Grid>
@@ -356,20 +396,13 @@ function TExerciseDetail() {
             </Grid>
             <Grid item md={11} className={classes.exercise}>
               <Box display="flex" fullWidth>
-                <Button
-                  style={{
-                    textTransform: "none",
-                    fontSize: "bold",
-                    color: "blue",
-                    marginLeft: 29,
-                    paddingBottom: 10,
-                  }}
+                <NegativeDialogButton
+                  label={hideSubject ? "Hiện đề bài" : "Ẩn đề bài"}
+                  className={classes.hideSubjectBtn}
                   onClick={() => setHideSubject(!hideSubject)}
-                >
-                  {hideSubject ? "Hiện đề bài" : "Ẩn đề bài"}
-                </Button>
+                />
               </Box>
-              {hideSubject ? null : assignmentDetail.subject}
+              {hideSubject ? null : parse(assignDetail.subject)}
             </Grid>
           </Grid>
         </CardContent>
@@ -387,26 +420,10 @@ function TExerciseDetail() {
         <CardContent>
           <MaterialTable
             title=""
-            columns={columns}
+            columns={cols}
+            icons={tableIcons}
             tableRef={tableRef}
-            localization={{
-              body: {
-                emptyDataSourceMessage: "",
-              },
-              toolbar: {
-                searchPlaceholder: "Tìm kiếm",
-                searchTooltip: "Tìm kiếm",
-              },
-              pagination: {
-                hover: "pointer",
-                labelRowsSelect: "hàng",
-                labelDisplayedRows: "{from}-{to} của {count}",
-                nextTooltip: "Trang tiếp",
-                lastTooltip: "Trang cuối",
-                firstTooltip: "Trang đầu",
-                previousTooltip: "Trang trước",
-              },
-            }}
+            localization={localization}
             data={data}
             components={{
               Container: (props) => <Paper {...props} elevation={0} />,
@@ -438,6 +455,9 @@ function TExerciseDetail() {
               },
             }}
             options={{
+              search: false,
+              filtering: true,
+              pageSize: 10,
               selection: true,
               debounceInterval: 500,
               headerStyle: {
@@ -446,7 +466,7 @@ function TExerciseDetail() {
                 fontSize: "1rem",
                 color: "white",
               },
-              sorting: false,
+              filterCellStyle: { textAlign: "center" },
               cellStyle: { fontSize: "1rem" },
               toolbarButtonAlignment: "left",
               showTextRowsSelected: false,
@@ -455,7 +475,7 @@ function TExerciseDetail() {
               {
                 icon: "download",
                 position: "toolbarOnSelect",
-                onClick: () => onClickDownloadButton(),
+                onClick: () => onDownload(),
               },
             ]}
             onSelectionChange={(rows) => {
@@ -464,8 +484,32 @@ function TExerciseDetail() {
           />
         </CardContent>
       </Card>
+
+      {/* Dialog */}
+      <CustomizedDialogs
+        open={open}
+        handleClose={handleClose}
+        title="Xoá bài tập?"
+        content={
+          <Typography gutterBottom>
+            Giảng viên vẫn có thể xem nhưng <b>không</b> thể chỉnh sửa thông tin
+            bài tập này sau khi đã xoá.
+            <br />
+            <b>
+              Cảnh báo: Bạn không thể hủy hành động này sau khi đã thực hiện.
+            </b>
+          </Typography>
+        }
+        actions={
+          <PositiveButton
+            label="Xoá"
+            className={classes.dialogDeleteBtn}
+            onClick={onDeleteAssign}
+          />
+        }
+      />
     </MuiThemeProvider>
   );
 }
 
-export default TExerciseDetail;
+export default TAssignmentDetail;

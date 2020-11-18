@@ -8,11 +8,12 @@ import MuiDialogActions from "@material-ui/core/DialogActions";
 import IconButton from "@material-ui/core/IconButton";
 import CloseIcon from "@material-ui/icons/Close";
 import Typography from "@material-ui/core/Typography";
+import { Box } from "@material-ui/core";
 
 const styles = (theme) => ({
   root: {
     margin: 0,
-    height: theme.spacing(4),
+    height: theme.spacing(7),
     padding: theme.spacing(2),
   },
   closeButton: {
@@ -24,10 +25,22 @@ const styles = (theme) => ({
 });
 
 const DialogTitle = withStyles(styles)((props) => {
-  const { children, classes, onClose, ...other } = props;
+  const { children, classes, onClose, style, ...other } = props;
   return (
-    <MuiDialogTitle disableTypography className={classes.root} {...other}>
-      <Typography variant="h6">{children}</Typography>
+    <MuiDialogTitle
+      disableTypography
+      className={classes.root}
+      {...other}
+      style={style}
+    >
+      <Box
+        display="flex"
+        width="100%"
+        justifyContent="center"
+        alignItems="center"
+      >
+        <Typography variant="h6">{children}</Typography>
+      </Box>
       {onClose ? (
         <IconButton
           aria-label="close"
@@ -50,12 +63,17 @@ const DialogContent = withStyles((theme) => ({
 const DialogActions = withStyles((theme) => ({
   root: {
     margin: 0,
+    height: theme.spacing(7),
     padding: theme.spacing(1),
   },
-}))(MuiDialogActions);
+}))((props) => {
+  const { style, children } = props;
+
+  return <MuiDialogActions style={style}>{children}</MuiDialogActions>;
+});
 
 export default function CustomizedDialogs(props) {
-  const { open, handleClose, title, actions } = props;
+  const { open, handleClose, title, actions, content, style } = props;
 
   return (
     <div>
@@ -64,16 +82,15 @@ export default function CustomizedDialogs(props) {
         aria-labelledby="customized-dialog-title"
         open={open}
       >
-        <DialogTitle id="customized-dialog-title" onClose={handleClose}>
+        <DialogTitle
+          id="customized-dialog-title"
+          onClose={handleClose}
+          style={style?.title}
+        >
           <b>{title}</b>
         </DialogTitle>
-        <DialogContent dividers>
-          <Typography gutterBottom>
-            Đăng ký tài khoản thành công. Vui lòng chờ quản trị duyên phê duyệt
-            để sử dụng các tính năng của hệ thống.
-          </Typography>
-        </DialogContent>
-        <DialogActions>{actions}</DialogActions>
+        <DialogContent dividers>{content}</DialogContent>
+        <DialogActions style={style?.actions}>{actions}</DialogActions>
       </Dialog>
     </div>
   );

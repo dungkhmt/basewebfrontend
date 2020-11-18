@@ -75,6 +75,7 @@ export default function SignIn(props) {
     props.requestLogin(userName, password);
   };
   if (props.isAuthenticated === true) {
+    props.getScreenSecurityInfo(history)
     if (history.location.state && history.location.state.from) {
       history.replace(history.location.state.from);
       return null;

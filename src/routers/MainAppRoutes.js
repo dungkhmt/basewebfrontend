@@ -8,6 +8,8 @@ import error from "../component/common/errornotfound";
 import Loading from "../component/common/Loading";
 import { mapPathMenu } from "../config/menuconfig";
 import { Layout } from "../layout";
+import BouncingBallsLoader from "../views/common/BouncingBallsLoader";
+import NotFound from "../views/errors/NotFound";
 
 const DepotContainerFuncRoute = lazy(() => import("./DepotContainerFuncRoute"));
 const DepotTrailerFuncRoute = lazy(() => import("./DepotTrailerFuncRoute"));
@@ -57,6 +59,9 @@ const ConfigGroupRoute = lazy(() => import("./ConfigGroupRoute"));
 const InvoiceGroupRoute = lazy(() => import("./InvoiceGroupRoute"));
 const SalesGroupRoute = lazy(() => import("./SalesGroupRoute"));
 
+const BacklogRoute = lazy(() => import("./BacklogRoute"));
+
+const ScheduleRoute = lazy(() => import("./ScheduleRoute"));
 function MainAppRoute(props) {
   const location = useLocation();
   const dispatch = useDispatch();
@@ -69,7 +74,7 @@ function MainAppRoute(props) {
   }, [location]);
   return (
     <Layout>
-      <Suspense fallback={<Loading />}>
+      <Suspense fallback={<BouncingBallsLoader />}>
         <Switch>
           <PrivateRoute component={Home} exact path="/" />
 
@@ -231,7 +236,23 @@ function MainAppRoute(props) {
             path="/sales-group"
           />
 
+          <PrivateRoute
+            component={BacklogRoute}
+            layout={Layout}
+            isAuthenticated={props.isAuthenticated}
+            path="/backlog"
+          />
+
           <Route component={error} path="*" />
+          <PrivateRoute
+            component={ScheduleRoute}
+            layout={Layout}
+            isAuthenticated={props.isAuthenticated}
+            path="/schedule"
+          />
+
+          {/* <Route component={error} path="*" /> */}
+          <Route component={NotFound }/>
         </Switch>
       </Suspense>
     </Layout>

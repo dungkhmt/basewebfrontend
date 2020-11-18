@@ -1,5 +1,6 @@
 import {connect} from "react-redux";
 import {login} from "../action";
+import { getScrSecurInfo } from "../action/Screen";
 import SignIn from "../component/SignIn";
 
 const mapStateToProps = state1 => ({ // query de lay ra
@@ -10,7 +11,8 @@ const mapStateToProps = state1 => ({ // query de lay ra
 });
 
 const mapDispatchToProps = dispatch => ({
-  requestLogin: (username, password) => dispatch(login(username, password))  // truyen action login thanh props login, create action
+  requestLogin: (username, password) => dispatch(login(username, password)),  // truyen action login thanh props login, create action
+  getScreenSecurityInfo: (history) => dispatch(getScrSecurInfo(history))
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(SignIn);

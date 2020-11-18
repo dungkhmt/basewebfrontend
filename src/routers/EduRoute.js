@@ -7,18 +7,20 @@ import CourseList from "../component/education/course/CourseList";
 import AddNewCourse from "../component/education/course/AddNewCourse";
 import ClassesList from "../component/education/class/ClassesList";
 import CreateClass from "../component/education/class/CreateClass";
+import ClassCreate from "../component/education/class/ClassCreate";
 import CourseDetail from "../component/education/course/CourseDetail";
 import TeacherDetail from "../component/education/teacher/TeacherDetail";
 import AddTeacher from "../component/education/teacher/AddTeacher";
 import TeacherList from "../component/education/teacher/TeacherList";
-import ClassRegistration from "../component/education/classmanagement/student/ClassRegistration";
-import TClassDetail from "../component/education/classmanagement/teacher/TClassDetail";
-import TClassList from "../component/education/classmanagement/teacher/TClassList";
-import TExerciseDetail from "../component/education/classmanagement/teacher/TExerciseDetail";
-import SClassDetail from "../component/education/classmanagement/student/SClassDetail";
-import SClassList from "../component/education/classmanagement/student/SClassList";
-import SExerciseDetail from "../component/education/classmanagement/student/SExerciseDetail";
-import CreateExercise from "../component/education/classmanagement/teacher/CreateExercise";
+import ClassRegistration from "../views/Education/ClassManagement/Student/ClassRegistration";
+import TClassDetail from "../views/Education/ClassManagement/Teacher/TClassDetail";
+import TClassList from "../views/Education/ClassManagement/Teacher/TClassList";
+import TAssignmentDetail from "../views/Education/ClassManagement/Teacher/TAssignmentDetail";
+import SClassDetail from "../views/Education/ClassManagement/Student/SClassDetail";
+import SClassList from "../views/Education/ClassManagement/Student/SClassList";
+import SAssignmentDetail from "../views/Education/ClassManagement/Student/SAssignmentDetail";
+import CreateAssignment from "../views/Education/ClassManagement/Teacher/CreateAssignment";
+import NotFound from "../views/errors/NotFound";
 
 export default function EduRoute() {
   let { path, url } = useRouteMatch();
@@ -45,32 +47,44 @@ export default function EduRoute() {
 
         <Route component={CreateSemester} path={`${path}/semester`} />
 
-        <Route component={CreateClass} path={`${path}/create-class`} />
+        <Route component={ClassCreate} path={`${path}/class/add`} />
 
-        <Route component={ClassRegistration} path={`${path}/class/register`} />
+        {/* Class management. */}
+        <Route component={ClassRegistration} path={`${path}/class/register`} exact/>
 
-        <Route component={SClassList} path={`${path}/student/class/list`} />
+        <Route component={SClassList} path={`${path}/student/class/list`} exact/>
 
         <Route
-          component={SExerciseDetail}
+          component={SAssignmentDetail}
           path={`${path}/student/class/:classId/assignment/:assignmentId`}
+          exact
         />
 
-        <Route component={SClassDetail} path={`${path}/student/class/:id`} />
+        <Route component={SClassDetail} path={`${path}/student/class/:id`} exact/>
 
-        <Route component={TClassList} path={`${path}/teacher/class/list`} />
+        <Route component={TClassList} path={`${path}/teacher/class/list`} exact/>
 
         <Route
-          component={CreateExercise}
-          path={`${path}/teacher/class/:id/assignment/create`}
+          component={CreateAssignment}
+          path={`${path}/teacher/class/:classId/assignment/create`}
+          exact
         />
 
         <Route
-          component={TExerciseDetail}
+          component={CreateAssignment}
+          path={`${path}/teacher/class/:classId/assignment/:assignmentId/edit`}
+          exact
+        />
+
+        <Route
+          component={TAssignmentDetail}
           path={`${path}/teacher/class/:classId/assignment/:assignmentId`}
+          exact
         />
 
-        <Route component={TClassDetail} path={`${path}/teacher/class/:id`} />
+        <Route component={TClassDetail} path={`${path}/teacher/class/:id`} exact/>
+
+        <Route component={NotFound}/>
       </Switch>
     </div>
   );

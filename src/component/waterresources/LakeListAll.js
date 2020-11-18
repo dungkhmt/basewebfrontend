@@ -32,6 +32,7 @@ function LakeListAll(props) {
     fetch(API_URL + '/get-all-lakes', requestOptionsGet)
       .then(response => response.json())
       .then(response => {
+        /*
         console.log(response);
         let arr = [];
         response.forEach(d => {
@@ -39,7 +40,13 @@ function LakeListAll(props) {
         });
         setLakes(arr);
         //console.log('getDepartmentList = ',departments);
-      });
+        */
+       setLakes(response);
+      },
+      error => {
+        setLakes([]);
+      }
+      );
   }
 
   useEffect(() => {

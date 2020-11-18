@@ -1,40 +1,44 @@
-import React, { useRef, useEffect, useState } from "react";
+import React, { useRef, useEffect, useState, Fragment } from "react";
 import {
   Card,
   CardContent,
-  Button,
   Typography,
   CardHeader,
   Paper,
   Collapse,
-  Badge,
   CardActionArea,
   Grid,
-  Box,
   Link,
+  Avatar,
+  IconButton,
 } from "@material-ui/core";
-import MaterialTable, { MTableToolbar } from "material-table";
-import { useDispatch, useSelector } from "react-redux";
+import MaterialTable from "material-table";
+import { useSelector } from "react-redux";
 import { useHistory } from "react-router";
-import { authGet, axiosGet, axiosPut } from "../../../../api";
+import { request } from "../../../../api";
 import { MuiThemeProvider } from "material-ui/styles";
 import { useParams } from "react-router";
-import { makeStyles, useTheme, withStyles } from "@material-ui/core/styles";
-import PeopleAltRoundedIcon from "@material-ui/icons/PeopleAltRounded";
-import { Avatar, IconButton } from "material-ui";
+import { makeStyles } from "@material-ui/core/styles";
 import {
   FcApproval,
   FcMindMap,
-  FcViewDetails,
   FcCollapse,
   FcExpand,
   FcConferenceCall,
 } from "react-icons/fc";
-import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
-import ExpandLessIcon from "@material-ui/icons/ExpandLess";
-import { motion } from "framer-motion";
 import { BiDetail } from "react-icons/bi";
-import AddCircleOutlineIcon from "@material-ui/icons/AddCircleOutline";
+import changePageSize, {
+  localization,
+  tableIcons,
+} from "../../../../utils/MaterialTableUtils";
+import { errorNoti } from "../../../../utils/Notification";
+import CustomizedDialogs from "../../../../utils/CustomizedDialogs";
+import PositiveButton from "../../../../component/education/classmanagement/PositiveButton";
+import NegativeDialogButton from "../../../../component/education/classmanagement/NegativeDialogButton";
+import NegativeButton from "../../../../component/education/classmanagement/NegativeButton";
+import displayTime from "../../../../utils/DateTimeUtils";
+import { StyledBadge } from "../../../../component/education/classmanagement/StyledBadge";
+// import withAsynchScreenSecurity from "../../../../component/education/classmanagement/withAsynchScreenSecurity";
 
 const useStyles = makeStyles((theme) => ({
   card: {
@@ -43,55 +47,52 @@ const useStyles = makeStyles((theme) => ({
   grid: {
     paddingLeft: 56,
   },
-  refuseBtn: {
-    borderRadius: "6px",
-    textTransform: "none",
-    fontSize: "1rem",
+  negativeBtn: {
+    minWidth: 112,
     marginLeft: 10,
     marginRight: 10,
-    "&:hover": {
-      backgroundColor: "#f3f4f6",
-    },
   },
-  approveBtn: {
-    borderRadius: "6px",
-    backgroundColor: "#1877f2",
-    textTransform: "none",
-    fontSize: "1rem",
-    "&:hover": {
-      backgroundColor: "#1834d2",
-    },
+  positiveBtn: {
+    minWidth: 112,
+  },
+  dialogRemoveBtn: {
+    fontWeight: "normal",
   },
 }));
 
-const StyledBadge = withStyles((theme) => ({
-  badge: {
-    right: -10,
-    top: 5,
-    border: `2px solid ${theme.palette.background.paper}`,
-    padding: "0 4px",
-  },
-}))(Badge);
-
-const formatTime = (n) => (Number(n) < 10 ? "0" + Number(n) : "" + Number(n));
-
 function TClassDetail() {
   const classes = useStyles();
-  const theme = useTheme();
   const params = useParams();
-  const token = useSelector((state) => state.auth.token);
   const history = useHistory();
+  const token = useSelector((state) => state.auth.token);
 
+  // Class.
   const [classDetail, setClassDetail] = useState({});
-  const [selectedStudents, setSelectedStudents] = useState([]);
+
+  // Student.
+  const [students, setStudents] = useState([]);
+  const [stuWillBeDeleted, setStuWillBeDeleted] = useState();
+  const [fetchedStudents, setFetchedStudents] = useState(false);
+
+  // Regist.
+  const [registStudents, setRegistStudents] = useState([]);
+  const [selectedRegists, setSelectedRegists] = useState([]);
+
+  // Assignment.
+  const [assign, setAssigns] = useState([]);
+  // const [deletedAssignId, setDeletedAssignId] = useState();
+
+  // Dialog.
+  const [openDelStuDialog, setOpenDelStuDialog] = useState(false);
 
   // Tables.
-  const [assignment, setAssignments] = useState([]);
-  const [students, setStudents] = useState([]);
-  const [registStudents, setRegistStudents] = useState([]);
   const [openClassStuCard, setOpenClassStuCard] = useState(false);
   const [openRegistCard, setOpenRegistCard] = useState(false);
-  const tableRef = useRef(null);
+
+  // Tables's ref.
+  const studentTableRef = useRef(null);
+  const registTableRef = useRef(null);
+  const assignTableRef = useRef(null);
 
   const headerProperties = {
     headerStyle: {
@@ -103,6 +104,7 @@ function TClassDetail() {
     },
   };
 
+  // Column.
   const assignCols = [
     {
       field: "name",
@@ -110,23 +112,11 @@ function TClassDetail() {
       ...headerProperties,
     },
     {
-      field: "deadLine",
+      field: "closeTime",
       title: "Hạn nộp",
       ...headerProperties,
       render: (rowData) => {
-        let deadLine = new Date(rowData.deadLine);
-        return (
-          <Typography>
-            {deadLine.getFullYear()}-{formatTime(deadLine.getMonth() + 1)}-
-            {formatTime(deadLine.getDate())}
-            &nbsp;&nbsp;
-            {formatTime(deadLine.getHours())}
-            <b>:</b>
-            {formatTime(deadLine.getMinutes())}
-            <b>:</b>
-            {formatTime(deadLine.getSeconds())}
-          </Typography>
-        );
+        return displayTime(new Date(rowData.closeTime));
       },
     },
   ];
@@ -152,97 +142,184 @@ function TClassDetail() {
     {
       field: "",
       title: "",
-      cellStyle: { alignItems: "center" },
+      ...headerProperties,
       render: (rowData) => (
-        <Box display="flex" justifyContent="center">
-          <Button
-            variant="outlined"
-            color="secondary"
-            onClick={() => onClickRemoveBtn(rowData)}
-          >
-            Loại khỏi lớp
-          </Button>
-        </Box>
+        <NegativeButton
+          label="Loại khỏi lớp"
+          className={classes.negativeBtn}
+          onClick={() => onClickRemoveBtn(rowData)}
+        />
       ),
     },
   ];
 
   // Functions.
   const getClassDetail = () => {
-    axiosGet(token, `/edu/class/${params.id}`)
-      .then((res) => setClassDetail(res.data))
-      .catch((e) => alert("error"));
+    request(token, history, "get", `/edu/class/${params.id}`, (res) => {
+      setClassDetail(res.data);
+    });
   };
 
   const getStudents = (type) => {
     if (type === "register") {
-      axiosGet(token, `/edu/class/${params.id}/registered-students`)
-        .then((res) => setRegistStudents(res.data))
-        .catch((e) => alert("error"));
+      request(
+        token,
+        history,
+        "get",
+        `/edu/class/${params.id}/registered-students`,
+        (res) => {
+          changePageSize(res.data.length, registTableRef);
+          setRegistStudents(res.data);
+        }
+      );
     } else {
-      axiosGet(token, `/edu/class/${params.id}/students`)
-        .then((res) => setStudents(res.data))
-        .catch((e) => alert("error"));
+      request(
+        token,
+        history,
+        "get",
+        `/edu/class/${params.id}/students`,
+        (res) => {
+          changePageSize(res.data.length, studentTableRef);
+          setStudents(res.data);
+          setFetchedStudents(true);
+        }
+      );
     }
   };
 
-  const getAssignments = () => {
-    axiosGet(token, `/edu/class/${params.id}/assignments`)
-      .then((res) => setAssignments(res.data))
-      .catch((e) => alert("error"));
+  const getAssigns = () => {
+    request(
+      token,
+      history,
+      "get",
+      `/edu/class/${params.id}/assignments/teacher`,
+      (res) => {
+        changePageSize(res.data.length, assignTableRef);
+        setAssigns(res.data);
+      }
+    );
   };
 
   const onClickStuCard = () => {
-    if (false == openClassStuCard && 0 == students.length) {
+    setOpenClassStuCard(!openClassStuCard);
+
+    if (fetchedStudents == false) {
       getStudents("class");
     }
-
-    setOpenClassStuCard(!openClassStuCard);
   };
 
-  const onClickRemoveBtn = (e) => {
-    console.log("Click button", e);
+  // Delete student.
+  const onClickRemoveBtn = (rowData) => {
+    setOpenDelStuDialog(true);
+    setStuWillBeDeleted({ id: rowData.id, name: rowData.name });
   };
 
+  const onDeleteStudent = () => {
+    setOpenDelStuDialog(false);
+    let id = stuWillBeDeleted.id;
+
+    request(
+      token,
+      history,
+      "put",
+      "/edu/class/registration-status",
+      (res) => {
+        if (res.data[id].status == 200) {
+          // Remove student in student list.
+          setStudents(students.filter((student) => student.id != id));
+        } else {
+          // The student may have been removed previously.
+          errorNoti("Rất tiếc! Đã có lỗi xảy ra. Vui lòng thử lại.");
+        }
+      },
+      {},
+      {
+        classId: params.id,
+        studentIds: [id],
+        status: "REMOVED",
+      }
+    );
+  };
+
+  // Aprrove or deny registrations.
   const onSelectionChange = (rows) => {
-    let studentIds = rows.map((row) => row.id);
-    setSelectedStudents(studentIds);
+    setSelectedRegists(rows.map((row) => row.id));
   };
 
-  const onClickUpdateStatusBtn = (type) => {
-    axiosPut(token, "/edu/class/registration-status", {
-      classId: params.id,
-      studentIds: selectedStudents,
-      status: type,
-    })
-      .then((res) => {
+  const onUpdateStatus = (type) => {
+    request(
+      token,
+      history,
+      "put",
+      "/edu/class/registration-status",
+      (res) => {
         let data = res.data;
         let tmp = [];
+        let result;
 
-        for (let i = 0; i < registStudents.length; i++) {
-          if (
-            data[registStudents[i].id] == undefined ||
-            data[registStudents[i].id].status != 200
-          ) {
-            tmp.push(registStudents[i]);
-          } else {
-            // Phe duyet thanh cong thi them luon len bang danh sach lop
+        // In case it is necessary to update the student list.
+        if (type == "APPROVED" && fetchedStudents) {
+          let newStudents = [];
+
+          for (let i = 0; i < registStudents.length; i++) {
+            result = data[registStudents[i].id];
+
+            if (result == undefined || result.status != 200) {
+              // Not selected or status update failed.
+              tmp.push(registStudents[i]);
+            } else {
+              // Successfully update.
+              newStudents.push({
+                name: registStudents[i].name,
+                id: registStudents[i].id,
+                email: registStudents[i].email,
+              });
+            }
+          }
+
+          setStudents([...students, ...newStudents]);
+        } else {
+          for (let i = 0; i < registStudents.length; i++) {
+            result = data[registStudents[i].id];
+
+            if (result == undefined || result.status != 200) {
+              // Not selected or status update failed.
+              tmp.push(registStudents[i]);
+            }
           }
         }
 
         setRegistStudents(tmp);
-      })
-      .catch((e) => alert("error"));
+      },
+      {},
+      {
+        classId: params.id,
+        studentIds: selectedRegists,
+        status: type,
+      }
+    );
+  };
+
+  // const handleSuccessDeleteAssign = () => {
+  //   setAssigns(
+  //     assign.filter((assign) => {
+  //       return assign.id != deletedAssignId;
+  //     })
+  //   );
+  // };
+
+  const handleClose = () => {
+    setOpenDelStuDialog(false);
   };
 
   useEffect(() => {
     getClassDetail();
-    getAssignments();
+    getAssigns();
     getStudents("register");
   }, []);
 
   return (
-    <MuiThemeProvider>
+    <Fragment>
       <Card className={classes.card}>
         <CardHeader
           avatar={
@@ -254,34 +331,22 @@ function TClassDetail() {
         />
         <CardContent>
           <Grid container className={classes.grid}>
-            <Grid item md={3} sm={3} xs={3}>
+            <Grid item md={3} sm={3} xs={3} container direction="column">
               <Typography>Mã lớp</Typography>
+              <Typography>Mã học phần</Typography>
+              <Typography>Tên học phần</Typography>
+              <Typography>Loại lớp</Typography>
             </Grid>
-            <Grid item md={8} sm={8} xs={8}>
+            <Grid item md={8} sm={8} xs={8} container direction="column">
               <Typography>
                 <b>:</b> {classDetail.code}
               </Typography>
-            </Grid>
-            <Grid item md={3} sm={3} xs={3}>
-              <Typography>Mã học phần</Typography>
-            </Grid>
-            <Grid item md={8} sm={8} xs={8}>
               <Typography>
                 <b>:</b> {classDetail.courseId}
               </Typography>
-            </Grid>
-            <Grid item md={3} sm={3} xs={3}>
-              <Typography>Tên học phần</Typography>
-            </Grid>
-            <Grid item md={8} sm={8} xs={8}>
               <Typography>
                 <b>:</b> {classDetail.name}
               </Typography>
-            </Grid>
-            <Grid item md={3} sm={3} xs={3}>
-              <Typography>Loại lớp</Typography>
-            </Grid>
-            <Grid item md={8} sm={8} xs={8}>
               <Typography>
                 <b>:</b> {classDetail.classType}
               </Typography>
@@ -289,6 +354,7 @@ function TClassDetail() {
           </Grid>
         </CardContent>
       </Card>
+
       <Card className={classes.card}>
         <CardActionArea disableRipple onClick={onClickStuCard}>
           <CardHeader
@@ -317,31 +383,18 @@ function TClassDetail() {
             <MaterialTable
               title=""
               columns={stuCols}
-              tableRef={tableRef}
-              localization={{
-                body: {
-                  emptyDataSourceMessage: "",
-                },
-                toolbar: {
-                  searchPlaceholder: "Tìm kiếm",
-                  searchTooltip: "Tìm kiếm",
-                },
-                pagination: {
-                  hover: "pointer",
-                  labelRowsSelect: "hàng",
-                  labelDisplayedRows: "{from}-{to} của {count}",
-                  nextTooltip: "Trang tiếp",
-                  lastTooltip: "Trang cuối",
-                  firstTooltip: "Trang đầu",
-                  previousTooltip: "Trang trước",
-                },
-              }}
+              icons={tableIcons}
+              tableRef={studentTableRef}
+              localization={localization}
               data={students}
               components={{
                 Container: (props) => <Paper {...props} elevation={0} />,
               }}
               options={{
-                pageSize: 20,
+                filtering: true,
+                sorting: false,
+                search: false,
+                pageSize: 10,
                 debounceInterval: 500,
                 headerStyle: {
                   backgroundColor: "#673ab7",
@@ -349,14 +402,15 @@ function TClassDetail() {
                   fontSize: "1rem",
                   color: "white",
                 },
-                sorting: false,
-                cellStyle: { fontSize: "1rem" },
+                filterCellStyle: { textAlign: "center" },
+                cellStyle: { fontSize: "1rem", textAlign: "center" },
                 toolbarButtonAlignment: "left",
               }}
             />
           </CardContent>
         </Collapse>
       </Card>
+
       <Card className={classes.card}>
         <CardActionArea
           disableRipple
@@ -394,63 +448,38 @@ function TClassDetail() {
             <MaterialTable
               title=""
               columns={registCols}
-              tableRef={tableRef}
+              tableRef={registTableRef}
               data={registStudents}
-              localization={{
-                body: {
-                  emptyDataSourceMessage: "",
-                },
-                toolbar: {
-                  searchPlaceholder: "Tìm kiếm",
-                  searchTooltip: "Tìm kiếm",
-                },
-                pagination: {
-                  hover: "pointer",
-                  labelRowsSelect: "hàng",
-                  labelDisplayedRows: "{from}-{to} của {count}",
-                  nextTooltip: "Trang tiếp",
-                  lastTooltip: "Trang cuối",
-                  firstTooltip: "Trang đầu",
-                  previousTooltip: "Trang trước",
-                },
-              }}
+              localization={localization}
               components={{
                 Container: (props) => <Paper {...props} elevation={0} />,
                 Action: (props) => {
                   if (props.action.icon === "refuse") {
                     return (
-                      <Button
-                        variant="outlined"
-                        className={classes.refuseBtn}
-                        style={{
-                          marginLeft: 10,
-                          marginRight: 10,
-                        }}
+                      <NegativeButton
+                        label="Từ chối"
+                        className={classes.negativeBtn}
                         onClick={(event) =>
                           props.action.onClick(event, props.data)
                         }
-                      >
-                        Từ chối
-                      </Button>
+                      />
                     );
                   }
                   if (props.action.icon === "approve") {
                     return (
-                      <Button
-                        color="primary"
-                        variant="contained"
-                        className={classes.approveBtn}
+                      <PositiveButton
+                        label="Phê duyệt"
+                        className={classes.positiveBtn}
                         onClick={(event) =>
                           props.action.onClick(event, props.data)
                         }
-                      >
-                        Phê duyệt
-                      </Button>
+                      />
                     );
                   }
                 },
               }}
               options={{
+                search: false,
                 pageSize: 10,
                 selection: true,
                 debounceInterval: 500,
@@ -469,12 +498,12 @@ function TClassDetail() {
                 {
                   icon: "approve",
                   position: "toolbarOnSelect",
-                  onClick: (event, data) => onClickUpdateStatusBtn("APPROVED"),
+                  onClick: () => onUpdateStatus("APPROVED"),
                 },
                 {
                   icon: "refuse",
                   position: "toolbarOnSelect",
-                  onClick: (event, data) => onClickUpdateStatusBtn("REFUSED"),
+                  onClick: () => onUpdateStatus("REFUSED"),
                 },
               ]}
               onSelectionChange={(rows) => onSelectionChange(rows)}
@@ -482,6 +511,7 @@ function TClassDetail() {
           </CardContent>
         </Collapse>
       </Card>
+
       <Card className={classes.card}>
         <CardHeader
           avatar={
@@ -495,65 +525,27 @@ function TClassDetail() {
           <MaterialTable
             title=""
             columns={assignCols}
-            tableRef={tableRef}
-            localization={{
-              header: {
-                actions: "",
-              },
-              body: {
-                emptyDataSourceMessage: "",
-              },
-              toolbar: {
-                searchPlaceholder: "Tìm kiếm",
-                searchTooltip: "Tìm kiếm",
-              },
-              pagination: {
-                hover: "pointer",
-                labelRowsSelect: "hàng",
-                labelDisplayedRows: "{from}-{to} của {count}",
-                nextTooltip: "Trang tiếp",
-                lastTooltip: "Trang cuối",
-                firstTooltip: "Trang đầu",
-                previousTooltip: "Trang trước",
-              },
-            }}
-            data={assignment}
+            tableRef={assignTableRef}
+            localization={localization}
+            data={assign}
             components={{
               Container: (props) => <Paper {...props} elevation={0} />,
               Action: (props) => {
                 if (props.action.icon === "create") {
                   return (
-                    <Button
-                      variant="contained"
-                      color="primary"
-                      className={classes.approveBtn}
-                      style={{ marginTop: 16 }}
+                    <PositiveButton
+                      label="Tạo mới"
+                      className={classes.positiveBtn}
                       onClick={(event) =>
                         props.action.onClick(event, props.data)
                       }
-                    >
-                      Tạo mới
-                    </Button>
-                  );
-                }
-                if (props.action.icon === "delete") {
-                  return (
-                    <Button
-                      variant="outlined"
-                      color="secondary"
-                      style={{ fontSize: "bold" }}
-                      onClick={(event) => {
-                        props.action.onClick(event, props.data);
-                        event.stopPropagation();
-                      }}
-                    >
-                      Xoá
-                    </Button>
+                    />
                   );
                 }
               },
             }}
             options={{
+              search: false,
               pageSize: 10,
               actionsColumnIndex: -1,
               debounceInterval: 500,
@@ -578,17 +570,11 @@ function TClassDetail() {
               {
                 icon: "create",
                 position: "toolbar",
-                onClick: (event) => {
-                  // history.push(
-                  //   `/edu/teacher/class/${params.id}/assignment/create`
-                  // );
+                onClick: () => {
+                  history.push(
+                    `/edu/teacher/class/${params.id}/assignment/create`
+                  );
                 },
-              },
-              {
-                icon: "delete",
-                tooltip: "Delete User",
-                onClick: (event, rowData) =>
-                  alert("You want to delete " + rowData.name),
               },
             ]}
             onRowClick={(event, rowData) => {
@@ -600,8 +586,32 @@ function TClassDetail() {
           />
         </CardContent>
       </Card>
-    </MuiThemeProvider>
+
+      {/* Dialogs */}
+      <CustomizedDialogs
+        open={openDelStuDialog}
+        handleClose={handleClose}
+        title="Loại sinh viên?"
+        content={
+          <Typography gutterBottom>
+            Loại sinh viên <b>{stuWillBeDeleted?.name}</b> khỏi lớp.
+            <br />
+            <b>
+              Cảnh báo: Bạn không thể hủy hành động này sau khi đã thực hiện.
+            </b>
+          </Typography>
+        }
+        actions={
+          <PositiveButton
+            label="Loại khỏi lớp"
+            className={classes.dialogRemoveBtn}
+            onClick={onDeleteStudent}
+          />
+        }
+      />
+    </Fragment>
   );
 }
 
 export default TClassDetail;
+// export default withAsynchScreenSecurity(TClassDetail, "SCR_TCLASSDETAIL");
