@@ -11,20 +11,24 @@ import {
   Link,
   Avatar,
   IconButton,
+  List,
+  ListItem,
+  ListItemText,
+  ListItemIcon,
 } from "@material-ui/core";
 import MaterialTable from "material-table";
 import { useSelector } from "react-redux";
 import { useHistory } from "react-router";
 import { request } from "../../../../api";
-import { MuiThemeProvider } from "material-ui/styles";
 import { useParams } from "react-router";
 import { makeStyles } from "@material-ui/core/styles";
 import {
   FcApproval,
   FcMindMap,
-  FcCollapse,
   FcExpand,
   FcConferenceCall,
+  FcExpired,
+  FcClock,
 } from "react-icons/fc";
 import { BiDetail } from "react-icons/bi";
 import changePageSize, {
@@ -34,11 +38,14 @@ import changePageSize, {
 import { errorNoti } from "../../../../utils/Notification";
 import CustomizedDialogs from "../../../../utils/CustomizedDialogs";
 import PositiveButton from "../../../../component/education/classmanagement/PositiveButton";
-import NegativeDialogButton from "../../../../component/education/classmanagement/NegativeDialogButton";
+
 import NegativeButton from "../../../../component/education/classmanagement/NegativeButton";
 import displayTime from "../../../../utils/DateTimeUtils";
 import { StyledBadge } from "../../../../component/education/classmanagement/StyledBadge";
+import AssignList from "../../../../component/education/classmanagement/AssignList";
 // import withAsynchScreenSecurity from "../../../../component/education/classmanagement/withAsynchScreenSecurity";
+
+import clsx from "clsx";
 
 const useStyles = makeStyles((theme) => ({
   card: {
@@ -57,6 +64,20 @@ const useStyles = makeStyles((theme) => ({
   },
   dialogRemoveBtn: {
     fontWeight: "normal",
+  },
+  listItem: {
+    heigth: 48,
+    borderRadius: 6,
+    marginBottom: 6,
+    backgroundColor: "#f5f5f5",
+    "&:hover": {
+      backgroundColor: "#e0e0e0",
+    },
+  },
+  open: { transform: "rotate(-180deg)", transition: "0.3s" },
+  close: { transition: "0.3s" },
+  item: {
+    paddingLeft: 32,
   },
 }));
 
@@ -79,7 +100,11 @@ function TClassDetail() {
   const [selectedRegists, setSelectedRegists] = useState([]);
 
   // Assignment.
-  const [assign, setAssigns] = useState([]);
+  const [assignSets, setAssignSets] = useState([
+    { title: "Đã giao", data: [] },
+    { title: "Chưa giao", data: [] },
+    { title: "Đã xoá", data: [] },
+  ]);
   // const [deletedAssignId, setDeletedAssignId] = useState();
 
   // Dialog.
@@ -194,8 +219,37 @@ function TClassDetail() {
       "get",
       `/edu/class/${params.id}/assignments/teacher`,
       (res) => {
-        changePageSize(res.data.length, assignTableRef);
-        setAssigns(res.data);
+        // changePageSize(res.data.length, assignTableRef);
+        let wait4Opening = [];
+        let opened = [];
+        let deleted = [];
+        let current = new Date();
+
+        res.data.forEach((assign) => {
+          if (assign.deleted) {
+            deleted.push(assign);
+          } else {
+            let open = new Date(assign.openTime);
+
+            if (current.getTime() < open.getTime()) {
+              wait4Opening.push(assign);
+            } else {
+              let close = new Date(assign.closeTime);
+
+              if (close.getTime() < current.getTime()) {
+                opened.push({ ...assign, opening: false });
+              } else {
+                opened.push({ ...assign, opening: true });
+              }
+            }
+          }
+        });
+
+        setAssignSets([
+          { ...assignSets[0], data: opened },
+          { ...assignSets[1], data: wait4Opening },
+          { ...assignSets[2], data: deleted },
+        ]);
       }
     );
   };
@@ -300,13 +354,10 @@ function TClassDetail() {
     );
   };
 
-  // const handleSuccessDeleteAssign = () => {
-  //   setAssigns(
-  //     assign.filter((assign) => {
-  //       return assign.id != deletedAssignId;
-  //     })
-  //   );
-  // };
+  // Assignments.
+  const onClickAssign = (id) => {
+    history.push(`/edu/teacher/class/${params.id}/assignment/${id}`);
+  };
 
   const handleClose = () => {
     setOpenDelStuDialog(false);
@@ -368,11 +419,13 @@ function TClassDetail() {
             action={
               <div>
                 <IconButton aria-label="show more">
-                  {openClassStuCard ? (
-                    <FcCollapse size={24} />
-                  ) : (
-                    <FcExpand size={24} />
-                  )}
+                  <FcExpand
+                    size={24}
+                    className={clsx(
+                      !openClassStuCard && classes.close,
+                      openClassStuCard && classes.open
+                    )}
+                  />
                 </IconButton>
               </div>
             }
@@ -433,11 +486,13 @@ function TClassDetail() {
             action={
               <div>
                 <IconButton aria-label="show more">
-                  {openRegistCard ? (
-                    <FcCollapse size={24} />
-                  ) : (
-                    <FcExpand size={24} />
-                  )}
+                  <FcExpand
+                    size={24}
+                    className={clsx(
+                      !openRegistCard && classes.close,
+                      openRegistCard && classes.open
+                    )}
+                  />
                 </IconButton>
               </div>
             }
@@ -520,9 +575,22 @@ function TClassDetail() {
             </Avatar>
           }
           title={<Typography variant="h5">Bài tập</Typography>}
+          action={
+            <PositiveButton
+              label="Tạo mới"
+              className={classes.positiveBtn}
+              onClick={() => {
+                history.push(
+                  `/edu/teacher/class/${params.id}/assignment/create`
+                );
+              }}
+            />
+          }
         />
-        <CardContent>
-          <MaterialTable
+        <Grid container md={12} justify="center">
+          <Grid item md={10}>
+            <CardContent className={classes.assignList}>
+              {/* <MaterialTable
             title=""
             columns={assignCols}
             tableRef={assignTableRef}
@@ -583,8 +651,33 @@ function TClassDetail() {
                 `/edu/teacher/class/${params.id}/assignment/${rowData.id}`
               );
             }}
-          />
-        </CardContent>
+          /> */}
+              <List>
+                {assignSets.map((assignList) => (
+                  <AssignList title={assignList.title}>
+                    {assignList.data.map((assign) => (
+                      <ListItem
+                        button
+                        disableRipple
+                        className={classes.listItem}
+                        onClick={() => onClickAssign(assign.id)}
+                      >
+                        <ListItemText primary={assign.name} />
+                        <ListItemIcon>
+                          {assign.opening ? (
+                            <FcClock size={24} />
+                          ) : assign.opening == false ? (
+                            <FcExpired size={24} />
+                          ) : null}
+                        </ListItemIcon>
+                      </ListItem>
+                    ))}
+                  </AssignList>
+                ))}
+              </List>
+            </CardContent>
+          </Grid>
+        </Grid>
       </Card>
 
       {/* Dialogs */}
