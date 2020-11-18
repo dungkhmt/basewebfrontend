@@ -4,7 +4,10 @@ import React, {useEffect, useState} from "react";
 import Button from "@material-ui/core/Button";
 import {authGet} from "../../api";
 import {CircularProgress} from "@material-ui/core";
-import MaterialTable from "material-table";
+import MaterialTable, { MTableToolbar } from "material-table";
+
+
+
 
 export default function Approve() {
   const dispatch = useDispatch();
@@ -44,6 +47,12 @@ export default function Approve() {
     }
   ];
 
+  //phamducdat
+
+  const handleUpdatePassWord = () => {
+    history.push("/userregister/Register");
+  }
+
   async function handleApprove(userLoginId) {
     waiting[userLoginId] = true;
     setWaiting(Object.assign({}, waiting));
@@ -63,5 +72,15 @@ export default function Approve() {
                    columns={columns}
                    data={userRegisterList}
                    options={{search: false}}/>
-  </div>);
+
+
+
+
+
+  </div>
+  
+  
+  
+
+  );
 }

@@ -49,7 +49,6 @@ export default function CreateProject() {
 
 		let body = {backlogProjectId, backlogProjectName};
 		let project = await authPost(dispatch, token, '/backlog/create-project', body).then(r => r.json());
-		console.log(JSON.stringify(project));
 		if(project && project['backlogProjectId']) {
 			alert('Tạo thành công dự án mới');
 		} else {
