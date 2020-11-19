@@ -40,7 +40,7 @@ const useStyles = makeStyles((theme) => ({
     borderRadius: 6,
   },
   textField: {
-    width: 300,
+    width: 380,
   },
   container: {},
   cancelBtn: {
@@ -70,6 +70,9 @@ function CreateAssignment() {
   const assignId = params.assignmentId;
   const history = useHistory();
   const token = useSelector((state) => state.auth.token);
+
+  // Use for updating.
+  const [assignDetail, setAssignDetail] = useState({});
 
   // Editor.
   const [editorState, setEditorState] = useState(EditorState.createEmpty());
@@ -159,6 +162,7 @@ function CreateAssignment() {
         );
 
         setEditorState(EditorState.createWithContent(contentState));
+        setAssignDetail(data);
       },
       {}
     );
@@ -211,45 +215,57 @@ function CreateAssignment() {
     let subject = draftToHtml(convertToRaw(editorState.getCurrentContent()));
 
     if (assignId) {
-      request(
-        token,
-        history,
-        "put",
-        `/edu/assignment/${assignId}`,
-        () => {
-          history.goBack();
-        },
-        {
-          onError: () => {
-            setIsProcessing(false);
+      // Check for changes.
+      if (
+        formData.name != assignDetail.name ||
+        new Date(formData.openTime).getTime() !=
+          new Date(assignDetail.openTime).getTime() ||
+        new Date(formData.closeTime).getTime() !=
+          new Date(assignDetail.closeTime).getTime() ||
+        subject != assignDetail.subject
+      ) {
+        request(
+          token,
+          history,
+          "put",
+          `/edu/assignment/${assignId}`,
+          () => {
+            history.goBack();
           },
-          400: (e) => {
-            let errors = e.response.data?.errors;
+          {
+            onError: () => {
+              setIsProcessing(false);
+            },
+            400: (e) => {
+              let errors = e.response.data?.errors;
 
-            if (errors) {
-              errors.forEach((error) => {
-                switch (error.location) {
-                  case "openTime":
-                    setError("openTime", error.type, error.message);
-                    break;
-                  case "closeTime":
-                    setError("closeTime", error.type, error.message);
-                    break;
-                  case "id":
-                    errorNoti("Bài tập đã bị xoá trước đó.");
-                    break;
-                }
-              });
-            } else {
+              if (errors) {
+                errors.forEach((error) => {
+                  switch (error.location) {
+                    case "openTime":
+                      setError("openTime", error.type, error.message);
+                      break;
+                    case "closeTime":
+                      setError("closeTime", error.type, error.message);
+                      break;
+                    case "id":
+                      errorNoti("Bài tập đã bị xoá trước đó.");
+                      break;
+                  }
+                });
+              } else {
+                errorNoti("Rất tiếc! Đã có lỗi xảy ra. Vui lòng thử lại.");
+              }
+            },
+            rest: () => {
               errorNoti("Rất tiếc! Đã có lỗi xảy ra. Vui lòng thử lại.");
-            }
+            },
           },
-          rest: () => {
-            errorNoti("Rất tiếc! Đã có lỗi xảy ra. Vui lòng thử lại.");
-          },
-        },
-        { ...formData, subject: subject }
-      );
+          { ...formData, subject: subject }
+        );
+      } else {
+        history.goBack();
+      }
     } else {
       request(
         token,
@@ -368,6 +384,8 @@ function CreateAssignment() {
                         "aria-label": "openTime",
                       }}
                       {...pickerProps}
+                      minDate={watch("openTime")}
+                      disablePast={assignId ? false : true}
                     />
                   </MuiPickersUtilsProvider>
                 </Grid>
