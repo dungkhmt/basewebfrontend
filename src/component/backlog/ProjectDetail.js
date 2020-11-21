@@ -4,10 +4,11 @@ import MaterialTable from "material-table";
 import { authPost, authGet } from "../../api";
 import { Redirect, useHistory } from "react-router-dom";
 import { toFormattedDateTime, toFormattedDate } from "../../utils/dateutils";
-import {Grid, Button, Card, CardContent, Dialog, 
+import {
+  Grid, Button, Card, CardContent, Dialog,
   DialogActions, DialogContent, DialogTitle, List,
-  ListItem, FormGroup, FormControlLabel, Checkbox, 
-  TextField, Tooltip, IconButton
+  ListItem, FormGroup, FormControlLabel, Checkbox,
+  TextField, Tooltip, IconButton, Box, Chip
 } from "@material-ui/core";
 
 import { makeStyles } from "@material-ui/core/styles";
@@ -16,6 +17,8 @@ import ListAltIcon from '@material-ui/icons/ListAlt';
 import PersonAddIcon from '@material-ui/icons/PersonAdd';
 import PeopleIcon from '@material-ui/icons/People';
 import BarChartIcon from '@material-ui/icons/BarChart';
+import { API_URL } from "../../config/config";
+import { request, axiosGet } from "../../api";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -84,6 +87,12 @@ export default function ProjectDetail(props) {
     let myAccount = await authGet(dispatch, token, "/my-account/");
     tasks.forEach(task => {
       task.assignment = task.assignment.map(element => element.userLoginId);
+      if (task.backlogTask.attachmentPaths != null
+        && task.backlogTask.attachmentPaths !== undefined
+        && task.backlogTask.attachmentPaths.length > 0
+      )
+        task.backlogTask.attachmentPaths = task.backlogTask.attachmentPaths.split(";");
+      else task.backlogTask.attachmentPaths = [];
     });
     let myTasks = tasks.filter(task => {
       return task.assignment.filter(element => { return element === myAccount.user }).length > 0;
@@ -238,6 +247,33 @@ export default function ProjectDetail(props) {
     },
   ]
 
+  const downloadFiles = (item) => {
+    fetch(`${API_URL}/backlog/download-attachment-files/${item}`, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+        "X-Auth-Token": token,
+      },
+    })
+      .then((response) => response.blob())
+      .then((blob) => {
+        // Create blob link to download
+        const url = window.URL.createObjectURL(
+          new Blob([blob]),
+        );
+        const link = document.createElement('a');
+        link.href = url;
+        link.setAttribute(
+          'download',
+          `${item}`,
+        );
+
+        document.body.appendChild(link);
+        link.click();
+        link.parentNode.removeChild(link);
+      });
+  }
+
   if (!isPermissive) {
     return (
       <Redirect to={{ pathname: "/", state: { from: history.location } }} />
@@ -380,6 +416,21 @@ export default function ProjectDetail(props) {
                           fullWidth
                           disabled
                         />
+                        <Box style={{ margin: '5px 0 0 0' }}>
+                          {rowData.backlogTask.attachmentPaths.map(item => (
+                            <Chip
+                              style={{ margin: '0 5px 0 0' }}
+                              label={item.substring(item.indexOf("-") + 1)}
+                              onClick={() => {
+                                downloadFiles(item);
+                              }}
+                              variant="outlined"
+                              size="large"
+                              color="primary"
+                            />
+                          )
+                          )}
+                        </Box>
                       </div>
                     )
                   }
@@ -387,10 +438,10 @@ export default function ProjectDetail(props) {
               }
               actions={[
                 {
-                  icon: () => { return <ListAltIcon color={isShowMyTask ? 'primary':'default' } fontSize='large' /> },
+                  icon: () => { return <ListAltIcon color={isShowMyTask ? 'primary' : 'default'} fontSize='large' /> },
                   tooltip: 'Task của tôi',
                   isFreeAction: true,
-                  onClick: () => {setIsShowMyTask(!isShowMyTask)}
+                  onClick: () => { setIsShowMyTask(!isShowMyTask) }
                 },
                 {
                   icon: () => { return <AddBoxIcon color='primary' fontSize='large' /> },
