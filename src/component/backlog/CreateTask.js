@@ -15,8 +15,12 @@ import {
 } from "@material-ui/pickers";
 import React, { useState, useEffect } from "react";
 import { useHistory } from "react-router-dom";
-import { authPost, authGet } from "../../api";
+import { authPost, authGet, authPostMultiPart } from "../../api";
 import { useDispatch, useSelector } from "react-redux";
+import { DropzoneArea } from "material-ui-dropzone";
+import Icon from '@material-ui/core/Icon';
+import FaceIcon from '@material-ui/icons/Face';
+import { FileAttachment } from "material-ui/svg-icons";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -29,6 +33,10 @@ const useStyles = makeStyles((theme) => ({
       maxWidth: "100%",
     },
   },
+  dropZone: {
+    //maxWidth: '600px',
+    height: '40px',
+  }
 }));
 
 export default function CreateTask(props) {
@@ -45,6 +53,7 @@ export default function CreateTask(props) {
   const [taskAssignment, setTaskAssignment] = useState('');
   const [taskAssignable, setTaskAssignable] = useState([]);
   const [projectMember, setProjectMember] = useState([]);
+  const [attachmentFiles, setAttachmentFiles] = useState([]);
   const history = useHistory();
 
   const backlogProjectId = props.match.params.backlogProjectId;
@@ -112,7 +121,7 @@ export default function CreateTask(props) {
 
   const handleTaskAssignmentChange = (event) => {
     setTaskAssignment(event.target.value);
-    if(event.target.value === '') setTaskStatus("TASK_OPEN");
+    if (event.target.value === '') setTaskStatus("TASK_OPEN");
     else setTaskStatus("TASK_INPROGRESS");
   }
 
@@ -123,6 +132,12 @@ export default function CreateTask(props) {
   async function handleSubmit() {
     if (taskName === '') {
       alert('Nhập chủ đề rồi thử lại');
+      return;
+    }
+
+    let formData = new FormData();
+    for (const file of attachmentFiles) {
+      formData.append("file", file);
     }
 
     let addTaskBody = {
@@ -134,6 +149,7 @@ export default function CreateTask(props) {
       priorityId: taskPriority,
       fromDate: taskFromDate,
       dueDate: taskDueDate,
+      attachmentPaths: attachmentFiles.map(e => e.name)
     };
 
     let task = await authPost(dispatch, token, '/backlog/add-task', addTaskBody).then(r => r.json());
@@ -151,8 +167,14 @@ export default function CreateTask(props) {
       statusId: taskStatus
     };
     authPost(dispatch, token, '/backlog/add-assignable', addAssignableBody).then(r => r.json());
+    let responseMessage = authPostMultiPart(dispatch, token, "/backlog/upload-task-attachment-files/" + task.backlogTaskId, formData);
+    console.log(responseMessage);
 
     history.push("/backlog/project/" + backlogProjectId);
+  }
+
+  const handleAttachmentFiles = (files) => {
+    setAttachmentFiles(files);
   }
 
   return (
@@ -310,6 +332,41 @@ export default function CreateTask(props) {
                 </MenuItem>
               ))}
             </TextField>
+            <br></br>
+            <Typography 
+              variant='subtitle1'
+              display='block'
+              style={{margin: '5px 0 0 7px', width: "100%"}}
+            >
+              File đính kèm
+            </Typography>
+            <DropzoneArea 
+              dropzoneClass={classes.dropZone}
+              filesLimit={20}
+              showPreviews={true}
+              showPreviewsInDropzone={false}
+              useChipsForPreview
+              dropzoneText="Kéo và thả tệp vào đây hoặc nhấn để chọn tệp"
+              previewText="Xem trước:"
+              previewChipProps={
+                { variant: "outlined", color: "primary", size: "large", }
+              }
+              getFileAddedMessage={(fileName) =>
+                `Tệp ${fileName} tải lên thành công`
+              }
+              getFileRemovedMessage={(fileName) =>
+                `Tệp ${fileName} đã loại bỏ`
+              }
+              getFileLimitExceedMessage={(filesLimit) =>
+                `Vượt quá số lượng tệp tối đa được cho phép. Chỉ được phép tải lên tối đa ${filesLimit} tệp.`
+              }
+              alertSnackbarProps={{
+                anchorOrigin: { vertical: "bottom", horizontal: "right" },
+                autoHideDuration: 1500,
+              }}
+              onChange={(files) => handleAttachmentFiles(files)}
+            >
+            </DropzoneArea>
           </form>
         </CardContent>
         <CardActions>
