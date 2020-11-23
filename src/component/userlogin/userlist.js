@@ -91,11 +91,6 @@ function UserList() {
       }
       icons={tableIcons}
     />
-
-<Button color={'primary'} variant={'contained'} onClick={() =>
-   history.push('/userlogin/Update')}>
-          Thay đổi mật khẩu
-        </Button>
     </div>
 
 
