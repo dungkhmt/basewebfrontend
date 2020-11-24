@@ -18,7 +18,6 @@ import PersonAddIcon from '@material-ui/icons/PersonAdd';
 import PeopleIcon from '@material-ui/icons/People';
 import BarChartIcon from '@material-ui/icons/BarChart';
 import { API_URL } from "../../config/config";
-import { request, axiosGet } from "../../api";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -257,7 +256,6 @@ export default function ProjectDetail(props) {
     })
       .then((response) => response.blob())
       .then((blob) => {
-        // Create blob link to download
         const url = window.URL.createObjectURL(
           new Blob([blob]),
         );
@@ -265,7 +263,7 @@ export default function ProjectDetail(props) {
         link.href = url;
         link.setAttribute(
           'download',
-          `${item}`,
+          `${item.substring(item.indexOf("-") + 1)}`,
         );
 
         document.body.appendChild(link);

@@ -1,14 +1,10 @@
 import DateFnsUtils from "@date-io/date-fns";
-import Button from "@material-ui/core/Button";
-import Card from "@material-ui/core/Card";
-import CardActions from "@material-ui/core/CardActions";
-import CardContent from "@material-ui/core/CardContent";
 import { makeStyles } from "@material-ui/core/styles";
-import TextField from "@material-ui/core/TextField";
-import Typography from "@material-ui/core/Typography";
-import MenuItem from "@material-ui/core/MenuItem";
-import Checkbox from '@material-ui/core/Checkbox';
-import { ListItemText } from '@material-ui/core';
+import {
+  Button, Card, CardContent, Checkbox,
+  TextField, Box, Chip, Typography,
+  MenuItem, ListItemText, CardActions
+} from "@material-ui/core";
 
 import {
   KeyboardDateTimePicker,
@@ -16,8 +12,9 @@ import {
 } from "@material-ui/pickers";
 import React, { useState, useEffect } from "react";
 import { useHistory } from "react-router-dom";
-import { authPost, authGet } from "../../api";
+import { authPost, authGet, authPostMultiPart } from "../../api";
 import { useDispatch, useSelector } from "react-redux";
+import { DropzoneArea } from "material-ui-dropzone";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -42,6 +39,9 @@ export default function EditTask(props) {
   const [taskAssignment, setTaskAssignment] = useState([]);
   const [taskAssignable, setTaskAssignable] = useState([]);
   const [projectMember, setProjectMember] = useState([]);
+  const [attachmentFiles, setAttachmentFiles] = useState([]);
+  const [handleDropzoneFiles, setHandleDropzoneFiles] = useState([]);
+  const [attachmentStatus, setAttachmentStatus] = useState([]);
 
   const [categoryPool, setCategoryPool] = useState([]);
   const [priorityPool, setPriorityPool] = useState([]);
@@ -84,16 +84,28 @@ export default function EditTask(props) {
     authGet(dispatch, token, "/backlog/get-task-detail/" + taskId).then(
       res => {
         setTaskDetail(res.backlogTask);
-        let assignmentList = [];
-        res.assignment.forEach((user) => {
-          assignmentList.push(user.partyId);
-        });
+        let assignmentList = res.assignment.map(e => e.partyId)
+        let assignableList = res.assignable.map(e => e.partyId);
+
+        setTaskAssignable(assignableList);
         setTaskAssignment(assignmentList);
-      }
-    )
-    authGet(dispatch, token, "/backlog/get-assignable-user-by-task-id/" + taskId).then(
-      res => {
-        setTaskAssignable(res.map(element => element.partyId));
+
+        if (res.backlogTask.attachmentPaths != null
+          && res.backlogTask.attachmentPaths !== undefined
+          && res.backlogTask.attachmentPaths.length > 0
+        )
+          res.backlogTask.attachmentPaths = res.backlogTask.attachmentPaths.split(";");
+        else res.backlogTask.attachmentPaths = [];
+
+        let attachment = res.backlogTask.attachmentPaths.map(e => {
+          return new File([""], e, { type: "text/plain" })
+        })
+        let status = res.backlogTask.attachmentPaths.map(e => {
+          return "uploaded";
+        })
+
+        setAttachmentStatus(status);
+        setAttachmentFiles(attachment);
       }
     )
   }
@@ -119,24 +131,61 @@ export default function EditTask(props) {
 
   const handleTaskAssignmentChange = (event) => {
     setTaskAssignment(event.target.value);
-    if(event.target.value === '') setTaskField("statusId", "TASK_OPEN");
+    if (event.target.value === '') setTaskField("statusId", "TASK_OPEN");
   }
 
   const handleTaskAssignableChange = (event) => {
     setTaskAssignable(event.target.value);
   }
 
+  const handleDeleteAttachment = (fileName) => {
+    let status = [...attachmentStatus];
+    attachmentFiles.forEach((file, index) => {
+      if(file.name === fileName) {
+        status[index] = "deleted";
+        return;
+      }
+    })
+    setAttachmentStatus(status);
+  }
+
+  const handleAddFile = (files) => {
+    const attachmentFilesCopy = [...attachmentFiles];
+    const status = [...attachmentStatus];
+    for(let i = handleDropzoneFiles.length; i < files.length; i++) {
+      attachmentFilesCopy.push(files[i]);
+      status.push("new");
+    }
+
+    setHandleDropzoneFiles(files);
+    setAttachmentStatus(status);
+    setAttachmentFiles(attachmentFilesCopy);
+  }
+
+  const displayFileName = (fileName, status) => {
+    if(status === "uploaded") return fileName.substring(fileName.indexOf("-") + 1);
+    else return fileName;
+  }
+  
   async function handleSubmit() {
     if (taskDetail.backlogTaskName === '') {
       alert('Nhập chủ đề rồi thử lại');
     }
 
-    await authPost(dispatch, token, '/backlog/edit-task', taskDetail).then(r => r.json());
+    let editTaskBody = {
+      ...taskDetail,
+      ...{
+        attachmentPaths: attachmentFiles.map(e => e.name),
+        attachmentStatus: attachmentStatus
+      }
+    }
+    console.log(editTaskBody);
+    await authPost(dispatch, token, '/backlog/edit-task', editTaskBody).then(r => r.json());
 
     let addAssignmentBody = {
       backlogTaskId: backlogTaskId,
       assignedToPartyId: taskAssignment,
-      statusId: taskDetail.statusId
+      statusId: taskDetail.statusId,
     };
     await authPost(dispatch, token, '/backlog/add-assignments', addAssignmentBody).then(r => r.json());
 
@@ -146,6 +195,14 @@ export default function EditTask(props) {
       statusId: taskDetail.statusId
     };
     authPost(dispatch, token, '/backlog/add-assignable', addAssignableBody).then(r => r.json());
+    
+    const newFiles = attachmentFiles.filter((file, index) => attachmentStatus[index] === "new");
+    console.log(newFiles);
+    let formData = new FormData();
+    for (const file of newFiles) {
+      formData.append("file", file);
+    }
+    authPostMultiPart(dispatch, token, "/backlog/upload-task-attachment-files/" + backlogTaskId, formData);
 
     history.push("/backlog/project/" + backlogProjectId);
   }
@@ -282,12 +339,12 @@ export default function EditTask(props) {
             <TextField
               id="taskAssignable"
               select={true}
-              disabled={taskAssignment !== ''}
+              disabled={taskAssignment.length > 0}
               SelectProps={{
                 multiple: true,
                 value: taskAssignable === null || taskAssignable === undefined ? '' : taskAssignable,
                 onChange: handleTaskAssignableChange,
-                renderValue: projectMember.length <= 0 ? ()=>{} : (taskAssignable) =>
+                renderValue: projectMember.length <= 0 ? () => { } : (taskAssignable) =>
                   taskAssignable.map((x) => projectMember.find(member => member.partyId === x).userLoginId).join(", ")
               }}
               fullWidth
@@ -300,6 +357,55 @@ export default function EditTask(props) {
                 </MenuItem>
               ))}
             </TextField>
+            <br></br>
+            <Typography
+              variant='subtitle1'
+              display='block'
+              style={{ margin: '5px 0 0 7px', width: "100%" }}
+            >
+              File đính kèm
+            </Typography>
+            <DropzoneArea
+              dropzoneClass={classes.dropZone}
+              filesLimit={20}
+              showPreviews={false}
+              showPreviewsInDropzone={false}
+              useChipsForPreview={false}
+              dropzoneText="Kéo và thả tệp vào đây hoặc nhấn để chọn tệp"
+              previewText="Xem trước:"
+              previewChipProps={
+                { variant: "outlined", color: "primary", size: "large", }
+              }
+              getFileAddedMessage={(fileName) =>
+                `Tệp ${fileName} tải lên thành công`
+              }
+              getFileRemovedMessage={(fileName) =>
+                `Tệp ${fileName} đã loại bỏ`
+              }
+              getFileLimitExceedMessage={(filesLimit) =>
+                `Vượt quá số lượng tệp tối đa được cho phép. Chỉ được phép tải lên tối đa ${filesLimit} tệp.`
+              }
+              alertSnackbarProps={{
+                anchorOrigin: { vertical: "bottom", horizontal: "right" },
+                autoHideDuration: 1800,
+              }}
+              onChange={(files) => handleAddFile(files)}
+            >
+            </DropzoneArea>
+            <Box style={{ margin: '5px 0 0 0' }}>
+              {attachmentFiles.map((item, index) => {
+                if(attachmentStatus[index] !== "deleted")
+                return <Chip
+                  key={item.name}
+                  style={{ margin: '0 5px 5px 0' }}
+                  label={displayFileName(item.name, attachmentStatus[index])}
+                  onDelete={() => handleDeleteAttachment(item.name)}
+                  variant="outlined"
+                  size="large"
+                  color="primary"
+                />
+              })}
+            </Box>
           </form>
         </CardContent>
         <CardActions>

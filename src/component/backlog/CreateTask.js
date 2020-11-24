@@ -18,9 +18,6 @@ import { useHistory } from "react-router-dom";
 import { authPost, authGet, authPostMultiPart } from "../../api";
 import { useDispatch, useSelector } from "react-redux";
 import { DropzoneArea } from "material-ui-dropzone";
-import Icon from '@material-ui/core/Icon';
-import FaceIcon from '@material-ui/icons/Face';
-import { FileAttachment } from "material-ui/svg-icons";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -168,7 +165,6 @@ export default function CreateTask(props) {
     };
     authPost(dispatch, token, '/backlog/add-assignable', addAssignableBody).then(r => r.json());
     let responseMessage = authPostMultiPart(dispatch, token, "/backlog/upload-task-attachment-files/" + task.backlogTaskId, formData);
-    console.log(responseMessage);
 
     history.push("/backlog/project/" + backlogProjectId);
   }
@@ -362,7 +358,7 @@ export default function CreateTask(props) {
               }
               alertSnackbarProps={{
                 anchorOrigin: { vertical: "bottom", horizontal: "right" },
-                autoHideDuration: 1500,
+                autoHideDuration: 1800,
               }}
               onChange={(files) => handleAttachmentFiles(files)}
             >
