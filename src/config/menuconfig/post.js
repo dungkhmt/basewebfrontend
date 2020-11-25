@@ -47,7 +47,7 @@ export const post = {
     },
     {
       id: "MENU_POST_VIEW_PACKAGE_PICKUP_PLAN",
-      path: "",
+      path: "/postoffice/pickanddelivery",
       isPublic: false,
       icon: "StarBorder",
       text: "Lập kế hoạch thu gom bưu kiện",

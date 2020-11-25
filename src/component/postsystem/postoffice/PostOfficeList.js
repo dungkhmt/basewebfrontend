@@ -130,7 +130,6 @@ export default function PostOfficeList(props) {
                   <TableRow hover role="checkbox" tabIndex={-1} key={row.code}>
                     {columns.map((column) => {
                       const value = row[column.id];
-                      console.log(value)
                       return (
                         <TableCell key={column.id} align={column.align}>
                           {column.id === "postalAddress" ? (

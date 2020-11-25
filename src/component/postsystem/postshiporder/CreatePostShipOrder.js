@@ -30,16 +30,10 @@ const useStyles = makeStyles(theme => ({
         "& .MuiTextField-root": {
             margin: theme.spacing(1),
             width: 200
-        }
-    },
-    formControl: {
-        margin: theme.spacing(1),
-        minWidth: 120,
-        maxWidth: 300
+        },
+        backgroundColor: theme.palette.background.paper
     }
 }));
-const ITEM_HEIGHT = 48;
-const ITEM_PADDING_TOP = 8;
 
 function CreatePostShipOrder(props) {
     const token = useSelector(state => state.auth.token);
@@ -68,8 +62,16 @@ function CreatePostShipOrder(props) {
     const [toCustomerLat, setToCustomerLat] = useState(-1);
     const [toCustomerLng, setToCustomerLng] = useState(-1);
     const bounds = new window.google.maps.LatLngBounds();
-    const loadPackageTypeData = () => {
+    const [icon, setIcon] = useState();
+    const [openAlert, setOpenAlert] = useState(false);
+    const handleCancelAlertDialog = () => {
+        history.push('/postoffice/orderlist');
+    };
 
+    const handleOpenAlertDialog = () => {
+        setOpenAlert(true);
+    };
+    const loadPackageTypeData = () => {
         let res;
         authGet(dispatch, token, '/get-post-package-type')
             .then((res) => {
@@ -181,8 +183,7 @@ function CreatePostShipOrder(props) {
                                 return result.statusCode;
                             }
                             else {
-                                alert(result.detail);
-                                history.push('/postoffice/orderlist')
+                                setOpenAlert(true);
                             }
                         }));
                     }
@@ -193,7 +194,12 @@ function CreatePostShipOrder(props) {
             )
 
     };
-
+    useEffect(() => {
+        setIcon({
+            url: "http://maps.google.com/mapfiles/kml/paddle/grn-blank.png", // url
+            scaledSize: new props.google.maps.Size(40, 40), // scaled size
+        });
+    }, [])
     useEffect(() => {
         if (packageTypeData.length == 0)
             loadPackageTypeData();
@@ -261,8 +267,8 @@ function CreatePostShipOrder(props) {
     };
 
     const style = {
-        width: '40%',
-        height: '60%'
+        width: '100%',
+        height: '100%'
     }
 
 
@@ -391,42 +397,66 @@ function CreatePostShipOrder(props) {
                 </Grid>
                 <Button
                     onClick={handleSubmit}
+                    color="primary"
                 >Submit</Button>
             </Grid>
-            <Grid item xs={5} justify="center">
-                <Map
-                    google={props.google}
-                    zoom={1}
-                    style={style}
-                    zoom={5}
-                    initialCenter={{ lat: 21.0003842, lng: 105.8331012 }}
-                    ref={(ref) => { setMap(ref) }}
-                >
-                    {toCustomerLat >= 0 && toCustomerLng >= 0
-                        ? <Marker
-                            title={"Địa chỉ nhận"}
-                            position={{
-                                lat: toCustomerLat,
-                                lng: toCustomerLng,
-                            }}
-                            draggable={true}
-                            onDragend={(t, map, coord) => handleDragToCustomer(coord)}
-                        />
-                        : null}
+            <Grid item xs={5}>
+                <div style={{ position: 'relative', width: '100%', height: '400px', borderRadius: '10px', overflow: 'hidden' }}>
+                    <Map
+                        google={props.google}
+                        zoom={1}
+                        style={style}
+                        zoom={5}
+                        initialCenter={{ lat: 21.0003842, lng: 105.8331012 }}
+                        ref={(ref) => { setMap(ref) }}
+                    >
+                        {toCustomerLat >= 0 && toCustomerLng >= 0
+                            ? <Marker
+                                title={"Địa chỉ nhận"}
+                                position={{
+                                    lat: toCustomerLat,
+                                    lng: toCustomerLng,
+                                }}
+                                draggable={true}
+                                onDragend={(t, map, coord) => handleDragToCustomer(coord)}
+                                icon={icon}
+                            />
+                            : null}
 
-                    {fromCustomerLat >= 0 && fromCustomerLng >= 0 ?
-                        <Marker
-                            title={"Địa chỉ gửi"}
-                            position={{
-                                lat: fromCustomerLat,
-                                lng: fromCustomerLng,
-                            }}
-                            draggable={true}
-                            onDragend={(t, map, coord) => handleDragFromCustomer(coord)}
-                        />
-                        : null}
-                </Map>
+                        {fromCustomerLat >= 0 && fromCustomerLng >= 0 ?
+                            <Marker
+                                title={"Địa chỉ gửi"}
+                                position={{
+                                    lat: fromCustomerLat,
+                                    lng: fromCustomerLng,
+                                }}
+                                draggable={true}
+                                onDragend={(t, map, coord) => handleDragFromCustomer(coord)}
+                            />
+                            : null}
+                    </Map>
+                </div>
             </Grid>
+            <Dialog open={openAlert} onClose={(e) => e.preventDefault()}>
+                <DialogTitle>Thông báo đặt hàng thành công</DialogTitle>
+                <DialogContent>
+                    <TableContainer className={classes.container}>
+                        <form noValidate autoComplete="off" className={classes.root}>
+                            <Typography variant="h6" fontWeight="fontWeightBold">Người gửi </Typography><Typography variant="subtitle1">{fromCustomerName}</Typography><br />
+                            <Typography variant="h6" fontWeight="fontWeightBold">Người nhận </Typography><Typography variant="subtitle1">{toCustomerName}</Typography><br />
+                            <Typography variant="h6" fontWeight="fontWeightBold">Số điên thoại người gửi </Typography><Typography variant="subtitle1">{fromCustomerPhoneNum}</Typography><br />
+                            <Typography variant="h6" fontWeight="fontWeightBold">Số điện thoại người nhận </Typography><Typography variant="subtitle1">{toCustomerPhoneNum}</Typography><br />
+                            <Typography variant="h6" fontWeight="fontWeightBold">Địa chỉ người gửi </Typography><Typography variant="subtitle1">{fromCustomerAddress}</Typography><br />
+                            <Typography variant="h6" fontWeight="fontWeightBold">Địa chỉ người nhận </Typography><Typography variant="subtitle1">{toCustomerAddress}</Typography><br />
+                        </form>
+                    </TableContainer>
+                </DialogContent>
+                <DialogActions>
+                    <Button onClick={handleCancelAlertDialog} color="primary">
+                        OK
+                    </Button>
+                </DialogActions>
+            </Dialog>
         </Grid>
     );
 
@@ -500,7 +530,6 @@ function SearchButton(props) {
                 });
         }
     }
-
     const handleCustomerNameChange = event => {
         searchPost_customer_name = event.target.value;
         handleElasticsearch();
@@ -513,15 +542,12 @@ function SearchButton(props) {
         searchAddress = event.target.value;
         handleElasticsearch();
     };
-
     const handleCancel = (event) => {
         setOpen(false);
     };
-
     const handleOpenDialog = (event) => {
         setOpen(true);
     };
-
     return (
         <div>
             <IconButton

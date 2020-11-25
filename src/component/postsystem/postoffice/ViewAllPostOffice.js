@@ -16,7 +16,6 @@ function ViewAllPostOffice(props) {
     const bounds = new window.google.maps.LatLngBounds();
     const [map, setMap] = useState();
     useEffect(() => {
-        console.log(props.location.state)
         if (map === undefined) return
         map.props.children.forEach((child) => {
             if (child.type === Marker) {

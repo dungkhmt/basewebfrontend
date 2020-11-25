@@ -26,9 +26,9 @@ const columns = [
     { label: "Người nhận", id: "toCustomer.postCustomerName", minWidth: 200, type: 'normal' },
     { label: "Tên hàng", id: "packageName", minWidth: 200, type: 'normal' },
     { label: "Khối lượng", id: "weight", minWidth: 150, type: 'normal' },
-    { label: "Địa chỉ", id: "toCustomer.postalAddress", minWidth: 150, type: 'address' },
-    { label: "Mô tả", id: "description", minWidth: 150, type: 'normal' },
     { label: "Trạng thái", id: "statusItem.description", minWidth: 150, type: 'normal' },
+    { label: "Chi tiết", id: "detail", minWidth: 150, type: 'link' },
+
 ];
 
 const useStyles = makeStyles({
@@ -76,6 +76,7 @@ export default function PostShipOrderList(props) {
             .then((response) => response.json())
             .then((response) => {
                 setData(response);
+                console.log(response.length)
             });
     }, data);
 
@@ -122,6 +123,7 @@ export default function PostShipOrderList(props) {
                         {data
                             .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                             .map((row) => {
+                                console.log(row.postShipOrderId)
                                 return (
                                     <TableRow hover role="checkbox" tabIndex={-1} key={row.code}>
                                         {columns.map((column) => {
@@ -134,17 +136,18 @@ export default function PostShipOrderList(props) {
                                                     return value = row[cur];
                                                 }
                                             }, undefined)
-                                            console.log(value)
                                             return (
                                                 <TableCell key={column.id} align={column.align}>
-                                                    {column.type == "address" ? (
+                                                    {column.type == "link" ? (
                                                         <Link
-                                                            to={
-                                                                "/geo/location/map/" +
-                                                                value.contactMechId
-                                                            }
+                                                            to={{
+                                                                pathname: "/postoffice/shiporderdetail",
+                                                                state: {
+                                                                    value: row
+                                                                }
+                                                            }}
                                                         >
-                                                            Xem địa chỉ
+                                                            Chi tiết
                                                         </Link>
                                                     ) : (
                                                             value
@@ -199,7 +202,6 @@ function DeleteButton(props) {
         setOpen(false);
     };
     const handleDeleteClick = (event) => {
-        console.log(event.currentTarget.value);
         if (event.currentTarget.value === 'ORDER_CANCELLED') {
             alert('Đơn hàng này đã huỷ.')
             return;

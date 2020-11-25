@@ -14,10 +14,6 @@ import Button from "@material-ui/core/Button";
 
 
 function ViewAllPostOffice(props) {
-    const { contactMechId } = useParams();
-    const token = useSelector(state => state.auth.token);
-    const dispatch = useDispatch();
-    const [isRequesting, setIsRequesting] = useState(false);
     const [address, setAddress] = useState();
     const [coordinates, setCoordinates] = useState();
 
