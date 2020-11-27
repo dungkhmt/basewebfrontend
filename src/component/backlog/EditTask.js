@@ -184,7 +184,7 @@ export default function EditTask(props) {
 
     let addAssignmentBody = {
       backlogTaskId: backlogTaskId,
-      assignedToPartyId: taskAssignment,
+      assignedToPartyId: [taskAssignment],
       statusId: taskDetail.statusId,
     };
     await authPost(dispatch, token, '/backlog/add-assignments', addAssignmentBody).then(r => r.json());
