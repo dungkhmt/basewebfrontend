@@ -11,7 +11,7 @@ export const getScrSecurInfo = (history) => (dispatch, getState) => {
     getState().auth.token,
     history,
     "get",
-    `/view-permissions`,
+    `/screen-security`,
     (res) => {
       dispatch(getScrSecurInfoSuccess(new Set(res.data)));
     },
