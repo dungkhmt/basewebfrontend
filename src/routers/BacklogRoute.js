@@ -6,6 +6,7 @@ import ProjectDetail from "../component/backlog/ProjectDetail";
 import CreateTask from "../component/backlog/CreateTask";
 import ViewTask from "../component/backlog/ViewTask";
 import EditTask from "../component/backlog/EditTask";
+import ProjectDashboard from "../component/backlog/ProjectDashboard";
 import AssignSuggestionProjectList from "../component/backlog/AssignSuggestionProjectList";
 import AssignSuggestionTaskList from "../component/backlog/AssignSuggestionTaskList";
 
@@ -23,6 +24,7 @@ export default function BacklogRoute() {
         <Route component={EditTask} path={`${path}/edit-task/:backlogProjectId/:taskId`} />
         <Route component={AssignSuggestionProjectList} path={`${path}/assign-suggestion/project-list`} />
         <Route component={AssignSuggestionTaskList} path={`${path}/assign-suggestion/task-list/:backlogProjectId`} />
+        <Route component={ProjectDashboard} path={`${path}/dashboard/:backlogProjectId`} />
       </Switch>
     </div>
   );

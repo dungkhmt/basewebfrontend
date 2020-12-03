@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from "react-redux";
 import MaterialTable from "material-table";
 import { authPost, authGet } from "../../api";
 import { Redirect, useHistory } from "react-router-dom";
-import { toFormattedDateTime, toFormattedDate } from "../../utils/dateutils";
+import { toFormattedDateTime } from "../../utils/dateutils";
 import {
   Grid, Button, Card, CardContent, Dialog,
   DialogActions, DialogContent, DialogTitle, List,
@@ -18,6 +18,10 @@ import PersonAddIcon from '@material-ui/icons/PersonAdd';
 import PeopleIcon from '@material-ui/icons/People';
 import BarChartIcon from '@material-ui/icons/BarChart';
 import { API_URL } from "../../config/config";
+import changePageSize, {
+  localization,
+  tableIcons,
+} from '../../utils/MaterialTableUtils';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -83,7 +87,7 @@ export default function ProjectDetail(props) {
       }
     );
     let tasks = await authGet(dispatch, token, "/backlog/get-project-detail/" + projectId);
-    let myAccount = await authGet(dispatch, token, "/my-account/");
+    let myAccount = await authGet(dispatch, token, "/my-account");
     tasks.forEach(task => {
       task.assignment = task.assignment.map(element => element.userLoginId);
       if (task.backlogTask.attachmentPaths != null
@@ -295,7 +299,7 @@ export default function ProjectDetail(props) {
                 <Grid item xs={4}
                   className={classes.grid}>
                   <Tooltip title="Biểu đồ dự án">
-                    <IconButton aria-label="projectChart" onClick={() => { }}>
+                    <IconButton aria-label="projectChart" onClick={() => {history.push("/backlog/dashboard/" + backlogProjectId)}}>
                       <BarChartIcon color='primary' fontSize='large' />
                     </IconButton>
                   </Tooltip>
@@ -383,6 +387,7 @@ export default function ProjectDetail(props) {
                 search: false,
                 rowStyle: { backgroundColor: "#fcfcfc" }
               }}
+              localization={localization}
               data={isShowMyTask ? myTask : taskList}
               detailPanel={
                 [{
