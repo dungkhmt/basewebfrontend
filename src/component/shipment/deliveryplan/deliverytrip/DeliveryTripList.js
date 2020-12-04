@@ -41,6 +41,21 @@ const useStyles = makeStyles(theme => ({
     maxWidth: "80%"
   }
 }));
+
+const STATUS_VN_TRANS = {
+  'SHIPMENT_ITEM_CREATED': 'Tạo mới',
+  'DELIVERY_TRIP_CREATED': 'Tạo mới',
+  'SHIPMENT_ITEM_SCHEDULED_TRIP': 'Đang xếp chuyến',
+  'DELIVERY_TRIP_DETAIL_SCHEDULED_TRIP': 'Đang xếp chuyến',
+  'DELIVERY_TRIP_APPROVED_TRIP': 'Đã phê duyệt chuyến',
+  'DELIVERY_TRIP_DETAIL_APPROVED_TRIP': 'Đã phê duyệt chi tiết chuyến',
+  'DELIVERY_TRIP_DETAIL_ON_TRIP': 'Đang thực hiện chuyến',
+  'DELIVERY_TRIP_EXECUTED': 'Đang thực hiện chuyến',
+  'DELIVERY_TRIP_DETAIL_COMPLETED': 'Hoàn thành giao chi tiết chuyến',
+  'SHIPMENT_ITEM_COMPLETED': 'Hoàn thành giao đơn vận chuyển',
+  'DELIVERY_TRIP_COMPLETED': 'Hoàn thành giao chuyến',
+}
+
 export default function DeliveryTripList() {
   const classes = useStyles();
   const history = useHistory();
@@ -86,7 +101,7 @@ export default function DeliveryTripList() {
       render: rowData => Math.round(rowData['maxVehicleCapacity'] * 100) / 100.0
     },
     {title: 'Loại xe', field: 'vehicleProductTransportCategoryId'},
-    {title: 'Mã trạng thái', field: 'statusId'},
+    {title: 'Mã trạng thái', field: 'statusId', render: rowData => STATUS_VN_TRANS[rowData['statusId']]},
     {
       title: "Mã tài xế",
       render: rowData => <Link to={'/driver-group/driver-detail/' + rowData['driverId']}>{rowData['userLoginId']}</Link>
@@ -101,11 +116,11 @@ export default function DeliveryTripList() {
     authGet(dispatch, token, "/delivery-plan/" + deliveryPlanId).then(
       response =>
         setDeliveryPlan({
-          deliveryPlanId,
-          deliveryPlanDate: toFormattedDateTime(response["deliveryDate"]),
-          description: response["description"],
-          createdByUserLoginId: response["createdByUserLoginId"],
-        })
+                          deliveryPlanId,
+                          deliveryPlanDate: toFormattedDateTime(response["deliveryDate"]),
+                          description: response["description"],
+                          createdByUserLoginId: response["createdByUserLoginId"],
+                        })
     );
   };
 

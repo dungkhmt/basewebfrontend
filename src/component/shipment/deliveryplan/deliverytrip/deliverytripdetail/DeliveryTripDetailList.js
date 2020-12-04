@@ -8,13 +8,26 @@ import {tableIcons} from "../../../../../utils/iconutil";
 import {Link, useParams} from "react-router-dom";
 import AddIcon from "@material-ui/icons/Add";
 import Grid from "@material-ui/core/Grid";
-import ArrowBackIosIcon from "@material-ui/icons/ArrowBackIos";
 import Directions from "../../../../google/Directions";
 import Dialog from "@material-ui/core/Dialog";
 import DialogTitle from "@material-ui/core/DialogTitle";
 import DialogContent from "@material-ui/core/DialogContent";
 import {Select} from "@material-ui/core";
 import MenuItem from "@material-ui/core/MenuItem";
+
+const STATUS_VN_TRANS = {
+  'SHIPMENT_ITEM_CREATED': 'Tạo mới',
+  'DELIVERY_TRIP_CREATED': 'Tạo mới',
+  'SHIPMENT_ITEM_SCHEDULED_TRIP': 'Đang xếp chuyến',
+  'DELIVERY_TRIP_DETAIL_SCHEDULED_TRIP': 'Đang xếp chuyến',
+  'DELIVERY_TRIP_APPROVED_TRIP': 'Đã phê duyệt chuyến',
+  'DELIVERY_TRIP_DETAIL_APPROVED_TRIP': 'Đã phê duyệt chi tiết chuyến',
+  'DELIVERY_TRIP_DETAIL_ON_TRIP': 'Đang thực hiện chuyến',
+  'DELIVERY_TRIP_EXECUTED': 'Đang thực hiện chuyến',
+  'DELIVERY_TRIP_DETAIL_COMPLETED': 'Hoàn thành giao chi tiết chuyến',
+  'SHIPMENT_ITEM_COMPLETED': 'Hoàn thành giao đơn vận chuyển',
+  'DELIVERY_TRIP_COMPLETED': 'Hoàn thành giao chuyến',
+}
 
 // each shipment item
 export default function DeliveryTripDetailList() {
@@ -55,38 +68,48 @@ export default function DeliveryTripDetailList() {
         <Button variant={'contained'} onClick={() => handleDelete(rowData['deliveryTripDetailId'])}
                 startIcon={<DeleteIcon/>}>Xóa</Button> : '')
     },
-    {title: "Trạng thái", field: "statusId"}
+    {title: "Trạng thái", field: "statusId", render: rowData => STATUS_VN_TRANS[rowData['statusId']]}
   ];
 
   const {deliveryTripId} = useParams();
 
   const [deliveryTrip, setDeliveryTrip] = useState(null);
 
+  const [deliveryPlan, setDeliveryPlan] = useState({});
+
   const [facilityLatLng, setFacilityLatLng] = useState(null);
 
   const [totalDistance, setTotalDistance] = useState(0);
 
   const NOT_EDITABLE_TRIP_STATUS = new Set(['DELIVERY_TRIP_APPROVED_TRIP',
-    'DELIVERY_TRIP_EXECUTED',
-    'DELIVERY_TRIP_COMPLETED']);
+                                             'DELIVERY_TRIP_EXECUTED',
+                                             'DELIVERY_TRIP_COMPLETED']);
 
   const getDeliveryTripInfo = () => {
     authGet(dispatch, token, '/delivery-trip/' + deliveryTripId + '/basic-info').then(response => {
       console.log('::getDeliveryTripInfo: ', deliveryTripId);
       console.log(response);
+      let deliveryPlanId = response['deliveryPlanId'];
       setDeliveryTrip({
-        deliveryTripId,
-        deliveryPlanId: response['deliveryPlanId'],
-        vehicleId: response['vehicleId'],
-        executeDate: response['executeDate'],
-        vehicleTypeId: response['vehicleTypeId'],
-        totalDistance: response['distance'],
-        totalWeight: response['totalWeight'],
-        totalPallet: response['totalPallet'],
-        statusId: response['statusId'],
-        editable: !NOT_EDITABLE_TRIP_STATUS.has(response['statusId'])
-      });
+                        deliveryTripId,
+                        deliveryPlanId: deliveryPlanId,
+                        vehicleId: response['vehicleId'],
+                        executeDate: response['executeDate'],
+                        vehicleTypeId: response['vehicleTypeId'],
+                        totalDistance: response['distance'],
+                        totalWeight: response['totalWeight'],
+                        totalPallet: response['totalPallet'],
+                        statusId: response['statusId'],
+                        editable: !NOT_EDITABLE_TRIP_STATUS.has(response['statusId'])
+                      });
+      getDeliveryPlanInfo(deliveryPlanId);
     })
+  };
+
+  const getDeliveryPlanInfo = (deliveryPlanId) => {
+    authGet(dispatch, token, '/delivery-plan/' + deliveryPlanId).then(response => {
+      setDeliveryPlan(response);
+    });
   };
 
   // const [tripCapacityInfo, setTripCapacityInfo] = useState({});
@@ -115,16 +138,17 @@ export default function DeliveryTripDetailList() {
 
   async function getDriverInfo() {
     Promise.all([authGet(dispatch, token, '/get-all-drivers'),
-      authGet(dispatch, token, '/get-driver-in-delivery-trip/' + deliveryTripId)]).then(([driverList, selectedDriver]) => {
-      setDriverList(driverList);
+                  authGet(dispatch, token, '/get-driver-in-delivery-trip/' + deliveryTripId)])
+           .then(([driverList, selectedDriver]) => {
+             setDriverList(driverList);
 
-      let partyId = selectedDriver['partyId'];
-      if (!partyId) {
-        setSelectedDriver('unSelected');
-      } else {
-        setSelectedDriver(partyId);
-      }
-    })
+             let partyId = selectedDriver['partyId'];
+             if (!partyId) {
+               setSelectedDriver('unSelected');
+             } else {
+               setSelectedDriver(partyId);
+             }
+           })
   }
 
   useEffect(() => {
@@ -158,14 +182,21 @@ export default function DeliveryTripDetailList() {
     return locations;
   }
 
-  return <div>
-    {
-      deliveryTrip ?
-        <Link to={'/delivery-plan/' + deliveryTrip['deliveryPlanId']}>
-          <Button variant={'outlined'} startIcon={<ArrowBackIosIcon/>}>
-            Back</Button>
-        </Link> : null
+  function getLoadedRate() {
+    if (deliveryTrip && deliveryPlan) {
+      return Math.round(10000.0 * deliveryTrip['totalWeight'] / deliveryPlan['totalWeightShipmentItems']) / 100.0;
     }
+    return 0;
+  }
+
+  return <div>
+    {/*{*/}
+    {/*  deliveryTrip ?*/}
+    {/*    <Link to={'/delivery-plan/' + deliveryTrip['deliveryPlanId']}>*/}
+    {/*      <Button variant={'outlined'} startIcon={<ArrowBackIosIcon/>}>*/}
+    {/*        Back</Button>*/}
+    {/*    </Link> : null*/}
+    {/*}*/}
     <MaterialTable
       title={'Chi tiết chuyến giao hàng'}
       columns={columns}
@@ -194,19 +225,19 @@ export default function DeliveryTripDetailList() {
                   <MenuItem value={'unSelected'}>{'Chưa chọn'}</MenuItem>
                   {
                     driverList.map(driver =>
-                      <MenuItem value={driver['partyId']}>
-                        {driver['partyId'] + ' (' + driver['fullName'] + ')'}
-                      </MenuItem>)
+                                     <MenuItem value={driver['partyId']}>
+                                       {`${driver['fullName']}`}
+                                     </MenuItem>)
                   }
                 </Select><p/>
               </Grid>
               <Grid item xs={4}
                     style={{verticalAlign: 'text-bottom', textAlign: 'right', padding: '0px 50px 10px 30px'}}>
                 <div style={{textAlign: 'left'}}>
-                  <b>Trạng thái chuyến: </b> {deliveryTrip == null ? 0 : deliveryTrip['statusId']} <p/>
+                  <b>Trạng thái chuyến: </b> {deliveryTrip == null ? 0 : STATUS_VN_TRANS[deliveryTrip['statusId']]} <p/>
                   <b>Tổng khoảng cách: </b> {deliveryTrip == null ? 0 : deliveryTrip['totalDistance']} <p/>
-                  <b>Tổng khối lượng (kg): </b> {deliveryTrip == null ? 0 :
-                  Math.round(deliveryTrip['totalWeight'] * 100) / 100.0} <p/>
+                  <b>Tổng khối lượng (kg): </b> {deliveryTrip == null ? '0 (0 %)' :
+                  `${Math.round(deliveryTrip['totalWeight'] * 100) / 100.0} (${getLoadedRate()} %)`} <p/>
                   <b>Tổng số pallet: </b> {deliveryTrip == null ? 0 : deliveryTrip['totalPallet']} <p/>
                 </div>
 
