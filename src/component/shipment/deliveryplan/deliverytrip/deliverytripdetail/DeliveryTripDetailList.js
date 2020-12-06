@@ -91,15 +91,9 @@ export default function DeliveryTripDetailList() {
       console.log(response);
       let deliveryPlanId = response['deliveryPlanId'];
       setDeliveryTrip({
+                        ...response,
                         deliveryTripId,
                         deliveryPlanId: deliveryPlanId,
-                        vehicleId: response['vehicleId'],
-                        executeDate: response['executeDate'],
-                        vehicleTypeId: response['vehicleTypeId'],
-                        totalDistance: response['distance'],
-                        totalWeight: response['totalWeight'],
-                        totalPallet: response['totalPallet'],
-                        statusId: response['statusId'],
                         editable: !NOT_EDITABLE_TRIP_STATUS.has(response['statusId'])
                       });
       getDeliveryPlanInfo(deliveryPlanId);
@@ -183,8 +177,8 @@ export default function DeliveryTripDetailList() {
   }
 
   function getLoadedRate() {
-    if (deliveryTrip && deliveryPlan) {
-      return Math.round(10000.0 * deliveryTrip['totalWeight'] / deliveryPlan['totalWeightShipmentItems']) / 100.0;
+    if (deliveryTrip) {
+      return Math.round(10000.0 * deliveryTrip['totalWeight'] / deliveryTrip['maxVehicleCapacity']) / 100.0;
     }
     return 0;
   }
@@ -208,7 +202,9 @@ export default function DeliveryTripDetailList() {
             <Grid container spacing={3}>
               <Grid item xs={8} style={{textAlign: 'left', padding: '0px 30px 20px 30px'}}>
                 <b>Mã chuyến hàng: </b> {deliveryTrip === null ? '' : deliveryTrip['deliveryTripId']} <p/>
-                <b>Mã đợt giao hàng: </b> {deliveryTrip === null ? '' : deliveryTrip['deliveryPlanId']} <p/>
+                <b>Mã đợt giao hàng: </b> {deliveryTrip === null ? '' : (
+                <Link to={`/delivery-plan/${deliveryTrip['deliveryPlanId']}`}>{deliveryTrip['deliveryPlanId']}</Link>)}
+                <p/>
                 <b>Ngày tạo: </b> {deliveryTrip === null ? '' : deliveryTrip['executeDate']} <p/>
                 <b>Xe: </b> {deliveryTrip === null ? '' : deliveryTrip['vehicleId']}<p/>
                 <b>Tải trọng: </b> {deliveryTrip === null ? '' : deliveryTrip['maxVehicleCapacity']}<p/>
