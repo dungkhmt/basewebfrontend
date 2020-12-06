@@ -207,10 +207,11 @@ export default function DeliveryTripDetailList() {
             <MTableToolbar {...props} />
             <Grid container spacing={3}>
               <Grid item xs={8} style={{textAlign: 'left', padding: '0px 30px 20px 30px'}}>
-                {/*<b>Mã chuyến hàng: </b> {deliveryTripId} <p/>*/}
+                <b>Mã chuyến hàng: </b> {deliveryTrip === null ? '' : deliveryTrip['deliveryTripId']} <p/>
                 <b>Mã đợt giao hàng: </b> {deliveryTrip === null ? '' : deliveryTrip['deliveryPlanId']} <p/>
                 <b>Ngày tạo: </b> {deliveryTrip === null ? '' : deliveryTrip['executeDate']} <p/>
                 <b>Xe: </b> {deliveryTrip === null ? '' : deliveryTrip['vehicleId']}<p/>
+                <b>Tải trọng: </b> {deliveryTrip === null ? '' : deliveryTrip['maxVehicleCapacity']}<p/>
                 <b>Loại xe: </b> {deliveryTrip === null ? '' : deliveryTrip['vehicleTypeId']}<p/>
                 <b>Tài xế: </b>
                 <Select
