@@ -1,14 +1,9 @@
 import DateFnsUtils from "@date-io/date-fns";
-import Button from "@material-ui/core/Button";
-import Card from "@material-ui/core/Card";
-import CardActions from "@material-ui/core/CardActions";
-import CardContent from "@material-ui/core/CardContent";
+import {
+  Button, Card, CardActions, CardContent, TextField, Typography,
+  MenuItem, Checkbox, ListItemText
+} from "@material-ui/core/";
 import { makeStyles } from "@material-ui/core/styles";
-import TextField from "@material-ui/core/TextField";
-import Typography from "@material-ui/core/Typography";
-import MenuItem from "@material-ui/core/MenuItem";
-import Checkbox from '@material-ui/core/Checkbox';
-import { ListItemText } from '@material-ui/core';
 import {
   KeyboardDateTimePicker,
   MuiPickersUtilsProvider,
@@ -18,6 +13,10 @@ import { useHistory } from "react-router-dom";
 import { authPost, authGet, authPostMultiPart } from "../../api";
 import { useDispatch, useSelector } from "react-redux";
 import { DropzoneArea } from "material-ui-dropzone";
+import {
+  TASK_STATUS, TASK_PRIORITY, TASK_CATEGORY
+} from './BacklogConfig';
+import AlertDialog from './AlertDialog';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -51,6 +50,8 @@ export default function CreateTask(props) {
   const [taskAssignable, setTaskAssignable] = useState([]);
   const [projectMember, setProjectMember] = useState([]);
   const [attachmentFiles, setAttachmentFiles] = useState([]);
+
+  const [openAlert, setOpenAlert] = useState(false);
   const history = useHistory();
 
   const backlogProjectId = props.match.params.backlogProjectId;
@@ -76,36 +77,16 @@ export default function CreateTask(props) {
   }
 
   function getTaskCategory() {
-    authGet(dispatch, token, "/backlog/get-backlog-task-category").then(
-      res => {
-        if (res != null) {
-          setCategoryPool(res);
-          setTaskType(res[0] === undefined ? '' : res[0].backlogTaskCategoryId);
-        }
-      }
-    )
+    setCategoryPool(TASK_CATEGORY.LIST);
   }
 
   function getTaskPriority() {
-    authGet(dispatch, token, "/backlog/get-backlog-task-priority").then(
-      res => {
-        if (res != null) {
-          setPriorityPool(res);
-          setTaskPriority(res[0] === undefined ? '' : res[0].backlogTaskPriorityId);
-        }
-      }
-    )
+    setPriorityPool(TASK_PRIORITY.LIST);
   }
 
   function getTaskStatus() {
-    authGet(dispatch, token, "/backlog/get-backlog-task-status").then(
-      res => {
-        if (res != null) {
-          setStatusPool(res);
-          setTaskStatus("TASK_OPEN");
-        }
-      }
-    )
+    setStatusPool(TASK_STATUS.LIST);
+    setTaskStatus(TASK_STATUS.DEFAULT_ID_NOT_ASSIGN);
   }
 
   useEffect(() => {
@@ -116,10 +97,14 @@ export default function CreateTask(props) {
     initValue();
   }, []);
 
+  const handleCloseAlert = () => {
+    setOpenAlert(false);
+  }
+
   const handleTaskAssignmentChange = (event) => {
     setTaskAssignment(event.target.value);
-    if (event.target.value === '') setTaskStatus("TASK_OPEN");
-    else setTaskStatus("TASK_INPROGRESS");
+    if (event.target.value === '') setTaskStatus(TASK_STATUS.DEFAULT_ID_NOT_ASSIGN);
+    else setTaskStatus(TASK_STATUS.DEFAULT_ID_ASSIGNED);
   }
 
   const handleTaskAssignableChange = (event) => {
@@ -128,7 +113,7 @@ export default function CreateTask(props) {
 
   async function handleSubmit() {
     if (taskName === '') {
-      alert('Nhập chủ đề rồi thử lại');
+      setOpenAlert(true);
       return;
     }
 
@@ -369,7 +354,7 @@ export default function CreateTask(props) {
           <Button
             variant="contained"
             color="primary"
-            style={{ marginLeft: "45px" }}
+            style={{ marginLeft: "40px" }}
             onClick={handleSubmit}
           >
             Lưu
@@ -382,6 +367,22 @@ export default function CreateTask(props) {
           </Button>
         </CardActions>
       </Card>
+
+      <AlertDialog
+        open={openAlert}
+        onClose={handleCloseAlert}
+        severity='warning'
+        title={"Vui lòng nhập đầy đủ thông tin cần thiết"}
+        content={"Một số thông tin yêu cầu cần phải được điền đầy đủ. Vui lòng kiểm tra lại."}
+        buttons={[
+          {
+            onClick: handleCloseAlert,
+            color: "primary",
+            autoFocus: true,
+            text: "OK"
+          }
+        ]}
+      />
     </MuiPickersUtilsProvider>
   );
 }

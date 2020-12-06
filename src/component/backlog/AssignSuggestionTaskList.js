@@ -2,26 +2,15 @@ import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import MaterialTable from "material-table";
 import { authPost, authGet } from "../../api";
-import Grid from "@material-ui/core/Grid";
-import Button from "@material-ui/core/Button";
+import {
+  Grid, Button, Card, Dialog, DialogActions, DialogContent,
+  DialogTitle, Slider, Typography, AppBar, Tabs, Tab,
+  Toolbar, IconButton, CardContent, Box
+} from "@material-ui/core/";
 import { Redirect, useHistory } from "react-router-dom";
-import Card from "@material-ui/core/Card";
-import Dialog from "@material-ui/core/Dialog";
-import DialogActions from "@material-ui/core/DialogActions";
-import DialogContent from "@material-ui/core/DialogContent";
-import DialogTitle from "@material-ui/core/DialogTitle";
-import Slider from '@material-ui/core/Slider';
-import Typography from "@material-ui/core/Typography";
-import AppBar from '@material-ui/core/AppBar';
-import Tabs from '@material-ui/core/Tabs';
-import Tab from '@material-ui/core/Tab';
-import Toolbar from '@material-ui/core/Toolbar';
-import IconButton from '@material-ui/core/IconButton';
-import CardContent from "@material-ui/core/CardContent";
 import CloseIcon from '@material-ui/icons/Close';
-import { toFormattedDateTime, toFormattedDate } from "../../utils/dateutils";
+import { toFormattedDateTime } from "../../utils/dateutils";
 import { makeStyles } from "@material-ui/core/styles";
-import Box from "@material-ui/core/Box";
 import { Bar } from 'react-chartjs-2';
 
 const useStyles = makeStyles((theme) => ({

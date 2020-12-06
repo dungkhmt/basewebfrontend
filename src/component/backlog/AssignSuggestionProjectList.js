@@ -3,8 +3,9 @@ import { useDispatch, useSelector } from "react-redux";
 import MaterialTable from "material-table";
 import { authGet } from "../../api";
 import { useHistory } from "react-router-dom";
-import { CardContent } from "@material-ui/core";
-import Card from "@material-ui/core/Card";
+import { 
+  CardContent, Card 
+} from "@material-ui/core";
 
 export default function AssignSuggestionProjectList() {
   const dispatch = useDispatch();

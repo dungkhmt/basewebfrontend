@@ -5,23 +5,28 @@ import { authPost, authGet } from "../../api";
 import { Redirect, useHistory } from "react-router-dom";
 import { toFormattedDateTime } from "../../utils/dateutils";
 import {
-  Grid, Button, Card, CardContent, Dialog,
+  Grid, Button, Card, CardContent, Dialog, Icon,
   DialogActions, DialogContent, DialogTitle, List,
   ListItem, FormGroup, FormControlLabel, Checkbox,
-  TextField, Tooltip, IconButton, Box, Chip
+  TextField, Tooltip, IconButton, Box, Chip, Typography
 } from "@material-ui/core";
 
-import { makeStyles } from "@material-ui/core/styles";
+import { makeStyles, withStyles } from "@material-ui/core/styles";
 import AddBoxIcon from '@material-ui/icons/AddBox';
 import ListAltIcon from '@material-ui/icons/ListAlt';
 import PersonAddIcon from '@material-ui/icons/PersonAdd';
 import PeopleIcon from '@material-ui/icons/People';
 import BarChartIcon from '@material-ui/icons/BarChart';
+import ArrowBackIcon from '@material-ui/icons/ArrowBack';
 import { API_URL } from "../../config/config";
 import changePageSize, {
   localization,
   tableIcons,
 } from '../../utils/MaterialTableUtils';
+import {
+  TASK_STATUS, TASK_PRIORITY, TASK_CATEGORY, TABLE_STRIPED_ROW_COLOR
+} from './BacklogConfig';
+import AlertDialog from './AlertDialog';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -50,6 +55,17 @@ const useStyles = makeStyles((theme) => ({
   }
 }));
 
+const StyledChip = withStyles(theme => ({
+  root: {
+    width: 90
+  },
+  label: {
+    whiteSpace: "nowrap",
+    overflow: "hidden",
+    textOverflow: "ellipsis"
+  }
+}))(Chip);
+
 export default function ProjectDetail(props) {
   const dispatch = useDispatch();
   const token = useSelector(state => state.auth.token);
@@ -57,15 +73,18 @@ export default function ProjectDetail(props) {
   const classes = useStyles();
   const [project, setProject] = useState({});
   const [taskList, setTaskList] = useState([]);
-  const [addMemberDialogOpen, setAddMemberDialogOpen] = useState(false);
-  const [showMemberListDialogOpen, setShowMemberListDialogOpen] = useState(false);
   const [projectMember, setProjectMember] = useState([]);
-  const [scroll, setScroll] = React.useState('paper');
+  const [scroll, setScroll] = useState('paper');
   const [isPermissive, setIsPermissive] = useState(true);
   const [allUser, setAllUser] = useState([]);
   const [isMember, setIsMember] = useState({});
   const [isShowMyTask, setIsShowMyTask] = useState(false);
   const [myTask, setMyTask] = useState([]);
+
+  const [addMemberDialogOpen, setAddMemberDialogOpen] = useState(false);
+  const [showMemberListDialogOpen, setShowMemberListDialogOpen] = useState(false);
+  const [inviteResultAlert, setInviteResultAlert] = useState(false);
+  const [inviteAlertProperties, setInviteAlertProperties] = useState({});
 
   const [categoryPool, setCategoryPool] = useState([]);
   const [priorityPool, setPriorityPool] = useState([]);
@@ -96,6 +115,10 @@ export default function ProjectDetail(props) {
       )
         task.backlogTask.attachmentPaths = task.backlogTask.attachmentPaths.split(";");
       else task.backlogTask.attachmentPaths = [];
+
+      task.backlogTask.statusName = TASK_STATUS.LIST.filter(status => status.statusId === task.backlogTask.statusId).map(e => e.description);
+      task.backlogTask.priorityName = TASK_PRIORITY.LIST.filter(priority => priority.priorityId === task.backlogTask.priorityId).map(e => e.priorityName);
+      task.backlogTask.categoryName = TASK_CATEGORY.LIST.filter(category => category.categoryId === task.backlogTask.categoryId).map(e => e.catgoryName);
     });
     let myTasks = tasks.filter(task => {
       return task.assignment.filter(element => { return element === myAccount.user }).length > 0;
@@ -122,27 +145,15 @@ export default function ProjectDetail(props) {
   }
 
   function getTaskCategory() {
-    authGet(dispatch, token, "/backlog/get-backlog-task-category").then(
-      res => {
-        if (res != null) setCategoryPool(res);
-      }
-    )
+    setCategoryPool(TASK_CATEGORY.LIST);
   }
 
   function getTaskPriority() {
-    authGet(dispatch, token, "/backlog/get-backlog-task-priority").then(
-      res => {
-        if (res != null) setPriorityPool(res);
-      }
-    )
+    setPriorityPool(TASK_PRIORITY.LIST);
   }
 
   function getTaskStatus() {
-    authGet(dispatch, token, "/backlog/get-backlog-task-status").then(
-      res => {
-        if (res != null) setStatusPool(res);
-      }
-    )
+    setStatusPool(TASK_STATUS.LIST);
   }
 
   useEffect(() => {
@@ -161,6 +172,10 @@ export default function ProjectDetail(props) {
     setShowMemberListDialogOpen(false);
   };
 
+  const onCloseInviteResultAlert = () => {
+    setInviteResultAlert(false);
+  }
+
   const onInviteMember = () => {
     setAddMemberDialogOpen(false);
     let newMember = [];
@@ -175,10 +190,22 @@ export default function ProjectDetail(props) {
       .then((res) => res.json())
       .then((res) => {
         if (res == null || res.backlogProjectId == null) {
-          alert("Mời thành viên thất bại");
+          setInviteAlertProperties({
+            severity: 'error',
+            title: 'Mời thành viên thất bại',
+            content: 'Mời thất bại. Vui lòng thử lại.'
+          })
+          setInviteResultAlert(true);
+          return;
         } else {
-          alert("Mời thành viên thành công");
+          setInviteAlertProperties({
+            severity: 'success',
+            title: 'Mời thành viên thành công',
+            content: 'Mời thành công.'
+          })
+          setInviteResultAlert(true);
           getUser();
+          return;
         }
       })
   }
@@ -190,33 +217,41 @@ export default function ProjectDetail(props) {
   const taskListColumn = [
     { title: "Chủ đề", field: "backlogTask.backlogTaskName" },
     {
-      title: "Loại", field: "backlogTask.backlogTaskCategoryId",
+      title: "Loại", field: "backlogTask.categoryName",
       render: rowData => {
-        return categoryPool.filter(x => {
-          return x.backlogTaskCategoryId === rowData.backlogTask.backlogTaskCategoryId
-        }).map(y => {
-          return y.backlogTaskCategoryName;
-        })
+        const color = categoryPool.filter(x => x.categoryId === rowData.backlogTask.categoryId).map(e => e.color)
+
+        return (
+          <StyledChip
+            label={rowData.backlogTask.categoryName}
+            style={{ backgroundColor: color }}
+          />
+        )
       }
     },
     {
-      title: "Trạng thái", field: "backlogTask.statusId",
+      title: "Trạng thái", field: "backlogTask.statusName",
       render: rowData => {
-        return statusPool.filter(x => {
-          return x.statusId === rowData.backlogTask.statusId
-        }).map(y => {
-          return y.description;
-        })
+        const color = statusPool.filter(x => x.statusId === rowData.backlogTask.statusId).map(e => e.color)
+
+        return (
+          <StyledChip
+            label={rowData.backlogTask.statusName}
+            style={{ backgroundColor: color }}
+          />
+        )
       }
     },
     {
-      title: "Độ ưu tiên", field: "backlogTask.priorityId",
+      title: "Độ ưu tiên", field: "backlogTask.priorityName",
       render: rowData => {
-        return priorityPool.filter(x => {
-          return x.backlogTaskPriorityId === rowData.backlogTask.priorityId
-        }).map(y => {
-          return y.backlogTaskPriorityName;
-        })
+        const color = priorityPool.filter(x => x.priorityId === rowData.backlogTask.priorityId).map(e => e.color)
+        const icon = priorityPool.filter(x => x.priorityId === rowData.backlogTask.priorityId).map(e => e.icon)
+        return (
+          <Icon
+            style={{ color: color }}
+          >{icon}</Icon>
+        )
       }
     },
     {
@@ -288,18 +323,25 @@ export default function ProjectDetail(props) {
             <div>
               <Grid container spacing={3}>
                 <Grid item xs={8}>
-                  <div>
-                    <div style={{ padding: '0px 30px' }}>
-                      <b>Mã dự án: </b> {project.backlogProjectId} <p />
-                      <b>Tên dự án: </b> {checkNull(project['backlogProjectName'])} <p />
-                    </div>
-                  </div>
+                  <Box>
+                    <Tooltip title="Danh sách dự án">
+                      <IconButton aria-label="projectList" onClick={() => { history.push("/backlog/project-list/") }}>
+                        <ArrowBackIcon color='primary' fontSize='medium' />
+                      </IconButton>
+                    </Tooltip>
+                    <Box p={1} display="inline-flex">
+                      <Typography component="div" align="left">
+                        <Box fontWeight="fontWeightBold" fontSize="subtitle1.fontSize" m={1}>Mã dự án: {project.backlogProjectId}</Box>
+                        <Box fontWeight="fontWeightBold" fontSize="subtitle1.fontSize" m={1}>Tên dự án: {checkNull(project['backlogProjectName'])}</Box>
+                      </Typography>
+                    </Box>
+                  </Box>
                 </Grid>
 
                 <Grid item xs={4}
                   className={classes.grid}>
                   <Tooltip title="Biểu đồ dự án">
-                    <IconButton aria-label="projectChart" onClick={() => {history.push("/backlog/dashboard/" + backlogProjectId)}}>
+                    <IconButton aria-label="projectChart" onClick={() => { history.push("/backlog/dashboard/" + backlogProjectId) }}>
                       <BarChartIcon color='primary' fontSize='large' />
                     </IconButton>
                   </Tooltip>
@@ -313,66 +355,6 @@ export default function ProjectDetail(props) {
                       <PersonAddIcon color='primary' fontSize='large' />
                     </IconButton>
                   </Tooltip>
-
-                  {/* add member dialog */}
-                  <Dialog
-                    open={addMemberDialogOpen}
-                    onClose={onCloseAddMemberDialog}
-                    aria-labelledby="form-dialog-title"
-                    scroll={scroll}
-                    classes={{ paper: classes.dialogPaper }}
-                  >
-                    <DialogTitle id="form-dialog-title">
-                      Thêm thành viên
-                    </DialogTitle>
-                    <DialogContent dividers={scroll === 'paper'}>
-                      <FormGroup>
-                        {Object.keys(isMember).map((key, index) => (
-                          <FormControlLabel
-                            control={
-                              <Checkbox
-                                checked={isMember[key]}
-                                onChange={handleChangeAddMember}
-                                name={key}
-                              />
-                            }
-                            label={key}
-                          />
-                        ))
-                        }
-                      </FormGroup>
-                    </DialogContent>
-                    <DialogActions>
-                      <Button onClick={onInviteMember} color="primary">
-                        Lưu
-                      </Button>
-                      <Button onClick={onCloseAddMemberDialog} color="primary">
-                        Hủy
-                      </Button>
-                    </DialogActions>
-                  </Dialog>
-
-                  {/* member list */}
-                  <Dialog
-                    open={showMemberListDialogOpen}
-                    onClose={onCloseShowMemberListDialog}
-                    scroll={scroll}
-                    aria-labelledby="list-scroll-dialog-title"
-                  >
-                    <DialogTitle id="list-scroll-dialog-title">
-                      Danh sách thành viên
-                    </DialogTitle>
-                    <DialogContent dividers={scroll === 'paper'}>
-                      <List>
-                        {projectMember.map(member => (
-                          <ListItem key={member.userLoginId} value={member.userLoginId}>
-                            {member.userLoginId}
-                          </ListItem>
-                        ))}
-                      </List>
-                    </DialogContent>
-                  </Dialog>
-
                 </Grid>
               </Grid>
             </div>
@@ -385,7 +367,7 @@ export default function ProjectDetail(props) {
               options={{
                 filtering: true,
                 search: false,
-                rowStyle: { backgroundColor: "#fcfcfc" }
+                rowStyle: rowData => { return { backgroundColor: TABLE_STRIPED_ROW_COLOR[rowData.tableData.id % TABLE_STRIPED_ROW_COLOR.length] } }
               }}
               localization={localization}
               data={isShowMyTask ? myTask : taskList}
@@ -459,6 +441,80 @@ export default function ProjectDetail(props) {
             />
           </CardContent>
         </Card>
+
+        {/* add member dialog */}
+        <Dialog
+          open={addMemberDialogOpen}
+          onClose={onCloseAddMemberDialog}
+          aria-labelledby="form-dialog-title"
+          scroll={scroll}
+          classes={{ paper: classes.dialogPaper }}
+        >
+          <DialogTitle id="form-dialog-title">
+            Thêm thành viên
+          </DialogTitle>
+          <DialogContent dividers={scroll === 'paper'}>
+            <FormGroup>
+              {Object.keys(isMember).map((key, index) => (
+                <FormControlLabel
+                  control={
+                    <Checkbox
+                      checked={isMember[key]}
+                      onChange={handleChangeAddMember}
+                      name={key}
+                    />
+                  }
+                  label={key}
+                />
+              ))
+              }
+            </FormGroup>
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={onInviteMember} color="primary">
+              Lưu
+            </Button>
+            <Button onClick={onCloseAddMemberDialog} color="primary">
+              Hủy
+            </Button>
+          </DialogActions>
+        </Dialog>
+
+        {/* member list */}
+        <Dialog
+          open={showMemberListDialogOpen}
+          onClose={onCloseShowMemberListDialog}
+          scroll={scroll}
+          aria-labelledby="list-scroll-dialog-title"
+          classes={{ paper: classes.dialogPaper }}
+        >
+          <DialogTitle id="list-scroll-dialog-title">
+            Danh sách thành viên
+          </DialogTitle>
+          <DialogContent dividers={scroll === 'paper'}>
+            <List>
+              {projectMember.map(member => (
+                <ListItem key={member.userLoginId} value={member.userLoginId}>
+                  {member.userLoginId}
+                </ListItem>
+              ))}
+            </List>
+          </DialogContent>
+        </Dialog>
+
+        <AlertDialog
+          open={inviteResultAlert}
+          onClose={onCloseInviteResultAlert}
+          {...inviteAlertProperties}
+          buttons={[
+            {
+              onClick: onCloseInviteResultAlert,
+              color: "primary",
+              autoFocus: true,
+              text: "OK"
+            }
+          ]}
+        />
       </div>
     );
 }

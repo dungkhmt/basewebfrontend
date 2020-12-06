@@ -4,7 +4,7 @@ import { Doughnut } from "react-chartjs-2";
 import { authPost, authGet } from "../../api";
 import { useDispatch, useSelector } from "react-redux";
 import {
-  Card, CardContent, Box, Divider, Typography, Grid,
+  Box, Typography, Grid,
   Paper, ListItem, ListItemIcon, ListItemText, List
 } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";

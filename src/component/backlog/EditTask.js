@@ -3,7 +3,7 @@ import { makeStyles } from "@material-ui/core/styles";
 import {
   Button, Card, CardContent, Checkbox,
   TextField, Box, Chip, Typography,
-  MenuItem, ListItemText, CardActions
+  MenuItem, ListItemText, CardActions,
 } from "@material-ui/core";
 
 import {
@@ -15,6 +15,7 @@ import { useHistory } from "react-router-dom";
 import { authPost, authGet, authPostMultiPart } from "../../api";
 import { useDispatch, useSelector } from "react-redux";
 import { DropzoneArea } from "material-ui-dropzone";
+import AlertDialog from './AlertDialog';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -46,6 +47,8 @@ export default function EditTask(props) {
   const [categoryPool, setCategoryPool] = useState([]);
   const [priorityPool, setPriorityPool] = useState([]);
   const [statusPool, setStatusPool] = useState([]);
+
+  const [openAlert, setOpenAlert] = useState(false);
 
   const backlogProjectId = props.match.params.backlogProjectId;
   const backlogTaskId = props.match.params.taskId;
@@ -129,6 +132,10 @@ export default function EditTask(props) {
     getTask();
   }, []);
 
+  const handleCloseAlert = () => {
+    setOpenAlert(false);
+  }
+
   const handleTaskAssignmentChange = (event) => {
     setTaskAssignment(event.target.value);
     if (event.target.value === '') setTaskField("statusId", "TASK_OPEN");
@@ -141,7 +148,7 @@ export default function EditTask(props) {
   const handleDeleteAttachment = (fileName) => {
     let status = [...attachmentStatus];
     attachmentFiles.forEach((file, index) => {
-      if(file.name === fileName) {
+      if (file.name === fileName) {
         status[index] = "deleted";
         return;
       }
@@ -152,7 +159,7 @@ export default function EditTask(props) {
   const handleAddFile = (files) => {
     const attachmentFilesCopy = [...attachmentFiles];
     const status = [...attachmentStatus];
-    for(let i = handleDropzoneFiles.length; i < files.length; i++) {
+    for (let i = handleDropzoneFiles.length; i < files.length; i++) {
       attachmentFilesCopy.push(files[i]);
       status.push("new");
     }
@@ -163,13 +170,14 @@ export default function EditTask(props) {
   }
 
   const displayFileName = (fileName, status) => {
-    if(status === "uploaded") return fileName.substring(fileName.indexOf("-") + 1);
+    if (status === "uploaded") return fileName.substring(fileName.indexOf("-") + 1);
     else return fileName;
   }
-  
+
   async function handleSubmit() {
     if (taskDetail.backlogTaskName === '') {
-      alert('Nhập chủ đề rồi thử lại');
+      setOpenAlert(true);
+      return;
     }
 
     let editTaskBody = {
@@ -195,7 +203,7 @@ export default function EditTask(props) {
       statusId: taskDetail.statusId
     };
     authPost(dispatch, token, '/backlog/add-assignable', addAssignableBody).then(r => r.json());
-    
+
     const newFiles = attachmentFiles.filter((file, index) => attachmentStatus[index] === "new");
     console.log(newFiles);
     let formData = new FormData();
@@ -392,19 +400,21 @@ export default function EditTask(props) {
               onChange={(files) => handleAddFile(files)}
             >
             </DropzoneArea>
-            <Box style={{ margin: '5px 0 0 0' }}>
+            <Box mt={0.5}>
               {attachmentFiles.map((item, index) => {
-                if(attachmentStatus[index] !== "deleted")
-                return <Chip
-                  key={item.name}
-                  style={{ margin: '0 5px 5px 0' }}
-                  label={displayFileName(item.name, attachmentStatus[index])}
-                  onDelete={() => handleDeleteAttachment(item.name)}
-                  variant="outlined"
-                  size="large"
-                  color="primary"
-                />
-              })}
+                if (attachmentStatus[index] !== "deleted")
+                  return (
+                    <Box m={0.5} display='inline-flex'>
+                      <Chip
+                        key={item.name}
+                        label={displayFileName(item.name, attachmentStatus[index])}
+                        onDelete={() => handleDeleteAttachment(item.name)}
+                        variant="outlined"
+                        size="large"
+                        color="primary"
+                      />
+                    </Box>
+                  )})}
             </Box>
           </form>
         </CardContent>
@@ -412,7 +422,7 @@ export default function EditTask(props) {
           <Button
             variant="contained"
             color="primary"
-            style={{ marginLeft: "45px" }}
+            style={{ marginLeft: "40px" }}
             onClick={handleSubmit}
           >
             Lưu
@@ -425,6 +435,22 @@ export default function EditTask(props) {
           </Button>
         </CardActions>
       </Card>
+
+      <AlertDialog
+        open={openAlert}
+        onClose={handleCloseAlert}
+        severity='warning'
+        title={"Vui lòng nhập đầy đủ thông tin cần thiết"}
+        content={"Một số thông tin yêu cầu cần phải được điền đầy đủ. Vui lòng kiểm tra lại."}
+        buttons={[
+          {
+            onClick: handleCloseAlert,
+            color: "primary",
+            autoFocus: true,
+            text: "OK"
+          }
+        ]}
+      />
     </MuiPickersUtilsProvider >
   );
 }
