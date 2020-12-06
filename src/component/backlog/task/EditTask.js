@@ -12,10 +12,10 @@ import {
 } from "@material-ui/pickers";
 import React, { useState, useEffect } from "react";
 import { useHistory } from "react-router-dom";
-import { authPost, authGet, authPostMultiPart } from "../../api";
+import { authPost, authGet, authPostMultiPart } from "../../../api";
 import { useDispatch, useSelector } from "react-redux";
 import { DropzoneArea } from "material-ui-dropzone";
-import AlertDialog from './AlertDialog';
+import AlertDialog from '../AlertDialog';
 
 const useStyles = makeStyles((theme) => ({
   root: {

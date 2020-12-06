@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import MaterialTable from "material-table";
-import { authGet } from "../../api";
+import { authGet } from "../../../api";
 import Grid from "@material-ui/core/Grid";
 import Button from "@material-ui/core/Button";
 import { useHistory } from "react-router-dom";
@@ -12,7 +12,7 @@ import { makeStyles } from "@material-ui/core/styles";
 import changePageSize, {
   localization,
   tableIcons,
-} from '../../utils/MaterialTableUtils';
+} from '../../../utils/MaterialTableUtils';
 
 const useStyles = makeStyles((theme) => ({
   grid: {

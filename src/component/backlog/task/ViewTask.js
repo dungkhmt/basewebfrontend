@@ -1,12 +1,12 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { authGet } from "../../api";
+import { authGet } from "../../../api";
 import Grid from "@material-ui/core/Grid";
 import Button from "@material-ui/core/Button";
 import { useHistory } from "react-router-dom";
 import Card from "@material-ui/core/Card";
 import CardContent from "@material-ui/core/CardContent";
-import { toFormattedDateTime, toFormattedDate } from "../../utils/dateutils";
+import { toFormattedDateTime, toFormattedDate } from "../../../utils/dateutils";
 
 export default function ViewTask(props) {
   const dispatch = useDispatch();

@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import MaterialTable from "material-table";
-import { authPost, authGet } from "../../api";
+import { authPost, authGet } from "../../../api";
 import { Redirect, useHistory } from "react-router-dom";
-import { toFormattedDateTime } from "../../utils/dateutils";
+import { toFormattedDateTime } from "../../../utils/dateutils";
 import {
   Grid, Button, Card, CardContent, Dialog, Icon,
   DialogActions, DialogContent, DialogTitle, List,
@@ -18,15 +18,15 @@ import PersonAddIcon from '@material-ui/icons/PersonAdd';
 import PeopleIcon from '@material-ui/icons/People';
 import BarChartIcon from '@material-ui/icons/BarChart';
 import ArrowBackIcon from '@material-ui/icons/ArrowBack';
-import { API_URL } from "../../config/config";
+import { API_URL } from "../../../config/config";
 import changePageSize, {
   localization,
   tableIcons,
-} from '../../utils/MaterialTableUtils';
+} from '../../../utils/MaterialTableUtils';
 import {
   TASK_STATUS, TASK_PRIORITY, TASK_CATEGORY, TABLE_STRIPED_ROW_COLOR
-} from './BacklogConfig';
-import AlertDialog from './AlertDialog';
+} from '../BacklogConfig';
+import AlertDialog from '../AlertDialog';
 
 const useStyles = makeStyles((theme) => ({
   root: {

@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import MaterialTable from "material-table";
-import { authGet } from "../../api";
+import { authGet } from "../../../api";
 import { useHistory } from "react-router-dom";
 import { 
   CardContent, Card 

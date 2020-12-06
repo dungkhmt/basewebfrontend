@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import MaterialTable from "material-table";
-import { authPost, authGet } from "../../api";
+import { authPost, authGet } from "../../../api";
 import {
   Grid, Button, Card, Dialog, DialogActions, DialogContent,
   DialogTitle, Slider, Typography, AppBar, Tabs, Tab,
@@ -9,7 +9,7 @@ import {
 } from "@material-ui/core/";
 import { Redirect, useHistory } from "react-router-dom";
 import CloseIcon from '@material-ui/icons/Close';
-import { toFormattedDateTime } from "../../utils/dateutils";
+import { toFormattedDateTime } from "../../../utils/dateutils";
 import { makeStyles } from "@material-ui/core/styles";
 import { Bar } from 'react-chartjs-2';
 

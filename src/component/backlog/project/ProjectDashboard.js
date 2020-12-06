@@ -1,14 +1,14 @@
 import React, { useState, useEffect } from "react";
 import { useHistory, Redirect } from "react-router-dom";
 import { Doughnut } from "react-chartjs-2";
-import { authPost, authGet } from "../../api";
+import { authPost, authGet } from "../../../api";
 import { useDispatch, useSelector } from "react-redux";
 import {
   Box, Typography, Grid,
   Paper, ListItem, ListItemIcon, ListItemText, List
 } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
-import Gantt from './Gantt';
+import Gantt from '../Gantt';
 import "ibm-gantt-chart/dist/ibm-gantt-chart.css";
 
 const useStyles = makeStyles((theme) => ({
