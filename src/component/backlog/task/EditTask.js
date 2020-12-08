@@ -16,6 +16,9 @@ import { authPost, authGet, authPostMultiPart } from "../../../api";
 import { useDispatch, useSelector } from "react-redux";
 import { DropzoneArea } from "material-ui-dropzone";
 import AlertDialog from '../AlertDialog';
+import {
+  TASK_STATUS, TASK_PRIORITY, TASK_CATEGORY
+} from '../BacklogConfig';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -60,27 +63,15 @@ export default function EditTask(props) {
   }
 
   function getTaskCategory() {
-    authGet(dispatch, token, "/backlog/get-backlog-task-category").then(
-      res => {
-        if (res != null) setCategoryPool(res);
-      }
-    )
+    setCategoryPool(TASK_CATEGORY.LIST);
   }
 
   function getTaskPriority() {
-    authGet(dispatch, token, "/backlog/get-backlog-task-priority").then(
-      res => {
-        if (res != null) setPriorityPool(res);
-      }
-    )
+    setPriorityPool(TASK_PRIORITY.LIST);
   }
 
   function getTaskStatus() {
-    authGet(dispatch, token, "/backlog/get-backlog-task-status").then(
-      res => {
-        if (res != null) setStatusPool(res);
-      }
-    )
+    setStatusPool(TASK_STATUS.LIST);
   }
 
   function getTaskDetail(taskId) {
@@ -253,14 +244,14 @@ export default function EditTask(props) {
                 id="taskType"
                 select
                 label="Loại"
-                value={taskDetail.backlogTaskCategoryId === null || taskDetail.backlogTaskCategoryId === undefined ? '' : taskDetail.backlogTaskCategoryId}
+                value={taskDetail.categoryId === null || taskDetail.categoryId === undefined ? '' : taskDetail.categoryId}
                 onChange={(event) => {
-                  setTaskField("backlogTaskCategoryId", event.target.value);
+                  setTaskField("categoryId", event.target.value);
                 }}
               >
                 {categoryPool.map((item) => (
-                  <MenuItem key={item.backlogTaskCategoryId} value={item.backlogTaskCategoryId}>
-                    {item.backlogTaskCategoryName}
+                  <MenuItem key={item.categoryId} value={item.categoryId}>
+                    {item.categoryName}
                   </MenuItem>
                 ))}
               </TextField>
@@ -276,8 +267,8 @@ export default function EditTask(props) {
                 }}
               >
                 {priorityPool.map((item) => (
-                  <MenuItem key={item.backlogTaskPriorityId} value={item.backlogTaskPriorityId}>
-                    {item.backlogTaskPriorityName}
+                  <MenuItem key={item.priorityId} value={item.priorityId}>
+                    {item.priorityName}
                   </MenuItem>
                 ))}
               </TextField>

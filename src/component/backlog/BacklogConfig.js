@@ -82,7 +82,8 @@ export const TASK_PRIORITY = {
       icon: "arrow_downward",
       color: COLOR.green,
     },
-  ]
+  ],
+  DEFAULT_PRIORITY: "NORMAL"
 }
 
 // task category
@@ -90,24 +91,25 @@ export const TASK_CATEGORY = {
   LIST: [
     {
       categoryId: "BUG",
-      catgoryName: "Lỗi",
+      categoryName: "Lỗi",
       color: COLOR.red,
     },
     {
       categoryId: "OTHER",
-      catgoryName: "Khác",
+      categoryName: "Khác",
       color: COLOR.blue,
     },
     {
       categoryId: "REQUEST",
-      catgoryName: "Yêu cầu",
+      categoryName: "Yêu cầu",
       color: COLOR.orange,
     },
     {
       categoryId: "TASK",
-      catgoryName: "Nhiệm vụ",
+      categoryName: "Nhiệm vụ",
       color: COLOR.green,
     },
-  ]
+  ],
+  DEFAULT_CATEGORY: "TASK"
 }
 

@@ -118,7 +118,7 @@ export default function ProjectDetail(props) {
 
       task.backlogTask.statusName = TASK_STATUS.LIST.filter(status => status.statusId === task.backlogTask.statusId).map(e => e.description);
       task.backlogTask.priorityName = TASK_PRIORITY.LIST.filter(priority => priority.priorityId === task.backlogTask.priorityId).map(e => e.priorityName);
-      task.backlogTask.categoryName = TASK_CATEGORY.LIST.filter(category => category.categoryId === task.backlogTask.categoryId).map(e => e.catgoryName);
+      task.backlogTask.categoryName = TASK_CATEGORY.LIST.filter(category => category.categoryId === task.backlogTask.categoryId).map(e => e.categoryName);
     });
     let myTasks = tasks.filter(task => {
       return task.assignment.filter(element => { return element === myAccount.user }).length > 0;

@@ -78,10 +78,12 @@ export default function CreateTask(props) {
 
   function getTaskCategory() {
     setCategoryPool(TASK_CATEGORY.LIST);
+    setTaskType(TASK_CATEGORY.DEFAULT_CATEGORY);
   }
 
   function getTaskPriority() {
     setPriorityPool(TASK_PRIORITY.LIST);
+    setTaskPriority(TASK_PRIORITY.DEFAULT_PRIORITY);
   }
 
   function getTaskStatus() {
@@ -124,7 +126,7 @@ export default function CreateTask(props) {
 
     let addTaskBody = {
       backlogTaskName: taskName,
-      backlogTaskCategoryId: taskType,
+      categoryId: taskType,
       backlogDescription: taskDescription,
       backlogProjectId: backlogProjectId,
       statusId: taskStatus,
@@ -203,8 +205,8 @@ export default function CreateTask(props) {
                 }}
               >
                 {categoryPool.map((item) => (
-                  <MenuItem key={item.backlogTaskCategoryId} value={item.backlogTaskCategoryId}>
-                    {item.backlogTaskCategoryName}
+                  <MenuItem key={item.categoryId} value={item.categoryId}>
+                    {item.categoryName}
                   </MenuItem>
                 ))}
               </TextField>
@@ -220,8 +222,8 @@ export default function CreateTask(props) {
                 }}
               >
                 {priorityPool.map((item) => (
-                  <MenuItem key={item.backlogTaskPriorityId} value={item.backlogTaskPriorityId}>
-                    {item.backlogTaskPriorityName}
+                  <MenuItem key={item.priorityId} value={item.priorityId}>
+                    {item.priorityName}
                   </MenuItem>
                 ))}
               </TextField>
