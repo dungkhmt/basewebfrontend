@@ -1,9 +1,9 @@
 import DateFnsUtils from "@date-io/date-fns";
 import { makeStyles } from "@material-ui/core/styles";
 import {
-  Button, Card, CardContent, Checkbox,
-  TextField, Box, Chip, Typography,
-  MenuItem, ListItemText, CardActions,
+  Button, Card, CardContent, Checkbox, TextField, 
+  Box, Chip, Typography, MenuItem, ListItemText, 
+  CardActions, 
 } from "@material-ui/core";
 
 import {
@@ -11,7 +11,7 @@ import {
   MuiPickersUtilsProvider,
 } from "@material-ui/pickers";
 import React, { useState, useEffect } from "react";
-import { useHistory } from "react-router-dom";
+import { Redirect, useHistory } from "react-router-dom";
 import { authPost, authGet, authPostMultiPart } from "../../../api";
 import { useDispatch, useSelector } from "react-redux";
 import { DropzoneArea } from "material-ui-dropzone";
@@ -46,6 +46,7 @@ export default function EditTask(props) {
   const [attachmentFiles, setAttachmentFiles] = useState([]);
   const [handleDropzoneFiles, setHandleDropzoneFiles] = useState([]);
   const [attachmentStatus, setAttachmentStatus] = useState([]);
+  const [isPermissive, setIsPermissive] = useState(true);
 
   const [categoryPool, setCategoryPool] = useState([]);
   const [priorityPool, setPriorityPool] = useState([]);
@@ -74,11 +75,12 @@ export default function EditTask(props) {
     setStatusPool(TASK_STATUS.LIST);
   }
 
-  function getTaskDetail(taskId) {
+  async function getTaskDetail(taskId) {
+    let myAccount = await authGet(dispatch, token, "/my-account");
     authGet(dispatch, token, "/backlog/get-task-detail/" + taskId).then(
       res => {
         setTaskDetail(res.backlogTask);
-        let assignmentList = res.assignment.map(e => e.partyId)
+        let assignmentList = res.assignment.map(e => e.partyId);
         let assignableList = res.assignable.map(e => e.partyId);
 
         setTaskAssignable(assignableList);
@@ -100,6 +102,7 @@ export default function EditTask(props) {
 
         setAttachmentStatus(status);
         setAttachmentFiles(attachment);
+        setIsPermissive(myAccount.user === res.backlogTask.createdByUserLoginId);
       }
     )
   }
@@ -129,7 +132,7 @@ export default function EditTask(props) {
 
   const handleTaskAssignmentChange = (event) => {
     setTaskAssignment(event.target.value);
-    if (event.target.value === '') setTaskField("statusId", "TASK_OPEN");
+    if (event.target.value === '') setTaskField("statusId", TASK_STATUS.DEFAULT_ID_NOT_ASSIGN);
   }
 
   const handleTaskAssignableChange = (event) => {
@@ -178,7 +181,6 @@ export default function EditTask(props) {
         attachmentStatus: attachmentStatus
       }
     }
-    console.log(editTaskBody);
     await authPost(dispatch, token, '/backlog/edit-task', editTaskBody).then(r => r.json());
 
     let addAssignmentBody = {
@@ -196,7 +198,6 @@ export default function EditTask(props) {
     authPost(dispatch, token, '/backlog/add-assignable', addAssignableBody).then(r => r.json());
 
     const newFiles = attachmentFiles.filter((file, index) => attachmentStatus[index] === "new");
-    console.log(newFiles);
     let formData = new FormData();
     for (const file of newFiles) {
       formData.append("file", file);
@@ -206,7 +207,11 @@ export default function EditTask(props) {
     history.push("/backlog/project/" + backlogProjectId);
   }
 
-  return (
+  if (!isPermissive) {
+    return (
+      <Redirect to={{ pathname: "/", state: { from: history.location } }} />
+    )
+  } else return (
     <MuiPickersUtilsProvider utils={DateFnsUtils}>
       <Card>
         <CardContent>
@@ -319,7 +324,7 @@ export default function EditTask(props) {
             <TextField
               id="taskAssignment"
               select={true}
-              disabled={taskAssignable.length > 0}
+              // disabled={taskAssignable.length > 0}
               SelectProps={{
                 multiple: false,
                 value: taskAssignment === null || taskAssignment === undefined ? '' : taskAssignment,
@@ -328,6 +333,9 @@ export default function EditTask(props) {
               fullWidth
               label="Người thực hiện"
             >
+              <MenuItem key='' value=''>
+                &nbsp;
+              </MenuItem>
               {projectMember.map((item) => (
                 <MenuItem key={item.partyId} value={item.partyId} >
                   {item.userLoginId}

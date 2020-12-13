@@ -1,16 +1,18 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import MaterialTable from "material-table";
-import { authPost, authGet } from "../../../api";
+import { authPost, authGet, authPostMultiPart } from "../../../api";
 import { Redirect, useHistory } from "react-router-dom";
 import { toFormattedDateTime } from "../../../utils/dateutils";
 import {
   Grid, Button, Card, CardContent, Dialog, Icon,
   DialogActions, DialogContent, DialogTitle, List,
   ListItem, FormGroup, FormControlLabel, Checkbox,
-  TextField, Tooltip, IconButton, Box, Chip, Typography
+  TextField, Tooltip, IconButton, Box, Chip, Typography,
+  TableContainer, Table, TableHead, TableRow, TableCell, TableBody,
+  Paper, FormControl, InputLabel, Select, MenuItem, Snackbar,
 } from "@material-ui/core";
-
+import Alert from '@material-ui/lab/Alert';
 import { makeStyles, withStyles } from "@material-ui/core/styles";
 import AddBoxIcon from '@material-ui/icons/AddBox';
 import ListAltIcon from '@material-ui/icons/ListAlt';
@@ -18,6 +20,7 @@ import PersonAddIcon from '@material-ui/icons/PersonAdd';
 import PeopleIcon from '@material-ui/icons/People';
 import BarChartIcon from '@material-ui/icons/BarChart';
 import ArrowBackIcon from '@material-ui/icons/ArrowBack';
+import EditIcon from '@material-ui/icons/Edit';
 import { API_URL } from "../../../config/config";
 import changePageSize, {
   localization,
@@ -52,7 +55,7 @@ const useStyles = makeStyles((theme) => ({
     verticalAlign: 'text-bottom',
     textAlign: 'right',
     padding: '0px 50px 10px 30px'
-  }
+  },
 }));
 
 const StyledChip = withStyles(theme => ({
@@ -80,6 +83,8 @@ export default function ProjectDetail(props) {
   const [isMember, setIsMember] = useState({});
   const [isShowMyTask, setIsShowMyTask] = useState(false);
   const [myTask, setMyTask] = useState([]);
+  const [openUpdateStatusAlert, setOpenUpdateStatusAlert] = useState(false);
+  const [updateStatusAlert, setUpdateStatusAlert] = useState({});
 
   const [addMemberDialogOpen, setAddMemberDialogOpen] = useState(false);
   const [showMemberListDialogOpen, setShowMemberListDialogOpen] = useState(false);
@@ -107,8 +112,12 @@ export default function ProjectDetail(props) {
     );
     let tasks = await authGet(dispatch, token, "/backlog/get-project-detail/" + projectId);
     let myAccount = await authGet(dispatch, token, "/my-account");
+
+    tasks.sort((a, b) => { return (a.backlogTask.backlogTaskName > b.backlogTask.backlogTaskName) - (a.backlogTask.backlogTaskName < b.backlogTask.backlogTaskName) })
+    let status = {};
     tasks.forEach(task => {
       task.assignment = task.assignment.map(element => element.userLoginId);
+      task.assignable = task.assignable.map(element => element.userLoginId);
       if (task.backlogTask.attachmentPaths != null
         && task.backlogTask.attachmentPaths !== undefined
         && task.backlogTask.attachmentPaths.length > 0
@@ -116,13 +125,23 @@ export default function ProjectDetail(props) {
         task.backlogTask.attachmentPaths = task.backlogTask.attachmentPaths.split(";");
       else task.backlogTask.attachmentPaths = [];
 
-      task.backlogTask.statusName = TASK_STATUS.LIST.filter(status => status.statusId === task.backlogTask.statusId).map(e => e.description);
-      task.backlogTask.priorityName = TASK_PRIORITY.LIST.filter(priority => priority.priorityId === task.backlogTask.priorityId).map(e => e.priorityName);
-      task.backlogTask.categoryName = TASK_CATEGORY.LIST.filter(category => category.categoryId === task.backlogTask.categoryId).map(e => e.categoryName);
+      task.backlogTask.statusName = TASK_STATUS.LIST.filter(status => status.statusId === task.backlogTask.statusId).map(e => e.description)[0];
+      task.backlogTask.priorityName = TASK_PRIORITY.LIST.filter(priority => priority.priorityId === task.backlogTask.priorityId).map(e => e.priorityName)[0];
+      task.backlogTask.categoryName = TASK_CATEGORY.LIST.filter(category => category.categoryId === task.backlogTask.categoryId).map(e => e.categoryName)[0];
+
+      task.backlogTask.statusIdTemp = task.backlogTask.statusId;
+      task.editable = (myAccount.user === task.backlogTask.createdByUserLoginId);
+      task.updateStatusPermission = (
+        myAccount.user === task.backlogTask.createdByUserLoginId ||
+        (task.assignment.length > 0 && task.assignment.includes(myAccount.user))
+      );
+
+      status[task.backlogTask.backlogTaskId] = task.backlogTask.statusId;
     });
     let myTasks = tasks.filter(task => {
       return task.assignment.filter(element => { return element === myAccount.user }).length > 0;
     });
+
     setTaskList(tasks);
     setMyTask(myTasks);
   }
@@ -130,6 +149,7 @@ export default function ProjectDetail(props) {
   async function getUser() {
     let users = await authGet(dispatch, token, "/backlog/get-all-user");
     let members = await authGet(dispatch, token, "/backlog/get-members-of-project/" + backlogProjectId);
+
     setAllUser(users);
     setProjectMember(members);
 
@@ -214,6 +234,55 @@ export default function ProjectDetail(props) {
     setIsMember({ ...isMember, [event.target.name]: event.target.checked })
   }
 
+  const handleUpdateTaskStatus = (event, taskIndex) => {
+    if (isShowMyTask) {
+      let currData = [...myTask];
+      currData[taskIndex].backlogTask.statusIdTemp = event.target.value;
+      setMyTask(currData);
+    } else {
+      let currData = [...taskList];
+      currData[taskIndex].backlogTask.statusIdTemp = event.target.value;
+      setTaskList(currData);
+    }
+  }
+
+  const handleSubmitUpdateTaskStatus = (taskId, newStatus) => {
+    if (taskList.find(e => e.backlogTask.backlogTaskId === taskId).statusId === newStatus) return;
+
+    let formData = new FormData();
+    formData.append("taskId", taskId);
+    formData.append("newStatus", newStatus);
+    authPostMultiPart(dispatch, token, "/backlog/update-task-status", formData).then(
+      res => {
+        if (res.status === 200) {
+          setUpdateStatusAlert({
+            serverity: "success",
+            message: "Cập nhật trạng thái thành công",
+          })
+          let tasks = [...taskList];
+          let task = tasks.find(e => e.backlogTask.backlogTaskId === taskId);
+          task.backlogTask.statusId = newStatus;
+          task.backlogTask.statusName = statusPool.find(e => e.statusId === newStatus).description;
+          setTaskList(tasks);
+        } else {
+          setUpdateStatusAlert({
+            serverity: "error",
+            message: "Cập nhật trạng thái thất bại",
+          })
+        }
+        setOpenUpdateStatusAlert(true);
+      }
+    );
+  }
+
+  const handleCloseUpdateStatusAlert = (event, reason) => {
+    if (reason === 'clickaway') {
+      return;
+    }
+
+    setOpenUpdateStatusAlert(false);
+  }
+
   const taskListColumn = [
     { title: "Chủ đề", field: "backlogTask.backlogTaskName" },
     {
@@ -269,21 +338,6 @@ export default function ProjectDetail(props) {
       render: rowData => toFormattedDateTime(rowData.backlogTask['dueDate'])
     },
   ];
-
-  const detailTaskColumn = [
-    { title: 'ID', field: "backlogTask.backlogTaskId" },
-    {
-      title: 'Ngày cập nhật', field: "backlogTask.lastUpdateStamp",
-      render: rowData => toFormattedDateTime(rowData.backlogTask['lastUpdateStamp'])
-    },
-    { title: 'Người tạo', field: "backlogTask.createdByUserLoginId" },
-    {
-      title: "Phân công", field: "assignment",
-      render: rowData => {
-        return rowData['assignment'].toString();
-      }
-    },
-  ]
 
   const downloadFiles = (item) => {
     fetch(`${API_URL}/backlog/download-attachment-files/${item}`, {
@@ -367,7 +421,8 @@ export default function ProjectDetail(props) {
               options={{
                 filtering: true,
                 search: false,
-                rowStyle: rowData => { return { backgroundColor: TABLE_STRIPED_ROW_COLOR[rowData.tableData.id % TABLE_STRIPED_ROW_COLOR.length] } }
+                rowStyle: rowData => { return { backgroundColor: TABLE_STRIPED_ROW_COLOR[rowData.tableData.id % TABLE_STRIPED_ROW_COLOR.length] } },
+                actionsColumnIndex: -1
               }}
               localization={localization}
               data={isShowMyTask ? myTask : taskList}
@@ -375,20 +430,29 @@ export default function ProjectDetail(props) {
                 [{
                   tooltip: "Chi tiết",
                   render: rowData => {
-                    let data = JSON.parse(JSON.stringify([rowData]));
                     return (
-                      <div style={{ padding: '10px 50px 10px 50px' }}>
-                        <MaterialTable
-                          options={{
-                            filtering: false,
-                            search: false,
-                            toolbar: false,
-                            paging: false,
-                            sorting: false
-                          }}
-                          columns={detailTaskColumn}
-                          data={data}
-                        />
+                      <Box my={2.5} mx={7.5}>
+                        <TableContainer component={Paper}>
+                          <Table>
+                            <TableHead>
+                              <TableRow>
+                                <TableCell>Task ID</TableCell>
+                                <TableCell>Ngày cập nhật</TableCell>
+                                <TableCell>Người tạo</TableCell>
+                                <TableCell>Người có thể phân công</TableCell>
+                              </TableRow>
+                            </TableHead>
+                            <TableBody>
+                              <TableRow>
+                                <TableCell>{rowData.backlogTask.backlogTaskId}</TableCell>
+                                <TableCell>{toFormattedDateTime(rowData.backlogTask.lastUpdateStamp)}</TableCell>
+                                <TableCell>{rowData.backlogTask.createdByUserLoginId}</TableCell>
+                                <TableCell>{rowData.assignable.join(", ")}</TableCell>
+                              </TableRow>
+                            </TableBody>
+
+                          </Table>
+                        </TableContainer>
                         <p></p>
                         <TextField
                           className={classes.root}
@@ -401,22 +465,55 @@ export default function ProjectDetail(props) {
                           fullWidth
                           disabled
                         />
-                        <Box style={{ margin: '5px 0 0 0' }}>
+                        <Box mt={1} >
                           {rowData.backlogTask.attachmentPaths.map(item => (
-                            <Chip
-                              style={{ margin: '0 5px 0 0' }}
-                              label={item.substring(item.indexOf("-") + 1)}
-                              onClick={() => {
-                                downloadFiles(item);
-                              }}
-                              variant="outlined"
-                              size="large"
-                              color="primary"
-                            />
-                          )
-                          )}
+                            <Box mr={1} mb={0.5} display="inline">
+                              <Chip
+                                label={item.substring(item.indexOf("-") + 1)}
+                                onClick={() => {
+                                  downloadFiles(item);
+                                }}
+                                variant="outlined"
+                                size="large"
+                                color="primary"
+                              />
+                            </Box>
+                          ))}
                         </Box>
-                      </div>
+
+                        {rowData.updateStatusPermission ?
+                          (<Box>
+                            <FormControl>
+                              <InputLabel>Cập nhật trạng thái</InputLabel>
+                              <Select
+                                labelId="update-select-select-label"
+                                id="update-status-select"
+                                value={rowData.backlogTask.statusIdTemp}
+                                onChange={(event) => { handleUpdateTaskStatus(event, rowData.tableData.id) }}
+                                style={{ width: '150px' }}
+                              >
+                                {statusPool.map((item) => (
+                                  <MenuItem key={item.statusId} value={item.statusId}>
+                                    {item.description}
+                                  </MenuItem>
+                                ))}
+                              </Select>
+                            </FormControl>
+                            <FormControl>
+                              <Box mt={2} ml={2}>
+                                <Button
+                                  color='primary'
+                                  variant="contained"
+                                  onClick={() => {
+                                    handleSubmitUpdateTaskStatus(rowData.backlogTask.backlogTaskId, rowData.backlogTask.statusIdTemp)
+                                  }}>
+                                  Lưu
+                                </Button>
+                              </Box>
+                            </FormControl>
+                          </Box>
+                          ) : null}
+                      </Box>
                     )
                   }
                 }]
@@ -434,10 +531,15 @@ export default function ProjectDetail(props) {
                   isFreeAction: true,
                   onClick: (event) => history.push("/backlog/add-task/" + project.backlogProjectId)
                 },
+                (rowData) => ({
+                  icon: () => { return <EditIcon color={rowData.editable ? 'primary' : 'default'} /> },
+                  tooltip: 'Chỉnh sửa',
+                  onClick: (event, rowData) => { history.push("/backlog/edit-task/" + backlogProjectId + "/" + rowData.backlogTask.backlogTaskId); },
+                  disabled: !rowData.editable,
+                  hidden: !rowData.editable
+                }),
               ]}
-              onRowClick={(event, rowData) => {
-                history.push("/backlog/edit-task/" + backlogProjectId + "/" + rowData.backlogTask.backlogTaskId);
-              }}
+              onRowClick={(event, rowData, togglePanel) => togglePanel()}
             />
           </CardContent>
         </Card>
@@ -515,6 +617,17 @@ export default function ProjectDetail(props) {
             }
           ]}
         />
+
+        <Snackbar 
+          open={openUpdateStatusAlert} 
+          autoHideDuration={1800} 
+          onClose={handleCloseUpdateStatusAlert}
+          anchorOrigin={{vertical: 'bottom', horizontal: 'right'}}
+        >
+          <Alert onClose={handleCloseUpdateStatusAlert} severity={updateStatusAlert.severity} variant="filled">
+            {updateStatusAlert.message}
+          </Alert>
+        </Snackbar>
       </div>
     );
 }
