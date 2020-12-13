@@ -69,5 +69,13 @@ export const post = {
       text: "Tạo đơn chuyển phát",
       child: [],
     },
+    {
+      id: "MENU_POST_CREATE_EXECUTE_POST_TRIP",
+      path: "/postoffice/executetrip",
+      isPublic: false,
+      icon: "StarBorder",
+      text: "Thực thi chuyến xe",
+      child: [],
+    }
   ],
 };

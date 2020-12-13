@@ -9,7 +9,8 @@ import CreatePostShipOrder from "../component/postsystem/postshiporder/CreatePos
 import ViewAllPostOffice from "../component/postsystem/postoffice/ViewAllPostOffice";
 import ViewAllPostShipOrder from "../component/postsystem/postshiporder/ViewAllPostShipOrder";
 import TripInfo from "../component/postsystem/posttrip/TripInfo";
-import CreateTrip from "../component/postsystem/posttrip/CreateTrip"
+import CreateTrip from "../component/postsystem/posttrip/CreateTrip";
+import ExecuteTrip from "../component/postsystem/posttrip/ExecuteTrip";
 import PostOrderDetail from "../component/postsystem/postshiporder/PostOrderDetail";
 import PickAndDelivery from "../component/postsystem/planning/PickAndDelivery";
 import PickAndDeliveryDetail from "../component/postsystem/planning/PickAndDeliveryDetail";
@@ -31,6 +32,7 @@ export default function PostOfficeRoute() {
         <Route component={CreateTrip} exact path={`${path}/createtrip`} />
         <Route component={PickAndDelivery} exact path={`${path}/pickanddelivery`} />
         <Route component={PickAndDeliveryDetail} exact path={`${path}/pickanddeliverydetail`} />
+        <Route component={ExecuteTrip} exact path={`${path}/executetrip`} />
       </Switch>
     </div>
   );
