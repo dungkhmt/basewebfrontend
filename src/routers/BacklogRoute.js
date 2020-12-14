@@ -1,13 +1,14 @@
 import React from "react";
 import { Route, Switch, useRouteMatch } from "react-router";
-import CreateProject from "../component/backlog/CreateProject";
-import ProjectList from "../component/backlog/ProjectList";
-import ProjectDetail from "../component/backlog/ProjectDetail";
-import CreateTask from "../component/backlog/CreateTask";
-import ViewTask from "../component/backlog/ViewTask";
-import EditTask from "../component/backlog/EditTask";
-import AssignSuggestionProjectList from "../component/backlog/AssignSuggestionProjectList";
-import AssignSuggestionTaskList from "../component/backlog/AssignSuggestionTaskList";
+import CreateProject from "../component/backlog/project/CreateProject";
+import ProjectList from "../component/backlog/project/ProjectList";
+import ProjectDetail from "../component/backlog/project/ProjectDetail";
+import CreateTask from "../component/backlog/task/CreateTask";
+import ViewTask from "../component/backlog/task/ViewTask";
+import EditTask from "../component/backlog/task/EditTask";
+import ProjectDashboard from "../component/backlog/project/ProjectDashboard";
+import AssignSuggestionProjectList from "../component/backlog/suggestion/AssignSuggestionProjectList";
+import AssignSuggestionTaskList from "../component/backlog/suggestion/AssignSuggestionTaskList";
 
 export default function BacklogRoute() {
   let { path, url } = useRouteMatch();
@@ -23,6 +24,7 @@ export default function BacklogRoute() {
         <Route component={EditTask} path={`${path}/edit-task/:backlogProjectId/:taskId`} />
         <Route component={AssignSuggestionProjectList} path={`${path}/assign-suggestion/project-list`} />
         <Route component={AssignSuggestionTaskList} path={`${path}/assign-suggestion/task-list/:backlogProjectId`} />
+        <Route component={ProjectDashboard} path={`${path}/dashboard/:backlogProjectId`} />
       </Switch>
     </div>
   );
