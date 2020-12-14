@@ -1,23 +1,24 @@
 import DateFnsUtils from "@date-io/date-fns";
-import Button from "@material-ui/core/Button";
-import Card from "@material-ui/core/Card";
-import CardActions from "@material-ui/core/CardActions";
-import CardContent from "@material-ui/core/CardContent";
 import { makeStyles } from "@material-ui/core/styles";
-import TextField from "@material-ui/core/TextField";
-import Typography from "@material-ui/core/Typography";
-import MenuItem from "@material-ui/core/MenuItem";
-import Checkbox from '@material-ui/core/Checkbox';
-import { ListItemText } from '@material-ui/core';
+import {
+  Button, Card, CardContent, Checkbox, TextField, 
+  Box, Chip, Typography, MenuItem, ListItemText, 
+  CardActions, 
+} from "@material-ui/core";
 
 import {
   KeyboardDateTimePicker,
   MuiPickersUtilsProvider,
 } from "@material-ui/pickers";
 import React, { useState, useEffect } from "react";
-import { useHistory } from "react-router-dom";
-import { authPost, authGet } from "../../api";
+import { Redirect, useHistory } from "react-router-dom";
+import { authPost, authGet, authPostMultiPart } from "../../../api";
 import { useDispatch, useSelector } from "react-redux";
+import { DropzoneArea } from "material-ui-dropzone";
+import AlertDialog from '../AlertDialog';
+import {
+  TASK_STATUS, TASK_PRIORITY, TASK_CATEGORY
+} from '../BacklogConfig';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -42,10 +43,16 @@ export default function EditTask(props) {
   const [taskAssignment, setTaskAssignment] = useState([]);
   const [taskAssignable, setTaskAssignable] = useState([]);
   const [projectMember, setProjectMember] = useState([]);
+  const [attachmentFiles, setAttachmentFiles] = useState([]);
+  const [handleDropzoneFiles, setHandleDropzoneFiles] = useState([]);
+  const [attachmentStatus, setAttachmentStatus] = useState([]);
+  const [isPermissive, setIsPermissive] = useState(true);
 
   const [categoryPool, setCategoryPool] = useState([]);
   const [priorityPool, setPriorityPool] = useState([]);
   const [statusPool, setStatusPool] = useState([]);
+
+  const [openAlert, setOpenAlert] = useState(false);
 
   const backlogProjectId = props.match.params.backlogProjectId;
   const backlogTaskId = props.match.params.taskId;
@@ -57,43 +64,45 @@ export default function EditTask(props) {
   }
 
   function getTaskCategory() {
-    authGet(dispatch, token, "/backlog/get-backlog-task-category").then(
-      res => {
-        if (res != null) setCategoryPool(res);
-      }
-    )
+    setCategoryPool(TASK_CATEGORY.LIST);
   }
 
   function getTaskPriority() {
-    authGet(dispatch, token, "/backlog/get-backlog-task-priority").then(
-      res => {
-        if (res != null) setPriorityPool(res);
-      }
-    )
+    setPriorityPool(TASK_PRIORITY.LIST);
   }
 
   function getTaskStatus() {
-    authGet(dispatch, token, "/backlog/get-backlog-task-status").then(
-      res => {
-        if (res != null) setStatusPool(res);
-      }
-    )
+    setStatusPool(TASK_STATUS.LIST);
   }
 
-  function getTaskDetail(taskId) {
+  async function getTaskDetail(taskId) {
+    let myAccount = await authGet(dispatch, token, "/my-account");
     authGet(dispatch, token, "/backlog/get-task-detail/" + taskId).then(
       res => {
         setTaskDetail(res.backlogTask);
-        let assignmentList = [];
-        res.assignment.forEach((user) => {
-          assignmentList.push(user.partyId);
-        });
+        let assignmentList = res.assignment.map(e => e.partyId);
+        let assignableList = res.assignable.map(e => e.partyId);
+
+        setTaskAssignable(assignableList);
         setTaskAssignment(assignmentList);
-      }
-    )
-    authGet(dispatch, token, "/backlog/get-assignable-user-by-task-id/" + taskId).then(
-      res => {
-        setTaskAssignable(res.map(element => element.partyId));
+
+        if (res.backlogTask.attachmentPaths != null
+          && res.backlogTask.attachmentPaths !== undefined
+          && res.backlogTask.attachmentPaths.length > 0
+        )
+          res.backlogTask.attachmentPaths = res.backlogTask.attachmentPaths.split(";");
+        else res.backlogTask.attachmentPaths = [];
+
+        let attachment = res.backlogTask.attachmentPaths.map(e => {
+          return new File([""], e, { type: "text/plain" })
+        })
+        let status = res.backlogTask.attachmentPaths.map(e => {
+          return "uploaded";
+        })
+
+        setAttachmentStatus(status);
+        setAttachmentFiles(attachment);
+        setIsPermissive(myAccount.user === res.backlogTask.createdByUserLoginId);
       }
     )
   }
@@ -117,26 +126,67 @@ export default function EditTask(props) {
     getTask();
   }, []);
 
+  const handleCloseAlert = () => {
+    setOpenAlert(false);
+  }
+
   const handleTaskAssignmentChange = (event) => {
     setTaskAssignment(event.target.value);
-    if(event.target.value === '') setTaskField("statusId", "TASK_OPEN");
+    if (event.target.value === '') setTaskField("statusId", TASK_STATUS.DEFAULT_ID_NOT_ASSIGN);
   }
 
   const handleTaskAssignableChange = (event) => {
     setTaskAssignable(event.target.value);
   }
 
-  async function handleSubmit() {
-    if (taskDetail.backlogTaskName === '') {
-      alert('Nhập chủ đề rồi thử lại');
+  const handleDeleteAttachment = (fileName) => {
+    let status = [...attachmentStatus];
+    attachmentFiles.forEach((file, index) => {
+      if (file.name === fileName) {
+        status[index] = "deleted";
+        return;
+      }
+    })
+    setAttachmentStatus(status);
+  }
+
+  const handleAddFile = (files) => {
+    const attachmentFilesCopy = [...attachmentFiles];
+    const status = [...attachmentStatus];
+    for (let i = handleDropzoneFiles.length; i < files.length; i++) {
+      attachmentFilesCopy.push(files[i]);
+      status.push("new");
     }
 
-    await authPost(dispatch, token, '/backlog/edit-task', taskDetail).then(r => r.json());
+    setHandleDropzoneFiles(files);
+    setAttachmentStatus(status);
+    setAttachmentFiles(attachmentFilesCopy);
+  }
+
+  const displayFileName = (fileName, status) => {
+    if (status === "uploaded") return fileName.substring(fileName.indexOf("-") + 1);
+    else return fileName;
+  }
+
+  async function handleSubmit() {
+    if (taskDetail.backlogTaskName === '') {
+      setOpenAlert(true);
+      return;
+    }
+
+    let editTaskBody = {
+      ...taskDetail,
+      ...{
+        attachmentPaths: attachmentFiles.map(e => e.name),
+        attachmentStatus: attachmentStatus
+      }
+    }
+    await authPost(dispatch, token, '/backlog/edit-task', editTaskBody).then(r => r.json());
 
     let addAssignmentBody = {
       backlogTaskId: backlogTaskId,
-      assignedToPartyId: taskAssignment,
-      statusId: taskDetail.statusId
+      assignedToPartyId: [taskAssignment],
+      statusId: taskDetail.statusId,
     };
     await authPost(dispatch, token, '/backlog/add-assignments', addAssignmentBody).then(r => r.json());
 
@@ -147,10 +197,21 @@ export default function EditTask(props) {
     };
     authPost(dispatch, token, '/backlog/add-assignable', addAssignableBody).then(r => r.json());
 
+    const newFiles = attachmentFiles.filter((file, index) => attachmentStatus[index] === "new");
+    let formData = new FormData();
+    for (const file of newFiles) {
+      formData.append("file", file);
+    }
+    authPostMultiPart(dispatch, token, "/backlog/upload-task-attachment-files/" + backlogTaskId, formData);
+
     history.push("/backlog/project/" + backlogProjectId);
   }
 
-  return (
+  if (!isPermissive) {
+    return (
+      <Redirect to={{ pathname: "/", state: { from: history.location } }} />
+    )
+  } else return (
     <MuiPickersUtilsProvider utils={DateFnsUtils}>
       <Card>
         <CardContent>
@@ -188,14 +249,14 @@ export default function EditTask(props) {
                 id="taskType"
                 select
                 label="Loại"
-                value={taskDetail.backlogTaskCategoryId === null || taskDetail.backlogTaskCategoryId === undefined ? '' : taskDetail.backlogTaskCategoryId}
+                value={taskDetail.categoryId === null || taskDetail.categoryId === undefined ? '' : taskDetail.categoryId}
                 onChange={(event) => {
-                  setTaskField("backlogTaskCategoryId", event.target.value);
+                  setTaskField("categoryId", event.target.value);
                 }}
               >
                 {categoryPool.map((item) => (
-                  <MenuItem key={item.backlogTaskCategoryId} value={item.backlogTaskCategoryId}>
-                    {item.backlogTaskCategoryName}
+                  <MenuItem key={item.categoryId} value={item.categoryId}>
+                    {item.categoryName}
                   </MenuItem>
                 ))}
               </TextField>
@@ -211,8 +272,8 @@ export default function EditTask(props) {
                 }}
               >
                 {priorityPool.map((item) => (
-                  <MenuItem key={item.backlogTaskPriorityId} value={item.backlogTaskPriorityId}>
-                    {item.backlogTaskPriorityName}
+                  <MenuItem key={item.priorityId} value={item.priorityId}>
+                    {item.priorityName}
                   </MenuItem>
                 ))}
               </TextField>
@@ -263,7 +324,7 @@ export default function EditTask(props) {
             <TextField
               id="taskAssignment"
               select={true}
-              disabled={taskAssignable.length > 0}
+              // disabled={taskAssignable.length > 0}
               SelectProps={{
                 multiple: false,
                 value: taskAssignment === null || taskAssignment === undefined ? '' : taskAssignment,
@@ -272,6 +333,9 @@ export default function EditTask(props) {
               fullWidth
               label="Người thực hiện"
             >
+              <MenuItem key='' value=''>
+                &nbsp;
+              </MenuItem>
               {projectMember.map((item) => (
                 <MenuItem key={item.partyId} value={item.partyId} >
                   {item.userLoginId}
@@ -282,12 +346,12 @@ export default function EditTask(props) {
             <TextField
               id="taskAssignable"
               select={true}
-              disabled={taskAssignment !== ''}
+              disabled={taskAssignment.length > 0}
               SelectProps={{
                 multiple: true,
                 value: taskAssignable === null || taskAssignable === undefined ? '' : taskAssignable,
                 onChange: handleTaskAssignableChange,
-                renderValue: projectMember.length <= 0 ? ()=>{} : (taskAssignable) =>
+                renderValue: projectMember.length <= 0 ? () => { } : (taskAssignable) =>
                   taskAssignable.map((x) => projectMember.find(member => member.partyId === x).userLoginId).join(", ")
               }}
               fullWidth
@@ -300,13 +364,64 @@ export default function EditTask(props) {
                 </MenuItem>
               ))}
             </TextField>
+            <br></br>
+            <Typography
+              variant='subtitle1'
+              display='block'
+              style={{ margin: '5px 0 0 7px', width: "100%" }}
+            >
+              File đính kèm
+            </Typography>
+            <DropzoneArea
+              dropzoneClass={classes.dropZone}
+              filesLimit={20}
+              showPreviews={false}
+              showPreviewsInDropzone={false}
+              useChipsForPreview={false}
+              dropzoneText="Kéo và thả tệp vào đây hoặc nhấn để chọn tệp"
+              previewText="Xem trước:"
+              previewChipProps={
+                { variant: "outlined", color: "primary", size: "large", }
+              }
+              getFileAddedMessage={(fileName) =>
+                `Tệp ${fileName} tải lên thành công`
+              }
+              getFileRemovedMessage={(fileName) =>
+                `Tệp ${fileName} đã loại bỏ`
+              }
+              getFileLimitExceedMessage={(filesLimit) =>
+                `Vượt quá số lượng tệp tối đa được cho phép. Chỉ được phép tải lên tối đa ${filesLimit} tệp.`
+              }
+              alertSnackbarProps={{
+                anchorOrigin: { vertical: "bottom", horizontal: "right" },
+                autoHideDuration: 1800,
+              }}
+              onChange={(files) => handleAddFile(files)}
+            >
+            </DropzoneArea>
+            <Box mt={0.5}>
+              {attachmentFiles.map((item, index) => {
+                if (attachmentStatus[index] !== "deleted")
+                  return (
+                    <Box m={0.5} display='inline-flex'>
+                      <Chip
+                        key={item.name}
+                        label={displayFileName(item.name, attachmentStatus[index])}
+                        onDelete={() => handleDeleteAttachment(item.name)}
+                        variant="outlined"
+                        size="large"
+                        color="primary"
+                      />
+                    </Box>
+                  )})}
+            </Box>
           </form>
         </CardContent>
         <CardActions>
           <Button
             variant="contained"
             color="primary"
-            style={{ marginLeft: "45px" }}
+            style={{ marginLeft: "40px" }}
             onClick={handleSubmit}
           >
             Lưu
@@ -319,6 +434,22 @@ export default function EditTask(props) {
           </Button>
         </CardActions>
       </Card>
+
+      <AlertDialog
+        open={openAlert}
+        onClose={handleCloseAlert}
+        severity='warning'
+        title={"Vui lòng nhập đầy đủ thông tin cần thiết"}
+        content={"Một số thông tin yêu cầu cần phải được điền đầy đủ. Vui lòng kiểm tra lại."}
+        buttons={[
+          {
+            onClick: handleCloseAlert,
+            color: "primary",
+            autoFocus: true,
+            text: "OK"
+          }
+        ]}
+      />
     </MuiPickersUtilsProvider >
   );
 }

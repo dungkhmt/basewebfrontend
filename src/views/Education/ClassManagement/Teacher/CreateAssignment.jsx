@@ -33,6 +33,7 @@ import EditIcon from "@material-ui/icons/Edit";
 import NegativeButton from "../../../../component/education/classmanagement/NegativeButton";
 import { DevTool } from "react-hook-form-devtools";
 import PositiveButton from "../../../../component/education/classmanagement/PositiveButton";
+import { useRef } from "react";
 
 const useStyles = makeStyles((theme) => ({
   card: {
@@ -40,7 +41,7 @@ const useStyles = makeStyles((theme) => ({
     borderRadius: 6,
   },
   textField: {
-    width: 300,
+    width: 380,
   },
   container: {},
   cancelBtn: {
@@ -71,6 +72,9 @@ function CreateAssignment() {
   const history = useHistory();
   const token = useSelector((state) => state.auth.token);
 
+  // Use for updating.
+  const [assignDetail, setAssignDetail] = useState({});
+
   // Editor.
   const [editorState, setEditorState] = useState(EditorState.createEmpty());
 
@@ -99,6 +103,8 @@ function CreateAssignment() {
   };
 
   // Form.
+  const [notAllowedChanging, setNotAllowedChanging] = useState(false);
+  const [invalidChange, setInvalidChange] = useState(false);
   const [isProcessing, setIsProcessing] = useState(false);
   const {
     register,
@@ -119,6 +125,7 @@ function CreateAssignment() {
         date.setHours(0);
         date.setMinutes(0);
         date.setSeconds(0);
+        date.setMilliseconds(0);
 
         return date;
       })(),
@@ -129,6 +136,7 @@ function CreateAssignment() {
         date.setHours(23);
         date.setMinutes(59);
         date.setSeconds(59);
+        date.setMilliseconds(0);
 
         return date;
       })(),
@@ -144,11 +152,13 @@ function CreateAssignment() {
       `/edu/assignment/${params.assignmentId}/student`,
       (res) => {
         let data = res.data.assignmentDetail;
+        let openTime = new Date(data.openTime);
+        let closeTime = new Date(data.closeTime);
 
         setValue([
           { name: data.name },
-          { openTime: new Date(data.openTime) },
-          { closeTime: new Date(data.closeTime) },
+          { openTime: openTime },
+          { closeTime: closeTime },
         ]);
 
         const blocksFromHtml = htmlToDraft(data.subject);
@@ -159,6 +169,12 @@ function CreateAssignment() {
         );
 
         setEditorState(EditorState.createWithContent(contentState));
+
+        setAssignDetail({
+          ...data,
+          openTime,
+          closeTime,
+        });
       },
       {}
     );
@@ -166,40 +182,101 @@ function CreateAssignment() {
 
   // onChangeHandlers.
   const onChangeOpenTime = (newDate) => {
-    let close = new Date(watch("closeTime"));
+    if (newDate.getTime() != new Date(watch("openTime")).getTime()) {
+      // Handle server errors.
+      if (errors.openTime) {
+        if (errors.openTime.type == "require future date") {
+          // Accept just changing the value will clear the error,
+          // because the new value may fall in [start of day, current open time) or (current open time, submit time).
+          clearError("openTime");
+        } else if (errors.openTime.type == "not allowed changing") {
+          if (newDate.getTime() == assignDetail.openTime.getTime()) {
+            clearError("openTime");
+          }
+        }
+      } else {
+        if (notAllowedChanging) {
+          // Runs in each OnChange and runs only when recieve 'not allowed changing' error after submiting.
+          if (newDate.getTime() != assignDetail.openTime.getTime()) {
+            setError(
+              "openTime",
+              "not allowed changing",
+              "Vui lòng chọn thời điểm ban đầu vì bài tập đã được giao"
+            );
+          }
+        }
+      }
 
-    if (newDate.getTime() > close.getTime()) {
-      setError(
-        "closeTime",
-        "require subsequent date",
-        "Vui lòng chọn thời điểm sau ngày giao"
-      );
-    } else {
-      clearError("closeTime");
+      // Handle client error.
+      if (newDate.getTime() > new Date(watch("closeTime")).getTime()) {
+        // Only set this error when 'close time' is not having any errors now.
+        if (!errors.closeTime && !notAllowedChanging) {
+          setError(
+            "closeTime",
+            "require subsequent date",
+            "Vui lòng chọn thời điểm sau ngày giao"
+          );
+        }
+      } else {
+        if (errors.closeTime?.type == "require subsequent date") {
+          clearError("closeTime");
+        }
+      }
+
+      setValue("openTime", newDate);
     }
-
-    if (errors.openTime?.type == "require future date") {
-      clearError("openTime");
-    }
-
-    setValue("openTime", newDate);
   };
 
   const onChangeCloseTime = (newDate) => {
-    let open = new Date(watch("openTime"));
+    if (newDate.getTime() != new Date(watch("closeTime")).getTime()) {
+      if (errors.closeTime) {
+        if (errors.closeTime.type == "require subsequent date") {
+          // The 'require subsequent date' error can be removed.
+          if (new Date(watch("openTime")).getTime() <= newDate.getTime()) {
+            if (invalidChange) {
+              // Revalidate the 'ic' error is REQUIRED, the 'rsd' error must be removed.
+              if (newDate.getTime() < assignDetail.closeTime.getTime()) {
+                // Removed the 'rsd' error but got the 'ic' error, so set 'ic' error instead of 'rsd' error.
+                setError(
+                  "closeTime",
+                  "invalid change",
+                  "Vui lòng chọn thời điểm ban đầu hoặc trong tương lai"
+                );
+              } else {
+                // Remove 'rsd' error.
+                clearError("closeTime");
+              }
+            } else {
+              // Revalidate the 'ic' error is NOT REQUIRED, the 'rsd' error must be removed.
+              clearError("closeTime");
+            }
+          }
+        } else if (errors.closeTime.type == "invalid change") {
+          if (newDate.getTime() >= assignDetail.closeTime.getTime()) {
+            clearError("closeTime");
+          }
+        }
+      } else {
+        if (invalidChange) {
+          if (newDate.getTime() < assignDetail.closeTime.getTime()) {
+            setError(
+              "closeTime",
+              "invalid change",
+              "Vui lòng chọn thời điểm ban đầu hoặc trong tương lai"
+            );
+          }
+        } else if (new Date(watch("openTime")).getTime() > newDate.getTime()) {
+          setError(
+            "closeTime",
+            "require subsequent date",
+            "Vui lòng chọn thời điểm sau ngày giao"
+          );
+        }
+      }
 
-    if (open.getTime() > newDate.getTime()) {
-      setError(
-        "closeTime",
-        "require subsequent date",
-        "Vui lòng chọn thời điểm sau ngày giao"
-      );
-    } else {
-      clearError("closeTime");
+      newDate.setSeconds(59);
+      setValue("closeTime", newDate);
     }
-
-    newDate.setSeconds(59);
-    setValue("closeTime", newDate);
   };
 
   const onChangeEditorState = (editorState) => {
@@ -211,45 +288,69 @@ function CreateAssignment() {
     let subject = draftToHtml(convertToRaw(editorState.getCurrentContent()));
 
     if (assignId) {
-      request(
-        token,
-        history,
-        "put",
-        `/edu/assignment/${assignId}`,
-        () => {
-          history.goBack();
-        },
-        {
-          onError: () => {
-            setIsProcessing(false);
+      // Check for changes.
+      if (
+        formData.name != assignDetail.name ||
+        new Date(formData.openTime).getTime() !=
+          new Date(assignDetail.openTime).getTime() ||
+        new Date(formData.closeTime).getTime() !=
+          new Date(assignDetail.closeTime).getTime() ||
+        subject != assignDetail.subject
+      ) {
+        request(
+          token,
+          history,
+          "put",
+          `/edu/assignment/${assignId}`,
+          () => {
+            history.goBack();
           },
-          400: (e) => {
-            let errors = e.response.data?.errors;
+          {
+            onError: () => {
+              setIsProcessing(false);
+            },
+            400: (e) => {
+              let errors = e.response.data?.errors;
 
-            if (errors) {
-              errors.forEach((error) => {
-                switch (error.location) {
-                  case "openTime":
-                    setError("openTime", error.type, error.message);
-                    break;
-                  case "closeTime":
-                    setError("closeTime", error.type, error.message);
-                    break;
-                  case "id":
-                    errorNoti("Bài tập đã bị xoá trước đó.");
-                    break;
-                }
-              });
-            } else {
+              if (errors) {
+                errors.forEach((error) => {
+                  switch (error.location) {
+                    case "openTime":
+                      setError("openTime", error.type, error.message);
+
+                      if (error.type == "require future date") {
+                        setNotAllowedChanging(false);
+                      } else {
+                        setNotAllowedChanging(true);
+                      }
+                      break;
+                    case "closeTime":
+                      setError("closeTime", error.type, error.message);
+
+                      if (error.type == "require subsequent date") {
+                        setInvalidChange(false);
+                      } else {
+                        setInvalidChange(true);
+                      }
+                      break;
+                    case "id":
+                      errorNoti("Bài tập đã bị xoá trước đó.");
+                      break;
+                  }
+                });
+              } else {
+                errorNoti("Rất tiếc! Đã có lỗi xảy ra. Vui lòng thử lại.");
+              }
+            },
+            rest: () => {
               errorNoti("Rất tiếc! Đã có lỗi xảy ra. Vui lòng thử lại.");
-            }
+            },
           },
-          rest: () => {
-            errorNoti("Rất tiếc! Đã có lỗi xảy ra. Vui lòng thử lại.");
-          },
-        },
-        { ...formData, subject: subject }
-      );
+          { ...formData, subject: subject }
+        );
+      } else {
+        history.goBack();
+      }
     } else {
       request(
         token,
@@ -368,6 +469,15 @@ function CreateAssignment() {
                         "aria-label": "openTime",
                       }}
                       {...pickerProps}
+                      minDate={
+                        assignId
+                          ? assignDetail.openTime?.getTime() >
+                            new Date().getTime()
+                            ? new Date()
+                            : assignDetail.openTime
+                          : undefined
+                      }
+                      disablePast={assignId ? false : true}
                     />
                   </MuiPickersUtilsProvider>
                 </Grid>

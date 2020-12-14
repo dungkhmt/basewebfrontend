@@ -1,27 +1,16 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import MaterialTable from "material-table";
-import { authPost, authGet } from "../../api";
-import Grid from "@material-ui/core/Grid";
-import Button from "@material-ui/core/Button";
+import { authPost, authGet } from "../../../api";
+import {
+  Grid, Button, Card, Dialog, DialogActions, DialogContent,
+  DialogTitle, Slider, Typography, AppBar, Tabs, Tab,
+  Toolbar, IconButton, CardContent, Box
+} from "@material-ui/core/";
 import { Redirect, useHistory } from "react-router-dom";
-import Card from "@material-ui/core/Card";
-import Dialog from "@material-ui/core/Dialog";
-import DialogActions from "@material-ui/core/DialogActions";
-import DialogContent from "@material-ui/core/DialogContent";
-import DialogTitle from "@material-ui/core/DialogTitle";
-import Slider from '@material-ui/core/Slider';
-import Typography from "@material-ui/core/Typography";
-import AppBar from '@material-ui/core/AppBar';
-import Tabs from '@material-ui/core/Tabs';
-import Tab from '@material-ui/core/Tab';
-import Toolbar from '@material-ui/core/Toolbar';
-import IconButton from '@material-ui/core/IconButton';
-import CardContent from "@material-ui/core/CardContent";
 import CloseIcon from '@material-ui/icons/Close';
-import { toFormattedDateTime, toFormattedDate } from "../../utils/dateutils";
+import { toFormattedDateTime } from "../../../utils/dateutils";
 import { makeStyles } from "@material-ui/core/styles";
-import Box from "@material-ui/core/Box";
 import { Bar } from 'react-chartjs-2';
 
 const useStyles = makeStyles((theme) => ({
@@ -67,14 +56,13 @@ export default function AssignSuggestionTaskList(props) {
   const [tab, setTab] = useState(0);
   const [suggestData, setSuggestData] = useState([]);
   const [suggestChartData, setSuggestChartData] = useState({});
+  const [isRowSelected, setIsRowSelected] = useState([]);
 
   const [categoryPool, setCategoryPool] = useState([]);
   const [priorityPool, setPriorityPool] = useState([]);
   const [statusPool, setStatusPool] = useState([]);
 
   const backlogProjectId = props.match.params.backlogProjectId;
-
-  let isTableSelected = [];
 
   function checkNull(a, ifNotNull = a, ifNull = '') {
     return a ? ifNotNull : ifNull;
@@ -90,7 +78,6 @@ export default function AssignSuggestionTaskList(props) {
       }
     );
     let tasks = await authGet(dispatch, token, "/backlog/get-project-detail/" + projectId);
-    console.log(tasks);
     let openingTasks = tasks.filter(element => element.backlogTask.statusId === "TASK_OPEN");
     openingTasks.forEach(task => {
       if(task.assignment == null) task.assignment = [];
@@ -143,16 +130,21 @@ export default function AssignSuggestionTaskList(props) {
   }
 
   function handleOnSelectionChange(rows) {
+    let isSelected = [];
     for (let i = 0; i < taskList.length; i++) {
-      isTableSelected[i] = false;
+      isSelected[i] = false;
     }
     rows.forEach(row => {
-      isTableSelected[row.tableData.id] = true;
+      isSelected[row.tableData.id] = true;
     });
+
+    setIsRowSelected(isSelected);
   }
 
   function onClickGetSuggestion() {
-    setSolverParametersDialogOpen(true);
+    if(isRowSelected.reduce((a, b) => a + b, 0) === 0) alert("Vui lòng chọn ít nhất một task");
+    else
+      setSolverParametersDialogOpen(true);
   }
 
   useEffect(() => {
@@ -170,7 +162,7 @@ export default function AssignSuggestionTaskList(props) {
     ]);
 
     setSuggestChartData({
-      labels: ['1', '2', '3'],
+      labels: ['1', '2', '3', '4','5','6','7','8','9','10','11','12','13','14','15','16','17','18'],
       datasets: [{
         label: 'Khối lượng công việc',
         backgroundColor: 'rgba(255,99,132,0.2)',
@@ -178,7 +170,7 @@ export default function AssignSuggestionTaskList(props) {
         borderWidth: 1,
         hoverBackgroundColor: 'rgba(255,99,132,0.4)',
         hoverBorderColor: 'rgba(255,99,132,1)',
-        data: [4, 3, 2]
+        data: [4, 3, 2, 2,3,4,2,1,3,4, 3, 2, 2,3,4,2,1,3]
       }]
     })
   }, []);
@@ -273,44 +265,53 @@ export default function AssignSuggestionTaskList(props) {
     return `${value}s`
   }
 
-  const saveSolverParameters = () => {
+  async function saveSolverParameters() {
     setSolverParametersDialogOpen(false);
 
-    // let body = [];
-    // for (let i = 0; i < taskList.length; i++) {
-    //   if (isTableSelected[i] === true) {
-    //     body.push(taskList[i].backlogTask.backlogTaskId);
-    //   }
-    // }
+    let body = [];
+    console.log(isRowSelected);
+    for (let i = 0; i < taskList.length; i++) {
+      if (isRowSelected[i] === true) {
+        body.push(taskList[i].backlogTask.backlogTaskId);
+      }
+    }
 
-    // const result = authPost(dispatch, token, "/backlog/suggest-assignment", body).then(r => r.json());
-    // let tableResultData = [];
-    // let labels = [];
-    // let datasets = [{
-    //   label: 'Khối lượng công việc',
-    //   data: []
-    // }];
-    // result.forEach(assignment => {
-    //   tableResultData.push({
-    //     taskId: assignment.backlogTask.backlogTaskId,
-    //     taskName: assignment.backlogTask.backlogTaskName,
-    //     assign: assignment.userSuggestion.userLoginId
-    //   })
+    const result = await authPost(dispatch, token, "/backlog/suggest-assignment", body).then(r => r.json());
+    console.log(result);
+    let tableResultData = [];
+    let labels = [];
+    let datasets = [{
+      label: 'Khối lượng công việc',
+      data: []
+    }];
+    result.forEach(assignment => {
+      let duration = Math.ceil(Math.abs(assignment.backlogTask.dueDate - assignment.backlogTask.fromDate)/86400000);
+      let assignable = taskList.find(e => e.backlogTask.backlogTaskId === assignment.backlogTask.backlogTaskId).assignable;
+      const matchingKeyValuePairs = assignable.map(x => [x, x]);
 
-    //   let index = labels.findIndex(assignment.userSuggestion.userLoginId);
-    //   if(index < 0) {
-    //     labels.push(assignment.userSuggestion.userLoginId);
-    //     datasets.data.push(Math.ceil(Math.abs(assignment.backlogTask.dueDate - assignment.backlogTask.fromDate)/86400000));
-    //   } else {
-    //     datasets.data[index] += Math.ceil(Math.abs(assignment.backlogTask.dueDate - assignment.backlogTask.fromDate)/86400000);
-    //   }
-    // });
+      tableResultData.push({
+        taskId: assignment.backlogTask.backlogTaskId,
+        taskName: assignment.backlogTask.backlogTaskName,
+        assign: assignment.userSuggestion.userLoginId,
+        duration: duration,
+        assignable: Object.fromEntries(matchingKeyValuePairs)
+      })
 
-    // setSuggestData(tableResultData);
-    // setSuggestChartData({
-    //   labels: labels,
-    //   datasets: datasets
-    // })
+      let index = labels.findIndex(e => (e === assignment.userSuggestion.userLoginId));
+      if(index < 0) {
+        labels.push(assignment.userSuggestion.userLoginId);
+        datasets[0].data.push(duration);
+      } else {
+        datasets[0].data[index] += duration;
+      }
+    });
+
+    setSuggestData(tableResultData);
+    setSuggestChartData({
+      labels: labels,
+      datasets: datasets
+    })
+    console.log(tableResultData);
 
     //TODO loading when wait solver
     setSolverResultDialogOpen(true);
@@ -330,7 +331,7 @@ export default function AssignSuggestionTaskList(props) {
 
   const resultColumns = [
     { title: 'Công việc', field: 'taskName', editable: 'never' },
-    { title: 'Phân công', field: 'assign', lookup: { 0: 'a', 1: 'b', 2: 'c', 3: 'd' } }
+    { title: 'Phân công', field: 'assign', lookup: rowData => rowData.assignable }
   ];
 
   const updateResultRow = (newData, oldData) =>

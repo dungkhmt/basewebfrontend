@@ -1,22 +1,22 @@
 import DateFnsUtils from "@date-io/date-fns";
-import Button from "@material-ui/core/Button";
-import Card from "@material-ui/core/Card";
-import CardActions from "@material-ui/core/CardActions";
-import CardContent from "@material-ui/core/CardContent";
+import {
+  Button, Card, CardActions, CardContent, TextField, Typography,
+  MenuItem, Checkbox, ListItemText
+} from "@material-ui/core/";
 import { makeStyles } from "@material-ui/core/styles";
-import TextField from "@material-ui/core/TextField";
-import Typography from "@material-ui/core/Typography";
-import MenuItem from "@material-ui/core/MenuItem";
-import Checkbox from '@material-ui/core/Checkbox';
-import { ListItemText } from '@material-ui/core';
 import {
   KeyboardDateTimePicker,
   MuiPickersUtilsProvider,
 } from "@material-ui/pickers";
 import React, { useState, useEffect } from "react";
 import { useHistory } from "react-router-dom";
-import { authPost, authGet } from "../../api";
+import { authPost, authGet, authPostMultiPart } from "../../../api";
 import { useDispatch, useSelector } from "react-redux";
+import { DropzoneArea } from "material-ui-dropzone";
+import {
+  TASK_STATUS, TASK_PRIORITY, TASK_CATEGORY
+} from '../BacklogConfig';
+import AlertDialog from '../AlertDialog';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -29,6 +29,10 @@ const useStyles = makeStyles((theme) => ({
       maxWidth: "100%",
     },
   },
+  dropZone: {
+    //maxWidth: '600px',
+    height: '40px',
+  }
 }));
 
 export default function CreateTask(props) {
@@ -45,6 +49,9 @@ export default function CreateTask(props) {
   const [taskAssignment, setTaskAssignment] = useState('');
   const [taskAssignable, setTaskAssignable] = useState([]);
   const [projectMember, setProjectMember] = useState([]);
+  const [attachmentFiles, setAttachmentFiles] = useState([]);
+
+  const [openAlert, setOpenAlert] = useState(false);
   const history = useHistory();
 
   const backlogProjectId = props.match.params.backlogProjectId;
@@ -70,36 +77,18 @@ export default function CreateTask(props) {
   }
 
   function getTaskCategory() {
-    authGet(dispatch, token, "/backlog/get-backlog-task-category").then(
-      res => {
-        if (res != null) {
-          setCategoryPool(res);
-          setTaskType(res[0] === undefined ? '' : res[0].backlogTaskCategoryId);
-        }
-      }
-    )
+    setCategoryPool(TASK_CATEGORY.LIST);
+    setTaskType(TASK_CATEGORY.DEFAULT_CATEGORY);
   }
 
   function getTaskPriority() {
-    authGet(dispatch, token, "/backlog/get-backlog-task-priority").then(
-      res => {
-        if (res != null) {
-          setPriorityPool(res);
-          setTaskPriority(res[0] === undefined ? '' : res[0].backlogTaskPriorityId);
-        }
-      }
-    )
+    setPriorityPool(TASK_PRIORITY.LIST);
+    setTaskPriority(TASK_PRIORITY.DEFAULT_PRIORITY);
   }
 
   function getTaskStatus() {
-    authGet(dispatch, token, "/backlog/get-backlog-task-status").then(
-      res => {
-        if (res != null) {
-          setStatusPool(res);
-          setTaskStatus("TASK_OPEN");
-        }
-      }
-    )
+    setStatusPool(TASK_STATUS.LIST);
+    setTaskStatus(TASK_STATUS.DEFAULT_ID_NOT_ASSIGN);
   }
 
   useEffect(() => {
@@ -110,10 +99,14 @@ export default function CreateTask(props) {
     initValue();
   }, []);
 
+  const handleCloseAlert = () => {
+    setOpenAlert(false);
+  }
+
   const handleTaskAssignmentChange = (event) => {
     setTaskAssignment(event.target.value);
-    if(event.target.value === '') setTaskStatus("TASK_OPEN");
-    else setTaskStatus("TASK_INPROGRESS");
+    if (event.target.value === '') setTaskStatus(TASK_STATUS.DEFAULT_ID_NOT_ASSIGN);
+    else setTaskStatus(TASK_STATUS.DEFAULT_ID_ASSIGNED);
   }
 
   const handleTaskAssignableChange = (event) => {
@@ -122,18 +115,25 @@ export default function CreateTask(props) {
 
   async function handleSubmit() {
     if (taskName === '') {
-      alert('Nhập chủ đề rồi thử lại');
+      setOpenAlert(true);
+      return;
+    }
+
+    let formData = new FormData();
+    for (const file of attachmentFiles) {
+      formData.append("file", file);
     }
 
     let addTaskBody = {
       backlogTaskName: taskName,
-      backlogTaskCategoryId: taskType,
+      categoryId: taskType,
       backlogDescription: taskDescription,
       backlogProjectId: backlogProjectId,
       statusId: taskStatus,
       priorityId: taskPriority,
       fromDate: taskFromDate,
       dueDate: taskDueDate,
+      attachmentPaths: attachmentFiles.map(e => e.name)
     };
 
     let task = await authPost(dispatch, token, '/backlog/add-task', addTaskBody).then(r => r.json());
@@ -151,8 +151,13 @@ export default function CreateTask(props) {
       statusId: taskStatus
     };
     authPost(dispatch, token, '/backlog/add-assignable', addAssignableBody).then(r => r.json());
+    let responseMessage = authPostMultiPart(dispatch, token, "/backlog/upload-task-attachment-files/" + task.backlogTaskId, formData);
 
     history.push("/backlog/project/" + backlogProjectId);
+  }
+
+  const handleAttachmentFiles = (files) => {
+    setAttachmentFiles(files);
   }
 
   return (
@@ -200,8 +205,8 @@ export default function CreateTask(props) {
                 }}
               >
                 {categoryPool.map((item) => (
-                  <MenuItem key={item.backlogTaskCategoryId} value={item.backlogTaskCategoryId}>
-                    {item.backlogTaskCategoryName}
+                  <MenuItem key={item.categoryId} value={item.categoryId}>
+                    {item.categoryName}
                   </MenuItem>
                 ))}
               </TextField>
@@ -217,8 +222,8 @@ export default function CreateTask(props) {
                 }}
               >
                 {priorityPool.map((item) => (
-                  <MenuItem key={item.backlogTaskPriorityId} value={item.backlogTaskPriorityId}>
-                    {item.backlogTaskPriorityName}
+                  <MenuItem key={item.priorityId} value={item.priorityId}>
+                    {item.priorityName}
                   </MenuItem>
                 ))}
               </TextField>
@@ -310,13 +315,48 @@ export default function CreateTask(props) {
                 </MenuItem>
               ))}
             </TextField>
+            <br></br>
+            <Typography 
+              variant='subtitle1'
+              display='block'
+              style={{margin: '5px 0 0 7px', width: "100%"}}
+            >
+              File đính kèm
+            </Typography>
+            <DropzoneArea 
+              dropzoneClass={classes.dropZone}
+              filesLimit={20}
+              showPreviews={true}
+              showPreviewsInDropzone={false}
+              useChipsForPreview
+              dropzoneText="Kéo và thả tệp vào đây hoặc nhấn để chọn tệp"
+              previewText="Xem trước:"
+              previewChipProps={
+                { variant: "outlined", color: "primary", size: "large", }
+              }
+              getFileAddedMessage={(fileName) =>
+                `Tệp ${fileName} tải lên thành công`
+              }
+              getFileRemovedMessage={(fileName) =>
+                `Tệp ${fileName} đã loại bỏ`
+              }
+              getFileLimitExceedMessage={(filesLimit) =>
+                `Vượt quá số lượng tệp tối đa được cho phép. Chỉ được phép tải lên tối đa ${filesLimit} tệp.`
+              }
+              alertSnackbarProps={{
+                anchorOrigin: { vertical: "bottom", horizontal: "right" },
+                autoHideDuration: 1800,
+              }}
+              onChange={(files) => handleAttachmentFiles(files)}
+            >
+            </DropzoneArea>
           </form>
         </CardContent>
         <CardActions>
           <Button
             variant="contained"
             color="primary"
-            style={{ marginLeft: "45px" }}
+            style={{ marginLeft: "40px" }}
             onClick={handleSubmit}
           >
             Lưu
@@ -329,6 +369,22 @@ export default function CreateTask(props) {
           </Button>
         </CardActions>
       </Card>
+
+      <AlertDialog
+        open={openAlert}
+        onClose={handleCloseAlert}
+        severity='warning'
+        title={"Vui lòng nhập đầy đủ thông tin cần thiết"}
+        content={"Một số thông tin yêu cầu cần phải được điền đầy đủ. Vui lòng kiểm tra lại."}
+        buttons={[
+          {
+            onClick: handleCloseAlert,
+            color: "primary",
+            autoFocus: true,
+            text: "OK"
+          }
+        ]}
+      />
     </MuiPickersUtilsProvider>
   );
 }

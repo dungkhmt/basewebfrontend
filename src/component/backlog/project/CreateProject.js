@@ -1,19 +1,17 @@
 import DateFnsUtils from "@date-io/date-fns";
 import Button from "@material-ui/core/Button";
-import Card from "@material-ui/core/Card";
-import CardActions from "@material-ui/core/CardActions";
-import CardContent from "@material-ui/core/CardContent";
+import {
+	Card, CardActions, CardContent, TextField, Typography
+} from "@material-ui/core/";
 import { makeStyles } from "@material-ui/core/styles";
-import TextField from "@material-ui/core/TextField";
-import Typography from "@material-ui/core/Typography";
-
 import {
 	MuiPickersUtilsProvider,
 } from "@material-ui/pickers";
 import React, { useState, useEffect } from "react";
 import { useHistory } from "react-router-dom";
-import { authPost, authGet } from "../../api";
+import { authPost, authGet } from "../../../api";
 import { useDispatch, useSelector } from "react-redux";
+import AlertDialog from '../AlertDialog';
 
 const useStyles = makeStyles((theme) => ({
 	root: {
@@ -31,31 +29,69 @@ const useStyles = makeStyles((theme) => ({
 	},
 }));
 
+let reDirect = null;
+
 export default function CreateProject() {
 	const dispatch = useDispatch();
 	const token = useSelector(state => state.auth.token);
 	const classes = useStyles();
 	const [backlogProjectId, setProjectId] = useState(null);
 	const [backlogProjectName, setProjectName] = useState(null);
+	const [alertMessage, setAlertMessage] = useState({
+		title: "Vui lòng nhập đầy đủ thông tin cần thiết",
+		content: "Một số thông tin yêu cầu cần phải được điền đầy đủ. Vui lòng kiểm tra lại."
+	});
+	const [alertSeverity, setAlertSeverty] = useState('info');
+	const [openAlert, setOpenAlert] = useState(false);
 	const history = useHistory();
 
-	async function handleSubmit() {
-		if(backlogProjectId === '') {
-			alert('Nhập mã dự án rồi thử lại');
+	const handleCloseAlert = () => {
+		setOpenAlert(false);
+	}
+
+	const onClickAlertBtn = () => {
+		setOpenAlert(false);
+		if(reDirect != null) {
+			history.push(reDirect);
 		}
-		if(backlogProjectName === '') {
-			alert('Nhập tên dự án rồi thử lại');
+	}
+
+	async function handleSubmit() {
+		if(backlogProjectId === '' || backlogProjectId == null || backlogProjectId === undefined
+			|| backlogProjectName === '' || backlogProjectName === null || backlogProjectName === undefined
+		) {
+			reDirect = null;
+			setAlertSeverty('warning');
+			setAlertMessage({
+				title: "Vui lòng nhập đầy đủ thông tin cần thiết",
+				content: "Một số thông tin yêu cầu cần phải được điền đầy đủ. Vui lòng kiểm tra lại."
+			});
+			setOpenAlert(true);
+			return;
 		}
 
 		let body = {backlogProjectId, backlogProjectName};
 		let project = await authPost(dispatch, token, '/backlog/create-project', body).then(r => r.json());
-		console.log(JSON.stringify(project));
+
 		if(project && project['backlogProjectId']) {
-			alert('Tạo thành công dự án mới');
+			reDirect = '/backlog/project-list';
+			setAlertSeverty('success');
+			setAlertMessage({
+				title: "Tạo dự án mới thành công",
+				content: "Ấn OK để trở lại danh sách dự án."
+			});
+			setOpenAlert(true);
+			return;
 		} else {
-			alert('Tạo dự án mới thất bại. Mã dự án đã tồn tại');
+			reDirect = null;
+			setAlertSeverty('error');
+			setAlertMessage({
+				title: "Tạo dự án mới thất bại",
+				content: "Mã dự án đã tồn tại, vui lòng nhập mã dự án khác."
+			});
+			setOpenAlert(true);
+			return;
 		}
-		history.push('/backlog/project-list');
 	}
 
 	return (
@@ -110,6 +146,21 @@ export default function CreateProject() {
           </Button>
         </CardActions>
 			</Card>
+
+			<AlertDialog
+				open={openAlert}
+				onClose={handleCloseAlert}
+				severity={alertSeverity}
+        {...alertMessage}
+        buttons={[
+          {
+            onClick: onClickAlertBtn,
+            color: "primary",
+            autoFocus: true,
+            text: "OK"
+          }
+        ]}
+			/>
 		</MuiPickersUtilsProvider>
 	);
 }

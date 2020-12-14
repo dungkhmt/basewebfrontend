@@ -2,7 +2,7 @@ export const backlog = {
   id: "MENU_BACKLOG",
   path: "",
   isPublic: false,
-  icon: "BlurOnIcon",
+  icon: "AssignmentOutlinedIcon",
   text: "Theo dõi dự án",
   child: [
     {
