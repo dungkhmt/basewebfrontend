@@ -11,7 +11,6 @@ export default function WaterLakeRoute() {
   return (
     <div>
       <Switch>
-        
         <Route component={LakeCreate} path={`${path}/create`} />
         <Route component={LakeLiveInfo} path={`${path}/info/:lakeId`} />        
         <Route component={LakeList} path={`${path}/list`} />
