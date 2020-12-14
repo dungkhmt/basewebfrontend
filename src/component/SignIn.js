@@ -18,7 +18,7 @@ function Copyright() {
     <Typography variant="body2" color="textSecondary" align="center">
       {"Copyright © "}
       <Link color="inherit" href="">
-        D
+        Phạm Quang Dũng
       </Link>{" "}
       {new Date().getFullYear()}
       {"."}
@@ -32,6 +32,7 @@ const useStyles = makeStyles((theme) => ({
       backgroundColor: theme.palette.common.white,
     },
   },
+  
   paper: {
     marginTop: theme.spacing(8),
     display: "flex",
@@ -40,13 +41,28 @@ const useStyles = makeStyles((theme) => ({
   },
   avatar: {
     margin: theme.spacing(1),
-    //backgroundColor: theme.palette.secondary.main,
     width: theme.spacing(12),
     height: theme.spacing(8),
   },
   form: {
     width: "100%", // Fix IE 11 issue.
     marginTop: theme.spacing(1),
+  },
+  form2: {
+    backgroundImage: "url(\"https://sie.hust.edu.vn/wp-content/uploads/2018/06/sie-hust-4.jpg\")",
+    display:"flex",
+    justifyContent:"center",
+    alignItems:"center",
+    background: "black",
+    height: "100vh",
+    width:"100%",
+    backgroundRepeat: "no-repeat",
+    backgroundSize: "cover",
+
+  },
+  wrapper: {
+    background: "white",
+
   },
   submit: {
     margin: theme.spacing(3, 0, 2),
@@ -85,13 +101,14 @@ export default function SignIn(props) {
       );
   } else
     return (
-      <Container component="main" maxWidth="xs">
+      <div className = {classes.form2}>
+      <Container component="main" maxWidth="xs" className={classes.wrapper}>
         <CssBaseline />
         <div className={classes.paper}>
           <img
-          //alt="Hust"
-          //className={classes.avatar}
-          //src={process.env.PUBLIC_URL + "/soict-logo.png"}
+          // alt="Hust"
+          // className={classes.avatar}
+          // src={process.env.PUBLIC_URL + "/soict-logo.png"}
           />
           <Typography component="h1" variant="h4">
             Sign in
@@ -180,9 +197,10 @@ export default function SignIn(props) {
             </Grid>
           </form>
         </div>
-        <Box mt={8}>
+        <Box mt={2} >
           <Copyright />
         </Box>
       </Container>
+      </div>
     );
 }
