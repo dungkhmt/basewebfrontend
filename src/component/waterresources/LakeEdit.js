@@ -10,6 +10,7 @@ import { useHistory } from "react-router-dom";
 import { failed } from "../../action";
 import { authPost, authPostMultiPart } from "../../api";
 import StyledDropzone from "../common/StyleDropDzone";
+import { GoogleApiWrapper, Map, Marker } from "google-maps-react";
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -109,6 +110,25 @@ function LakeEdit(props) {
     const handleLatlngChange = (event) => {
         setLatlng(event.target.value);
     };
+    /* need fix */
+    const style = {
+        width: "46.8%", 
+        height: "320px",
+    };
+    const [lat, setLat] = useState();
+    const [lng, setLng] = useState();
+    const [centerLat, setCenterLat] = useState();
+    const [centerLng, setCenterLng] = useState();
+    const mapClicked = (mapProps, map, event) => {
+        const lat = event.latLng.lat();
+        const lng = event.latLng.lng();
+        console.log("lat ", lat);
+        console.log("lng ", lng);
+        setLng(lng);
+        setLat(lat);
+        setLatlng(lat + "," + lng);
+        console.log(latlng);
+    };
 
     const handleAnyChange = () => {
         if (lakeId === undefined) setLakeId(lake.lakeId);
@@ -119,7 +139,7 @@ function LakeEdit(props) {
     };
 
     handleAnyChange();
-
+ 
     const handleSubmit = (event) => {
         const data = {
             lakeId: lakeId,
@@ -139,7 +159,6 @@ function LakeEdit(props) {
             luuLuongXaLuThietKe: luuLuongXaLuThietKe,
             luuLuongXaLuKiemTra: luuLuongXaLuKiemTra,
         };
-
         setIsRequesting(true);
         authPost(dispatch, token, "/edit-lake/" + lakeId, data)
             .then(
@@ -167,8 +186,8 @@ function LakeEdit(props) {
     return (
         <div>
             <form className={classes.root} noValidate autoComplete="off">
-                <Grid container spacing={3}>
-                    <Grid item xs={12}>
+                <Grid container spacing={5}>
+                    <Grid item xs={5}>
                         <Paper className={classes.paper}>
                             <Typography variant="h5" component="h2">
                                 Chỉnh sửa hồ đập
@@ -177,52 +196,83 @@ function LakeEdit(props) {
                             <TextField
                                 fullWidth
                                 id="lakeId"
-                                value={lake.lakeId}
+                                value={lakeId}
                                 helperText="Mã hồ đập (Không chỉnh sửa)"
                                 required
                             ></TextField>
 
                             <TextField
                                 id="lakeName"
-                                defaultValue={lake.lakeName}
+                                defaultValue={lakeName}
                                 onChange={handleLakeNameChange}
                                 helperText="Tên hồ đập"
                             ></TextField>
 
                             <TextField
                                 id="latlng"
-                                defaultValue={lake.latitude + "," + lake.longitude}
+                                defaultValue={latlng}
+                                value={latlng}
                                 onChange={handleLatlngChange}
                                 helperText="Tọa độ"
                             ></TextField>
 
                             <TextField
                                 id="capCongTrinh"
-                                defaultValue={lake.capCongTrinh}
+                                defaultValue={capCongTrinh}
                                 onChange={handleCapCongTrinhChange}
                                 helperText="Cấp Công Trình"
                             ></TextField>
 
                             <TextField
                                 id="dienTichLuuVuc"
-                                defaultValue={lake.dienTichLuuVuc}
+                                defaultValue={dienTichLuuVuc}
                                 onChange={handleDienTichLuuVucChange}
                                 helperText="Diện tích lưu vực"
                             ></TextField>
                         </Paper>
                     </Grid>
-                </Grid>
+                    <Grid item xs={6}>
+                <Map
+                        google={props.google}
+                        zoom={11}
+                        style={style}
+                        initialCenter={{
+                            lat: lake.latitude,
+                            lng: lake.longitude
+                        }}
+                        center={{
+                            lat: lake.latitude,
+                            lng: lake.longitude
+                        }}
+                        onClick={mapClicked}
+                    >
+                        <Marker
+                            title={'Geolocation'}
+                            position={{
+                                lat: lat,
+                                lng: lng,
+                            }}
+                        />
 
+
+                    </Map>
+                </Grid>
+                </Grid>
+               
+                
                 <Button
                     disabled={isRequesting}
                     variant="contained"
                     color="primary"
                     onClick={handleSubmit}
+                    style={{marginTop: "10px"}}
                 >
-                    {isRequesting ? <CircularProgress /> : "Lưu"}
+                    Lưu
                 </Button>
             </form>
         </div>
     );
 }
-export default LakeEdit;
+export default GoogleApiWrapper({
+    apiKey: process.env.REACT_APP_GOOGLE_MAP_API_KEY,
+})(LakeEdit);
