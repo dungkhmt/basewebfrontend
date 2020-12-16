@@ -32,9 +32,10 @@ const useStyles = makeStyles((theme) => ({
       backgroundColor: theme.palette.common.white,
     },
   },
-  
+
   paper: {
-    marginTop: theme.spacing(8),
+    padding: 20,
+    maxWidth: 400,
     display: "flex",
     flexDirection: "column",
     alignItems: "center",
@@ -49,23 +50,27 @@ const useStyles = makeStyles((theme) => ({
     marginTop: theme.spacing(1),
   },
   form2: {
-    backgroundImage: "url(\"https://sie.hust.edu.vn/wp-content/uploads/2018/06/sie-hust-4.jpg\")",
-    display:"flex",
-    justifyContent:"center",
-    alignItems:"center",
-    background: "black",
+    display: "flex",
+    alignItems: "center",
     height: "100vh",
-    width:"100%",
-    backgroundRepeat: "no-repeat",
-    backgroundSize: "cover",
-
+    width: "100vw",
+    flexDirection: "row-reverse",
+  },
+  image: {
+    position: "absolute",
+    width: "100vw",
+    maxHeight: "100vh",
   },
   wrapper: {
     background: "white",
-
   },
   submit: {
     margin: theme.spacing(3, 0, 2),
+    height: 40,
+    backgroundColor: "green",
+    "&:hover": {
+      backgroundColor: "green",
+    },
   },
 }));
 
@@ -91,7 +96,7 @@ export default function SignIn(props) {
     props.requestLogin(userName, password);
   };
   if (props.isAuthenticated === true) {
-    props.getScreenSecurityInfo(history)
+    props.getScreenSecurityInfo(history);
     if (history.location.state && history.location.state.from) {
       history.replace(history.location.state.from);
       return null;
@@ -101,8 +106,8 @@ export default function SignIn(props) {
       );
   } else
     return (
-      <div className = {classes.form2}>
-      <Container component="main" maxWidth="xs" className={classes.wrapper}>
+      <div className={classes.form2}>
+        <img src="/static/images/welcome.jpg" className={classes.image}></img>
         <CssBaseline />
         <div className={classes.paper}>
           <img
@@ -110,8 +115,12 @@ export default function SignIn(props) {
           // className={classes.avatar}
           // src={process.env.PUBLIC_URL + "/soict-logo.png"}
           />
-          <Typography component="h1" variant="h4">
-            Sign in
+          <Typography
+            component="h1"
+            variant="h4"
+            style={{ position: "relative" }}
+          >
+            Đăng nhập
           </Typography>
           <form className={classes.form} onSubmit={handleSubmit} noValidate>
             {props.errorState === true && isTyping === false ? (
@@ -127,7 +136,7 @@ export default function SignIn(props) {
               required
               fullWidth
               id="user"
-              label="User Name"
+              label="Tên đăng nhập"
               name="user"
               onChange={handleUserNameChange}
               error={
@@ -143,7 +152,7 @@ export default function SignIn(props) {
               required
               fullWidth
               name="password"
-              label="Password"
+              label="Mật khẩu"
               type="password"
               id="password"
               onChange={handlePasswordChange}
@@ -154,17 +163,17 @@ export default function SignIn(props) {
               }
               autoComplete="current-password"
             />
-            <FormControlLabel
+            {/* <FormControlLabel
               control={<Checkbox value="remember" color="primary" />}
               label="Remember me"
-            />
+            /> */}
             {props.isRequesting === true ? (
               <Button
+                backgroundColor
                 disabled={true}
                 type="submit"
                 fullWidth
                 variant="contained"
-                color="primary"
                 className={classes.submit}
               >
                 <CircularProgress /> Sign In
@@ -177,30 +186,31 @@ export default function SignIn(props) {
                 color="primary"
                 className={classes.submit}
               >
-                Sign In
+                Đăng nhập
               </Button>
             )}
-            <Grid container>
-              <Grid item xs>
-                <Link href="#" variant="body2">
-                  Forgot password?
+            <Grid container md={12} justify="center">
+              {/* <Grid item xs>
+                
+                <Link href="#" variant="body2" style = {{position:"relative"}}>
+                  Quên mật khẩu?
                 </Link>
-              </Grid>
-              <Grid item>
-                <Link
-                  href={process.env.PUBLIC_URL + "/user/register"}
-                  variant="body2"
-                >
-                  {"Don't have an account? Sign Up"}
-                </Link>
-              </Grid>
+              </Grid> */}
+
+              <Link
+                href={process.env.PUBLIC_URL + "/user/register"}
+                variant="body2"
+                style={{ position: "relative", fontSize: "18px" }}
+              >
+                {"Tạo tài khoản"}
+              </Link>
+
+              {/* <Box mt={2} className={classes.cp}>
+                <Copyright />
+              </Box> */}
             </Grid>
           </form>
         </div>
-        <Box mt={2} >
-          <Copyright />
-        </Box>
-      </Container>
       </div>
     );
 }
