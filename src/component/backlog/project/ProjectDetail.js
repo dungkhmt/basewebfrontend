@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import MaterialTable from "material-table";
 import { authPost, authGet, authPostMultiPart } from "../../../api";
@@ -22,14 +22,16 @@ import BarChartIcon from '@material-ui/icons/BarChart';
 import ArrowBackIcon from '@material-ui/icons/ArrowBack';
 import EditIcon from '@material-ui/icons/Edit';
 import { API_URL } from "../../../config/config";
-import changePageSize, {
-  localization,
-  tableIcons,
+import {
+  localization
 } from '../../../utils/MaterialTableUtils';
 import {
-  TASK_STATUS, TASK_PRIORITY, TASK_CATEGORY, TABLE_STRIPED_ROW_COLOR
+  TASK_STATUS, TASK_PRIORITY, TASK_CATEGORY, TABLE_STRIPED_ROW_COLOR, ChartColor
 } from '../BacklogConfig';
 import AlertDialog from '../AlertDialog';
+import { HiLightBulb } from 'react-icons/hi';
+import SuggestionResult from '../suggestion/SuggestionResult';
+import OverlayLoading from '../components/OverlayLoading';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -74,6 +76,7 @@ export default function ProjectDetail(props) {
   const token = useSelector(state => state.auth.token);
   const history = useHistory();
   const classes = useStyles();
+  const tableRef = useRef(null);
   const [project, setProject] = useState({});
   const [taskList, setTaskList] = useState([]);
   const [projectMember, setProjectMember] = useState([]);
@@ -85,22 +88,32 @@ export default function ProjectDetail(props) {
   const [myTask, setMyTask] = useState([]);
   const [openUpdateStatusAlert, setOpenUpdateStatusAlert] = useState(false);
   const [updateStatusAlert, setUpdateStatusAlert] = useState({});
+  const [isRowSelected, setIsRowSelected] = useState([]);
+  const [openSuggestionResultDialog, setOpenSuggestionResultDialog] = useState(false);
+  const [suggestData, setSuggestData] = useState([]);
+  const [suggestChartData, setSuggestChartData] = useState({});
+  const [openSuggestAlert, setOpenSuggestAlert] = useState(false);
 
   const [addMemberDialogOpen, setAddMemberDialogOpen] = useState(false);
   const [showMemberListDialogOpen, setShowMemberListDialogOpen] = useState(false);
   const [inviteResultAlert, setInviteResultAlert] = useState(false);
   const [inviteAlertProperties, setInviteAlertProperties] = useState({});
+  const [isTableSelectable, setIsTableSelectable] = useState(false);
+  const [openingTasks, setOpeningTasks] = useState([]);
 
   const [categoryPool, setCategoryPool] = useState([]);
   const [priorityPool, setPriorityPool] = useState([]);
   const [statusPool, setStatusPool] = useState([]);
+  const [openOverlayLoading, setOpenOverlayLoading] = useState(false);
+  const [isRequesting, setIsRequesting] = useState(false);
+
 
   const backlogProjectId = props.match.params.backlogProjectId;
 
   function checkNull(a, ifNotNull = a, ifNull = '') {
     return a ? ifNotNull : ifNull;
   }
-
+  // get project infor
   async function getProjectDetail(projectId) {
     authGet(dispatch, token, "/backlog/get-project-by-id/" + projectId).then(
       res => {
@@ -116,6 +129,8 @@ export default function ProjectDetail(props) {
     tasks.sort((a, b) => { return (a.backlogTask.backlogTaskName > b.backlogTask.backlogTaskName) - (a.backlogTask.backlogTaskName < b.backlogTask.backlogTaskName) })
     let status = {};
     tasks.forEach(task => {
+      task.assignmentFullInfo = task.assignment;
+      task.assignableFullInfo = task.assignable;
       task.assignment = task.assignment.map(element => element.userLoginId);
       task.assignable = task.assignable.map(element => element.userLoginId);
       if (task.backlogTask.attachmentPaths != null
@@ -141,7 +156,13 @@ export default function ProjectDetail(props) {
     let myTasks = tasks.filter(task => {
       return task.assignment.filter(element => { return element === myAccount.user }).length > 0;
     });
+    let openingTasks = tasks.filter(e => (
+      e.backlogTask.statusId === "TASK_OPEN" && 
+      (e.assignment === null || e.assignment.length === 0)) && 
+      e.backlogTask.createdByUserLoginId === myAccount.user
+    );
 
+    setOpeningTasks(openingTasks);
     setTaskList(tasks);
     setMyTask(myTasks);
   }
@@ -163,15 +184,12 @@ export default function ProjectDetail(props) {
     }
     setIsMember(check);
   }
-
   function getTaskCategory() {
     setCategoryPool(TASK_CATEGORY.LIST);
   }
-
   function getTaskPriority() {
     setPriorityPool(TASK_PRIORITY.LIST);
   }
-
   function getTaskStatus() {
     setStatusPool(TASK_STATUS.LIST);
   }
@@ -184,18 +202,16 @@ export default function ProjectDetail(props) {
     getUser();
   }, []);
 
+  // members
   const onCloseAddMemberDialog = (event) => {
     setAddMemberDialogOpen(false);
   };
-
   const onCloseShowMemberListDialog = (event) => {
     setShowMemberListDialogOpen(false);
   };
-
   const onCloseInviteResultAlert = () => {
     setInviteResultAlert(false);
   }
-
   const onInviteMember = () => {
     setAddMemberDialogOpen(false);
     let newMember = [];
@@ -229,11 +245,11 @@ export default function ProjectDetail(props) {
         }
       })
   }
-
   const handleChangeAddMember = (event) => {
     setIsMember({ ...isMember, [event.target.name]: event.target.checked })
   }
 
+  // quick update status
   const handleUpdateTaskStatus = (event, taskIndex) => {
     if (isShowMyTask) {
       let currData = [...myTask];
@@ -245,7 +261,6 @@ export default function ProjectDetail(props) {
       setTaskList(currData);
     }
   }
-
   const handleSubmitUpdateTaskStatus = (taskId, newStatus) => {
     if (taskList.find(e => e.backlogTask.backlogTaskId === taskId).statusId === newStatus) return;
 
@@ -274,7 +289,6 @@ export default function ProjectDetail(props) {
       }
     );
   }
-
   const handleCloseUpdateStatusAlert = (event, reason) => {
     if (reason === 'clickaway') {
       return;
@@ -282,7 +296,6 @@ export default function ProjectDetail(props) {
 
     setOpenUpdateStatusAlert(false);
   }
-
   const taskListColumn = [
     { title: "Chủ đề", field: "backlogTask.backlogTaskName" },
     {
@@ -339,6 +352,91 @@ export default function ProjectDetail(props) {
     },
   ];
 
+  // suggestion 
+  const calcDuration = (a, b) => {
+    return Math.ceil(Math.abs(new Date(a) - new Date(b)) / 86400000)
+  };
+  async function getSuggestion() {
+    let body = [];
+    for (let i = 0; i < openingTasks.length; i++) {
+      if (isRowSelected[i] === true) {
+        body.push(openingTasks[i].backlogTask.backlogTaskId);
+      }
+    }
+    setOpenOverlayLoading(true);
+    const result = await authPost(dispatch, token, "/backlog/suggest-assignment", body).then(r =>  r.json());
+    setOpenOverlayLoading(false);
+    
+    let tableResultData = [];
+    let labels = [];
+    let datasets = [{
+      backgroundColor: ChartColor,
+      label: 'Khối lượng công việc (Ngày)',
+      data: []
+    }];
+    result.forEach(assignment => {
+      let duration = calcDuration(assignment.backlogTask.dueDate, assignment.backlogTask.fromDate);
+      let assignable = openingTasks.find(e => e.backlogTask.backlogTaskId === assignment.backlogTask.backlogTaskId).assignableFullInfo;
+
+      tableResultData.push({
+        taskId: assignment.backlogTask.backlogTaskId,
+        taskName: assignment.backlogTask.backlogTaskName,
+        assign: assignment.userSuggestion,
+        duration: duration,
+        assignable: assignable
+      })
+
+      assignable.forEach(e => {
+        let index = labels.findIndex(label => e.userLoginId === label);
+        if (index < 0) {
+          labels.push(e.userLoginId);
+          datasets[0].data.push(0);
+        }
+      });
+
+      let index = labels.findIndex(e => (e === assignment.userSuggestion.userLoginId));
+      if (index < 0) {
+        labels.push(assignment.userSuggestion.userLoginId);
+        datasets[0].data.push(duration);
+      } else {
+        datasets[0].data[index] += duration;
+      }
+    });
+
+    setSuggestData(tableResultData);
+    setSuggestChartData({
+      labels: labels,
+      datasets: datasets
+    })
+    
+    setOpenSuggestionResultDialog(true);
+  }
+
+  function handleOnSelectionChange(rows) {
+    let isSelected = [];
+    for (let i = 0; i < openingTasks.length; i++) {
+      isSelected[i] = false;
+    }
+    rows.forEach(row => {
+      isSelected[row.tableData.id] = true;
+    });
+
+    setIsRowSelected(isSelected);
+  }
+  function onClickGetSuggestion() {
+    if (isRowSelected.reduce((a, b) => a + b, 0) === 0) setOpenSuggestAlert(true);
+    else {
+      getSuggestion();
+    }
+  }
+  const onCloseResult = (event) => {
+    setOpenSuggestionResultDialog(false);
+  }
+  const suggestionApplyCallback = () => {
+    setIsTableSelectable(false);
+    getProjectDetail(backlogProjectId);
+  }
+  //
   const downloadFiles = (item) => {
     fetch(`${API_URL}/backlog/download-attachment-files/${item}`, {
       method: 'GET',
@@ -409,6 +507,17 @@ export default function ProjectDetail(props) {
                       <PersonAddIcon color='primary' fontSize='large' />
                     </IconButton>
                   </Tooltip>
+                  <Tooltip title="Gợi ý phân công">
+                    <IconButton 
+                      aria-label="suggestAssignment" 
+                      onClick={event => { 
+                        tableRef.current.onAllSelected(false);
+                        setIsRowSelected([]);
+                        setIsTableSelectable(!isTableSelectable) 
+                      }}>
+                      <HiLightBulb color={isTableSelectable ? '#3F51B5' : '#757575'} size='1.5em' />
+                    </IconButton>
+                  </Tooltip>
                 </Grid>
               </Grid>
             </div>
@@ -417,15 +526,18 @@ export default function ProjectDetail(props) {
             <MaterialTable
               className={classes.table}
               title="Danh sách task"
+              tableRef={tableRef}
               columns={taskListColumn}
               options={{
                 filtering: true,
                 search: false,
+                selection: isTableSelectable,
                 rowStyle: rowData => { return { backgroundColor: TABLE_STRIPED_ROW_COLOR[rowData.tableData.id % TABLE_STRIPED_ROW_COLOR.length] } },
                 actionsColumnIndex: -1
               }}
+              onSelectionChange={(rows) => { handleOnSelectionChange(rows) }}
               localization={localization}
-              data={isShowMyTask ? myTask : taskList}
+              data={isTableSelectable ? openingTasks : (isShowMyTask ? myTask : taskList)}
               detailPanel={
                 [{
                   tooltip: "Chi tiết",
@@ -490,7 +602,7 @@ export default function ProjectDetail(props) {
                                 id="update-status-select"
                                 value={rowData.backlogTask.statusIdTemp}
                                 onChange={(event) => { handleUpdateTaskStatus(event, rowData.tableData.id) }}
-                                style={{ width: '150px' }}
+                                style={{ width: '200px' }}
                               >
                                 {statusPool.map((item) => (
                                   <MenuItem key={item.statusId} value={item.statusId}>
@@ -541,6 +653,13 @@ export default function ProjectDetail(props) {
               ]}
               onRowClick={(event, rowData, togglePanel) => togglePanel()}
             />
+            {isTableSelectable ? (
+              <Box mt={1}>
+                <Button className={classes.functionBtn} color={'primary'} variant={'contained'} onClick={() => {onClickGetSuggestion()}}>
+                  Đề xuất gợi ý
+                </Button>
+              </Box>
+            ) : null}
           </CardContent>
         </Card>
 
@@ -568,8 +687,7 @@ export default function ProjectDetail(props) {
                   }
                   label={key}
                 />
-              ))
-              }
+              ))}
             </FormGroup>
           </DialogContent>
           <DialogActions>
@@ -618,16 +736,47 @@ export default function ProjectDetail(props) {
           ]}
         />
 
-        <Snackbar 
-          open={openUpdateStatusAlert} 
-          autoHideDuration={1800} 
+        <AlertDialog
+          open={openSuggestAlert}
+          onClose={() => {setOpenSuggestAlert(false)}}
+          severity="warning"
+          title="Vui lòng chọn task"
+          content="Chọn ít nhất 1 task để hệ thống có thể đề xuất gợi ý"
+          buttons={[
+            {
+              onClick: () => {setOpenSuggestAlert(false)},
+              color: "primary",
+              autoFocus: true,
+              text: "OK"
+            }
+          ]}
+        />
+
+        <Snackbar
+          open={openUpdateStatusAlert}
+          autoHideDuration={1800}
           onClose={handleCloseUpdateStatusAlert}
-          anchorOrigin={{vertical: 'bottom', horizontal: 'right'}}
+          anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
         >
           <Alert onClose={handleCloseUpdateStatusAlert} severity={updateStatusAlert.severity} variant="filled">
             {updateStatusAlert.message}
           </Alert>
         </Snackbar>
+
+        <SuggestionResult
+          open={openSuggestionResultDialog}
+          onClose={onCloseResult}
+          suggestData={suggestData}
+          setSuggestChartData={setSuggestChartData}
+          suggestChartData={suggestChartData}
+          setSuggestData={setSuggestData}
+          applyCallback={suggestionApplyCallback}
+        />
+
+        <OverlayLoading
+          open={openOverlayLoading}
+          onClose={() => {setOpenOverlayLoading(false)}}
+        />
       </div>
     );
 }

@@ -20,14 +20,6 @@ export const backlog = {
       icon: "StarBorder",
       text: "Tạo mới dự án",
       child: [],
-    },
-    {
-      id: "MENU_BACKLOG_ASSIGN_SUGGESTION",
-      path: "/backlog/assign-suggestion/project-list",
-      isPublic: false,
-      icon: "StarBorder",
-      text: "Gợi ý phân công công việc",
-      child: [],
-    },
+    }
   ],
 };
