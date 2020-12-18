@@ -58,14 +58,14 @@ const useStyles = makeStyles(() => ({
     borderBottomRightRadius: "6px",
   },
   imgWrapper: {
-    minWidth: 730,
-    minHeight: 580,
+    minWidth: 690,
+    minHeight: 570,
   },
   wrapper: {
     background: "#311b92",
     height: "100vh",
-    minHeight: 694,
-    minWidth: 1366,
+    minHeight: 400,
+    minWidth: 1316,
   },
   form: {
     background: "white",
@@ -73,7 +73,7 @@ const useStyles = makeStyles(() => ({
     borderBottomLeftRadius: "6px",
     paddingLeft: 24,
     paddingRight: 24,
-    maxWidth: 540,
+    maxWidth: 490,
   },
   formField: {
     width: 220,
@@ -130,7 +130,6 @@ export default function NewRegister() {
   const classes = useStyles();
   const history = useHistory();
   const token = useSelector((state) => state.auth.token);
-
   const [roles, setRoles] = useState([]);
   const [showPassword, setShowPassword] = useState(false);
   const [existedAccErr, setExistedAccErr] = useState(false);

@@ -26,7 +26,6 @@ export default class GanttChart extends React.PureComponent {
     if (prevProps.config !== this.props.config) {
       this.node.childNodes.forEach(child => child.remove()); // remove previous Gantt
       this.gantt = new Gantt(this.node, this.props.config);
-      console.log(this.props.config)
     }
   }
 

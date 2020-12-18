@@ -5,19 +5,26 @@ import { authPost, authGet } from "../../../api";
 import {
   Grid, Button, Card, Dialog, DialogActions, DialogContent,
   DialogTitle, Slider, Typography, AppBar, Tabs, Tab,
-  Toolbar, IconButton, CardContent, Box
+  Toolbar, IconButton, CardContent, Box, MenuItem, Select,
 } from "@material-ui/core/";
 import { Redirect, useHistory } from "react-router-dom";
 import CloseIcon from '@material-ui/icons/Close';
 import { toFormattedDateTime } from "../../../utils/dateutils";
 import { makeStyles } from "@material-ui/core/styles";
 import { Bar } from 'react-chartjs-2';
+import { TASK_STATUS, TASK_PRIORITY, TASK_CATEGORY, ChartColor } from '../BacklogConfig';
 
 const useStyles = makeStyles((theme) => ({
   root: {
     "& .MuiDialogContent-root": {
-      padding: '0px'
-    }
+      padding: '0px',
+      width: '650px',
+      height: '700px'
+    },
+    "& .MuiDialog-paperWidthXs, .MuiDialog-paperWidthMd, .MuiDialog-paperWidthSm, .MuiDialog-paperWidthLg": {
+      maxWidth: '100%',
+      maxHeight: '100%'
+    },
   },
   dialogPaper: {
     minHeight: '50vh',
@@ -62,6 +69,26 @@ export default function AssignSuggestionTaskList(props) {
   const [priorityPool, setPriorityPool] = useState([]);
   const [statusPool, setStatusPool] = useState([]);
 
+  const suggestionChartOpt = {
+    scales: {
+      yAxes: [
+        {
+          ticks: {
+            beginAtZero: true,
+          },
+          scaleLabel: {
+            display: true,
+            labelString: 'Khối lượng công việc (Ngày)',
+            fontSize: 13,
+          }
+        },
+      ],
+    },
+    legend: {
+      display: false
+    }
+  }
+
   const backlogProjectId = props.match.params.backlogProjectId;
 
   function checkNull(a, ifNotNull = a, ifNull = '') {
@@ -80,9 +107,9 @@ export default function AssignSuggestionTaskList(props) {
     let tasks = await authGet(dispatch, token, "/backlog/get-project-detail/" + projectId);
     let openingTasks = tasks.filter(element => element.backlogTask.statusId === "TASK_OPEN");
     openingTasks.forEach(task => {
-      if(task.assignment == null) task.assignment = [];
+      if (task.assignment == null) task.assignment = [];
       task.assignment = task.assignment.map(element => element.userLoginId);
-      if(task.assignable == null) task.assignable = [];
+      if (task.assignable == null) task.assignable = [];
       task.assignable = task.assignable.map(element => element.userLoginId);
     });
     setTaskList(openingTasks);
@@ -106,27 +133,15 @@ export default function AssignSuggestionTaskList(props) {
   }
 
   function getTaskCategory() {
-    authGet(dispatch, token, "/backlog/get-backlog-task-category").then(
-      res => {
-        if (res != null) setCategoryPool(res);
-      }
-    )
+    setCategoryPool(TASK_CATEGORY.LIST);
   }
 
   function getTaskPriority() {
-    authGet(dispatch, token, "/backlog/get-backlog-task-priority").then(
-      res => {
-        if (res != null) setPriorityPool(res);
-      }
-    )
+    setPriorityPool(TASK_PRIORITY.LIST);
   }
 
   function getTaskStatus() {
-    authGet(dispatch, token, "/backlog/get-backlog-task-status").then(
-      res => {
-        if (res != null) setStatusPool(res);
-      }
-    )
+    setStatusPool(TASK_STATUS.LIST);
   }
 
   function handleOnSelectionChange(rows) {
@@ -142,7 +157,7 @@ export default function AssignSuggestionTaskList(props) {
   }
 
   function onClickGetSuggestion() {
-    if(isRowSelected.reduce((a, b) => a + b, 0) === 0) alert("Vui lòng chọn ít nhất một task");
+    if (isRowSelected.reduce((a, b) => a + b, 0) === 0) alert("Vui lòng chọn ít nhất một task");
     else
       setSolverParametersDialogOpen(true);
   }
@@ -153,26 +168,6 @@ export default function AssignSuggestionTaskList(props) {
     getTaskCategory();
     getTaskPriority();
     getTaskStatus();
-
-    setSuggestData([
-      { taskName: '1', assign: '1', duration: 1 },
-      { taskName: '2', assign: '2', duration: 3 },
-      { taskName: '3', assign: '3', duration: 2 },
-      { taskName: '4', assign: '1', duration: 3 },
-    ]);
-
-    setSuggestChartData({
-      labels: ['1', '2', '3', '4','5','6','7','8','9','10','11','12','13','14','15','16','17','18'],
-      datasets: [{
-        label: 'Khối lượng công việc',
-        backgroundColor: 'rgba(255,99,132,0.2)',
-        borderColor: 'rgba(255,99,132,1)',
-        borderWidth: 1,
-        hoverBackgroundColor: 'rgba(255,99,132,0.4)',
-        hoverBorderColor: 'rgba(255,99,132,1)',
-        data: [4, 3, 2, 2,3,4,2,1,3,4, 3, 2, 2,3,4,2,1,3]
-      }]
-    })
   }, []);
 
   const taskListColumn = [
@@ -269,7 +264,6 @@ export default function AssignSuggestionTaskList(props) {
     setSolverParametersDialogOpen(false);
 
     let body = [];
-    console.log(isRowSelected);
     for (let i = 0; i < taskList.length; i++) {
       if (isRowSelected[i] === true) {
         body.push(taskList[i].backlogTask.backlogTaskId);
@@ -277,28 +271,37 @@ export default function AssignSuggestionTaskList(props) {
     }
 
     const result = await authPost(dispatch, token, "/backlog/suggest-assignment", body).then(r => r.json());
-    console.log(result);
     let tableResultData = [];
     let labels = [];
     let datasets = [{
-      label: 'Khối lượng công việc',
+      backgroundColor: ChartColor,
+      label: 'Khối lượng công việc (Ngày)',
       data: []
     }];
+    console.log(taskList);
     result.forEach(assignment => {
-      let duration = Math.ceil(Math.abs(assignment.backlogTask.dueDate - assignment.backlogTask.fromDate)/86400000);
+      let duration = Math.ceil(Math.abs(new Date(assignment.backlogTask.dueDate) - new Date(assignment.backlogTask.fromDate)) / 86400000);
       let assignable = taskList.find(e => e.backlogTask.backlogTaskId === assignment.backlogTask.backlogTaskId).assignable;
-      const matchingKeyValuePairs = assignable.map(x => [x, x]);
 
+      console.log(assignable);
       tableResultData.push({
         taskId: assignment.backlogTask.backlogTaskId,
         taskName: assignment.backlogTask.backlogTaskName,
         assign: assignment.userSuggestion.userLoginId,
         duration: duration,
-        assignable: Object.fromEntries(matchingKeyValuePairs)
+        assignable: assignable
       })
 
+      assignable.forEach(e => {
+        let index = labels.findIndex(label => e === label);
+        if (index < 0) {
+          labels.push(e);
+          datasets[0].data.push(0);
+        }
+      });
+
       let index = labels.findIndex(e => (e === assignment.userSuggestion.userLoginId));
-      if(index < 0) {
+      if (index < 0) {
         labels.push(assignment.userSuggestion.userLoginId);
         datasets[0].data.push(duration);
       } else {
@@ -311,9 +314,8 @@ export default function AssignSuggestionTaskList(props) {
       labels: labels,
       datasets: datasets
     })
-    console.log(tableResultData);
 
-    //TODO loading when wait solver
+    //TODO show loading when wait solver
     setSolverResultDialogOpen(true);
   }
 
@@ -329,9 +331,50 @@ export default function AssignSuggestionTaskList(props) {
     setTab(newTab);
   }
 
+  const handleChangeAssign = (event, rowIndex) => {
+    let data = [...suggestData];
+    const taskHasChanged = data[rowIndex];
+    const newAssign = event.target.value;
+
+    let newIndex = suggestChartData.labels.findIndex(e => e === newAssign);
+    let oldIndex = suggestChartData.labels.findIndex(e => e === taskHasChanged.assign);
+    let chartData = [...suggestChartData.datasets[0].data];
+    console.log(chartData);
+
+    chartData[oldIndex] = chartData[oldIndex] - taskHasChanged.duration;
+    chartData[newIndex] = chartData[newIndex] + taskHasChanged.duration;
+
+    console.log(taskHasChanged, chartData);
+
+    setSuggestChartData({
+      ...suggestChartData,
+      datasets: [
+        { ...suggestChartData.datasets[0], data: chartData }
+      ]
+    });
+
+    data[rowIndex].assign = event.target.value;
+    setSuggestData(data);
+  }
+
   const resultColumns = [
     { title: 'Công việc', field: 'taskName', editable: 'never' },
-    { title: 'Phân công', field: 'assign', lookup: rowData => rowData.assignable }
+    {
+      title: 'Phân công', field: 'assign',
+      render: rowData => {
+        return (
+          <Select
+            value={rowData.assign}
+            onChange={(event) => { handleChangeAssign(event, rowData.tableData.id) }}
+            style={{ width: '150px' }}
+          >
+            {rowData.assignable.map((item) => (
+              <MenuItem key={item} value={item}>{item}</MenuItem>
+            ))}
+          </Select>
+        )
+      }
+    }
   ];
 
   const updateResultRow = (newData, oldData) =>
@@ -349,9 +392,9 @@ export default function AssignSuggestionTaskList(props) {
       chartData[newIndex] = suggestChartData.datasets[0].data[newIndex] + newData.duration;
 
       setSuggestChartData({
-        ...suggestChartData, 
+        ...suggestChartData,
         datasets: [
-          {...suggestChartData.datasets[0], data: chartData}
+          { ...suggestChartData.datasets[0], data: chartData }
         ]
       });
 
@@ -445,12 +488,14 @@ export default function AssignSuggestionTaskList(props) {
 
               {/* solver result  */}
               <Dialog
-                fullScreen
+                // fullScreen
+                className={classes.root}
                 open={solverResultDialogOpen}
                 onClose={onCloseResult}
+                disableBackdropClick={true}
               >
                 <DialogContent>
-                  <AppBar position="relative" color="primary">
+                  <AppBar position="sticky" color="primary">
                     <Toolbar>
                       <IconButton edge="start" color="inherit" onClick={onCloseResult} aria-label="close">
                         <CloseIcon />
@@ -471,12 +516,13 @@ export default function AssignSuggestionTaskList(props) {
                   </AppBar>
                   <TabPanel value={tab} index={0}>
                     <MaterialTable
-                      title="Editable Preview"
+                      title='Kết quả gợi ý'
                       columns={resultColumns}
                       data={suggestData}
-                      editable={{
-                        onRowUpdate: updateResultRow
-                      }}
+                      options={{ search: false }}
+                    // editable={{
+                    //   onRowUpdate: updateResultRow
+                    // }}
                     />
                   </TabPanel>
                   <TabPanel value={tab} index={1}>
@@ -484,17 +530,7 @@ export default function AssignSuggestionTaskList(props) {
                       data={suggestChartData}
                       width={100}
                       height={50}
-                      options={{
-                        scales: {
-                          yAxes: [
-                            {
-                              ticks: {
-                                beginAtZero: true,
-                              },
-                            },
-                          ],
-                        },
-                      }}
+                      options={suggestionChartOpt}
                     />
                   </TabPanel>
                 </DialogContent>

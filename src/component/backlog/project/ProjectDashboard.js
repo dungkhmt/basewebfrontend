@@ -161,8 +161,6 @@ export default function ProjectDashboard(props) {
             }]
           })
         });
-        console.log(gantt);
-        // setGanttData(gantt);
 
         setGanttConfig({
           data: {
