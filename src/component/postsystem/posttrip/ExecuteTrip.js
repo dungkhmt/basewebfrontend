@@ -9,12 +9,11 @@ import TableBody from "@material-ui/core/TableBody";
 import TableCell from "@material-ui/core/TableCell";
 import TableRow from "@material-ui/core/TableRow";
 import TablePagination from "@material-ui/core/TablePagination";
-import { useSelector } from "react-redux";
 import Button from "@material-ui/core/Button";
 import Dialog from "@material-ui/core/Dialog";
 import DialogActions from "@material-ui/core/DialogActions";
 import DialogTitle from "@material-ui/core/DialogTitle";
-import { DialogContent } from "@material-ui/core";
+import { DialogContent, Tooltip } from "@material-ui/core";
 import { API_URL } from "../../../config/config";
 import { Link } from "react-router-dom";
 import AlarmOnIcon from '@material-ui/icons/AlarmOn';
@@ -26,6 +25,14 @@ import NotificationsActiveIcon from '@material-ui/icons/NotificationsActive';
 import { authPost, authGet } from "../../../api";
 import { KeyboardDatePicker, MuiPickersUtilsProvider, KeyboardTimePicker } from "@material-ui/pickers";
 import DateFnsUtils from "@date-io/date-fns";
+import MaterialTable from "material-table";
+import {
+    localization
+} from '../../../utils/MaterialTableUtils';
+import TextField from '@material-ui/core/TextField';
+import Autocomplete from '@material-ui/lab/Autocomplete';
+import { useDispatch, useSelector } from "react-redux";
+
 const statusIcon = {
     'default': <PlayArrowIcon />,
     'WATING': <PauseCircleOutlineIcon />,
@@ -63,7 +70,6 @@ const useStyles = makeStyles({
         maxHeight: 440,
     },
 });
-
 export default function ExecuteTrip() {
     const classes = useStyles();
     const token = useSelector((state) => state.auth.token);
@@ -71,6 +77,20 @@ export default function ExecuteTrip() {
     const [rowsPerPage, setRowsPerPage] = useState(10);
     const [data, setData] = useState([]);
     const [chooseDate, setChooseDate] = useState(new Date());
+    const [tableRef, setTableRef] = useState();
+    const dispatch = useDispatch();
+    const taskListColumn = [
+        { title: "Mã số chuyến", field: "postOfficeFixedTripId" },
+        {
+            title: "Xuất phát", field: "postOfficetrip.fromPostOffice.postOfficeName"
+        },
+        {
+            title: "Điểm đến", field: "postOfficetrip.toPostOffice.postOfficeName"
+        },
+        {
+            title: "Giờ chạy", field: "scheduleDepartureTime"
+        },
+    ]
     const [alertAction, setAlertAction] = useState({
         open: false,
         handleSuccess: undefined,
@@ -90,67 +110,81 @@ export default function ExecuteTrip() {
         setChooseDate(date);
     }
 
-    const cell = (column, value) => {
-        if (column.type === 'statusIcon') {
-            switch (data.status) {
-                case 'WAITING':
-                    return <Button
-                        onClick={() => {
-                            setAlertAction(
-                                {
-                                    open: true,
-                                    handleSuccess: () => {
-                                        data[column.postOfficeFixedTripId].status = 'ASSIGNED'
-                                    },
-                                    content: 'bắt đầu chuyến xe'
-                                }
-                            )
-                        }}><PauseCircleOutlineIcon /></Button>
-                case 'ASSIGNED':
-                    return <Button
-                        onClick={() => {
-                            setAlertAction(
-                                {
-                                    open: true,
-                                    handleSuccess: () => {
-                                        data[column.postOfficeFixedTripId].status = 'ARRIVED'
-                                    },
-                                    content: 'hoàn thành chuyến xe'
-                                }
-                            )
-                        }}><AlarmOnIcon /></Button>
-                case 'ARRIVED':
-                    return <Button
-                        disabled
-                    ><DoneIcon /></Button>
-                default:
-                    return <Button
-                        onClick={() => {
-                            setAlertAction(
-                                {
-                                    open: true,
-                                    handleSuccess: () => {
-                                        data[column.postOfficeFixedTripId].status = 'WATING'
-                                    },
-                                    content: 'thực thi chuyến xe',
-                                    title: 'Thực thi chuyến xe'
-                                }
-                            )
-                        }}><PlayArrowIcon style={{ color: 'red' }} /></Button>
-            }
+    const getIcon = (row) => {
+        switch (row.status) {
+            case 'WAITING':
+                return <Tooltip title={getToolTip(row)}><PauseCircleOutlineIcon /></Tooltip >
+            case 'ASSIGNED':
+                return <Tooltip title={getToolTip(row)}><AlarmOnIcon /></Tooltip >
+            case 'ARRIVED':
+                return <Tooltip title={getToolTip(row)}><DoneIcon disabled /></Tooltip >
+            default:
+                return <Tooltip title={getToolTip(row)}><PlayArrowIcon style={{ color: 'red' }} /></Tooltip>
         }
-        else if (column.type === 'orderIcon') {
-            if (column.order && column.order.size() > 0) {
-                return <Button
-                    onClick={() => {
+    }
 
-                    }}><NotificationsActiveIcon color="red" /></Button>
-            }
-            else {
-                return <Button disabled><NotificationsIcon /></Button>
-            }
+    const getNotificationIcon = (row) => {
+        return <NotificationsActiveIcon />
+    }
+
+
+    const getToolTip = (row) => {
+        switch (row.status) {
+            case 'WAITING':
+                return 'Bắt đầu chuyến xe'
+            case 'ASSIGNED':
+                return 'Chuyến xe đang thực thi'
+            case 'ARRIVED':
+                return 'Chuyến xe đến đích thành công'
+            default:
+                return 'Thực thi chuyến xe'
         }
-        else return value;
+    }
+    const onClickNotificationActions = (row) => {
+
+    }
+    const onClickActions = (row) => {
+        switch (row.status) {
+            case 'WAITING':
+                setAlertAction(
+                    {
+                        open: true,
+                        handleSuccess: () => {
+                            data[row.postOfficeFixedTripId].status = 'ASSIGNED'
+                        },
+                        content: 'bắt đầu chuyến xe'
+                    }
+                )
+            case 'ASSIGNED':
+                setAlertAction(
+                    {
+                        open: true,
+                        handleSuccess: {},
+                        content: 'Chuyến xe đang thực thi'
+                    }
+                )
+            default:
+                setAlertAction(
+                    {
+                        open: true,
+                        handleSuccess: () => {
+                            data[row.postOfficeFixedTripId].status = 'WATING'
+                        },
+                        content: 'thực thi chuyến xe',
+                        title: 'Thực thi chuyến xe'
+                    }
+                )
+        }
+    }
+
+    const executetrip = (row) => {
+        authPost(dispatch, token, "/execute-trip", {
+            "postOfficeFixedTripId": "baffe995-8134-4381-bf23-36ea30546b3d",
+            "status": "WAITING",
+            "postShipOrderFixedTripPostOfficeAssignmentIds": [
+                "eb958553-b48a-4dbd-824d-8d4f8c67d71c"
+            ]
+        })
     }
 
     useEffect(() => {
@@ -168,77 +202,51 @@ export default function ExecuteTrip() {
     }, data);
 
     return (
-        <Paper className={classes.root}>
-            <Typography variant="h5" component="h2" align="center">
-                Danh sách chuyến xe
-            </Typography>
-            <MuiPickersUtilsProvider utils={DateFnsUtils}>
-                <KeyboardDatePicker
-                    id="chooseDate"
-                    label=""
-                    placeholder=""
-                    onChange={handlechooseDateChange}
-                    style={{ width: 400, margin: 5 }}
-                    InputLabelProps={{
-                        shrink: true,
-                    }}
-                    value={chooseDate}
-                    format='dd/MM/yyyy'
-                    style={{ float: 'right' }}
-                />
-            </MuiPickersUtilsProvider>
+        <MuiPickersUtilsProvider utils={DateFnsUtils}>
+            <br />
+            <Typography>Chọn ngày</Typography>
+            <KeyboardDatePicker
+                id="chooseDate"
+                label=""
+                placeholder=""
+                onChange={handlechooseDateChange}
+                style={{ width: 400, margin: 5 }}
+                InputLabelProps={{
+                    shrink: true,
+                }}
+                value={chooseDate}
+                format='dd/MM/yyyy'
+            />
 
-            <TableContainer className={classes.container}>
-                <Table stickyHeader aria-label="sticky table">
-                    <TableHead>
-                        <TableRow>
-                            {columns.map((column) => (
-                                <TableCell
-                                    key={column.id}
-                                    align={column.align}
-                                    style={{ minWidth: column.minWidth }}
-                                >
-                                    {column.label}
-                                </TableCell>
-                            ))}
-                            <TableCell></TableCell>
-                        </TableRow>
-                    </TableHead>
-                    <TableBody>
-                        {data
-                            .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                            .map((row) => {
-                                return (
-                                    <TableRow hover role="checkbox" tabIndex={-1} key={row.code}>
-                                        {columns.map((column) => {
-                                            const value = row[column.id];
-                                            return (
-                                                <TableCell key={column.id} align={column.align}>
-                                                    {cell(column, value)}
-                                                </TableCell>
-                                            );
-                                        })}
-                                    </TableRow>
-                                );
-                            })}
-                    </TableBody>
-                </Table>
-            </TableContainer>
-            <TablePagination
-                labelRowsPerPage="Số hàng"
-                rowsPerPageOptions={[10, 20, 50, { value: -1, label: "Tất cả" }]}
-                component="div"
-                count={data.length}
-                rowsPerPage={rowsPerPage}
-                page={page}
-                onChangePage={handleChangePage}
-                onChangeRowsPerPage={handleChangeRowsPerPage}
+            <MaterialTable
+                className={classes.table}
+                title="Danh sách chuyến xe"
+                columns={taskListColumn}
+                options={{
+                    filtering: true,
+                    search: true,
+                    actionsColumnIndex: -1,
+                    selection: false,
+                }}
+                localization={localization}
+                data={data}
+                tableRef={(ref) => setTableRef(ref)}
+                actions={[
+                    (postTrip) => ({
+                        icon: () => getIcon(postTrip),
+                        onClick: (event, postOrder) => onClickActions(postOrder),
+                    }),
+                    (postTrip) => ({
+                        icon: () => getNotificationIcon(postTrip),
+                        onClick: (event, postOrder) => onClickNotificationActions(postOrder),
+                    })
+                ]}
             />
             <AlerDialog
                 alertAction={alertAction}
                 setAlertAction={setAlertAction}
             />
-        </Paper>
+        </MuiPickersUtilsProvider>
     );
 }
 

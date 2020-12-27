@@ -76,6 +76,22 @@ export const post = {
       icon: "StarBorder",
       text: "Thực thi chuyến xe",
       child: [],
+    },
+    {
+      id: "MENU_POST_MAN_VIEW_POST_ASSIGNMENT",
+      path: "/postoffice/view-postman-assignment",
+      isPublic: false,
+      icon: "StarBorder",
+      text: "Xem đơn hàng cần giao và nhận",
+      child: [],
+    },
+    {
+      id: "MENU_POST_MAN_VIEW_POST_TRIP",
+      path: "/postoffice/view-postman-post-trip",
+      isPublic: false,
+      icon: "StarBorder",
+      text: "Xem thông tin chuyến xe",
+      child: [],
     }
   ],
 };
