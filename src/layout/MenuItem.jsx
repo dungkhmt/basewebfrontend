@@ -13,10 +13,11 @@ import classNames from "classnames";
 import { NavLink } from "react-router-dom";
 import ArrowDropDownIcon from "@material-ui/icons/ArrowDropDown";
 import { connect } from "react-redux";
+import { whiteColor } from "../assets/jss/material-dashboard-react";
 
 const useStyles = makeStyles(() => ({
   firstOrderMenu: {
-    ...styles.firstOrderMenu,
+    color: whiteColor,
     "&.MuiListItem-button:hover": {
       backgroundColor: "rgba(200, 200, 200, 0.2)",
     },
