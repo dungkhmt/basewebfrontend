@@ -12,13 +12,18 @@ export function AccountMenu(props) {
     props.handleClose();
     history.push("/userlogin/" + props.partyId);
   };
+
+  const isMenuOpen = Boolean(props.anchorEl);
+
   return (
     <Menu
-      id="simple-menu"
       anchorEl={props.anchorEl}
+      id={props.id}
       keepMounted
-      open={Boolean(props.anchorEl)}
-      onClose={props.handleClose}
+      open={isMenuOpen}
+      onClose={props.handleMenuClose}
+      anchorOrigin={{ vertical: "top", horizontal: "right" }}
+      transformOrigin={{ vertical: "top", horizontal: "right" }}
     >
       <MenuItem>
         Name: {props.name} <br /> UserName: {props.userName}{" "}
