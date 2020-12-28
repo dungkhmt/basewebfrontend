@@ -20,17 +20,15 @@ import { DialogContent } from "@material-ui/core";
 import { API_URL } from "../../../config/config";
 import { Link } from "react-router-dom";
 import Upload from "../../../utils/Upload";
+import Autocomplete from '@material-ui/lab/Autocomplete';
 const columns = [
-  { label: "Mã bưu cục", id: "postOfficeId", minWidth: 150 },
-  { label: "Tên bưu cục", id: "postOfficeName", minWidth: 200 },
-  { label: "Địa chỉ", id: "postalAddress", minWidth: 150 },
-  {
-    label: "Cấp bưu cục",
-    id: "postOfficeLevel",
-    minWidth: 20,
-    align: "right",
-    format: (value) => value.toLocaleString(),
-  },
+  { label: "Mã số chuyến", id: "postOfficeFixedTripId", minWidth: 150, type: 'normal' },
+  { label: "Xuất phát", id: "fromPostOffice.postOfficeName", minWidth: 200, type: 'normal' },
+  { label: "Điểm đến", id: "toPostOffice.postOfficeName", minWidth: 150, type: 'normal' },
+  { label: "Từ ngày", id: "fromDate", minWidth: 150, type: 'date' },
+  { label: "Đến ngày", id: "thruDate", minWidth: 150, type: 'date' },
+  { label: "Giờ đi", id: "scheduleDepartureTime", minWidth: 50, type: 'normal' },
+  { label: "Chi tiết", id: "postalAddress", minWidth: 150, type: 'address' },
 ];
 
 const useStyles = makeStyles({
@@ -42,7 +40,14 @@ const useStyles = makeStyles({
   },
 });
 
-export default function PostOfficeList(props) {
+function formatDate(date) {
+  var day = "0" + date.getDate();
+  var month = "0" + (date.getMonth() + 1);
+  var year = date.getFullYear();
+  return day.substr(-2) + '-' + month.substr(-2) + '-' + year;
+}
+
+export default function TripList() {
   const classes = useStyles();
   const token = useSelector((state) => state.auth.token);
   const [page, setPage] = useState(0);
@@ -58,12 +63,12 @@ export default function PostOfficeList(props) {
     setPage(0);
   };
 
-  const deleteCallBack = (postOfficeId) => {
-    setData(data.filter((item) => item.postOfficeId != postOfficeId));
+  const deleteCallBack = (postOfficeFixedTripId) => {
+    setData(data.filter((item) => item.postOfficeFixedTripId != postOfficeFixedTripId));
   };
 
   useEffect(() => {
-    fetch(API_URL + "/get-all-post-office", {
+    fetch(API_URL + "/get-post-trip-list", {
       method: "GET",
       headers: {
         "content-type": "application/json",
@@ -79,7 +84,7 @@ export default function PostOfficeList(props) {
   return (
     <Paper className={classes.root}>
       <Typography variant="h5" component="h2" align="center">
-        Danh sách bưu cục
+        Danh sách chuyến xe
       </Typography>
       <Button
         component={Link}
@@ -92,7 +97,7 @@ export default function PostOfficeList(props) {
       </Button>
       <Button
         component={Link}
-        to={"/postoffice/create"}
+        to={"/postoffice/createtrip"}
         variant="contained"
         color="primary"
         style={{ margin: 10, float: "right" }}
@@ -129,27 +134,38 @@ export default function PostOfficeList(props) {
                 return (
                   <TableRow hover role="checkbox" tabIndex={-1} key={row.code}>
                     {columns.map((column) => {
-                      const value = row[column.id];
+                      let value;
+                      column.id.split(".").reduce((prev, cur) => {
+                        if (prev) {
+                          return value = prev[cur];
+                        }
+                        else {
+                          return value = row[cur];
+                        }
+                      }, undefined)
                       return (
                         <TableCell key={column.id} align={column.align}>
-                          {column.id === "postalAddress" ? (
+                          {column.type === "address" ? (
                             <Link
-                              to={
-                                "/geo/location/map/" +
-                                value.contactMechId
+                              to={{
+                                pathname: "/postoffice/tripinfo",
+                                state: {
+                                  value: row
+                                }
+                              }
                               }
                             >
                               Xem địa chỉ
                             </Link>
-                          ) : (
-                              value
-                            )}
+                          )
+                            : column.type === 'date' ? formatDate(new Date(value)) : value
+                          }
                         </TableCell>
                       );
                     })}
                     <TableCell>
                       <DeleteButton
-                        postOffice={row}
+                        postTrip={row}
                         callback={deleteCallBack}
                       />
                     </TableCell>
@@ -179,14 +195,14 @@ function DeleteButton(props) {
 
   const handleRemove = () => {
     setOpen(false);
-    fetch(API_URL + "/delete-post-office/" + props.postOffice.postOfficeId, {
+    fetch(API_URL + "/delete-post-trip/" + props.postTrip.postOfficeFixedTripId, {
       method: "DELETE",
       headers: {
         "content-type": "application/json",
         "X-Auth-Token": token,
       },
     });
-    props.callback(props.postOffice.postOfficeId);
+    props.callback(props.postTrip.postOfficeFixedTripId);
   };
 
   const handleCancel = (event) => {
@@ -201,7 +217,7 @@ function DeleteButton(props) {
   return (
     <div>
       <IconButton
-        value={props.postOffice}
+        value={props.postTrip}
         aria-label="delete"
         align="right"
         onClick={handleDeleteClick}
@@ -209,9 +225,9 @@ function DeleteButton(props) {
         <DeleteIcon />
       </IconButton>
       <Dialog open={open} onClose={handleCancel}>
-        <DialogTitle>{"Xóa bưu cục?"}</DialogTitle>
+        <DialogTitle>{"Xóa chuyến xe?"}</DialogTitle>
         <DialogContent>
-          {"Xác nhận xóa bưu cục " + props.postOffice.postOfficeName}
+          {"Xác nhận chuyến xe " + props.postTrip.postOfficeFixedTripId}
         </DialogContent>
         <DialogActions>
           <Button onClick={handleRemove} color="primary">

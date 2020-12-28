@@ -7,7 +7,7 @@ export const post = {
   child: [
     {
       id: "MENU_POST_VIEW_VEHICLE",
-      path: "",
+      path: "/postoffice/triplist",
       isPublic: false,
       icon: "StarBorder",
       text: "Danh sách phương tiện",
@@ -15,7 +15,7 @@ export const post = {
     },
     {
       id: "MENU_POST_VIEW_CUSTOMER",
-      path: "",
+      path: "/postoffice/userlist",
       isPublic: false,
       icon: "StarBorder",
       text: "Danh sách khách hàng",
@@ -31,7 +31,7 @@ export const post = {
     },
     {
       id: "MENU_POST_VIEW_POST_ORDER",
-      path: "",
+      path: "/postoffice/orderlist",
       isPublic: false,
       icon: "StarBorder",
       text: "DS đơn hàng chuyển phát",
@@ -47,7 +47,7 @@ export const post = {
     },
     {
       id: "MENU_POST_VIEW_PACKAGE_PICKUP_PLAN",
-      path: "",
+      path: "/postoffice/pickanddelivery",
       isPublic: false,
       icon: "StarBorder",
       text: "Lập kế hoạch thu gom bưu kiện",
@@ -61,5 +61,37 @@ export const post = {
       text: "Lập kế hoạch phát bưu kiện",
       child: [],
     },
+    {
+      id: "MENU_POST_CREATE_POST_SHIP_ORDER",
+      path: "/postoffice/createshiporder",
+      isPublic: false,
+      icon: "StarBorder",
+      text: "Tạo đơn chuyển phát",
+      child: [],
+    },
+    {
+      id: "MENU_POST_CREATE_EXECUTE_POST_TRIP",
+      path: "/postoffice/executetrip",
+      isPublic: false,
+      icon: "StarBorder",
+      text: "Thực thi chuyến xe",
+      child: [],
+    },
+    {
+      id: "MENU_POST_MAN_VIEW_POST_ASSIGNMENT",
+      path: "/postoffice/view-postman-assignment",
+      isPublic: false,
+      icon: "StarBorder",
+      text: "Xem đơn hàng cần giao và nhận",
+      child: [],
+    },
+    {
+      id: "MENU_POST_MAN_VIEW_POST_TRIP",
+      path: "/postoffice/view-postman-post-trip",
+      isPublic: false,
+      icon: "StarBorder",
+      text: "Xem thông tin chuyến xe",
+      child: [],
+    }
   ],
 };

@@ -34,7 +34,7 @@ export const localization = {
     groupedBy: "Được nhóm bởi",
   },
   header: {
-    actions: "",
+    actions: "Actions",
   },
   pagination: {
     labelDisplayedRows: "{from}-{to} của {count}",

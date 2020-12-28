@@ -98,6 +98,7 @@ export default function SignIn(props) {
   if (props.isAuthenticated === true) {
     props.getScreenSecurityInfo(history);
     if (history.location.state && history.location.state.from) {
+      props.getMenu();
       history.replace(history.location.state.from);
       return null;
     } else
@@ -128,8 +129,8 @@ export default function SignIn(props) {
                 {props.errorMsg}
               </Typography>
             ) : (
-              ""
-            )}
+                ""
+              )}
             <TextField
               variant="outlined"
               margin="normal"
