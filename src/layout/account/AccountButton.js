@@ -44,11 +44,11 @@ export default function AccountButton(props) {
   };
   useEffect(() => {
     request(token, history, "get", "/my-account/", (res) => {
-      if (res !== undefined && res !== null) {
-        setName(res.name);
-        setUserName(res.user);
-        setPartyId(res.partyId);
-      }
+      let data = res.data;
+
+      setName(data.name);
+      setUserName(data.user);
+      setPartyId(data.partyId);
     });
   }, []);
 
@@ -61,7 +61,9 @@ export default function AccountButton(props) {
         aria-haspopup="true"
         onClick={handleProfileMenuOpen}
       >
-        <Avatar className={classes.avatar}>{name !== "" ? name[0] : ""}</Avatar>
+        <Avatar className={classes.avatar}>
+          {name !== "" ? name.substring(0, 1) : ""}
+        </Avatar>
       </IconButton>
       <AccountMenu
         anchorEl={anchorEl}
