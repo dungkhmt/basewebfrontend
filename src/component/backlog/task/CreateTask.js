@@ -135,7 +135,7 @@ export default function CreateTask(props) {
       dueDate: taskDueDate,
       attachmentPaths: attachmentFiles.map(e => e.name)
     };
-
+    console.log(addTaskBody);
     let task = await authPost(dispatch, token, '/backlog/add-task', addTaskBody).then(r => r.json());
 
     let addAssignmentBody = {

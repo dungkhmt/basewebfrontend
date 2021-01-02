@@ -5,9 +5,7 @@ import { authPost, authGet, authPostMultiPart } from "../../../api";
 import { Redirect, useHistory } from "react-router-dom";
 import { toFormattedDateTime } from "../../../utils/dateutils";
 import {
-  Grid, Button, Card, CardContent, Dialog, Icon,
-  DialogActions, DialogContent, DialogTitle, List,
-  ListItem, FormGroup, FormControlLabel, Checkbox,
+  Grid, Button, Card, CardContent, Icon,
   TextField, Tooltip, IconButton, Box, Chip, Typography,
   TableContainer, Table, TableHead, TableRow, TableCell, TableBody,
   Paper, FormControl, InputLabel, Select, MenuItem, Snackbar,
@@ -21,6 +19,7 @@ import PeopleIcon from '@material-ui/icons/People';
 import BarChartIcon from '@material-ui/icons/BarChart';
 import ArrowBackIcon from '@material-ui/icons/ArrowBack';
 import EditIcon from '@material-ui/icons/Edit';
+import PlaylistAddCheckIcon from '@material-ui/icons/PlaylistAddCheck';
 import { API_URL } from "../../../config/config";
 import {
   localization
@@ -32,17 +31,13 @@ import AlertDialog from '../AlertDialog';
 import { HiLightBulb } from 'react-icons/hi';
 import SuggestionResult from '../suggestion/SuggestionResult';
 import OverlayLoading from '../components/OverlayLoading';
+import { MemberList, AddMember } from './Members';
 
 const useStyles = makeStyles((theme) => ({
   root: {
     "& .MuiInputBase-root.Mui-disabled": {
       color: "rgba(0, 0, 0, 1)"
     }
-  },
-  dialogPaper: {
-    minHeight: '50vh',
-    maxHeight: '70vh',
-    minWidth: '20vw',
   },
   functionBtn: {
     margin: "0 0 2px 2px"
@@ -79,11 +74,7 @@ export default function ProjectDetail(props) {
   const tableRef = useRef(null);
   const [project, setProject] = useState({});
   const [taskList, setTaskList] = useState([]);
-  const [projectMember, setProjectMember] = useState([]);
-  const [scroll, setScroll] = useState('paper');
   const [isPermissive, setIsPermissive] = useState(true);
-  const [allUser, setAllUser] = useState([]);
-  const [isMember, setIsMember] = useState({});
   const [isShowMyTask, setIsShowMyTask] = useState(false);
   const [myTask, setMyTask] = useState([]);
   const [openUpdateStatusAlert, setOpenUpdateStatusAlert] = useState(false);
@@ -93,11 +84,11 @@ export default function ProjectDetail(props) {
   const [suggestData, setSuggestData] = useState([]);
   const [suggestChartData, setSuggestChartData] = useState({});
   const [openSuggestAlert, setOpenSuggestAlert] = useState(false);
+  const [openSuggestInstructionAlert, setOpenSuggestInstructionAlert] = useState(false);
 
   const [addMemberDialogOpen, setAddMemberDialogOpen] = useState(false);
   const [showMemberListDialogOpen, setShowMemberListDialogOpen] = useState(false);
-  const [inviteResultAlert, setInviteResultAlert] = useState(false);
-  const [inviteAlertProperties, setInviteAlertProperties] = useState({});
+  const [reloadMemberList, setReloadMemberList] = useState(0);
   const [isTableSelectable, setIsTableSelectable] = useState(false);
   const [openingTasks, setOpeningTasks] = useState([]);
 
@@ -105,8 +96,6 @@ export default function ProjectDetail(props) {
   const [priorityPool, setPriorityPool] = useState([]);
   const [statusPool, setStatusPool] = useState([]);
   const [openOverlayLoading, setOpenOverlayLoading] = useState(false);
-  const [isRequesting, setIsRequesting] = useState(false);
-
 
   const backlogProjectId = props.match.params.backlogProjectId;
 
@@ -154,7 +143,10 @@ export default function ProjectDetail(props) {
       status[task.backlogTask.backlogTaskId] = task.backlogTask.statusId;
     });
     let myTasks = tasks.filter(task => {
-      return task.assignment.filter(element => { return element === myAccount.user }).length > 0;
+      return (
+        task.assignment.filter(element => { return element === myAccount.user }).length > 0
+        || task.backlogTask.createdByUserLoginId === myAccount.user
+      );
     });
     let openingTasks = tasks.filter(e => (
       e.backlogTask.statusId === "TASK_OPEN" && 
@@ -167,23 +159,6 @@ export default function ProjectDetail(props) {
     setMyTask(myTasks);
   }
 
-  async function getUser() {
-    let users = await authGet(dispatch, token, "/backlog/get-all-user");
-    let members = await authGet(dispatch, token, "/backlog/get-members-of-project/" + backlogProjectId);
-
-    setAllUser(users);
-    setProjectMember(members);
-
-    let check = {};
-    if (users != null) {
-      users.forEach(user => {
-        if (members.find(member => member.userLoginId === user.userLoginId) == null)
-          check[user.userLoginId] = false;
-        // else check[user.userLoginId] = false;
-      })
-    }
-    setIsMember(check);
-  }
   function getTaskCategory() {
     setCategoryPool(TASK_CATEGORY.LIST);
   }
@@ -199,55 +174,7 @@ export default function ProjectDetail(props) {
     getTaskPriority();
     getTaskStatus();
     getProjectDetail(backlogProjectId);
-    getUser();
   }, []);
-
-  // members
-  const onCloseAddMemberDialog = (event) => {
-    setAddMemberDialogOpen(false);
-  };
-  const onCloseShowMemberListDialog = (event) => {
-    setShowMemberListDialogOpen(false);
-  };
-  const onCloseInviteResultAlert = () => {
-    setInviteResultAlert(false);
-  }
-  const onInviteMember = () => {
-    setAddMemberDialogOpen(false);
-    let newMember = [];
-    for (let key in isMember) {
-      if (isMember[key]) newMember.push(key);
-    }
-    let input = {
-      backlogProjectId: backlogProjectId,
-      usersLoginId: newMember
-    };
-    authPost(dispatch, token, "/backlog/add-member", input)
-      .then((res) => res.json())
-      .then((res) => {
-        if (res == null || res.backlogProjectId == null) {
-          setInviteAlertProperties({
-            severity: 'error',
-            title: 'Mời thành viên thất bại',
-            content: 'Mời thất bại. Vui lòng thử lại.'
-          })
-          setInviteResultAlert(true);
-          return;
-        } else {
-          setInviteAlertProperties({
-            severity: 'success',
-            title: 'Mời thành viên thành công',
-            content: 'Mời thành công.'
-          })
-          setInviteResultAlert(true);
-          getUser();
-          return;
-        }
-      })
-  }
-  const handleChangeAddMember = (event) => {
-    setIsMember({ ...isMember, [event.target.name]: event.target.checked })
-  }
 
   // quick update status
   const handleUpdateTaskStatus = (event, taskIndex) => {
@@ -429,13 +356,6 @@ export default function ProjectDetail(props) {
       getSuggestion();
     }
   }
-  const onCloseResult = (event) => {
-    setOpenSuggestionResultDialog(false);
-  }
-  const suggestionApplyCallback = () => {
-    setIsTableSelectable(false);
-    getProjectDetail(backlogProjectId);
-  }
   //
   const downloadFiles = (item) => {
     fetch(`${API_URL}/backlog/download-attachment-files/${item}`, {
@@ -483,7 +403,7 @@ export default function ProjectDetail(props) {
                     </Tooltip>
                     <Box p={1} display="inline-flex">
                       <Typography component="div" align="left">
-                        <Box fontWeight="fontWeightBold" fontSize="subtitle1.fontSize" m={1}>Mã dự án: {project.backlogProjectId}</Box>
+                        <Box fontWeight="fontWeightBold" fontSize="subtitle1.fontSize" m={1}>Mã dự án: {project.backlogProjectCode}</Box>
                         <Box fontWeight="fontWeightBold" fontSize="subtitle1.fontSize" m={1}>Tên dự án: {checkNull(project['backlogProjectName'])}</Box>
                       </Typography>
                     </Box>
@@ -513,9 +433,10 @@ export default function ProjectDetail(props) {
                       onClick={event => { 
                         tableRef.current.onAllSelected(false);
                         setIsRowSelected([]);
-                        setIsTableSelectable(!isTableSelectable) 
+                        if(!isTableSelectable) setOpenSuggestInstructionAlert(true);
+                        setIsTableSelectable(!isTableSelectable);
                       }}>
-                      <HiLightBulb color={isTableSelectable ? '#3F51B5' : '#757575'} size='1.5em' />
+                      <HiLightBulb color={isTableSelectable ?  '#ff9100' : '#3F51B5'} size='1.5em' />
                     </IconButton>
                   </Tooltip>
                 </Grid>
@@ -594,7 +515,7 @@ export default function ProjectDetail(props) {
                         </Box>
 
                         {rowData.updateStatusPermission ?
-                          (<Box>
+                          (<Box mt={1}>
                             <FormControl>
                               <InputLabel>Cập nhật trạng thái</InputLabel>
                               <Select
@@ -632,10 +553,18 @@ export default function ProjectDetail(props) {
               }
               actions={[
                 {
+                  disabled: !isShowMyTask,
                   icon: () => { return <ListAltIcon color={isShowMyTask ? 'primary' : 'default'} fontSize='large' /> },
+                  tooltip: 'Tất cả task',
+                  isFreeAction: true,
+                  onClick: () => { setIsShowMyTask(false) }
+                },
+                {
+                  disabled: isShowMyTask,
+                  icon: () => { return <PlaylistAddCheckIcon color={!isShowMyTask ? 'primary' : 'default'} fontSize='large' /> },
                   tooltip: 'Task của tôi',
                   isFreeAction: true,
-                  onClick: () => { setIsShowMyTask(!isShowMyTask) }
+                  onClick: () => { setIsShowMyTask(true) }
                 },
                 {
                   icon: () => { return <AddBoxIcon color='primary' fontSize='large' /> },
@@ -663,77 +592,20 @@ export default function ProjectDetail(props) {
           </CardContent>
         </Card>
 
-        {/* add member dialog */}
-        <Dialog
+        <AddMember
           open={addMemberDialogOpen}
-          onClose={onCloseAddMemberDialog}
-          aria-labelledby="form-dialog-title"
-          scroll={scroll}
-          classes={{ paper: classes.dialogPaper }}
-        >
-          <DialogTitle id="form-dialog-title">
-            Thêm thành viên
-          </DialogTitle>
-          <DialogContent dividers={scroll === 'paper'}>
-            <FormGroup>
-              {Object.keys(isMember).map((key, index) => (
-                <FormControlLabel
-                  control={
-                    <Checkbox
-                      checked={isMember[key]}
-                      onChange={handleChangeAddMember}
-                      name={key}
-                    />
-                  }
-                  label={key}
-                />
-              ))}
-            </FormGroup>
-          </DialogContent>
-          <DialogActions>
-            <Button onClick={onInviteMember} color="primary">
-              Lưu
-            </Button>
-            <Button onClick={onCloseAddMemberDialog} color="primary">
-              Hủy
-            </Button>
-          </DialogActions>
-        </Dialog>
+          onClose={() => setAddMemberDialogOpen(false)}
+          projectId={backlogProjectId}
+          successCallback={() => {
+            setReloadMemberList(reloadMemberList + 1);
+          }}
+        />
 
-        {/* member list */}
-        <Dialog
+        <MemberList
           open={showMemberListDialogOpen}
-          onClose={onCloseShowMemberListDialog}
-          scroll={scroll}
-          aria-labelledby="list-scroll-dialog-title"
-          classes={{ paper: classes.dialogPaper }}
-        >
-          <DialogTitle id="list-scroll-dialog-title">
-            Danh sách thành viên
-          </DialogTitle>
-          <DialogContent dividers={scroll === 'paper'}>
-            <List>
-              {projectMember.map(member => (
-                <ListItem key={member.userLoginId} value={member.userLoginId}>
-                  {member.userLoginId}
-                </ListItem>
-              ))}
-            </List>
-          </DialogContent>
-        </Dialog>
-
-        <AlertDialog
-          open={inviteResultAlert}
-          onClose={onCloseInviteResultAlert}
-          {...inviteAlertProperties}
-          buttons={[
-            {
-              onClick: onCloseInviteResultAlert,
-              color: "primary",
-              autoFocus: true,
-              text: "OK"
-            }
-          ]}
+          onClose={() => setShowMemberListDialogOpen(false)}
+          projectId={backlogProjectId}
+          reloadData={reloadMemberList}
         />
 
         <AlertDialog
@@ -745,6 +617,22 @@ export default function ProjectDetail(props) {
           buttons={[
             {
               onClick: () => {setOpenSuggestAlert(false)},
+              color: "primary",
+              autoFocus: true,
+              text: "OK"
+            }
+          ]}
+        />
+
+        <AlertDialog
+          open={openSuggestInstructionAlert}
+          onClose={() => {setOpenSuggestInstructionAlert(false)}}
+          severity="info"
+          title="Tính năng gợi ý phân công"
+          content="Chọn các task rồi ấn Đề xuất gợi ý"
+          buttons={[
+            {
+              onClick: () => {setOpenSuggestInstructionAlert(false)},
               color: "primary",
               autoFocus: true,
               text: "OK"
@@ -765,12 +653,15 @@ export default function ProjectDetail(props) {
 
         <SuggestionResult
           open={openSuggestionResultDialog}
-          onClose={onCloseResult}
+          onClose={() => setOpenSuggestionResultDialog(false)}
           suggestData={suggestData}
           setSuggestChartData={setSuggestChartData}
           suggestChartData={suggestChartData}
           setSuggestData={setSuggestData}
-          applyCallback={suggestionApplyCallback}
+          applyCallback={() => {
+            setIsTableSelectable(false);
+            getProjectDetail(backlogProjectId);
+          }}
         />
 
         <OverlayLoading

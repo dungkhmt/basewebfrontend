@@ -206,7 +206,7 @@ export default function ProjectDashboard(props) {
           <Paper>
             <Box p={1}>
               <Typography component="div" align="center">
-                <Box fontWeight="fontWeightBold" fontSize="h6.fontSize" m={1}>Mã dự án: {project.backlogProjectId}</Box>
+                <Box fontWeight="fontWeightBold" fontSize="h6.fontSize" m={1}>Mã dự án: {project.backlogProjectCode}</Box>
                 <Box fontWeight="fontWeightBold" fontSize="h6.fontSize" m={1}>Tên dự án: {checkNull(project['backlogProjectName'])}</Box>
               </Typography>
             </Box>

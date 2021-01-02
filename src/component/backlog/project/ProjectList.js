@@ -13,6 +13,9 @@ import changePageSize, {
   localization,
   tableIcons,
 } from '../../../utils/MaterialTableUtils';
+import {
+  TABLE_STRIPED_ROW_COLOR
+} from '../BacklogConfig';
 
 const useStyles = makeStyles((theme) => ({
   grid: {
@@ -29,10 +32,8 @@ export default function ProjectList() {
   const classes = useStyles();
 
   const columns = [
-    {
-      title: 'Mã dự án',
-      field: 'backlogProjectId',
-    },
+    { title: 'ID dự án', field: 'backlogProjectId' },
+    { title: 'Mã dự án', field: 'backlogProjectCode' },
     { title: 'Tên dự án', field: 'backlogProjectName' },
   ];
 
@@ -40,6 +41,7 @@ export default function ProjectList() {
 
   async function getProjectList() {
     projectList = await authGet(dispatch, token, '/backlog/get-all-project-by-user');
+    projectList.sort((a, b) => { return (a.backlogProjectCode > b.backlogProjectCode) - (a.backlogProjectCode < b.backlogProjectCode) });
     setProjectList(projectList);
   }
 
@@ -53,7 +55,10 @@ export default function ProjectList() {
           title={"Danh sách dự án"}
           columns={columns}
           data={projectList}
-          options={{ search: false }}
+          options={{ 
+            search: false,
+            rowStyle: rowData => { return { backgroundColor: TABLE_STRIPED_ROW_COLOR[rowData.tableData.id % TABLE_STRIPED_ROW_COLOR.length] } },
+          }}
           localization={localization}
           onRowClick={(event, rowData) => {
             history.push("/backlog/project/" + rowData.backlogProjectId);

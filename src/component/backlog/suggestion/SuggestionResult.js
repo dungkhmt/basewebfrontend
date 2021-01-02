@@ -22,7 +22,7 @@ const useStyles = makeStyles((theme) => ({
     "& .MuiDialogContent-root": {
       padding: '0px',
       width: '700px',
-      height: '650px'
+      height: '680px'
     },
     "& .MuiDialog-paperWidthXs, .MuiDialog-paperWidthMd, .MuiDialog-paperWidthSm, .MuiDialog-paperWidthLg": {
       maxWidth: '100%',
@@ -159,7 +159,7 @@ export default function SuggestionResult(props) {
               <CloseIcon />
             </IconButton>
             <Typography variant="h6" style={{ flex: 1 }}>
-              Bảng gợi ý phân công
+              Kết quả gợi ý phân công
             </Typography>
             <Button variant="contained" color="secondary" onClick={applySuggestion}>
               Phê duyệt
