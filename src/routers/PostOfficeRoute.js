@@ -14,6 +14,7 @@ import ExecuteTrip from "../component/postsystem/posttrip/ExecuteTrip";
 import PostOrderDetail from "../component/postsystem/postshiporder/PostOrderDetail";
 import PickAndDelivery from "../component/postsystem/planning/PickAndDelivery";
 import PickAndDeliveryDetail from "../component/postsystem/planning/PickAndDeliveryDetail";
+import PostmanExecuteTrip from "../component/postsystem/posttrip/PostmanExecuteTrip";
 export default function PostOfficeRoute() {
   let { path, url } = useRouteMatch();
   return (
@@ -33,6 +34,7 @@ export default function PostOfficeRoute() {
         <Route component={PickAndDelivery} exact path={`${path}/pickanddelivery`} />
         <Route component={PickAndDeliveryDetail} exact path={`${path}/pickanddeliverydetail`} />
         <Route component={ExecuteTrip} exact path={`${path}/executetrip`} />
+        <Route component={PostmanExecuteTrip} exact path={`${path}/view-postman-post-trip`} />
       </Switch>
     </div>
   );

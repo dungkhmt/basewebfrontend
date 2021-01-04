@@ -1,4 +1,4 @@
-import { failed } from "./action/Auth";
+import { failed, error } from "./action/Auth";
 import { API_URL } from "./config/config";
 import axios from "axios";
 import { errorNoti, infoNoti } from "./utils/Notification";
@@ -52,9 +52,10 @@ export const authGet = (dispatch, token, url) => {
       if (!res.ok) {
         if (res.status === 401) {
           dispatch(failed());
-          throw Error();
-        } else {
-          // dispatch(error(res.status));
+          throw Error("Unauthorized");
+        }
+        else {
+          console.log(res)
           throw Error();
         }
         return null;
@@ -158,16 +159,16 @@ export const request = async (
       // The request was made and the server responded with a status code that falls out of the range of 2xx.
       switch (e.response.status) {
         case 401:
-          if(isFunction(errorHandlers[401])){
+          if (isFunction(errorHandlers[401])) {
             errorHandlers[401](e)
-          } else{
+          } else {
             history.push({ pathname: "/login" });
           }
           break;
         case 403:
-          if(isFunction(errorHandlers[403])){
+          if (isFunction(errorHandlers[403])) {
             errorHandlers[403](e)
-          } else{
+          } else {
             infoNoti("Bạn cần được cấp quyền để thực hiện hành động này.");
           }
           break;
@@ -189,7 +190,7 @@ export const request = async (
         e.request
       );
 
-      if(isFunction(errorHandlers['noResponse'])) {
+      if (isFunction(errorHandlers['noResponse'])) {
         errorHandlers['noResponse'](e)
       }
 

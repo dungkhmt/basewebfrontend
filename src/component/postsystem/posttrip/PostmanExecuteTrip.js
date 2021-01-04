@@ -87,7 +87,7 @@ function errHandling(err) {
     console.trace(err);
 }
 
-export default function ExecuteTrip() {
+export default function PostmanExecuteTrip() {
     const classes = useStyles();
     const token = useSelector((state) => state.auth.token);
     const [page, setPage] = useState(0);
@@ -103,6 +103,7 @@ export default function ExecuteTrip() {
     const [activeAssignments, setActiveAssignments] = useState({});
     const [activePostTrip, setActivePostTrip] = useState();
     const [fixedTripExecutes, setFixedTripExecutes] = useState({});
+    const [postmanId, setPostmanId] = useState();
     const taskListColumn = [
         { title: "Mã số chuyến", field: "postOfficeFixedTripId", customSort: (a, b) => { return a.havingOrder - b.havingOrder }, defaultSort: 'desc' },
         {
@@ -190,13 +191,32 @@ export default function ExecuteTrip() {
         setOpen(true);
     }
     const onClickActions = (row) => {
+        let row1 = row
         switch (row.status) {
             case 'WAITING':
-                setAlertAction(
+                setConfirmAction(
                     {
                         open: true,
-                        message: 'Chuyến xe đang chờ thực thi !',
-                        title: 'Thông báo'
+                        handleSuccess: () => {
+                            authPost(dispatch, token, '/update-execute-trip', {
+                                postOfficeFixedTripId: row1.postOfficeFixedTripId,
+                                status: "EXECUTING",
+                                postOfficeFixedTripExecuteId: row1.postOfficeFixedTripExecuteId,
+                                postmanId: postmanId
+                            })
+                                .then((res) => {
+                                    row1.status = 'EXECUTING';
+                                    setOpen(false);
+                                    setConfirmAction({ open: false })
+                                    setAlertAction({
+                                        open: true,
+                                        message: 'Nhận chuyến xe thành công',
+                                        title: 'Thông báo'
+                                    })
+                                })
+                        },
+                        content: 'nhận chuyến xe',
+                        title: 'Nhận chuyến xe'
                     }
                 )
                 break
@@ -204,43 +224,38 @@ export default function ExecuteTrip() {
                 setConfirmAction(
                     {
                         open: true,
-                        handleSuccess: {},
-                        content: 'Chuyến xe đang thực thi'
-                    }
-                )
-                break
-            default:
-                let row1 = row
-                setConfirmAction(
-                    {
-                        open: true,
                         handleSuccess: () => {
-                            authPost(dispatch, token, '/execute-trip', {
-                                postOfficeFixedTripId: row1.postOfficeFixedTripId,
-                                status: "WAITING",
-                                postShipOrderTripPostOfficeAssignmentIds: row1.assignment.map(assignment => assignment.postShipOrderPostOfficeTripAssignmentId)
+                            authPost(dispatch, token, '/update-execute-trip', {
+                                status: "ARRIVED",
+                                postOfficeFixedTripExecuteId: row1.postOfficeFixedTripExecuteId,
                             })
                                 .then((res) => {
-                                    let newFixedTripExecutes = copyObj(fixedTripExecutes)
-                                    newFixedTripExecutes[row1.postOfficeFixedTripId] = res.postOfficeFixedTripExecuteId
-                                    setFixedTripExecutes(newFixedTripExecutes)
-                                    row1.status = 'WAITING';
-                                    row1.postOfficeFixedTripExecuteId = res.postOfficeFixedTripExecuteId;
-                                    setFixedTripExecutes(newFixedTripExecutes);
+                                    row1.status = 'ARRIVED';
                                     setOpen(false);
                                     setConfirmAction({ open: false })
                                     setAlertAction({
                                         open: true,
-                                        message: 'Thực thi chuyến xe thành công, đang chờ xác nhận',
+                                        message: 'Kết thúc chuyến xe thành công',
                                         title: 'Thông báo'
                                     })
                                 })
                         },
-                        content: 'thực thi chuyến xe',
-                        title: 'Thực thi chuyến xe'
+                        content: 'kết thúc chuyến xe',
+                        title: 'Kết thúc chuyến xe'
                     }
                 )
+                break
         }
+    }
+
+    const executetrip = (row) => {
+        authPost(dispatch, token, "/execute-trip", {
+            "postOfficeFixedTripId": "baffe995-8134-4381-bf23-36ea30546b3d",
+            "status": "WAITING",
+            "postShipOrderFixedTripPostOfficeAssignmentIds": [
+                "eb958553-b48a-4dbd-824d-8d4f8c67d71c"
+            ]
+        })
     }
 
     const handleRemoveAssignmnet = (assignment => {
@@ -308,65 +323,54 @@ export default function ExecuteTrip() {
         { title: "Số điện thoại người nhận", field: "postOrder.toCustomer.phoneNum" },
         { title: "Địa chỉ Người gửi", field: "postOrder.fromCustomer.postalAddress.address", sorting: false },
         { title: "Địa chỉ người nhận", field: "postOrder.toCustomer.postalAddress.address", sorting: false },
-        {
-            title: "", field: "",
-            render: assignment => {
-                return (
-                    <IconButton color="primary"
-                        onClick={(e) => { handleRemoveAssignmnet(assignment) }}
-                        disabled={!assignment.choosen}
-                    >
-                        <IndeterminateCheckBoxIcon />
-                    </IconButton>
-                )
-            }
-        }
     ]
 
     useEffect(() => {
-        authGet(dispatch, token, "/get-post-trip-list", {})
-            .then((response) => {
-                setData(response)
-                authGet(dispatch, token, "/get-order-by-trip?fromDate=" + formatDate(chooseDate) + "&toDate=" + formatDate(chooseDate), {})
-                    .then(res => {
-                        setAvailableAssignment(res)
-                        let newData = copyObj(response);
-                        newData.forEach(fixedtrip => {
-                            fixedtrip.assignment = []
-                            fixedtrip.havingOrder = false
-                            res.forEach(assignment => {
-                                if (assignment.postOfficeTrip.fromPostOfficeId == fixedtrip.postOfficeTrip.fromPostOfficeId && assignment.postOfficeTrip.toPostOfficeId == fixedtrip.postOfficeTrip.toPostOfficeId) {
-                                    fixedtrip.havingOrder = true
-                                }
-                            })
-                        })
-                        return newData;
-                    })
-                    .then((newData) => {
-                        authGet(dispatch, token, "/get-post-execute-trip-list?date=" + formatDate(chooseDate), {})
-                            .then(res => {
-                                let newFixedTripExecutes = copyObj(fixedTripExecutes)
-                                res.forEach(fixedTripExecute => {
-                                    newData.forEach(fixedtrip => {
-                                        if (fixedtrip.postOfficeFixedTripId == fixedTripExecute.postOfficeFixedTripId) {
-                                            fixedtrip.assignment = [...fixedtrip.assignment, ...fixedTripExecute.postShipOrderFixedTripPostOfficeAssignments.map(postShipOrderFixedTripPostOfficeAssignment => {
-                                                let assignment = postShipOrderFixedTripPostOfficeAssignment.postShipOrderTripPostOfficeAssignment;
-                                                assignment.choosen = true;
-                                                return assignment
-                                            })]
-                                            fixedtrip.havingOrder = true
-                                            fixedtrip.status = fixedTripExecute.status;
-                                            fixedtrip.postOfficeFixedTripExecuteId = fixedTripExecute.postOfficeFixedTripExecuteId;
-                                        }
-                                    })
+        authGet(dispatch, token, "/my-account", {}).then(response => setPostmanId(response.partyId))
+            .then(() => authGet(dispatch, token, "/get-post-trip-list-by-postman", {})
+                .then((response) => {
+                    setData(response)
+                    authGet(dispatch, token, "/get-order-by-trip?fromDate=" + formatDate(chooseDate) + "&toDate=" + formatDate(chooseDate), {})
+                        .then(res => {
+                            setAvailableAssignment(res)
+                            let newData = copyObj(response);
+                            newData.forEach(fixedtrip => {
+                                fixedtrip.assignment = []
+                                fixedtrip.havingOrder = false
+                                res.forEach(assignment => {
+                                    if (assignment.postOfficeTrip.fromPostOfficeId == fixedtrip.postOfficeTrip.fromPostOfficeId && assignment.postOfficeTrip.toPostOfficeId == fixedtrip.postOfficeTrip.toPostOfficeId) {
+                                        fixedtrip.havingOrder = true
+                                    }
                                 })
-                                setData(newData)
-                                setFixedTripExecutes(newFixedTripExecutes)
                             })
-                            .catch(err => errHandling(err))
-                    })
-                    .catch(err => errHandling(err))
-            })
+                            return newData;
+                        })
+                        .then((newData) => {
+                            authGet(dispatch, token, "/get-post-execute-trip-list-by-postman?date=" + formatDate(chooseDate), {})
+                                .then(res => {
+                                    let newFixedTripExecutes = copyObj(fixedTripExecutes)
+                                    res.forEach(fixedTripExecute => {
+                                        newData.forEach(fixedtrip => {
+                                            if (fixedtrip.postOfficeFixedTripId == fixedTripExecute.postOfficeFixedTripId) {
+                                                newFixedTripExecutes[fixedtrip.postOfficeFixedTripId] = fixedTripExecute.postOfficeFixedTripExecuteId
+                                                fixedtrip.assignment = [...fixedtrip.assignment, ...fixedTripExecute.postShipOrderFixedTripPostOfficeAssignments.map(postShipOrderFixedTripPostOfficeAssignment => {
+                                                    let assignment = postShipOrderFixedTripPostOfficeAssignment.postShipOrderTripPostOfficeAssignment;
+                                                    assignment.choosen = true;
+                                                    return assignment
+                                                })]
+                                                fixedtrip.havingOrder = true
+                                                fixedtrip.status = fixedTripExecute.status;
+                                                fixedtrip.postOfficeFixedTripExecuteId = fixedTripExecute.postOfficeFixedTripExecuteId
+                                            }
+                                        })
+                                    })
+                                    setData(newData)
+                                    setFixedTripExecutes(newFixedTripExecutes)
+                                })
+                                .catch(err => errHandling(err))
+                        })
+                        .catch(err => errHandling(err))
+                }))
             .catch(err => errHandling(err))
     }, []);
     const refreshAssignment = (newChooseDate) => {
@@ -407,7 +411,7 @@ export default function ExecuteTrip() {
                 style={{ marginTop: 10 }}
                 onClick={
                     () => {
-                        console.log(fixedTripExecutes);
+                        console.log(data)
                     }
                 }
             >
@@ -462,10 +466,9 @@ export default function ExecuteTrip() {
                             filtering: false,
                             search: false,
                             actionsColumnIndex: -1,
-                            selection: true,
+                            selection: false,
                             sorting: true,
                             draggable: true,
-                            isFreeAction: false,
                             selectionProps: postOrder => {
                                 return {
                                     disabled: postOrder.choosen ? true : false,

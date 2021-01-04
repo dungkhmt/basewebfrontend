@@ -45,9 +45,9 @@ export default function AccountButton(props) {
   useEffect(() => {
     request(token, history, "get", "/my-account/", (res) => {
       if (res !== undefined && res !== null) {
-        setName(res.name);
-        setUserName(res.user);
-        setPartyId(res.partyId);
+        setName(res.data.name);
+        setUserName(res.data.user);
+        setPartyId(res.data.partyId);
       }
     });
   }, []);

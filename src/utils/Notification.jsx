@@ -10,21 +10,21 @@ import CheckCircleRoundedIcon from "@material-ui/icons/CheckCircleRounded";
 // Snackbar
 
 export const processingNoti = (toastId, autoClose) =>
-  (toastId.current = toast.info(
-    <Box display="flex" alignItems="center">
-      <IconContext.Provider>
-        <GiInfo size={20} style={{ marginRight: "5px" }} />
-      </IconContext.Provider>
+(toastId.current = toast.info(
+  <Box display="flex" alignItems="center">
+    <IconContext.Provider>
+      <GiInfo size={20} style={{ marginRight: "5px" }} />
+    </IconContext.Provider>
       Đang xử lý...
     </Box>,
-    {
-      position: "bottom-right",
-      autoClose: autoClose,
-      pauseOnHover: true,
-      draggable: true,
-      progress: undefined,
-    }
-  ));
+  {
+    position: "bottom-right",
+    autoClose: autoClose,
+    pauseOnHover: true,
+    draggable: true,
+    progress: undefined,
+  }
+));
 
 export const updateSuccessNoti = (toastId, message) =>
   toast.update(toastId.current, {
@@ -58,7 +58,7 @@ export const errorNoti = (message, autoClose) =>
   toast.error(
     <Box display="flex" alignItems="center">
       <IconContext.Provider>
-        <MdCancel size={20} style={{ marginRight: "5px" }} />
+        <MdCancel size={30} style={{ marginRight: "5px" }} />
       </IconContext.Provider>
       {message}
     </Box>,

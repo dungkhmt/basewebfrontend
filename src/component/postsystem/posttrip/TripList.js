@@ -23,8 +23,8 @@ import Upload from "../../../utils/Upload";
 import Autocomplete from '@material-ui/lab/Autocomplete';
 const columns = [
   { label: "Mã số chuyến", id: "postOfficeFixedTripId", minWidth: 150, type: 'normal' },
-  { label: "Xuất phát", id: "fromPostOffice.postOfficeName", minWidth: 200, type: 'normal' },
-  { label: "Điểm đến", id: "toPostOffice.postOfficeName", minWidth: 150, type: 'normal' },
+  { label: "Xuất phát", id: "postOfficeTrip.fromPostOffice.postOfficeName", minWidth: 200, type: 'normal' },
+  { label: "Điểm đến", id: "postOfficeTrip.toPostOffice.postOfficeName", minWidth: 150, type: 'normal' },
   { label: "Từ ngày", id: "fromDate", minWidth: 150, type: 'date' },
   { label: "Đến ngày", id: "thruDate", minWidth: 150, type: 'date' },
   { label: "Giờ đi", id: "scheduleDepartureTime", minWidth: 50, type: 'normal' },

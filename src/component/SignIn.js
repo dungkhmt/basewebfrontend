@@ -98,7 +98,7 @@ export default function SignIn(props) {
   if (props.isAuthenticated === true) {
     props.getScreenSecurityInfo(history);
     if (history.location.state && history.location.state.from) {
-      props.getMenu();
+      props.getScreenSecurityInfo();
       history.replace(history.location.state.from);
       return null;
     } else
@@ -180,16 +180,16 @@ export default function SignIn(props) {
                 <CircularProgress /> Sign In
               </Button>
             ) : (
-              <Button
-                type="submit"
-                fullWidth
-                variant="contained"
-                color="primary"
-                className={classes.submit}
-              >
-                Đăng nhập
-              </Button>
-            )}
+                <Button
+                  type="submit"
+                  fullWidth
+                  variant="contained"
+                  color="primary"
+                  className={classes.submit}
+                >
+                  Đăng nhập
+                </Button>
+              )}
             <Grid container md={12} justify="center">
               {/* <Grid item xs>
                 
