@@ -209,6 +209,8 @@ export default function ExecuteTrip() {
                     }
                 )
                 break
+            case 'ARRIVED':
+                break
             default:
                 let row1 = row
                 setConfirmAction(
