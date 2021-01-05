@@ -1,21 +1,11 @@
 import React, { useEffect, useState } from "react";
 import { makeStyles } from "@material-ui/core/styles";
-import Paper from "@material-ui/core/Paper";
 import Typography from "@material-ui/core/Typography";
-import TableContainer from "@material-ui/core/TableContainer";
-import TableHead from "@material-ui/core/TableHead";
-import Table from "@material-ui/core/Table";
-import TableBody from "@material-ui/core/TableBody";
-import TableCell from "@material-ui/core/TableCell";
-import TableRow from "@material-ui/core/TableRow";
-import TablePagination from "@material-ui/core/TablePagination";
 import Button from "@material-ui/core/Button";
 import Dialog from "@material-ui/core/Dialog";
 import DialogActions from "@material-ui/core/DialogActions";
 import DialogTitle from "@material-ui/core/DialogTitle";
 import { DialogContent, Tooltip, IconButton } from "@material-ui/core";
-import { API_URL } from "../../../config/config";
-import { Link } from "react-router-dom";
 import AlarmOnIcon from '@material-ui/icons/AlarmOn';
 import DoneIcon from '@material-ui/icons/Done';
 import PauseCircleOutlineIcon from '@material-ui/icons/PauseCircleOutline';
@@ -29,12 +19,11 @@ import MaterialTable from "material-table";
 import {
     localization
 } from '../../../utils/MaterialTableUtils';
-import TextField from '@material-ui/core/TextField';
-import Autocomplete from '@material-ui/lab/Autocomplete';
 import { useDispatch, useSelector } from "react-redux";
 import IndeterminateCheckBoxIcon from '@material-ui/icons/IndeterminateCheckBox';
 import AlertDialog from "../../../utils/AlertDialog";
 import { errorNoti, infoNoti } from "../../../utils/Notification";
+import BouncingBallsLoader from "../../../views/common/BouncingBallsLoader";
 function copyObj(obj) {
     return JSON.parse(JSON.stringify(obj));
 }
@@ -103,6 +92,7 @@ export default function ExecuteTrip() {
     const [activeAssignments, setActiveAssignments] = useState({});
     const [activePostTrip, setActivePostTrip] = useState();
     const [fixedTripExecutes, setFixedTripExecutes] = useState({});
+    const [isRequesting, setRequesting] = useState(true);
     const taskListColumn = [
         { title: "Mã số chuyến", field: "postOfficeFixedTripId", customSort: (a, b) => { return a.havingOrder - b.havingOrder }, defaultSort: 'desc' },
         {
@@ -328,7 +318,6 @@ export default function ExecuteTrip() {
     useEffect(() => {
         authGet(dispatch, token, "/get-post-trip-list", {})
             .then((response) => {
-                setData(response)
                 authGet(dispatch, token, "/get-order-by-trip?fromDate=" + formatDate(chooseDate) + "&toDate=" + formatDate(chooseDate), {})
                     .then(res => {
                         setAvailableAssignment(res)
@@ -364,6 +353,7 @@ export default function ExecuteTrip() {
                                 })
                                 setData(newData)
                                 setFixedTripExecutes(newFixedTripExecutes)
+                                setRequesting(false);
                             })
                             .catch(err => errHandling(err))
                     })
@@ -372,9 +362,9 @@ export default function ExecuteTrip() {
             .catch(err => errHandling(err))
     }, []);
     const refreshAssignment = (newChooseDate) => {
+        setRequesting(true);
         authGet(dispatch, token, "/get-order-by-trip?fromDate=" + formatDate(newChooseDate) + "&toDate=" + formatDate(newChooseDate), {})
             .then(res => {
-                console.log("/get-order-by-trip?fromDate=" + formatDate(newChooseDate) + "&toDate=" + formatDate(newChooseDate))
                 let newData = copyObj(data);
                 newData.forEach(fixedtrip => {
                     fixedtrip.assignment = []
@@ -384,10 +374,37 @@ export default function ExecuteTrip() {
                         }
                     })
                 })
-                setData(newData)
+                setAvailableAssignment(res)
+                return newData;
             })
+            .then((newData) => {
+                authGet(dispatch, token, "/get-post-execute-trip-list?date=" + formatDate(newChooseDate), {})
+                    .then(res => {
+                        let newFixedTripExecutes = {}
+                        res.forEach(fixedTripExecute => {
+                            newData.forEach(fixedtrip => {
+                                if (fixedtrip.postOfficeFixedTripId == fixedTripExecute.postOfficeFixedTripId) {
+                                    fixedtrip.assignment = [...fixedtrip.assignment, ...fixedTripExecute.postShipOrderFixedTripPostOfficeAssignments.map(postShipOrderFixedTripPostOfficeAssignment => {
+                                        let assignment = postShipOrderFixedTripPostOfficeAssignment.postShipOrderTripPostOfficeAssignment;
+                                        assignment.choosen = true;
+                                        return assignment
+                                    })]
+                                    fixedtrip.havingOrder = true
+                                    fixedtrip.status = fixedTripExecute.status;
+                                    fixedtrip.postOfficeFixedTripExecuteId = fixedTripExecute.postOfficeFixedTripExecuteId;
+                                }
+                            })
+                        })
+                        setData(newData)
+                        setFixedTripExecutes(newFixedTripExecutes)
+                        setRequesting(false);
+                    })
+                    .catch(err => errHandling(err))
+            })
+            .catch(err => errHandling(err))
     }
-    return (
+    if (isRequesting) return ( <BouncingBallsLoader/>)
+    else return (
         <MuiPickersUtilsProvider utils={DateFnsUtils}>
             <br />
             <Typography>Chọn ngày</Typography>

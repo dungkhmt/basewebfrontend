@@ -87,7 +87,15 @@ export const post = {
     },
     {
       id: "MENU_POST_MAN_VIEW_POST_TRIP",
-      path: "/postoffice/view-postman-post-trip",
+      path: "/postoffice/view-post-driver-post-trip",
+      isPublic: false,
+      icon: "StarBorder",
+      text: "Xem thông tin chuyến xe",
+      child: [],
+    },
+    {
+      id: "MENU_POSTMAN_MANAGE",
+      path: "/postoffice/view-post-driver-post-trip",
       isPublic: false,
       icon: "StarBorder",
       text: "Xem thông tin chuyến xe",

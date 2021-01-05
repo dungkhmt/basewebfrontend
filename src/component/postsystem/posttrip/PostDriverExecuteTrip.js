@@ -1,21 +1,11 @@
 import React, { useEffect, useState } from "react";
 import { makeStyles } from "@material-ui/core/styles";
-import Paper from "@material-ui/core/Paper";
 import Typography from "@material-ui/core/Typography";
-import TableContainer from "@material-ui/core/TableContainer";
-import TableHead from "@material-ui/core/TableHead";
-import Table from "@material-ui/core/Table";
-import TableBody from "@material-ui/core/TableBody";
-import TableCell from "@material-ui/core/TableCell";
-import TableRow from "@material-ui/core/TableRow";
-import TablePagination from "@material-ui/core/TablePagination";
 import Button from "@material-ui/core/Button";
 import Dialog from "@material-ui/core/Dialog";
 import DialogActions from "@material-ui/core/DialogActions";
 import DialogTitle from "@material-ui/core/DialogTitle";
 import { DialogContent, Tooltip, IconButton } from "@material-ui/core";
-import { API_URL } from "../../../config/config";
-import { Link } from "react-router-dom";
 import AlarmOnIcon from '@material-ui/icons/AlarmOn';
 import DoneIcon from '@material-ui/icons/Done';
 import PauseCircleOutlineIcon from '@material-ui/icons/PauseCircleOutline';
@@ -29,12 +19,10 @@ import MaterialTable from "material-table";
 import {
     localization
 } from '../../../utils/MaterialTableUtils';
-import TextField from '@material-ui/core/TextField';
-import Autocomplete from '@material-ui/lab/Autocomplete';
 import { useDispatch, useSelector } from "react-redux";
-import IndeterminateCheckBoxIcon from '@material-ui/icons/IndeterminateCheckBox';
 import AlertDialog from "../../../utils/AlertDialog";
 import { errorNoti, infoNoti } from "../../../utils/Notification";
+import BouncingBallsLoader from "../../../views/common/BouncingBallsLoader";
 function copyObj(obj) {
     return JSON.parse(JSON.stringify(obj));
 }
@@ -87,7 +75,7 @@ function errHandling(err) {
     console.trace(err);
 }
 
-export default function PostmanExecuteTrip() {
+export default function PostDriverExecuteTrip() {
     const classes = useStyles();
     const token = useSelector((state) => state.auth.token);
     const [page, setPage] = useState(0);
@@ -103,7 +91,8 @@ export default function PostmanExecuteTrip() {
     const [activeAssignments, setActiveAssignments] = useState({});
     const [activePostTrip, setActivePostTrip] = useState();
     const [fixedTripExecutes, setFixedTripExecutes] = useState({});
-    const [postmanId, setPostmanId] = useState();
+    const [postDriverId, setPostDriverId] = useState();
+    const [isRequesting, setRequesting] = useState(true);
     const taskListColumn = [
         { title: "Mã số chuyến", field: "postOfficeFixedTripId", customSort: (a, b) => { return a.havingOrder - b.havingOrder }, defaultSort: 'desc' },
         {
@@ -128,14 +117,6 @@ export default function PostmanExecuteTrip() {
         title: undefined,
         message: undefined
     })
-    const handleChangePage = (event, newPage) => {
-        setPage(newPage);
-    };
-
-    const handleChangeRowsPerPage = (event) => {
-        setRowsPerPage(+event.target.value);
-        setPage(0);
-    };
 
     const handlechooseDateChange = (date) => {
         setChooseDate(date);
@@ -202,7 +183,7 @@ export default function PostmanExecuteTrip() {
                                 postOfficeFixedTripId: row1.postOfficeFixedTripId,
                                 status: "EXECUTING",
                                 postOfficeFixedTripExecuteId: row1.postOfficeFixedTripExecuteId,
-                                postmanId: postmanId
+                                postDriverId: postDriverId
                             })
                                 .then((res) => {
                                     row1.status = 'EXECUTING';
@@ -248,73 +229,6 @@ export default function PostmanExecuteTrip() {
         }
     }
 
-    const executetrip = (row) => {
-        authPost(dispatch, token, "/execute-trip", {
-            "postOfficeFixedTripId": "baffe995-8134-4381-bf23-36ea30546b3d",
-            "status": "WAITING",
-            "postShipOrderFixedTripPostOfficeAssignmentIds": [
-                "eb958553-b48a-4dbd-824d-8d4f8c67d71c"
-            ]
-        })
-    }
-
-    const handleRemoveAssignmnet = (assignment => {
-        assignment.choosen = false;
-        let newAvailableAssignment = copyObj(availableAssignment)
-        let newData = copyObj(data);
-        let newActiveTrip = copyObj(activeTrip);
-        newAvailableAssignment.push(assignment);
-        newData.forEach(fixedtrip => {
-            fixedtrip.assignment = fixedtrip.assignment.filter(x => {
-                return x.postShipOrderPostOfficeTripAssignmentId != assignment.postShipOrderPostOfficeTripAssignmentId
-            })
-            newAvailableAssignment.forEach(assignment => {
-                if (assignment.postOfficeTrip.postOfficeTripId == fixedtrip.postOfficeTrip.postOfficeTripId) {
-                    fixedtrip.havingOrder = true
-                }
-            })
-
-        })
-        newActiveTrip.assignment.forEach(x => {
-            if (x.postShipOrderPostOfficeTripAssignmentId == assignment.postShipOrderPostOfficeTripAssignmentId)
-                x.choosen = false
-        })
-        console.log(newActiveTrip)
-        setActiveTrip(newActiveTrip)
-        setData(newData)
-        setAvailableAssignment(newAvailableAssignment)
-    })
-
-    const handleAddAssignmnet = () => {
-        let activeAssignmentIds = activeAssignments.map(x => x.postShipOrderPostOfficeTripAssignmentId)
-        let newAvailableAssignment = availableAssignment.filter(assignment => {
-            return !activeAssignmentIds.includes(assignment.postShipOrderPostOfficeTripAssignmentId)
-        })
-        setAvailableAssignment(newAvailableAssignment)
-        let newData = copyObj(data)
-        newData.forEach(fixedtrip => {
-            activeAssignments.forEach(assignment => {
-                if (fixedtrip.postOfficeTrip.postOfficeTripId == assignment.postOfficeTrip.postOfficeTripId && fixedtrip.postOfficeFixedTripId == activeTrip.postOfficeFixedTripId) {
-                    assignment.choosen = true
-                    fixedtrip.assignment.push(assignment)
-                }
-            })
-        })
-        newData.forEach(fixedtrip => {
-            fixedtrip.havingOrder = false
-            newAvailableAssignment.forEach(assignment => {
-                if (assignment.postOfficeTrip.postOfficeTripId == fixedtrip.postOfficeTrip.postOfficeTripId) {
-                    fixedtrip.havingOrder = true
-                }
-            })
-            if (fixedtrip.assignment.length > 0) {
-                fixedtrip.havingOrder = true
-            }
-        })
-        setData(newData);
-        setOpen(false)
-    }
-
     const orderColumn = [
         { title: "Mã đơn hàng", field: "postOrder.postShipOrderId", sorting: false },
         { title: "Người gửi", field: "postOrder.fromCustomer.postCustomerName", sorting: false },
@@ -326,8 +240,8 @@ export default function PostmanExecuteTrip() {
     ]
 
     useEffect(() => {
-        authGet(dispatch, token, "/my-account", {}).then(response => setPostmanId(response.partyId))
-            .then(() => authGet(dispatch, token, "/get-post-trip-list-by-postman", {})
+        authGet(dispatch, token, "/my-account", {}).then(response => setPostDriverId(response.partyId))
+            .then(() => authGet(dispatch, token, "/get-post-trip-list-by-post-driver", {})
                 .then((response) => {
                     setData(response)
                     authGet(dispatch, token, "/get-order-by-trip?fromDate=" + formatDate(chooseDate) + "&toDate=" + formatDate(chooseDate), {})
@@ -346,7 +260,7 @@ export default function PostmanExecuteTrip() {
                             return newData;
                         })
                         .then((newData) => {
-                            authGet(dispatch, token, "/get-post-execute-trip-list-by-postman?date=" + formatDate(chooseDate), {})
+                            authGet(dispatch, token, "/get-post-execute-trip-list-by-post-driver?date=" + formatDate(chooseDate), {})
                                 .then(res => {
                                     let newFixedTripExecutes = copyObj(fixedTripExecutes)
                                     res.forEach(fixedTripExecute => {
@@ -366,6 +280,7 @@ export default function PostmanExecuteTrip() {
                                     })
                                     setData(newData)
                                     setFixedTripExecutes(newFixedTripExecutes)
+                                    setRequesting(false);
                                 })
                                 .catch(err => errHandling(err))
                         })
@@ -374,24 +289,56 @@ export default function PostmanExecuteTrip() {
             .catch(err => errHandling(err))
     }, []);
     const refreshAssignment = (newChooseDate) => {
+        setRequesting(true);
         authGet(dispatch, token, "/get-order-by-trip?fromDate=" + formatDate(newChooseDate) + "&toDate=" + formatDate(newChooseDate), {})
             .then(res => {
                 console.log("/get-order-by-trip?fromDate=" + formatDate(newChooseDate) + "&toDate=" + formatDate(newChooseDate))
                 let newData = copyObj(data);
+                setAvailableAssignment(res)
                 newData.forEach(fixedtrip => {
                     fixedtrip.assignment = []
+                    fixedtrip.havingOrder = false
+                    fixedtrip.status = null
                     res.forEach(assignment => {
                         if (assignment.postOfficeTrip.fromPostOfficeId == fixedtrip.postOfficeTrip.fromPostOfficeId && assignment.postOfficeTrip.toPostOfficeId == fixedtrip.postOfficeTrip.toPostOfficeId) {
-                            fixedtrip.assignment.push(assignment)
+                            fixedtrip.havingOrder = true
                         }
                     })
                 })
-                setData(newData)
+                return newData;
             })
+            .then((newData) => {
+                authGet(dispatch, token, "/get-post-execute-trip-list-by-post-driver?date=" + formatDate(newChooseDate), {})
+                    .then(res => {
+                        let newFixedTripExecutes = {}
+                        res.forEach(fixedTripExecute => {
+                            newData.forEach(fixedtrip => {
+                                if (fixedtrip.postOfficeFixedTripId == fixedTripExecute.postOfficeFixedTripId) {
+                                    newFixedTripExecutes[fixedtrip.postOfficeFixedTripId] = fixedTripExecute.postOfficeFixedTripExecuteId
+                                    fixedtrip.assignment = [...fixedtrip.assignment, ...fixedTripExecute.postShipOrderFixedTripPostOfficeAssignments.map(postShipOrderFixedTripPostOfficeAssignment => {
+                                        let assignment = postShipOrderFixedTripPostOfficeAssignment.postShipOrderTripPostOfficeAssignment;
+                                        assignment.choosen = true;
+                                        return assignment
+                                    })]
+                                    fixedtrip.havingOrder = true
+                                    fixedtrip.status = fixedTripExecute.status;
+                                    fixedtrip.postOfficeFixedTripExecuteId = fixedTripExecute.postOfficeFixedTripExecuteId
+                                }
+                            })
+                        })
+                        setData(newData)
+                        setFixedTripExecutes(newFixedTripExecutes)
+                        setRequesting(false);
+                    })
+                    .catch(err => errHandling(err))
+            })
+            .catch(err => errHandling(err))
     }
-    return (
+    if (isRequesting) return ( <BouncingBallsLoader/>)
+    else return (
         <MuiPickersUtilsProvider utils={DateFnsUtils}>
             <br />
+            {isRequesting ? <BouncingBallsLoader/> : undefined}
             <Typography>Chọn ngày</Typography>
             <KeyboardDatePicker
                 id="chooseDate"
@@ -411,7 +358,7 @@ export default function PostmanExecuteTrip() {
                 style={{ marginTop: 10 }}
                 onClick={
                     () => {
-                        console.log(data)
+                        console.log(fixedTripExecutes)
                     }
                 }
             >
@@ -481,14 +428,6 @@ export default function PostmanExecuteTrip() {
                         onSelectionChange={rows => { handleOnSelectionChange(rows) }}
                         tableRef={(ref) => setOrderTableRef(ref)}
                     />
-                    <Button
-                        color="primary"
-                        variant="outlined"
-                        style={{ marginTop: 10 }}
-                        onClick={() => handleAddAssignmnet()}
-                    >
-                        Lưu
-                    </Button>
                 </DialogContent>
             </Dialog>
         </MuiPickersUtilsProvider>
