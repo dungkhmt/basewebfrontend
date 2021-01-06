@@ -1,38 +1,18 @@
 import React, { useEffect, useState } from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import Paper from "@material-ui/core/Paper";
-import Typography from "@material-ui/core/Typography";
-import TableContainer from "@material-ui/core/TableContainer";
-import TableHead from "@material-ui/core/TableHead";
-import Table from "@material-ui/core/Table";
-import TableBody from "@material-ui/core/TableBody";
-import TableCell from "@material-ui/core/TableCell";
-import TableRow from "@material-ui/core/TableRow";
-import TablePagination from "@material-ui/core/TablePagination";
 import { useSelector } from "react-redux";
-import IconButton from "@material-ui/core/IconButton";
-import DeleteIcon from "@material-ui/icons/Delete";
-import Button from "@material-ui/core/Button";
-import Dialog from "@material-ui/core/Dialog";
-import DialogActions from "@material-ui/core/DialogActions";
-import DialogTitle from "@material-ui/core/DialogTitle";
-import { DialogContent } from "@material-ui/core";
 import { API_URL } from "../../../config/config";
+import TabPanel from "../TabPanel";
+import AppBar from '@material-ui/core/AppBar';
+import Tabs from '@material-ui/core/Tabs';
+import Tab from '@material-ui/core/Tab';
 import { Link } from "react-router-dom";
 import MaterialTable from "material-table";
 import {
     localization
 } from '../../../utils/MaterialTableUtils';
 import { errorNoti, infoNoti } from "../../../utils/Notification";
-
-const useStyles = makeStyles({
-    root: {
-        width: "100%",
-    },
-    container: {
-        maxHeight: 440,
-    },
-});
 const columns = [
     { title: "Mã khách hàng", field: "postCustomerId" },
     { title: "Họ tên", field: "postCustomerName" },
@@ -50,13 +30,29 @@ const columns = [
         </Link>), filtering: false
     }
 ]
+
+const useStyles = makeStyles({
+    root: {
+        width: "100%",
+    },
+    container: {
+        maxHeight: 440,
+    },
+});
+
 export default function PostCustomerList(props) {
     const classes = useStyles();
     const token = useSelector((state) => state.auth.token);
     const [page, setPage] = useState(0);
     const [rowsPerPage, setRowsPerPage] = useState(10);
     const [data, setData] = useState([]);
+    const [tabValue, setTabValue] = useState(0);
     const [tableRef, setTableRef] = useState();
+
+    const handleTabChange = (event, newValue) => {
+        setTabValue(newValue);
+    };
+
     const handleChangePage = (event, newPage) => {
         setPage(newPage);
     };
@@ -83,33 +79,34 @@ export default function PostCustomerList(props) {
 
     return (
         <Paper className={classes.root}>
-            <Button
-                color="primary"
-                variant="outlined"
-                style={{ marginTop: 10 }}
-                onClick={
-                    () => {
-                        console.log(data)
-                    }
-                }
-            >
-                Test
-            </Button>
-            <MaterialTable
-                className={classes.table}
-                title="Danh sách khách hàng"
-                columns={columns}
-                options={{
-                    filtering: true,
-                    search: true,
-                    actionsColumnIndex: -1,
-                    selection: false,
-                }}
-                localization={localization}
-                data={data}
-                tableRef={(ref) => setTableRef(ref)}
-            />
-        </Paper>
+            <AppBar position="static">
+                <Tabs value={tabValue} onChange={handleTabChange} aria-label="simple tabs example">
+                    <Tab label="Bưu tá" />
+                    <Tab label="Lái xe" />
+                </Tabs>
+            </AppBar>
+            <TabPanel value={tabValue} index={0}>
+                <MaterialTable
+                    className={classes.table}
+                    title="Danh sách khách hàng"
+                    columns={columns}
+                    options={{
+                        filtering: true,
+                        search: true,
+                        actionsColumnIndex: -1,
+                        selection: false,
+                    }}
+                    localization={localization}
+                    data={data}
+                    tableRef={(ref) => setTableRef(ref)}
+                />
+            </TabPanel>
+            <TabPanel value={tabValue} index={1}>
+                Item Two
+            </TabPanel>
+
+
+        </Paper >
     );
 }
 

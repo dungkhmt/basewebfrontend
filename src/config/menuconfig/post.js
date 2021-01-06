@@ -95,10 +95,10 @@ export const post = {
     },
     {
       id: "MENU_POSTMAN_MANAGE",
-      path: "/postoffice/view-post-driver-post-trip",
+      path: "/postoffice/manage-postman",
       isPublic: false,
       icon: "StarBorder",
-      text: "Xem thông tin chuyến xe",
+      text: "Quản lý người vận chuyển",
       child: [],
     }
   ],
