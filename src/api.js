@@ -11,7 +11,25 @@ export const authPost = (dispatch, token, url, body) => {
       "X-Auth-Token": token,
     },
     body: JSON.stringify(body),
-  });
+  }).then(
+    (res) => {
+      if (!res.ok) {
+        if (res.status === 401) {
+          dispatch(failed());
+          throw Error("Unauthorized");
+        }
+        else {
+          console.log(res)
+          throw Error();
+        }
+        return null;
+      }
+      return res.json();
+    },
+    (error) => {
+      console.log(error);
+    }
+  );  
 };
 export const authPostMultiPart = (dispatch, token, url, body) => {
   return fetch(API_URL + url, {
@@ -67,20 +85,28 @@ export const authGet = (dispatch, token, url) => {
     }
   );
 };
-export const authDelete = (dispatch, token, url) => {
+export const authDelete = (dispatch, token, url, body) => {
   return fetch(API_URL + url, {
     method: "DELETE",
     headers: {
       "content-type": "application/json",
       "X-Auth-Token": token,
     },
+    body: JSON.stringify(body),
   }).then(
     (res) => {
       if (!res.ok) {
-        dispatch(failed());
-        throw Error("Unauthorized");
+        if (res.status === 401) {
+          dispatch(failed());
+          throw Error("Unauthorized");
+        }
+        else {
+          console.log(res)
+          throw Error();
+        }
+        return null;
       }
-      return true;
+      return res.json();
     },
     (error) => {
       console.log(error);

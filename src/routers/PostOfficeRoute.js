@@ -16,6 +16,7 @@ import PickAndDelivery from "../component/postsystem/planning/PickAndDelivery";
 import PickAndDeliveryDetail from "../component/postsystem/planning/PickAndDeliveryDetail";
 import PostDriverExecuteTrip from "../component/postsystem/posttrip/PostDriverExecuteTrip";
 import ManagePostman from "../component/postsystem/postuser/ManagePostman";
+import PostDriverDetail from "../component/postsystem/postuser/PostDriverDetail";
 export default function PostOfficeRoute() {
   let { path, url } = useRouteMatch();
   return (
@@ -37,6 +38,7 @@ export default function PostOfficeRoute() {
         <Route component={ExecuteTrip} exact path={`${path}/executetrip`} />
         <Route component={PostDriverExecuteTrip} exact path={`${path}/view-post-driver-post-trip`} />
         <Route component={ManagePostman} exact path={`${path}/manage-postman`} />
+        <Route component={PostDriverDetail} exact path={`${path}/post-driver-detail/:postDriverId`} />
       </Switch>
     </div>
   );

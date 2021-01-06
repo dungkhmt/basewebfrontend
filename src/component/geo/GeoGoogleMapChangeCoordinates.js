@@ -11,77 +11,6 @@ import Grid from "@material-ui/core/Grid";
 import CardActions from "@material-ui/core/CardActions";
 import Button from "@material-ui/core/Button";
 
-
-//const [address, setAddress] = useState();
-//const [coordinates, setCoordinates] = useState();
-//const token = useSelector(state => state.auth.token);
-//const dispatch = useDispatch();
-//const { contactMechId } = useParams();
-
-
-/*
-return (
-    <div >
-
-        <Typography variant="h5" component="h2">
-            Chỉnh sửa vị trí
-        </Typography>
-
-        <br/>
-        <Typography variant="h6" component="h4">
-            Mã địa chỉ:  {'  '}   {contactMechId}
-        </Typography>
-
-        <br/>
-
-
-        <tr>
-            <td>
-                <Typography variant="h6" >
-                    Địa chỉ: {' '}
-                </Typography>
-            </td>
-
-            <td>
-                <TextField
-                    id="address"
-                    onChange={handleAddressChange}
-                    required
-                    value={address}
-                >
-                </TextField>
-            </td>
-        </tr>
-
-
-        <br/>
-        <tr>
-            <td>
-                <Typography variant="h6" >
-                    Tọa độ:  {' '}
-                </Typography>
-            </td>
-            <td>
-                <TextField
-                    id="coordinates"
-                    onChange={handleAddressChange}
-                    required
-                    value={coordinates}
-                >
-                </TextField>
-            </td>
-        </tr>
-
-
-        <br/>
-
-
-    </div>
-);
-
- */
-
-
 function GeoGoogleMapChangeCoordinates(props) {
   const {contactMechId} = useParams();
   const token = useSelector(state => state.auth.token);
@@ -101,22 +30,6 @@ function GeoGoogleMapChangeCoordinates(props) {
   useEffect(() => {
 
     authPost(dispatch, token, "/get-info-postal-to-display-in-map/" + contactMechId, {"statusId": null})
-      .then(
-        res => {
-          console.log(res);
-          setIsRequesting(false);
-
-          if (res.status === 401) {
-            dispatch(failed());
-            throw Error("Unauthorized")
-          } else if (res.status === 200) {
-            return res.json();
-          }
-        },
-        error => {
-          console.log(error);
-        }
-      )
       .then(
         res => {
           console.log('res', res);

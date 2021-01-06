@@ -99,7 +99,7 @@ export default function SignIn(props) {
     props.getScreenSecurityInfo(history);
     if (history.location.state && history.location.state.from) {
       props.getScreenSecurityInfo();
-      history.replace(history.location.state.from);
+      history.push({ pathname: "/login" });
       return null;
     } else
       return (

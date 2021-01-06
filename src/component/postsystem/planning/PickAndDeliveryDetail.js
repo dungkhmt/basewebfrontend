@@ -271,10 +271,6 @@ function PickAndDeliveryDetail(props) {
         extendBoundRecursive(bounds, map, map.props.children);
         map.map.fitBounds(bounds);
     })
-    const handleTabChange = (event, newValue) => {
-        setTabValue(newValue);
-    };
-    const [tabValue, setTabValue] = useState(0);
     const taskListColumn = [
         { field: 'postmanId', hidden: true },
         { title: "Tên", field: "postmanName" },
