@@ -3,8 +3,6 @@ import { useParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { GoogleApiWrapper, Map, Marker, Polyline } from 'google-maps-react';
 import Grid from "@material-ui/core/Grid";
-import CardActions from "@material-ui/core/CardActions";
-import Button from "@material-ui/core/Button";
 import { authPost, authGet, authDelete } from "../../../api";
 import AlertDialog from "../../../utils/AlertDialog";
 import { errorNoti, infoNoti } from "../../../utils/Notification";
@@ -13,9 +11,6 @@ import {
     localization, tableIcons
 } from '../../../utils/MaterialTableUtils';
 import { makeStyles } from "@material-ui/core/styles";
-import Dialog from "@material-ui/core/Dialog";
-import DialogTitle from "@material-ui/core/DialogTitle";
-import Icon from "@material-ui/core/Icon";
 import ConfirmDialog from "../ConfirmDialog"
 
 function errHandling(err) {
@@ -27,24 +22,15 @@ function errHandling(err) {
 }
 
 const columns = [
-    { title: "Mã gán", field: "postDriverPostOfficeAssignmentId", editable: false, hidden: true },
-    { title: "Mã số chuyến", field: "postOfficeFixedTripId", editable: false, hidden: true },
-    { title: "Từ bưu cục", field: "postFixedTrip.postOfficeTrip.fromPostOffice.postOfficeName" },
-    { title: "Đến bưu cục", field: "postFixedTrip.postOfficeTrip.toPostOffice.postOfficeName" },
-    { title: "Giờ khởi hành", field: "postFixedTrip.scheduleDepartureTime" },
-]
-const tripColumns = [
-    { tilte: "Mã số chuyến", field: "postOfficeFixedTripId" },
-    { tilte: "Xuất phát", field: "postOfficeTrip.fromPostOffice.postOfficeName" },
-    { tilte: "Điểm đến", field: "postOfficeTrip.toPostOffice.postOfficeName" },
-    { tilte: "Từ ngày", field: "fromDate" },
-    { tilte: "Đến ngày", field: "thruDate" },
-    { tilte: "Giờ đi", field: "scheduleDepartureTime" },
+    { title: "Mã đơn hàng", field: "postDriverPostOfficeAssignmentId", editable: false, hidden: true },
+    { title: "Người gửi", field: "postOfficeFixedTripId", editable: false, hidden: true },
+    { title: "Người nhận", field: "postFixedTrip.postOfficeTrip.fromPostOffice.postOfficeName" },
 ]
 function extendBoundRecursive(bounds, map, elements) {
     elements.forEach((child) => {
         if (child && child.type === Marker) {
             bounds.extend(new window.google.maps.LatLng(child.props.position.lat, child.props.position.lng));
+            return;
         } else if (Array.isArray(child)) {
             extendBoundRecursive(bounds, map, child);
         }
@@ -65,7 +51,7 @@ const style = {
     height: '100%'
 }
 
-function PostDriverDetail(props) {
+function PostmanOrderAssignmentDetail(props) {
     const classes = useStyles();
     const { postDriverId } = useParams();
     const [postDriver, setPostDriver] = useState();
@@ -76,7 +62,7 @@ function PostDriverDetail(props) {
     const [map, setMap] = useState();
     const [tableRef, setTableRef] = useState();
     const [open, setOpen] = useState(false);
-    const [postTripData, setPostTripData] = useState([]);
+    const [postmanId, setPostmanId] = useState();
     const [comfirmAction, setConfirmAction] = useState({
         open: false,
         handleSuccess: undefined,
@@ -94,7 +80,7 @@ function PostDriverDetail(props) {
 
     const loadData = async () => {
         await Promise.all([
-            authGet(dispatch, token, "/get-office-assignment-list-by-post-driver/" + postDriverId, {})
+            authGet(dispatch, token, "/get-postman-list-order-bydate/" + postmanId, {})
                 .then((response) => {
                     setData(response);
                 })
@@ -109,7 +95,13 @@ function PostDriverDetail(props) {
     })
 
     useEffect(() => {
-        loadData();
+        authGet(dispatch, token, "/my-account", {}).then(response => {
+            console.log(response.partyId)
+            setPostmanId(response.partyId)
+            loadData()
+        })
+
+
     }, [])
 
     useEffect(() => {
@@ -119,68 +111,13 @@ function PostDriverDetail(props) {
         if (map.props.children.length > 0) map.map.fitBounds(bounds);
     })
 
-    const deleteTrip = (oldData) => {
-        console.log(oldData)
-        authDelete(dispatch, token, "/delete-post-driver-post-office-assignment", {
-            postDriverPostOfficeAssignmentId: oldData.postDriverPostOfficeAssignmentId,
-        })
-            .then((response) => {
-                const dataDelete = [...data];
-                const index = oldData.tableData.id;
-                dataDelete.splice(index, 1);
-                setData([...dataDelete]);
-                setAlertAction({
-                    open: true,
-                    message: 'Xóa chuyến xe thành công',
-                    title: 'Thông báo'
-                })
-            })
-            .catch(err => errHandling(err))
-    }
-
-    const addTrip = () => {
-        setOpen(true)
-        authGet(dispatch, token, "/get-post-trip-list/")
-            .then((response) => {
-                setPostTripData(response);
-            })
-            .catch(err => errHandling(err))
-    }
-
-    const addPostTrip = (postTrip) => {
-        setConfirmAction(
-            {
-                open: true,
-                handleSuccess: () => {
-                    authPost(dispatch, token, "/add-post-driver-post-office-assignment", {
-                        postDriverId: postDriverId,
-                        postOfficeFixedTripId: postTrip.postOfficeFixedTripId
-                    })
-                        .then((response) => {
-                            setData([...data, response.postDriverPostOfficeAssignment])
-                            setConfirmAction({ open: false })
-                            setAlertAction(
-                                {
-                                    open: true,
-                                    message: 'Thêm mới thành công !',
-                                    title: 'Thông báo'
-                                }
-                            )
-                        })
-                        .catch(err => errHandling(err))
-                },
-                content: 'Xác nhận thêm chuyến xe này'
-            }
-        )
-    }
-
     return (
         <div>
             <Grid container spacing={5}>
                 <Grid item xs={5}>
                     <MaterialTable
                         className={classes.table}
-                        title="Danh sách chuyến xe"
+                        title="Danh sách đơn hàng"
                         columns={columns}
                         options={{
                             filtering: true,
@@ -192,21 +129,6 @@ function PostDriverDetail(props) {
                         icons={tableIcons}
                         data={data}
                         tableRef={(ref) => setTableRef(ref)}
-                        editable={{
-                            onRowDelete: oldData =>
-                                new Promise((resolve, reject) => {
-                                    deleteTrip(oldData);
-                                    resolve();
-                                }),
-                        }}
-                        actions={[
-                            {
-                                icon: 'add',
-                                tooltip: 'Thêm chuyến mới',
-                                isFreeAction: true,
-                                onClick: () => addTrip()
-                            }
-                        ]}
                     />
                 </Grid>
                 <Grid item xs={7}>
@@ -275,30 +197,6 @@ function PostDriverDetail(props) {
                 title={alertAction.title}
                 message={alertAction.message}
             />
-            <Dialog open={open} onClose={() => setOpen(false)} fullWidth={true} maxWidth={'lg'}>
-                <DialogTitle>{"Tìm kiếm chuyến xe"}</DialogTitle>
-                <MaterialTable
-                    className={classes.table}
-                    title="Danh sách chuyến xe"
-                    columns={tripColumns}
-                    options={{
-                        filtering: true,
-                        Materisearch: true,
-                        actionsColumnIndex: -1,
-                        selection: false,
-                    }}
-                    localization={localization}
-                    icons={tableIcons}
-                    data={postTripData}
-                    actions={[
-                        (postTrip) => ({
-                            icon: () => <Icon color="primary">add_circle</Icon>,
-                            tooltip: 'Thêm',
-                            onClick: (event, postTrip) => { addPostTrip(postTrip) },
-                        })
-                    ]}
-                />
-            </Dialog>
             <ConfirmDialog
                 confirmAction={comfirmAction}
                 setConfirmAction={setConfirmAction}
@@ -311,4 +209,4 @@ function PostDriverDetail(props) {
 
 export default GoogleApiWrapper({
     apiKey: (process.env.REACT_APP_GOOGLE_MAP_API_KEY)
-})(PostDriverDetail);
+})(PostmanOrderAssignmentDetail);

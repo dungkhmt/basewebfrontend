@@ -3,7 +3,6 @@ import React from "react";
 import { useSelector } from "react-redux";
 export function LayoutBreadcrumbs(props) {
   const selectedFunction = useSelector((state) => state.menu.selectedFunction);
-  console.log(selectedFunction);
   let bc1 = "";
   let bc2 = "";
   let bc3 = "";

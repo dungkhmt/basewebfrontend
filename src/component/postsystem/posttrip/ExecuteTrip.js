@@ -24,6 +24,7 @@ import IndeterminateCheckBoxIcon from '@material-ui/icons/IndeterminateCheckBox'
 import AlertDialog from "../../../utils/AlertDialog";
 import { errorNoti, infoNoti } from "../../../utils/Notification";
 import BouncingBallsLoader from "../../../views/common/BouncingBallsLoader";
+import ConfirmDialog from "../ConfirmDialog"
 function copyObj(obj) {
     return JSON.parse(JSON.stringify(obj));
 }
@@ -403,7 +404,7 @@ export default function ExecuteTrip() {
             })
             .catch(err => errHandling(err))
     }
-    if (isRequesting) return ( <BouncingBallsLoader/>)
+    if (isRequesting) return (<BouncingBallsLoader />)
     else return (
         <MuiPickersUtilsProvider utils={DateFnsUtils}>
             <br />
@@ -420,19 +421,6 @@ export default function ExecuteTrip() {
                 value={chooseDate}
                 format='dd/MM/yyyy'
             />
-            <Button
-                color="primary"
-                variant="outlined"
-                style={{ marginTop: 10 }}
-                onClick={
-                    () => {
-                        console.log(fixedTripExecutes);
-                    }
-                }
-            >
-                Test
-            </Button>
-
             <MaterialTable
                 className={classes.table}
                 title="Danh sách chuyến xe"
@@ -511,38 +499,3 @@ export default function ExecuteTrip() {
     );
 }
 
-function ConfirmDialog({ confirmAction, setConfirmAction }) {
-    const token = useSelector((state) => state.auth.token);
-
-    const handleSuccess = () => {
-        confirmAction.handleSuccess();
-    };
-
-    const handleCancel = (event) => {
-        setConfirmAction({
-            open: false,
-            handleSuccess: undefined,
-            content: undefined,
-            title: undefined,
-        })
-    };
-
-    return (
-        <div>
-            <Dialog open={confirmAction.open} onClose={handleCancel}>
-                <DialogTitle>{confirmAction.title}</DialogTitle>
-                <DialogContent>
-                    {"Xác nhận " + confirmAction.content + '?'}
-                </DialogContent>
-                <DialogActions>
-                    <Button onClick={handleSuccess} color="primary">
-                        Xác nhận
-                    </Button>
-                    <Button onClick={handleCancel} color="primary">
-                        Hủy
-                    </Button>
-                </DialogActions>
-            </Dialog>
-        </div>
-    );
-}

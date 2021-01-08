@@ -11,7 +11,6 @@ export const getMenu = () => {
     dispatch(menuRequesting());
     api.getMenu(dispatch, getState().auth.token).then(
       (res) => {
-        console.log(res);
         dispatch(menuRequestSuccess(res));
       },
       (error) => {
