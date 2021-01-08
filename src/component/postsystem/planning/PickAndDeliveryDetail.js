@@ -168,7 +168,6 @@ function PickAndDeliveryDetail(props) {
             "postOrderIds": fromPostOrder.map(postOrder => postOrder.postShipOrderId),
             "type": "pick"
         })
-            .then(res => res.json())
             .then(res => {
                 if (res.solutionFound) {
                     setRoutes(res.geoPoints);
@@ -216,7 +215,6 @@ function PickAndDeliveryDetail(props) {
             }
         })
         authPost(dispatch, token, "/submit-postman-assign/", requestbody)
-            .then(res => res.json())
             .then(res => {
                 if (res.status == "SUCCESS") {
                     alert("Lập kế hoạch thu gom thành công")
