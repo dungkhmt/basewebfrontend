@@ -14,6 +14,8 @@ import { makeStyles } from "@material-ui/core/styles";
 import ConfirmDialog from "../ConfirmDialog"
 import { KeyboardDatePicker, MuiPickersUtilsProvider } from "@material-ui/pickers";
 import DateFnsUtils from "@date-io/date-fns";
+import { Dialog, DialogTitle, DialogContent } from "@material-ui/core";
+import MoreHorizIcon from '@material-ui/icons/MoreHoriz';
 
 function errHandling(err) {
     if (err.message == "Unauthorized")
@@ -22,15 +24,27 @@ function errHandling(err) {
         errorNoti("Rất tiếc! Đã có lỗi xảy ra.", true);
     console.trace(err);
 }
-
 const columns = [
-    { title: "Mã đơn hàng", field: "postOrder.postShipOrderId"},
-    { title: "Người gửi", field: "postOrder.fromCustomer.postCustomerName"},
-    { title: "Người nhận", field: "postOrder.toCustomer.postCustomerName"},
-    { title: "Số điện thoại người gửi", field: "postOrder.fromCustomer.phoneNum"},
-    { title: "Số điện thoại người nhận", field: "postOrder.toCustomer.phoneNum"},
-    { title: "Địa chỉ Người gửi", field: "postOrder.toCustomer.postalAddress.address"},
-    { title: "Địa chỉ người nhận", field: "postOrder.fromCustomer.postalAddress.address"},
+    { title: "Mã đơn hàng", field: "postOrder.postShipOrderId", editable: false },
+    {
+        title: "Trạng thái", field: "statusId",
+        lookup: {
+            "POST_ORDER_ASSIGNMENT_PICKUP_WAITING": 'Chờ nhận hàng',
+            "POST_ORDER_ASSIGNMENT_SHIP_WAITING": 'Chờ giao hàng',
+            "POST_ORDER_ASSIGNMENT_PICKUP_SUCCESS": 'Nhận hàng thành công',
+            "POST_ORDER_ASSIGNMENT_SHIP_SUCCESS": 'Giao hàng thành công',
+        }
+    },
+]
+
+const orderColumns = [
+    { title: "Mã đơn hàng", field: "postShipOrderId" },
+    { title: "Người gửi", field: "fromCustomer.postCustomerName" },
+    { title: "Người nhận", field: "toCustomer.postCustomerName" },
+    { title: "Số điện thoại người gửi", field: "fromCustomer.phoneNum" },
+    { title: "Số điện thoại người nhận", field: "toCustomer.phoneNum" },
+    { title: "Địa chỉ Người gửi", field: "toCustomer.postalAddress.address" },
+    { title: "Địa chỉ người nhận", field: "fromCustomer.postalAddress.address" },
 ]
 
 function formatDate(date) {
@@ -76,6 +90,7 @@ function PostmanOrderAssignmentDetail(props) {
     const [fromDate, setFromDate] = useState(new Date());
     const [toDate, setToDate] = useState(new Date());
     const [postOffice, setPostOffice] = useState();
+    const [activePostOrder, setActivePostOrder] = useState([]);
     const [comfirmAction, setConfirmAction] = useState({
         open: false,
         handleSuccess: undefined,
@@ -99,15 +114,15 @@ function PostmanOrderAssignmentDetail(props) {
 
     const handleFromDateChange = (date) => {
         setFromDate(date);
-        loadData(postmanId, date, toDate);
+        loadData(date, toDate);
     }
 
     const handleToDateChange = (date) => {
         setToDate(date);
-        loadData(postmanId, fromDate, date);
+        loadData(fromDate, date);
     }
 
-    const loadData = async () => {
+    const loadData = async (fromDate, toDate) => {
         await Promise.all([
             authGet(dispatch, token, '/get-order-by-postman-and-date?fromDate=' + formatDate(fromDate) + '&toDate=' + formatDate(toDate), {})
                 .then(res => {
@@ -131,7 +146,7 @@ function PostmanOrderAssignmentDetail(props) {
     }
 
     useEffect(() => {
-        loadData()
+        loadData(fromDate, toDate)
     }, [])
 
     useEffect(() => {
@@ -141,6 +156,34 @@ function PostmanOrderAssignmentDetail(props) {
         if (map.props.children && map.props.children.length > 0) map.map.fitBounds(bounds);
     })
 
+    const orderUpdate = (newData, oldData) => {
+        authPost(dispatch, token, "/update-postman-post-order-assignment", {
+            postShipOrderPostmanLastMileAssignmentId: oldData.postShipOrderPostmanLastMileAssignmentId,
+            status: newData.statusId
+        })
+            .then((response) => {
+                if (response.status == 'ERROR') {
+                    setAlertAction({
+                        open: true,
+                        message: "Cập nhật không thành công.",
+                        title: 'Thông báo'
+                    })
+                    return
+                }
+                const dataUpdate = [...data];
+                const index = oldData.tableData.id;
+                dataUpdate[index] = newData;
+                setData([...dataUpdate]);
+                setAlertAction({
+                    open: true,
+                    message: 'Cập nhật thông tin thành công',
+                    title: 'Thông báo'
+                })
+
+            })
+            .catch(err => errHandling(err))
+    }
+
     return (
         <MuiPickersUtilsProvider utils={DateFnsUtils}>
             <Grid container spacing={5}>
@@ -148,7 +191,7 @@ function PostmanOrderAssignmentDetail(props) {
                     <KeyboardDatePicker
                         id="fromDate"
                         label="Từ ngày"
-                        style={{ width: 400, margin: 5 }}
+                        style={{ margin: 5 }}
                         required={true}
                         InputLabelProps={{
                             shrink: true,
@@ -160,7 +203,7 @@ function PostmanOrderAssignmentDetail(props) {
                     <KeyboardDatePicker
                         id="toDate"
                         label="Đến ngày"
-                        style={{ width: 400, margin: 5 }}
+                        style={{ margin: 5 }}
                         required={true}
                         InputLabelProps={{
                             shrink: true,
@@ -183,6 +226,23 @@ function PostmanOrderAssignmentDetail(props) {
                         icons={tableIcons}
                         data={data}
                         tableRef={(ref) => setTableRef(ref)}
+                        editable={{
+                            onRowUpdate: (newData, oldData) =>
+                                new Promise((resolve, reject) => {
+                                    orderUpdate(newData, oldData);
+                                    resolve();
+                                })
+                        }}
+                        actions={[
+                            (assignment) => ({
+                                icon: () => <MoreHorizIcon />,
+                                tooltip: 'Chi tiết',
+                                onClick: (event, assignment) => {
+                                    setActivePostOrder([assignment.postOrder]);
+                                    setOpen(true)
+                                },
+                            })
+                        ]}
                     />
                 </Grid>
                 <Grid item xs={7}>
@@ -227,7 +287,7 @@ function PostmanOrderAssignmentDetail(props) {
                             }
                             {
                                 geoPoints.map((geoPoint, i) => {
-                                    if (i == geoPoints.length-1) return undefined
+                                    if (i == geoPoints.length - 1) return undefined
                                     return <Polyline
                                         path={
                                             [
@@ -265,6 +325,18 @@ function PostmanOrderAssignmentDetail(props) {
                 confirmAction={comfirmAction}
                 setConfirmAction={setConfirmAction}
             />
+            <Dialog open={open} onClose={() => { setOpen(false) }} fullWidth maxWidth>
+                <DialogTitle>{"Chi tiết đơn hàng"}</DialogTitle>
+                <DialogContent>
+                    <MaterialTable
+                        className={classes.table}
+                        title={"Chi tiết đơn hàng"}
+                        columns={orderColumns}
+                        localization={localization}
+                        data={activePostOrder}
+                    />
+                </DialogContent>
+            </Dialog>
         </MuiPickersUtilsProvider>
     );
 
