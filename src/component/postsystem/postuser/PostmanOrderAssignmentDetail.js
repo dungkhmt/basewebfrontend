@@ -16,6 +16,10 @@ import { KeyboardDatePicker, MuiPickersUtilsProvider } from "@material-ui/picker
 import DateFnsUtils from "@date-io/date-fns";
 import { Dialog, DialogTitle, DialogContent } from "@material-ui/core";
 import MoreHorizIcon from '@material-ui/icons/MoreHoriz';
+import TabPanel from "../TabPanel";
+import AppBar from '@material-ui/core/AppBar';
+import Tabs from '@material-ui/core/Tabs';
+import Tab from '@material-ui/core/Tab';
 
 function errHandling(err) {
     if (err.message == "Unauthorized")
@@ -52,7 +56,7 @@ function formatDate(date) {
 }
 
 function extendBoundRecursive(bounds, map, elements) {
-    if (!elements) return;
+    if (!elements || !Array.isArray(elements)) return;
     elements.forEach((child) => {
         if (child && child.type === Marker) {
             bounds.extend(new window.google.maps.LatLng(child.props.position.lat, child.props.position.lng));
@@ -81,8 +85,11 @@ function PostmanOrderAssignmentDetail(props) {
     const classes = useStyles();
     const token = useSelector(state => state.auth.token);
     const dispatch = useDispatch();
+    const [tabValue, setTabValue] = useState(0);
     const [isRequesting, setIsRequesting] = useState(false);
-    const [data, setData] = useState([]);
+    const [data, setData] = useState({});
+    const [pickTableData, setPickTableData] = useState([]);
+    const [shipTableData, setShipTableData] = useState([]);
     const [map, setMap] = useState();
     const [tableRef, setTableRef] = useState();
     const [open, setOpen] = useState(false);
@@ -122,12 +129,17 @@ function PostmanOrderAssignmentDetail(props) {
         loadData(fromDate, date);
     }
 
+    const handleTabChange = (event, newValue) => {
+        setTabValue(newValue);
+    };
+
     const loadData = async (fromDate, toDate) => {
         await Promise.all([
             authGet(dispatch, token, '/get-order-by-postman-and-date?fromDate=' + formatDate(fromDate) + '&toDate=' + formatDate(toDate), {})
                 .then(res => {
                     authGet(dispatch, token, '/get-post-office-by-postman', {})
                         .then((res1) => {
+                            console.log('adfasdf')
                             let geoPoints = []
                             if (res.length > 0) {
                                 geoPoints.push(res1.postalAddress.geoPoint);
@@ -138,12 +150,19 @@ function PostmanOrderAssignmentDetail(props) {
                             }
                             setGeoPoints(geoPoints);
                             setData(res);
+                            setPickTableData([...res.pickAssignment, ...res.finishedAssignment].filter(assignment =>
+                                assignment.statusId == 'POST_ORDER_ASSIGNMENT_PICKUP_WAITING' || assignment.statusId == 'POST_ORDER_ASSIGNMENT_PICKUP_SUCCESS'
+                            ))
+                            setShipTableData([...res.shipAssignment, ...res.finishedAssignment].filter(assignment =>
+                                assignment.statusId == 'POST_ORDER_ASSIGNMENT_SHIP_WAITING' || assignment.statusId == 'POST_ORDER_ASSIGNMENT_SHIP_SUCCESS'
+                            ))
                             setPostOffice(res1);
                         })
                 })
         ])
             .catch(err => errHandling(err))
     }
+
 
     useEffect(() => {
         loadData(fromDate, toDate)
@@ -212,38 +231,80 @@ function PostmanOrderAssignmentDetail(props) {
                         onChange={handleToDateChange}
                         value={toDate}
                     />
-                    <MaterialTable
-                        className={classes.table}
-                        title="Danh sách đơn hàng"
-                        columns={columns}
-                        options={{
-                            filtering: true,
-                            Materisearch: true,
-                            actionsColumnIndex: -1,
-                            selection: false,
-                        }}
-                        localization={localization}
-                        icons={tableIcons}
-                        data={data}
-                        tableRef={(ref) => setTableRef(ref)}
-                        editable={{
-                            onRowUpdate: (newData, oldData) =>
-                                new Promise((resolve, reject) => {
-                                    orderUpdate(newData, oldData);
-                                    resolve();
+                    <AppBar position="static">
+                        <Tabs value={tabValue} onChange={handleTabChange} aria-label="simple tabs example">
+                            <Tab label="Đơn cần giao" />
+                            <Tab label="Đơn cần nhận" />
+                        </Tabs>
+                    </AppBar>
+                    <TabPanel value={tabValue} index={0}>
+                        <MaterialTable
+                            className={classes.table}
+                            title="Danh sách đơn hàng"
+                            columns={columns}
+                            options={{
+                                filtering: true,
+                                Materisearch: true,
+                                actionsColumnIndex: -1,
+                                selection: false,
+                            }}
+                            localization={localization}
+                            icons={tableIcons}
+                            data={pickTableData}
+                            tableRef={(ref) => setTableRef(ref)}
+                            editable={{
+                                onRowUpdate: (newData, oldData) =>
+                                    new Promise((resolve, reject) => {
+                                        orderUpdate(newData, oldData);
+                                        resolve();
+                                    })
+                            }}
+                            actions={[
+                                (assignment) => ({
+                                    icon: () => <MoreHorizIcon />,
+                                    tooltip: 'Chi tiết',
+                                    onClick: (event, assignment) => {
+                                        setActivePostOrder([assignment.postOrder]);
+                                        setOpen(true)
+                                    },
                                 })
-                        }}
-                        actions={[
-                            (assignment) => ({
-                                icon: () => <MoreHorizIcon />,
-                                tooltip: 'Chi tiết',
-                                onClick: (event, assignment) => {
-                                    setActivePostOrder([assignment.postOrder]);
-                                    setOpen(true)
-                                },
-                            })
-                        ]}
-                    />
+                            ]}
+                        />
+                    </TabPanel>
+                    <TabPanel value={tabValue} index={1}>
+                        <MaterialTable
+                            className={classes.table}
+                            title="Danh sách đơn hàng"
+                            columns={columns}
+                            options={{
+                                filtering: true,
+                                Materisearch: true,
+                                actionsColumnIndex: -1,
+                                selection: false,
+                            }}
+                            localization={localization}
+                            icons={tableIcons}
+                            data={shipTableData}
+                            tableRef={(ref) => setTableRef(ref)}
+                            editable={{
+                                onRowUpdate: (newData, oldData) =>
+                                    new Promise((resolve, reject) => {
+                                        orderUpdate(newData, oldData);
+                                        resolve();
+                                    })
+                            }}
+                            actions={[
+                                (assignment) => ({
+                                    icon: () => <MoreHorizIcon />,
+                                    tooltip: 'Chi tiết',
+                                    onClick: (event, assignment) => {
+                                        setActivePostOrder([assignment.postOrder]);
+                                        setOpen(true)
+                                    },
+                                })
+                            ]}
+                        />
+                    </TabPanel>
                 </Grid>
                 <Grid item xs={7}>
                     <div style={{ position: 'relative', width: '100%', height: '400px', borderRadius: '10px', overflow: 'hidden' }}>
@@ -271,7 +332,7 @@ function PostmanOrderAssignmentDetail(props) {
                                 />
                                 : undefined
                             }
-                            {
+                            {/* {
                                 data.map((assignment) => {
                                     let order = assignment.postOrder
                                     return (
@@ -308,7 +369,7 @@ function PostmanOrderAssignmentDetail(props) {
                                         }}
                                     />
                                 })
-                            }
+                            } */}
                         </Map>
                     </div>
                 </Grid>
