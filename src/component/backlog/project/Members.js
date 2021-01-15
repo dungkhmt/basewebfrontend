@@ -60,10 +60,10 @@ export function MemberList(props) {
       <DialogContent dividers={true}>
         <List>
           {projectMember.map((member, index) => (
-            <ListItem>
+            <ListItem key={member.userLoginId}>
               <ListItemAvatar>
                 <Avatar className={classes.avatar} style={{background: avtColor[index % avtColor.length]}}>
-                  {(member.person && member.person.lastName !== "") ? member.person.lastName.substring(0, 1) : ""}
+                  {(member.person && member.person.lastName && member.person.lastName !== "") ? member.person.lastName.substring(0, 1) : ""}
                 </Avatar>
               </ListItemAvatar>
               <ListItemText
@@ -169,10 +169,10 @@ export function AddMember(props) {
         <DialogContent dividers={true}>
           <List>
             {Object.keys(isMember).map((key, index) => (
-              <ListItem>
+              <ListItem key={key}>
                 <ListItemAvatar>
                   <Avatar className={classes.avatar} style={{background: avtColor[index % avtColor.length]}}>
-                    {(isMember[key].person && isMember[key].person.lastName !== "") ? isMember[key].person.lastName.substring(0, 1) : ""}
+                    {(isMember[key].person && isMember[key].person.lastName && isMember[key].person.lastName !== "") ? isMember[key].person.lastName.substring(0, 1) : ""}
                   </Avatar>
                 </ListItemAvatar>
                 <ListItemText id={key} primary={key} secondary={getFullName(isMember[key].user)}/>

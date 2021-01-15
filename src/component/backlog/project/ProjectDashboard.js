@@ -4,12 +4,15 @@ import { Doughnut } from "react-chartjs-2";
 import { authPost, authGet } from "../../../api";
 import { useDispatch, useSelector } from "react-redux";
 import {
-  Box, Typography, Grid,
-  Paper, ListItem, ListItemIcon, ListItemText, List
+  Box, Typography, Grid, Avatar, 
+  Paper, ListItem, ListItemAvatar, ListItemText, List
 } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
 import Gantt from '../Gantt';
 import "ibm-gantt-chart/dist/ibm-gantt-chart.css";
+import randomColor from "randomcolor";
+
+const avtColor = [...Array(20)].map((value, index) => randomColor({luminosity: "light",hue: "random",}));
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -35,8 +38,16 @@ const useStyles = makeStyles((theme) => ({
   },
   ganttChartStyle: {
     height: '600px'
-  }
+  },
+  avatar: {
+    width: 36,
+    height: 36,
+  },
 }));
+
+const getFullName = (user) => {
+  return user.person ? user.person.firstName + " " + user.person.middleName + " " + user.person.lastName : ""
+}
 
 const taskCounterOpt = {
   responsive: true,
@@ -212,7 +223,7 @@ export default function ProjectDashboard(props) {
             </Box>
           </Paper>
         </Grid>
-        <Grid xs={8} item container style={{ overflow: 'hidden' }}>
+        <Grid xs={9} item container style={{ overflow: 'hidden' }}>
           <Grid xs={12} item container spacing={2}>
             <Grid item xs={12}>
               <Paper>
@@ -234,13 +245,13 @@ export default function ProjectDashboard(props) {
                       </Box>
                     </Typography>
                   </Box>
-                  <Gantt config={ganttConfig} className={classes.ganttChartStyle}/>
+                  <Gantt config={ganttConfig} className={classes.ganttChartStyle} />
                 </Box>
               </Paper>
             </Grid>
           </Grid>
         </Grid>
-        <Grid xs={4} item>
+        <Grid xs={3} item>
           <Paper>
             <Box p={1}>
               <Typography component="div" align='center' className={classes.sectionHeaderStyle}>
@@ -252,10 +263,14 @@ export default function ProjectDashboard(props) {
             <List dense={false} disablePadding={true} className={classes.root}>
               {projectMember.map((item, index) => (
                 <ListItem>
-                  <ListItemIcon>
-                  </ListItemIcon>
+                  <ListItemAvatar>
+                    <Avatar className={classes.avatar} style={{ background: avtColor[index % avtColor.length] }}>
+                      {(item.person && item.person.lastName && item.person.lastName !== "") ? item.person.lastName.substring(0, 1) : ""}
+                    </Avatar>
+                  </ListItemAvatar>
                   <ListItemText
-                    primary={item.userLoginId}
+                    primary={getFullName(item)}
+                    secondary={item.userLoginId}
                   />
                 </ListItem>
               ))}
