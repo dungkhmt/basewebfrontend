@@ -99,12 +99,12 @@ const style = {
 function copyObj(obj) {
     return JSON.parse(JSON.stringify(obj));
 }
-function PickAndDeliveryDetail(props) {
+function ShipAndDeliveryDetail(props) {
     const token = useSelector(state => state.auth.token);
     const dispatch = useDispatch();
     const classes = useStyles();
     const [postOffice, setPostOffice] = useState();
-    const [fromPostOrder, setFromPostOrder] = useState([]);
+    const [toPostOrder, setToPostOrder] = useState([]);
     const [pickVisible, setPickVisible] = useState(false);
     const [pickMarkerVisible, setPickMarkerVisible] = useState(false);
     const [map, setMap] = useState();
@@ -153,8 +153,8 @@ function PickAndDeliveryDetail(props) {
         if (postman.postOrders.length > 0) {
             postman.geoPoints.push(postOffice.postalAddress.geoPoint);
             postman.postOrders.forEach(postOrder => {
-                postman.distance += distance(postOrder.fromCustomer.postalAddress.geoPoint, postman.geoPoints[postman.geoPoints.length - 1]);
-                postman.geoPoints.push(postOrder.fromCustomer.postalAddress.geoPoint);
+                postman.distance += distance(postOrder.toCustomer.postalAddress.geoPoint, postman.geoPoints[postman.geoPoints.length - 1]);
+                postman.geoPoints.push(postOrder.toCustomer.postalAddress.geoPoint);
             })
             postman.distance += distance(postOffice.postalAddress.geoPoint, postman.geoPoints[postman.geoPoints.length - 1]);
             postman.geoPoints.push(postOffice.postalAddress.geoPoint);
@@ -166,7 +166,7 @@ function PickAndDeliveryDetail(props) {
         authPost(dispatch, token, "/post-office-vrp-solve", {
             "postOfficeId": postOfficeId,
             "postmanIds": solvingPostmen,
-            "postOrderIds": fromPostOrder.map(postOrder => postOrder.postShipOrderId),
+            "postOrderIds": toPostOrder.map(postOrder => postOrder.postShipOrderId),
             "type": "pick"
         })
             .then(res => {
@@ -188,8 +188,8 @@ function PickAndDeliveryDetail(props) {
                                 postman.distance = 0;
                                 res.routes[i].forEach(postOrder => {
                                     solvedPostOrderId.push(postOrder.postShipOrderId);
-                                    postman.distance += distance(postOrder.fromCustomer.postalAddress.geoPoint, postman.geoPoints[postman.geoPoints.length - 1]);
-                                    postman.geoPoints.push(postOrder.fromCustomer.postalAddress.geoPoint);
+                                    postman.distance += distance(postOrder.tofromCustomer.postalAddress.geoPoint, postman.geoPoints[postman.geoPoints.length - 1]);
+                                    postman.geoPoints.push(postOrder.toCustomer.postalAddress.geoPoint);
                                     postOrder['order'] = order++;
                                     postman.weight += postOrder.weight;
                                 })
@@ -202,7 +202,7 @@ function PickAndDeliveryDetail(props) {
                     })
                     setPostmen(newPostmen);
                     setSolved(true);
-                    setFromPostOrder(fromPostOrder.filter(postOrder => !solvedPostOrderId.includes(postOrder.postShipOrderId)))
+                    setToPostOrder(toPostOrder.filter(postOrder => !solvedPostOrderId.includes(postOrder.postShipOrderId)))
                 }
                 setSolving(false);
             })
@@ -229,8 +229,8 @@ function PickAndDeliveryDetail(props) {
             .then(
                 res => {
                     setPostOffice(res.postOffice)
-                    setFromPostOrder(res.fromPostOrders);
-                    setBackupPostorders(copyObj(res.fromPostOrders));
+                    setToPostOrder(res.toPostOrders);
+                    setBackupPostorders(copyObj(res.toPostOrders));
                     authGet(dispatch, token, "/get-postman-list-order-bydate/" + postOfficeId + '?fromDate=' + formatDate(fromDate) + '&toDate=' + formatDate(toDate))
                         .then(
                             res1 => {
@@ -247,11 +247,11 @@ function PickAndDeliveryDetail(props) {
                                         postman.distance = 0;
                                         postman.postOrders.forEach(postOrder => {
                                             postOrder['order'] = order++;
-                                            postman.distance += distance(postOrder.fromCustomer.postalAddress.geoPoint, postman.geoPoints[postman.geoPoints.length - 1]);
-                                            postman.geoPoints.push(postOrder.fromCustomer.postalAddress.geoPoint);
+                                            postman.distance += distance(postOrder.toCustomer.postalAddress.geoPoint, postman.geoPoints[postman.geoPoints.length - 1]);
+                                            postman.geoPoints.push(postOrder.toCustomer.postalAddress.geoPoint);
                                             postman.weight += postOrder.weight;
                                         })
-                                        postman.distance += distance(res.postOffice.postalAddress.geoPoint, postman.geoPoints[postman.geoPoints.length - 1]);
+                                        postman.distance += distance(postOffice.postalAddress.geoPoint, postman.geoPoints[postman.geoPoints.length - 1]);
                                         postman.geoPoints.push(res.postOffice.postalAddress.geoPoint);
                                     }
                                 })
@@ -259,7 +259,8 @@ function PickAndDeliveryDetail(props) {
                                 setBackupPostmen(copyObj(res1));
                             }
                         )
-                })
+                }
+            )
             .catch(err => errHandling(err))
     }, [])
 
@@ -365,7 +366,7 @@ function PickAndDeliveryDetail(props) {
             }
         })
         setPostmen(newPostmen)
-        setFromPostOrder([...fromPostOrder, postOrder])
+        setToPostOrder([...toPostOrder, postOrder])
     }
     const moveToPostman = (toPostmanId, postOrderId) => {
         let newPostmen = JSON.parse(JSON.stringify(postmen))
@@ -403,8 +404,8 @@ function PickAndDeliveryDetail(props) {
             .then(
                 res => {
                     setPostOffice(res.postOffice)
-                    setFromPostOrder(res.fromPostOrders);
-                    setBackupPostorders(copyObj(res.fromPostOrders));
+                    setToPostOrder(res.toPostOrders);
+                    setBackupPostorders(copyObj(res.toPostOrders));
                     authGet(dispatch, token, "/get-postman-list-order-bydate/" + postOfficeId + '?fromDate=' + formatDate(fromDate) + '&toDate=' + formatDate(toDate))
                         .then(
                             res1 => {
@@ -421,8 +422,8 @@ function PickAndDeliveryDetail(props) {
                                         postman.distance = 0;
                                         postman.postOrders.forEach(postOrder => {
                                             postOrder['order'] = order++;
-                                            postman.distance += distance(postOrder.fromCustomer.postalAddress.geoPoint, postman.geoPoints[postman.geoPoints.length - 1]);
-                                            postman.geoPoints.push(postOrder.fromCustomer.postalAddress.geoPoint);
+                                            postman.distance += distance(postOrder.tofromCustomer.postalAddress.geoPoint, postman.geoPoints[postman.geoPoints.length - 1]);
+                                            postman.geoPoints.push(postOrder.toCustomer.postalAddress.geoPoint);
                                             postman.weight += postOrder.weight;
                                         })
                                         postman.distance += distance(postOffice.postalAddress.geoPoint, postman.geoPoints[postman.geoPoints.length - 1]);
@@ -445,7 +446,7 @@ function PickAndDeliveryDetail(props) {
                     </Typography>
                     <br />
                     <Typography variant="h6" component="h2">
-                        Còn {fromPostOrder.length} đơn hàng chưa phân công
+                        Còn {toPostOrder.length} đơn hàng chưa phân công
                     </Typography>
                     {/* <AppBar position="static">
                         <Tabs value={tabValue} onChange={handleTabChange} aria-label="simple tabs example">
@@ -550,7 +551,7 @@ function PickAndDeliveryDetail(props) {
                             setPostmen(copyObj(backupPostmen));
                             setPickMarkerVisible(false);
                             setSolved(false);
-                            setFromPostOrder(copyObj(backupPostorders));
+                            setToPostOrder(copyObj(backupPostorders));
                             // let newPostmanTableRef = postmanTableRef;
                             // newPostmanTableRef.state.data.forEach(row => {
                             //     row.tableData.checked = false;
@@ -591,13 +592,13 @@ function PickAndDeliveryDetail(props) {
                                 : undefined
                             }
                             {pickVisible ?
-                                fromPostOrder.map((order) => {
+                                toPostOrder.map((order) => {
                                     return (
                                         <Marker
-                                            title={order.fromCustomer.postCustomerName}
+                                            title={order.toCustomer.postCustomerName}
                                             position={{
-                                                lat: order.fromCustomer.postalAddress.geoPoint.latitude,
-                                                lng: order.fromCustomer.postalAddress.geoPoint.longitude,
+                                                lat: order.toCustomer.postalAddress.geoPoint.latitude,
+                                                lng: order.toCustomer.postalAddress.geoPoint.longitude,
                                             }}
                                             visible={pickVisible || pickMarkerVisible}
                                         />
@@ -606,13 +607,13 @@ function PickAndDeliveryDetail(props) {
                                 : undefined
                             }
                             {pickVisible ?
-                                fromPostOrder.map((order) => {
+                                toPostOrder.map((order) => {
                                     return (
                                         <Polyline
                                             path={
                                                 [
                                                     { lat: postOffice.postalAddress.geoPoint.latitude, lng: postOffice.postalAddress.geoPoint.longitude },
-                                                    { lat: order.fromCustomer.postalAddress.geoPoint.latitude, lng: order.fromCustomer.postalAddress.geoPoint.longitude }
+                                                    { lat: order.toCustomer.postalAddress.geoPoint.latitude, lng: order.toCustomer.postalAddress.geoPoint.longitude }
                                                 ]
                                             }
                                             options={{
@@ -670,10 +671,10 @@ function PickAndDeliveryDetail(props) {
                                     return postman.postOrders.map(order => {
                                         return postman.viewRoute ?
                                             <Marker
-                                                title={order.fromCustomer.postCustomerName}
+                                                title={order.tofromCustomer.postCustomerName}
                                                 position={{
-                                                    lat: order.fromCustomer.postalAddress.geoPoint.latitude,
-                                                    lng: order.fromCustomer.postalAddress.geoPoint.longitude,
+                                                    lat: order.toCustomer.postalAddress.geoPoint.latitude,
+                                                    lng: order.toCustomer.postalAddress.geoPoint.longitude,
                                                 }}
                                                 visible={true}
                                             />
@@ -738,4 +739,4 @@ function PickAndDeliveryDetail(props) {
 
 export default GoogleApiWrapper({
     apiKey: (process.env.REACT_APP_GOOGLE_MAP_API_KEY)
-})(PickAndDeliveryDetail);
+})(ShipAndDeliveryDetail);

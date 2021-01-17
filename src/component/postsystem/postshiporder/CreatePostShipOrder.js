@@ -24,6 +24,7 @@ import TableBody from "@material-ui/core/TableBody";
 import TableCell from "@material-ui/core/TableCell";
 import TableRow from "@material-ui/core/TableRow";
 import Icon from "@material-ui/core/Icon";
+import { errorNoti } from "../../../utils/Notification";
 const useStyles = makeStyles(theme => ({
     root: {
         padding: theme.spacing(4),
@@ -34,6 +35,13 @@ const useStyles = makeStyles(theme => ({
         backgroundColor: theme.palette.background.paper
     }
 }));
+function errHandling(err) {
+    if (err.message == "Unauthorized")
+        errorNoti("Phiên làm việc đã kết thúc, vui lòng đăng nhập lại !", true);
+    else
+        errorNoti("Rất tiếc! Đã có lỗi xảy ra.", true);
+    console.trace(err);
+}
 
 function CreatePostShipOrder(props) {
     const token = useSelector(state => state.auth.token);
@@ -78,6 +86,7 @@ function CreatePostShipOrder(props) {
                 setPackageTypeData(res)
                 console.log(res)
             })
+            .catch(err => errHandling(err))
     }
 
     const handlePackageNameChange = event => {
@@ -166,32 +175,18 @@ function CreatePostShipOrder(props) {
 
         };
         setIsRequesting(true);
-
         authPost(dispatch, token, "/create-post-ship-order", data)
             .then(
-                res => {
-                    setIsRequesting(false);
-                    if (res.status === 401) {
-                        dispatch(failed());
-                        throw Error("Unauthorized");
-                    } else if (res.status === 409) {
-                        alert("User exits!!");
-                    } else if (res.status === 200) {
-                        res.json().then((result => {
-                            if (result.statusCode !== 'SUCCESS') {
-                                alert(result.detail);
-                                return result.statusCode;
-                            }
-                            else {
-                                setOpenAlert(true);
-                            }
-                        }));
+                result => {
+                    if (result.statusCode !== 'SUCCESS') {
+                        alert(result.detail);
+                        return result.statusCode;
                     }
-                },
-                error => {
-                    console.log(error);
-                }
-            )
+                    else {
+                        setOpenAlert(true);
+                    }
+                })
+            .catch(err => errHandling(err))
 
     };
     useEffect(() => {

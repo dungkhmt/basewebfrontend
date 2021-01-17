@@ -43,6 +43,7 @@ export default function AccountButton(props) {
     setAnchorEl(null);
   };
   useEffect(() => {
+    console.log(handleMenuClose)
     request(token, history, "get", "/my-account/", (res) => {
       if (res !== undefined && res !== null) {
         setName(res.data.name);
@@ -66,7 +67,7 @@ export default function AccountButton(props) {
       <AccountMenu
         anchorEl={anchorEl}
         id={menuId}
-        handleMenuClose={handleMenuClose}
+        handleClose={handleMenuClose}
         name={name}
         userName={userName}
         partyId={partyId}

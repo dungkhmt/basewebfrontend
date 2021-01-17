@@ -14,6 +14,8 @@ import ExecuteTrip from "../component/postsystem/posttrip/ExecuteTrip";
 import PostOrderDetail from "../component/postsystem/postshiporder/PostOrderDetail";
 import PickAndDelivery from "../component/postsystem/planning/PickAndDelivery";
 import PickAndDeliveryDetail from "../component/postsystem/planning/PickAndDeliveryDetail";
+import ShipAndDelivery from "../component/postsystem/planning/PickAndDelivery";
+import ShipAndDeliveryDetail from "../component/postsystem/planning/PickAndDeliveryDetail";
 import PostDriverExecuteTrip from "../component/postsystem/posttrip/PostDriverExecuteTrip";
 import ManagePostman from "../component/postsystem/postuser/ManagePostman";
 import PostDriverDetail from "../component/postsystem/postuser/PostDriverDetail";
@@ -36,6 +38,8 @@ export default function PostOfficeRoute() {
         <Route component={CreateTrip} exact path={`${path}/createtrip`} />
         <Route component={PickAndDelivery} exact path={`${path}/pickanddelivery`} />
         <Route component={PickAndDeliveryDetail} exact path={`${path}/pickanddeliverydetail`} />
+        <Route component={ShipAndDelivery} exact path={`${path}/shipanddelivery`} />
+        <Route component={ShipAndDeliveryDetail} exact path={`${path}/shipanddeliverydetail`} />
         <Route component={ExecuteTrip} exact path={`${path}/executetrip`} />
         <Route component={PostDriverExecuteTrip} exact path={`${path}/view-post-driver-post-trip`} />
         <Route component={ManagePostman} exact path={`${path}/manage-postman`} />

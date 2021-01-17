@@ -55,7 +55,7 @@ export const post = {
     },
     {
       id: "MENU_POST_VIEW_PACKAGE_DELIVERY_PLAN",
-      path: "",
+      path: "/postoffice/shipanddelivery",
       isPublic: false,
       icon: "StarBorder",
       text: "Lập kế hoạch phát bưu kiện",
