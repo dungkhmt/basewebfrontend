@@ -20,6 +20,8 @@ export const authPost = (dispatch, token, url, body) => {
         }
         else {
           console.log(res)
+          try {res.json().then(res1 => console.log(res1))}
+          catch (err) {}
           throw Error();
         }
         return null;
@@ -74,6 +76,8 @@ export const authGet = (dispatch, token, url) => {
         }
         else {
           console.log(res)
+          try {res.json().then(res1 => console.log(res1))}
+          catch (err) {}
           throw Error();
         }
         return null;

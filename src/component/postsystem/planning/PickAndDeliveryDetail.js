@@ -119,12 +119,12 @@ function PickAndDeliveryDetail(props) {
     const [isSolving, setSolving] = useState(false);
     const [distances, setDistances] = useState([]);
     const [open, setOpen] = useState(false);
-    const [fromDate, setFromDate] = useState(new Date());
-    const [toDate, setToDate] = useState(new Date());
     const [backupPostmen, setBackupPostmen] = useState([]);
     const [backupPostorders, setBackupPostorders] = useState([]);
     const [postmanTableRef, setPostmanTableRef] = useState();
     const [solvingPostmen, setSolvingPostmen] = useState([]);
+    const [fromDate, setFromDate] = useState(new Date());
+    const [toDate, setToDate] = useState(new Date());
     const handleFromDateChange = (date) => {
         setFromDate(date);
         refreshPostOrders(date, toDate);
