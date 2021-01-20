@@ -1,7 +1,7 @@
 import DateFnsUtils from "@date-io/date-fns";
 import {
   Button, Card, CardActions, CardContent, TextField, Typography,
-  MenuItem, Checkbox, ListItemText
+  MenuItem, Checkbox, 
 } from "@material-ui/core/";
 import { makeStyles } from "@material-ui/core/styles";
 import {
@@ -16,7 +16,11 @@ import { DropzoneArea } from "material-ui-dropzone";
 import {
   TASK_STATUS, TASK_PRIORITY, TASK_CATEGORY
 } from '../BacklogConfig';
+import randomColor from "randomcolor";
 import AlertDialog from '../AlertDialog';
+import UserItem from '../components/UserItem';
+
+const avtColor = [...Array(20)].map((value, index) => randomColor({ luminosity: "light", hue: "random", }));
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -287,9 +291,12 @@ export default function CreateTask(props) {
               <MenuItem key='' value=''>
                 &nbsp;
               </MenuItem>
-              {projectMember.map((item) => (
+              {projectMember.map((item, index) => (
                 <MenuItem key={item.partyId} value={item.partyId}>
-                  {item.userLoginId}
+                  <UserItem
+                    user={item}
+                    avatarColor={avtColor[index % avtColor.length]}
+                  />
                 </MenuItem>
               ))}
             </TextField>
@@ -308,10 +315,14 @@ export default function CreateTask(props) {
               fullWidth
               label="Người có thể thực hiện"
             >
-              {projectMember.map((item) => (
+              {projectMember.map((item, index) => (
                 <MenuItem key={item.partyId} value={item.partyId}>
                   <Checkbox checked={taskAssignable.includes(item.partyId)} />
-                  <ListItemText primary={item.userLoginId} />
+                  <UserItem
+                    user={item}
+                    avatarColor={avtColor[index % avtColor.length]}
+                  />
+                  {/* <ListItemText primary={item.userLoginId} /> */}
                 </MenuItem>
               ))}
             </TextField>

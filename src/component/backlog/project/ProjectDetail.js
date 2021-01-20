@@ -5,8 +5,8 @@ import { authPost, authGet, authPostMultiPart } from "../../../api";
 import { Redirect, useHistory } from "react-router-dom";
 import { toFormattedDateTime } from "../../../utils/dateutils";
 import {
-  Grid, Button, Card, CardContent, Icon, ListItem, ListItemAvatar, Avatar,
-  TextField, Tooltip, IconButton, Box, Chip, Typography, ListItemText,
+  Grid, Button, Card, CardContent, Icon, 
+  TextField, Tooltip, IconButton, Box, Chip, Typography,
   TableContainer, Table, TableHead, TableRow, TableCell, TableBody,
   Paper, FormControl, InputLabel, Select, MenuItem, Snackbar,
 } from "@material-ui/core";
@@ -32,10 +32,7 @@ import { HiLightBulb } from 'react-icons/hi';
 import SuggestionResult from '../suggestion/SuggestionResult';
 import OverlayLoading from '../components/OverlayLoading';
 import { MemberList, AddMember } from './Members';
-
-const getFullName = (user) => {
-  return user.person ? user.person.firstName + " " + user.person.middleName + " " + user.person.lastName : ""
-}
+import UserItem from '../components/UserItem';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -87,7 +84,7 @@ export default function ProjectDetail(props) {
   const token = useSelector(state => state.auth.token);
   const history = useHistory();
   const classes = useStyles();
-  const tableRef = useRef(null);
+  const tableRef = useRef();
   const [myAccount, setMyAccount] = useState(null);
   const [project, setProject] = useState({});
   const [taskList, setTaskList] = useState([]);
@@ -195,13 +192,17 @@ export default function ProjectDetail(props) {
     setTaskStatusChange({});
   }
 
-  const taskListColumn = [
-    { title: "Chủ đề", field: "backlogTask.backlogTaskName" },
+  const [taskListColumn] = useState([
+    {
+      title: "Chủ đề", field: "backlogTask.backlogTaskName",
+      defaultSort: 'asc'
+    },
     {
       title: "Loại", field: "backlogTask.categoryName",
+      // defaultSort: 'asc',
       render: rowData => {
         const color = categoryPool.filter(x => x.categoryId === rowData.backlogTask.categoryId).map(e => e.color)
-  
+
         return (
           <StyledChip
             label={rowData.backlogTask.categoryName}
@@ -212,9 +213,10 @@ export default function ProjectDetail(props) {
     },
     {
       title: "Trạng thái", field: "backlogTask.statusName",
+      // defaultSort: 'asc',
       render: rowData => {
         const color = statusPool.filter(x => x.statusId === rowData.backlogTask.statusId).map(e => e.color)
-  
+
         return (
           <StyledChip
             label={rowData.backlogTask.statusName}
@@ -225,6 +227,7 @@ export default function ProjectDetail(props) {
     },
     {
       title: "Độ ưu tiên", field: "backlogTask.priorityName",
+      // defaultSort: 'asc',
       render: rowData => {
         const color = priorityPool.filter(x => x.priorityId === rowData.backlogTask.priorityId).map(e => e.color)
         const icon = priorityPool.filter(x => x.priorityId === rowData.backlogTask.priorityId).map(e => e.icon)
@@ -237,36 +240,36 @@ export default function ProjectDetail(props) {
     },
     {
       title: "Phân công", field: "assignment",
+      // defaultSort: 'asc',
       sorting: false,
       render: rowData => {
-        if(rowData.assignmentFullInfo == null || rowData.assignmentFullInfo === undefined || rowData.assignmentFullInfo.length === 0) return;
+        if (rowData.assignmentFullInfo == null
+          || rowData.assignmentFullInfo === undefined
+          || rowData.assignmentFullInfo.length === 0
+        ) return;
         const user = rowData.assignmentFullInfo[0];
-        const person = rowData.assignmentFullInfo[0].person || {};
-        console.log(rowData.assignmentFullInfo);
         return (
-          <ListItem>
-            <ListItemAvatar>
-              <Avatar className={classes.avatar}>
-                {(person.lastName && person.lastName !== "") ? person.lastName.substring(0, 1) : ""}
-              </Avatar>
-            </ListItemAvatar>
-            <ListItemText id={user.userLoginId} primary={getFullName(user)} secondary={user.userLoginId} primaryTypographyProps={{ variant: "subtitle2"}}/>
-          </ListItem>
+          <UserItem
+            user={user}
+            avatarClass={classes.avatar}
+            primaryTypographyProps={{ variant: "subtitle2" }}
+          />
         )
-        //return rowData['assignment'].toString();
       }
     },
     {
       title: "Ngày bắt đầu", field: "backlogTask.fromDate",
+      // defaultSort: 'desc',
       filtering: false,
       render: rowData => toFormattedDateTime(rowData.backlogTask['fromDate'])
     },
     {
       title: "Hạn cuối", field: "backlogTask.dueDate",
+      // defaultSort: 'desc',
       filtering: false,
       render: rowData => toFormattedDateTime(rowData.backlogTask['dueDate'])
     },
-  ];
+  ]);
 
   useEffect(() => {
     getProjectDetail(backlogProjectId);
@@ -312,7 +315,15 @@ export default function ProjectDetail(props) {
     return Math.ceil(Math.abs(new Date(a) - new Date(b)) / 86400000);
   };
   async function getSuggestion() {
-    let body = selectedRows;
+    let body = [];
+    let unassignableTasks = [];
+    selectedRows.forEach(taskId => {
+      if (taskList.find(e => e.backlogTask.backlogTaskId === taskId).assignableFullInfo.length > 0) {
+        body.push(taskId);
+      } else {
+        unassignableTasks.push(taskId);
+      }
+    });
     setOpenOverlayLoading(true);
     const result = await authPost(dispatch, token, "/backlog/suggest-assignment", body).then(r => r.json());
     setOpenOverlayLoading(false);
@@ -353,6 +364,26 @@ export default function ProjectDetail(props) {
       }
     });
 
+    unassignableTasks.forEach(taskId => {
+      tableResultData.push({
+        taskId: taskId,
+        taskName: taskList.find(e => e.backlogTask.backlogTaskId === taskId).backlogTask.backlogTaskName,
+        assign: null,
+        duration: 0,
+        assignable: [],
+      });
+    })
+    
+    if(datasets[0].backgroundColor.length < labels.length) {
+      for(let i = 0; i < labels.length / datasets[0].backgroundColor.length + 1; i++) {
+        datasets[0].backgroundColor = [...datasets[0].backgroundColor, ...ChartColor];
+      }
+    }
+
+    labels = labels.filter((e, index) => datasets[0].data[index] > 0);
+    datasets[0].data = datasets[0].data.filter(e => e > 0);
+
+    console.log(labels, datasets[0].data);
     setSuggestData(tableResultData);
     setSuggestChartData({
       labels: labels,
@@ -471,9 +502,10 @@ export default function ProjectDetail(props) {
               tableRef={tableRef}
               columns={taskListColumn}
               options={{
+                thirdSortClick: false,
                 filtering: true,
                 sorting: true,
-                search: true,
+                search: false,
                 selection: isTableSelectable,
                 pageSize: tablePageSize,
                 debounceInterval: 600,
@@ -733,7 +765,8 @@ export default function ProjectDetail(props) {
           setSuggestData={setSuggestData}
           applyCallback={() => {
             setIsTableSelectable(false);
-            getProjectDetail(backlogProjectId);
+            tableRef.current.onQueryChange();
+            // getProjectDetail(backlogProjectId);
           }}
         />
 

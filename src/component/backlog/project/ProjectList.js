@@ -17,19 +17,10 @@ import {
   TABLE_STRIPED_ROW_COLOR
 } from '../BacklogConfig';
 
-const useStyles = makeStyles((theme) => ({
-  grid: {
-    verticalAlign: 'text-bottom',
-    textAlign: 'right',
-    padding: '0px 50px 10px 30px'
-  }
-}));
-
 export default function ProjectList() {
   const dispatch = useDispatch();
   const token = useSelector(state => state.auth.token);
   const history = useHistory();
-  const classes = useStyles();
 
   const columns = [
     { title: 'ID dự án', field: 'backlogProjectId' },
@@ -49,13 +40,14 @@ export default function ProjectList() {
     getProjectList();
   }, []);
 
-  return <div>
+  return (
+    <div>
       <CardContent>
         <MaterialTable
           title={"Danh sách dự án"}
           columns={columns}
           data={projectList}
-          options={{ 
+          options={{
             search: false,
             rowStyle: rowData => { return { backgroundColor: TABLE_STRIPED_ROW_COLOR[rowData.tableData.id % TABLE_STRIPED_ROW_COLOR.length] } },
           }}
@@ -65,7 +57,7 @@ export default function ProjectList() {
           }}
           actions={[
             {
-              icon: () => { return <AddIcon color='primary' fontSize='large'/> },
+              icon: () => { return <AddIcon color='primary' fontSize='large' /> },
               tooltip: 'Thêm dự án mới',
               isFreeAction: true,
               onClick: () => { history.push('/backlog/create-project') }
@@ -73,6 +65,6 @@ export default function ProjectList() {
           ]}
         />
       </CardContent>
-
-  </div >;
+    </div >
+  );
 }
