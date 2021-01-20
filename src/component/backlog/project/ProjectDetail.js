@@ -5,7 +5,7 @@ import { authPost, authGet, authPostMultiPart } from "../../../api";
 import { Redirect, useHistory } from "react-router-dom";
 import { toFormattedDateTime } from "../../../utils/dateutils";
 import {
-  Grid, Button, Card, CardContent, Icon, 
+  Grid, Button, Card, CardContent, Icon,
   TextField, Tooltip, IconButton, Box, Chip, Typography,
   TableContainer, Table, TableHead, TableRow, TableCell, TableBody,
   Paper, FormControl, InputLabel, Select, MenuItem, Snackbar,
@@ -131,6 +131,8 @@ export default function ProjectDetail(props) {
         return "priorityName";
       case "assignment":
         return "assignment";
+      case "createdByUser":
+        return "createdByUser";
       default:
         return "";
     }
@@ -150,6 +152,8 @@ export default function ProjectDetail(props) {
         return "from_date";
       case "backlogTask.dueDate":
         return "due_date";
+      case "createdByUser":
+        return "created_by_user_login_id";
       default:
         return "";
     }
@@ -227,6 +231,7 @@ export default function ProjectDetail(props) {
     },
     {
       title: "Độ ưu tiên", field: "backlogTask.priorityName",
+      filtering: false,
       // defaultSort: 'asc',
       render: rowData => {
         const color = priorityPool.filter(x => x.priorityId === rowData.backlogTask.priorityId).map(e => e.color)
@@ -255,6 +260,16 @@ export default function ProjectDetail(props) {
             primaryTypographyProps={{ variant: "subtitle2" }}
           />
         )
+      }
+    },
+    {
+      title: "Người tạo", field: "createdByUser",
+      render: rowData => {
+        return <UserItem
+          user={rowData.createdByUser}
+          avatarClass={classes.avatar}
+          primaryTypographyProps={{ variant: "subtitle2" }}
+        />
       }
     },
     {
@@ -373,9 +388,9 @@ export default function ProjectDetail(props) {
         assignable: [],
       });
     })
-    
-    if(datasets[0].backgroundColor.length < labels.length) {
-      for(let i = 0; i < labels.length / datasets[0].backgroundColor.length + 1; i++) {
+
+    if (datasets[0].backgroundColor.length < labels.length) {
+      for (let i = 0; i < labels.length / datasets[0].backgroundColor.length + 1; i++) {
         datasets[0].backgroundColor = [...datasets[0].backgroundColor, ...ChartColor];
       }
     }
@@ -572,15 +587,20 @@ export default function ProjectDetail(props) {
                               <TableRow>
                                 <TableCell>Task ID</TableCell>
                                 <TableCell>Ngày cập nhật</TableCell>
-                                <TableCell>Người tạo</TableCell>
+                                {/* <TableCell>Người tạo</TableCell> */}
                                 <TableCell>Người có thể phân công</TableCell>
                               </TableRow>
                             </TableHead>
                             <TableBody>
                               <TableRow>
                                 <TableCell>{rowData.backlogTask.backlogTaskId}</TableCell>
-                                <TableCell>{toFormattedDateTime(rowData.backlogTask.lastUpdateStamp)}</TableCell>
-                                <TableCell>{rowData.backlogTask.createdByUserLoginId}</TableCell>
+                                <TableCell>
+                                  {rowData.backlogTask.lastUpdateStamp ?
+                                    toFormattedDateTime(rowData.backlogTask.lastUpdateStamp)
+                                    : toFormattedDateTime(rowData.backlogTask.createdStamp)
+                                  }
+                                </TableCell>
+                                {/* <TableCell>{rowData.backlogTask.createdByUserLoginId}</TableCell> */}
                                 <TableCell>{rowData.assignable.join(", ")}</TableCell>
                               </TableRow>
                             </TableBody>
