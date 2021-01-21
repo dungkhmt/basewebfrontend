@@ -1,39 +1,66 @@
 import React, { useEffect, useState } from "react";
+import { useDispatch } from "react-redux";
 import { makeStyles } from "@material-ui/core/styles";
 import Paper from "@material-ui/core/Paper";
 import Typography from "@material-ui/core/Typography";
-import TableContainer from "@material-ui/core/TableContainer";
-import TableHead from "@material-ui/core/TableHead";
-import Table from "@material-ui/core/Table";
-import TableBody from "@material-ui/core/TableBody";
-import TableCell from "@material-ui/core/TableCell";
-import TableRow from "@material-ui/core/TableRow";
-import TablePagination from "@material-ui/core/TablePagination";
 import { useSelector } from "react-redux";
-import IconButton from "@material-ui/core/IconButton";
-import DeleteIcon from "@material-ui/icons/Delete";
 import Button from "@material-ui/core/Button";
-import Dialog from "@material-ui/core/Dialog";
-import DialogActions from "@material-ui/core/DialogActions";
-import DialogTitle from "@material-ui/core/DialogTitle";
-import { DialogContent } from "@material-ui/core";
 import { API_URL } from "../../../config/config";
 import { Link } from "react-router-dom";
+import MaterialTable from "material-table";
+import {
+    localization
+} from '../../../utils/MaterialTableUtils';
+import { authGet, authDelete } from "../../../api";
+import { KeyboardDatePicker, MuiPickersUtilsProvider } from "@material-ui/pickers";
+import DateFnsUtils from "@date-io/date-fns";
+import { errorNoti } from "../../../utils/Notification";
+import ConfirmDialog from "../ConfirmDialog";
+
+function errHandling(err) {
+    if (err.message == "Unauthorized")
+        errorNoti("Phiên làm việc đã kết thúc, vui lòng đăng nhập lại !", true);
+    else
+        errorNoti("Rất tiếc! Đã có lỗi xảy ra.", true);
+    console.trace(err);
+}
+
+function formatDate(date) {
+    return date.getDate() + "-" + parseInt(date.getMonth() + 1) + "-" + date.getFullYear();
+}
 
 const columns = [
-    { label: "Mã đơn hàng", id: "postShipOrderId", minWidth: 150, type: 'normal' },
-    { label: "Người gửi", id: "fromCustomer.postCustomerName", minWidth: 200, type: 'normal' },
-    { label: "Người nhận", id: "toCustomer.postCustomerName", minWidth: 200, type: 'normal' },
-    { label: "Tên hàng", id: "packageName", minWidth: 200, type: 'normal' },
-    { label: "Khối lượng", id: "weight", minWidth: 150, type: 'normal' },
-    { label: "Trạng thái", id: "statusItem.description", minWidth: 150, type: 'normal' },
-    { label: "Chi tiết", id: "detail", minWidth: 150, type: 'link' },
+    { title: "Mã đơn hàng", field: "postShipOrderId", filtering: false, hidden: true },
+    { title: "Người gửi", field: "fromCustomer.postCustomerName" },
+    { title: "Người nhận", field: "toCustomer.postCustomerName" },
+    { title: "Tên hàng", field: "packageName", minWidth: 200 },
+    { title: "Khối lượng", field: "weight", minWidth: 150, filtering: false },
+    { title: "Trạng thái", field: "statusItem.description" },
+    {
+        title: "Chi tiết", field: "detail",
+        render: (row) =>
+            <Link
+                to={{
+                    pathname: "/postoffice/shiporderdetail",
+                    state: {
+                        value: row
+                    }
+                }}
+            >
+                Chi tiết
+            </Link>,
+        filtering: false
+
+    },
 
 ];
+
 
 const useStyles = makeStyles({
     root: {
         width: "100%",
+        padding: '15px',
+        marginTop: '20px'
     },
     container: {
         maxHeight: 440,
@@ -43,196 +70,121 @@ const useStyles = makeStyles({
 export default function PostShipOrderList(props) {
     const classes = useStyles();
     const token = useSelector((state) => state.auth.token);
-
-    const [page, setPage] = useState(0);
-    const [rowsPerPage, setRowsPerPage] = useState(10);
+    const dispatch = useDispatch();
     const [data, setData] = useState([]);
+    const [comfirmAction, setConfirmAction] = useState({
+        open: false,
+        handleSuccess: undefined,
+        content: undefined,
+        title: undefined
+    });
+    const [fromDate, setFromDate] = useState(new Date());
+    const [toDate, setToDate] = useState(new Date());
 
-    const handleChangePage = (event, newPage) => {
-        setPage(newPage);
-    };
+    const handleFromDateChange = (date) => {
+        setFromDate(date);
+        loadData(date, toDate);
+    }
 
-    const handleChangeRowsPerPage = (event) => {
-        setRowsPerPage(+event.target.value);
-        setPage(0);
-    };
+    const handleToDateChange = (date) => {
+        setToDate(date);
+        loadData(fromDate, date);
+    }
 
-    const deleteCallBack = (callbackData) => {
-        let new_data = data.map((row) => {
-            if (row.postShipOrderId == callbackData.postShipOrderId) return callbackData;
-            else return row;
-        })
-        setData(new_data);
-    };
-
-    useEffect(() => {
-        fetch(API_URL + "/get-list-order", {
-            method: "GET",
-            headers: {
-                "content-type": "application/json",
-                "X-Auth-Token": token,
-            },
-        })
-            .then((response) => response.json())
+    const loadData = (fromDate, toDate) => {
+        authGet(dispatch, token, "/get-list-order" + '?fromDate=' + formatDate(fromDate) + '&toDate=' + formatDate(toDate))
             .then((response) => {
                 setData(response);
-                console.log(response.length)
-            });
+            })
+            .catch(err => errHandling(err));
+    }
+
+    const deleteOrder = (postOrder) => {
+        authDelete(dispatch, token, "/delete-post-ship-order/" + postOrder.postShipOrderId, {
+        })
+            .then((res) => {
+                setConfirmAction({ open: false, content: 'xoá đơn hàng' })
+                const dataUpdate = [...data];
+                const index = postOrder.tableData.id;
+                dataUpdate[index].statusId = "ORDER_CANCELLED"
+                dataUpdate[index].statusItem.description = "Đã hủy"
+                setData([...dataUpdate]);
+            })
+            .catch(err => errHandling(err))
+    }
+
+    useEffect(() => {
+        loadData(fromDate, toDate);
     }, data);
 
     return (
         <Paper className={classes.root}>
-            <Typography variant="h5" component="h2" align="center">
-                Danh sách đơn hàng
-      </Typography>
-            <Button
-                component={Link}
-                to={{ pathname: "/postoffice/viewallshiporder", state: { data: data } }}
-                variant="contained"
-                color="primary"
-                style={{ margin: 10, float: "right" }}
-            >
-                Xem trên bản đồ
-        </Button>
-            <Button
-                component={Link}
-                to={"/postoffice/create"}
-                variant="contained"
-                color="primary"
-                style={{ margin: 10, float: "right" }}
-            >
-                Thêm mới
-        </Button>
-            <TableContainer className={classes.container}>
-                <Table stickyHeader aria-label="sticky table">
-                    <TableHead>
-                        <TableRow>
-                            {columns.map((column) => (
-                                <TableCell
-                                    key={column.id}
-                                    align={column.align}
-                                    style={{ minWidth: column.minWidth }}
-                                >
-                                    {column.label}
-                                </TableCell>
-                            ))}
-                            <TableCell></TableCell>
-                        </TableRow>
-                    </TableHead>
-                    <TableBody>
-                        {data
-                            .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                            .map((row) => {
-                                console.log(row.postShipOrderId)
-                                return (
-                                    <TableRow hover role="checkbox" tabIndex={-1} key={row.code}>
-                                        {columns.map((column) => {
-                                            let value;
-                                            column.id.split(".").reduce((prev, cur) => {
-                                                if (prev) {
-                                                    return value = prev[cur];
-                                                }
-                                                else {
-                                                    return value = row[cur];
-                                                }
-                                            }, undefined)
-                                            return (
-                                                <TableCell key={column.id} align={column.align}>
-                                                    {column.type == "link" ? (
-                                                        <Link
-                                                            to={{
-                                                                pathname: "/postoffice/shiporderdetail",
-                                                                state: {
-                                                                    value: row
-                                                                }
-                                                            }}
-                                                        >
-                                                            Chi tiết
-                                                        </Link>
-                                                    ) : (
-                                                            value
-                                                        )}
-                                                </TableCell>
-                                            );
-                                        })}
-                                        <TableCell>
-                                            <DeleteButton
-                                                data={row}
-                                                callback={deleteCallBack}
-                                            />
-                                        </TableCell>
-                                    </TableRow>
-                                );
-                            })}
-                    </TableBody>
-                </Table>
-            </TableContainer>
-            <TablePagination
-                labelRowsPerPage="Số hàng"
-                rowsPerPageOptions={[10, 20, 50, { value: -1, label: "Tất cả" }]}
-                component="div"
-                count={data.length}
-                rowsPerPage={rowsPerPage}
-                page={page}
-                onChangePage={handleChangePage}
-                onChangeRowsPerPage={handleChangeRowsPerPage}
-            />
+            <MuiPickersUtilsProvider utils={DateFnsUtils}>
+                <KeyboardDatePicker
+                    id="fromDate"
+                    label="Từ ngày"
+                    style={{ width: 400, margin: 5 }}
+                    required={true}
+                    InputLabelProps={{
+                        shrink: true,
+                    }}
+                    format='dd/MM/yyyy'
+                    onChange={handleFromDateChange}
+                    value={fromDate}
+                />
+                <KeyboardDatePicker
+                    id="toDate"
+                    label="Đến ngày"
+                    style={{ width: 400, margin: 5 }}
+                    required={true}
+                    InputLabelProps={{
+                        shrink: true,
+                    }}
+                    format='dd/MM/yyyy'
+                    onChange={handleToDateChange}
+                    value={toDate}
+                />
+                <Button
+                    component={Link}
+                    to={{ pathname: "/postoffice/viewallshiporder", state: { data: data } }}
+                    variant="contained"
+                    color="primary"
+                    style={{ margin: 10, float: "right" }}
+                >
+                    Xem trên bản đồ
+                </Button>
+                <MaterialTable
+                    className={classes.table}
+                    title="Danh sách đơn hàng"
+                    columns={columns}
+                    options={{
+                        filtering: true,
+                        search: false,
+                        actionsColumnIndex: -1,
+                    }}
+                    localization={localization}
+                    data={data}
+                    actions={[
+                        (postOrder) => ({
+                            icon: 'delete',
+                            tooltip: 'Xóa',
+                            onClick: (event, postOrder) => setConfirmAction(
+                                {
+                                    open: true,
+                                    handleSuccess: () => deleteOrder(postOrder),
+                                    content: 'huỷ đơn hàng',
+                                    title: 'Huỷ đơn hàng ?'
+                                }
+                            ),
+                            disabled: postOrder.statusId == 'ORDER_CANCELLED'
+                        })
+                    ]}
+                />
+                <ConfirmDialog
+                    confirmAction={comfirmAction}
+                    setConfirmAction={setConfirmAction}
+                />
+            </MuiPickersUtilsProvider>
         </Paper>
-    );
-}
-
-function DeleteButton(props) {
-    const [open, setOpen] = useState(false);
-    const token = useSelector((state) => state.auth.token);
-    const handleRemove = () => {
-        setOpen(false);
-        fetch(API_URL + "/delete-post-ship-order/" + props.data.postShipOrderId, {
-            method: "DELETE",
-            headers: {
-                "content-type": "application/json",
-                "X-Auth-Token": token,
-            },
-        });
-        props.data.statusItem.statusId = 'ORDER_CANCELLED';
-        props.data.statusItem.description = 'đã hủy';
-        props.callback(props.data);
-    };
-
-    const handleCancel = (event) => {
-        setOpen(false);
-    };
-    const handleDeleteClick = (event) => {
-        if (event.currentTarget.value === 'ORDER_CANCELLED') {
-            alert('Đơn hàng này đã huỷ.')
-            return;
-        }
-        setOpen(true);
-    };
-
-    return (
-        <div>
-            <IconButton
-                value={props.data.statusItem.statusId}
-                aria-label="delete"
-                align="right"
-                onClick={handleDeleteClick}
-            >
-                <DeleteIcon />
-            </IconButton>
-            <Dialog open={open} onClose={handleCancel}>
-                <DialogTitle>{"Huỷ đơn hàng?"}</DialogTitle>
-                <DialogContent>
-                    {"Xác nhận huỷ đơn hàng đến " + props.data.toCustomer.postCustomerName}
-                </DialogContent>
-                <DialogActions>
-                    <Button onClick={handleRemove} color="primary">
-                        Xóa
-                    </Button>
-                    <Button onClick={handleCancel} color="primary">
-                        Hủy
-                    </Button>
-                </DialogActions>
-            </Dialog>
-        </div>
     );
 }

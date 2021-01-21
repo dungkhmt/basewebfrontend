@@ -20,8 +20,8 @@ export const authPost = (dispatch, token, url, body) => {
         }
         else {
           console.log(res)
-          try {res.json().then(res1 => console.log(res1))}
-          catch (err) {}
+          try { res.json().then(res1 => console.log(res1)) }
+          catch (err) { }
           throw Error();
         }
         return null;
@@ -31,7 +31,7 @@ export const authPost = (dispatch, token, url, body) => {
     (error) => {
       console.log(error);
     }
-  );  
+  );
 };
 export const authPostMultiPart = (dispatch, token, url, body) => {
   return fetch(API_URL + url, {
@@ -76,8 +76,8 @@ export const authGet = (dispatch, token, url) => {
         }
         else {
           console.log(res)
-          try {res.json().then(res1 => console.log(res1))}
-          catch (err) {}
+          try { res.json().then(res1 => console.log(res1)) }
+          catch (err) { }
           throw Error();
         }
         return null;
@@ -105,7 +105,9 @@ export const authDelete = (dispatch, token, url, body) => {
           throw Error("Unauthorized");
         }
         else {
-          console.log(res)
+          console.log(res);
+          try { res.json().then(res1 => console.log(res1)) }
+          catch (err) { }
           throw Error();
         }
         return null;

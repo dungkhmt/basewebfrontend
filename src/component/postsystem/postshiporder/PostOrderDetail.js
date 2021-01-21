@@ -2,8 +2,39 @@ import React, { useEffect, useState } from 'react';
 import Typography from "@material-ui/core/Typography";
 import TextField from "@material-ui/core/TextField";
 import { GoogleApiWrapper, Map, Marker, Polyline } from 'google-maps-react';
-import Grid from "@material-ui/core/Grid";
+import { Grid, Paper } from "@material-ui/core";
+import { makeStyles } from "@material-ui/core/styles";
+import { useDispatch, useSelector } from "react-redux";
+import { authGet } from "../../../api";
+import { errorNoti } from "../../../utils/Notification";
+
+function errHandling(err) {
+  if (err.message == "Unauthorized")
+    errorNoti("Phiên làm việc đã kết thúc, vui lòng đăng nhập lại !", true);
+  else
+    errorNoti("Rất tiếc! Đã có lỗi xảy ra.", true);
+  console.trace(err);
+}
+const useStyles = makeStyles({
+  root: {
+    width: "100%",
+    padding: '15px'
+  },
+  container: {
+    maxHeight: 440,
+  },
+});
+
+
+const style = {
+  width: '100%',
+  height: '100%'
+}
+
 function PostOrderDetail(props) {
+  const classes = useStyles();
+  const token = useSelector((state) => state.auth.token);
+  const dispatch = useDispatch();
   const [postShipOrderId, setPostShipOrderId] = useState();
   const [packageName, setPackageName] = useState();
   const [postPackageType, setPostPackageType] = useState();
@@ -23,6 +54,34 @@ function PostOrderDetail(props) {
   const [toPostOfficeIcon, setToPostOfficeIcon] = useState();
   const [fromPostOfficeIcon, setFromPostOfficeIcon] = useState();
   const { value } = props.location.state;
+  const [routes, setRoutes] = useState([]);
+  const [postOffices, setPostOffices] = useState([]);
+  const loadData = (postShipOrderId, fromPostOffice, toPostOffice) => {
+    authGet(dispatch, token, "/get_post_order_route?postOrderId=" + postShipOrderId)
+      .then(response => {
+        setRoutes(response);
+        let postOffices = []
+        response.forEach(route => {
+          if (!postOffices.includes(route.fromPostOffice)) {
+            postOffices.push(route.fromPostOffice);
+          }
+          if (!postOffices.includes(route.toPostOffice)) {
+            postOffices.push(route.toPostOffice);
+          }
+        })
+        if (fromPostOffice) postOffices.push(fromPostOffice);
+        if (toPostOffice) postOffices.push(toPostOffice);
+        setPostOffices(postOffices);
+      }).catch(err => errHandling(err));
+  }
+
+  const arrow = {
+    path: props.google.maps.SymbolPath.FORWARD_CLOSED_ARROW, // 0,0 is the tip of the arrow
+    fillColor: '00ffff',
+    fillOpacity: 1.0,
+    strokeColor: '00ffff',
+    strokeWeight: 1,
+  };
 
   useEffect(() => {
     setPostShipOrderId(value.postShipOrderId);
@@ -48,12 +107,12 @@ function PostOrderDetail(props) {
       scaledSize: new props.google.maps.Size(40, 40), // scaled size
     });
     setFromPostOfficeIcon({
-      url: process.env.PUBLIC_URL + '/post_office.png', // url
+      url: 'https://www.google.com/maps/vt/icon/name=assets/icons/poi/tactile/pinlet_shadow_v3-2-medium.png,assets/icons/poi/tactile/pinlet_outline_v3-2-medium.png,assets/icons/poi/tactile/pinlet_v3-2-medium.png,assets/icons/poi/quantum/pinlet/postoffice_pinlet-2-medium.png&highlight=ff000000,ffffff,ea4335,ffffff?scale=1',
     });
     setToPostOfficeIcon({
-      url: process.env.PUBLIC_URL + '/post_office.png', // url
+      url: 'https://www.google.com/maps/vt/icon/name=assets/icons/poi/tactile/pinlet_shadow_v3-2-medium.png,assets/icons/poi/tactile/pinlet_outline_v3-2-medium.png,assets/icons/poi/tactile/pinlet_v3-2-medium.png,assets/icons/poi/quantum/pinlet/postoffice_pinlet-2-medium.png&highlight=ff000000,ffffff,ea4335,ffffff?scale=1',
     });
-
+    loadData(value.postShipOrderId, value.fromPostOffice, value.toPostOffice);
   }, [])
 
   useEffect(() => {
@@ -67,12 +126,9 @@ function PostOrderDetail(props) {
     map.map.fitBounds(bounds)
   });
 
-  const style = {
-    width: '100%',
-    height: '100%'
-  }
   return (
     <div>
+
       <Grid container spacing={5} xs={12}>
         <Grid item xs={5}>
           <Typography variant="h5" component="h2">
@@ -82,76 +138,73 @@ function PostOrderDetail(props) {
             Mã đơn hàng: {'  '} {postShipOrderId}
           </Typography>
           <br />
-          <TextField
-            id="fromAddress"
-            value={fromAddress}
-            label='Xuất phát'
-            fullWidth
-          ><br />
-          </TextField>
-          <TextField
-            id="toAddress"
-            value={toAddress}
-            fullWidth
-            label='Đích đến'
-          ><br />
-          </TextField>
-          <TextField
-            id="packageName"
-            value={packageName}
-            fullWidth
-            label='Tên hàng'
-          ><br />
-          </TextField>
-          <TextField
-            id="postPackageType"
-            value={postPackageType}
-            fullWidth
-            label='Loại hàng'
-          ><br />
-          </TextField>
-          <TextField
-            id="weight"
-            value={weight}
-            fullWidth
-            label='Khối lượng'
-          ><br />
-          </TextField>
-          <TextField
-            id="description"
-            value={description}
-            fullWidth
-            label='Mô tả'
-          ><br />
-          </TextField>
-          <TextField
-            id="status"
-            value={status}
-            fullWidth
-            label='Trạng thái'
-          ><br />
-          </TextField>
-          <TextField
-            id="fromPostOffice"
-            value={fromPostOffice ? fromPostOffice.postOfficeName : 'Chưa xác định'}
-            fullWidth
-            label='Bưu cục xuất phát'
-          ><br />
-          </TextField>
-          <TextField
-            id="toPostOffice"
-            value={toPostOffice ? toPostOffice.postOfficeName : 'Chưa xác định'}
-            fullWidth
-            label='Bưu cục đích'
-          ><br />
-          </TextField>
-          <Typography variant="h6">
-            Tọa độ đầu: {' '} {fromLat + ', ' + fromLng}
-          </Typography>
-          <Typography variant="h6">
-            Tọa độ đích: {' '} {toLat + ', ' + toLng}
-          </Typography>
+          <Paper className={classes.root}>
+            <TextField
+              id="fromAddress"
+              value={fromAddress}
+              label='Xuất phát'
+              fullWidth
+            ><br />
+            </TextField>
+            <TextField
+              id="toAddress"
+              value={toAddress}
+              fullWidth
+              label='Đích đến'
+            ><br />
+            </TextField>
+            <TextField
+              id="packageName"
+              value={packageName}
+              fullWidth
+              label='Tên hàng'
+            ><br />
+            </TextField>
+            <TextField
+              id="postPackageType"
+              value={postPackageType}
+              fullWidth
+              label='Loại hàng'
+            ><br />
+            </TextField>
+            <TextField
+              id="weight"
+              value={weight}
+              fullWidth
+              label='Khối lượng'
+            ><br />
+            </TextField>
+            <TextField
+              id="description"
+              value={description}
+              fullWidth
+              label='Mô tả'
+            ><br />
+            </TextField>
+            <TextField
+              id="status"
+              value={status}
+              fullWidth
+              label='Trạng thái'
+            ><br />
+            </TextField>
+            <TextField
+              id="fromPostOffice"
+              value={fromPostOffice ? fromPostOffice.postOfficeName : 'Chưa xác định'}
+              fullWidth
+              label='Bưu cục xuất phát'
+            ><br />
+            </TextField>
+            <TextField
+              id="toPostOffice"
+              value={toPostOffice ? toPostOffice.postOfficeName : 'Chưa xác định'}
+              fullWidth
+              label='Bưu cục đích'
+            ><br />
+            </TextField>
+          </Paper>
         </Grid>
+
         <Grid item xs={7}>
           <div style={{ position: 'relative', width: '100%', height: '500px', borderRadius: '10px', overflow: 'hidden' }}>
             <Map
@@ -176,7 +229,19 @@ function PostOrderDetail(props) {
                 }}
                 icon={icon}
               />
-              {fromPostOffice ?
+              {
+                postOffices.map(postOffice => {
+                  return <Marker
+                    title={postOffice.postOfficeName}
+                    position={{
+                      lat: postOffice.postalAddress.geoPoint.latitude,
+                      lng: postOffice.postalAddress.geoPoint.longitude,
+                    }}
+                    icon={fromPostOfficeIcon}
+                  />
+                })
+              }
+              {/* {fromPostOffice ?
                 <Marker
                   title={'Bưu cục xuất phát'}
                   position={{
@@ -195,40 +260,70 @@ function PostOrderDetail(props) {
                   }}
                   icon={toPostOfficeIcon}
                 />
-                : undefined}
+                : undefined} */}
               {fromPostOffice ?
                 <Polyline
                   path={[
                     { lat: fromLat, lng: fromLng },
                     { lat: parseFloat(fromPostOffice.postalAddress.geoPoint.latitude), lng: parseFloat(fromPostOffice.postalAddress.geoPoint.longitude) }
                   ]}
-                  geodesic={true}
+                  icons={
+                    [{
+                      icon: arrow,
+                      offset: '100%',
+                    }]
+                  }
                   options={{
-                    strokeColor: "#ff2527",
-                    strokeOpacity: 0.75,
-                    strokeWeight: 2,
+                    strokeColor: '00ffff',
+                    strokeOpacity: 1,
+                    strokeWeight: 2
                   }}
                 />
                 : undefined}
               {toPostOffice ?
                 <Polyline
                   path={[
-                    { lat: toLat, lng: toLng },
-                    { lat: parseFloat(toPostOffice.postalAddress.geoPoint.latitude), lng: parseFloat(toPostOffice.postalAddress.geoPoint.longitude) }
+                    { lat: parseFloat(toPostOffice.postalAddress.geoPoint.latitude), lng: parseFloat(toPostOffice.postalAddress.geoPoint.longitude) },
+                    { lat: toLat, lng: toLng }
                   ]}
-                  geodesic={true}
+                  icons={
+                    [{
+                      icon: arrow,
+                      offset: '100%',
+                    }]
+                  }
                   options={{
-                    strokeColor: "#ff2527",
-                    strokeOpacity: 0.75,
-                    strokeWeight: 2,
+                    strokeColor: '00ffff',
+                    strokeOpacity: 1,
+                    strokeWeight: 2
                   }}
                 />
                 : undefined}
+              {routes.map(route => {
+                return <Polyline
+                  path={[
+                    { lat: route.fromPostOffice.postalAddress.geoPoint.latitude, lng: route.fromPostOffice.postalAddress.geoPoint.longitude },
+                    { lat: route.toPostOffice.postalAddress.geoPoint.latitude, lng: route.toPostOffice.postalAddress.geoPoint.longitude },
+                  ]}
+                  icons={
+                    [{
+                      icon: arrow,
+                      offset: '100%',
+                    }]
+                  }
+                  options={{
+                    strokeColor: '00ffff',
+                    strokeOpacity: 1,
+                    strokeWeight: 2
+                  }}
+                />
+              })}
             </Map>
           </div>
         </Grid>
       </Grid>
-    </div >
+
+    </div>
   );
 }
 

@@ -33,6 +33,9 @@ const useStyles = makeStyles(theme => ({
             width: 200
         },
         backgroundColor: theme.palette.background.paper
+    },
+    paper: {
+        padding: theme.spacing(1)
     }
 }));
 function errHandling(err) {
@@ -72,6 +75,11 @@ function CreatePostShipOrder(props) {
     const bounds = new window.google.maps.LatLngBounds();
     const [icon, setIcon] = useState();
     const [openAlert, setOpenAlert] = useState(false);
+    const [isToCustomerAddressChange, setIsToCustomerAddressChange] = useState(false);
+    const [isFromCustomerAddressChange, setIsFromCustomerAddressChange] = useState(false);
+    const [service, setService] = useState();
+    const [fromListening, setFromListening] = useState(false);
+    const [toListening, setToListening] = useState(false);
     const handleCancelAlertDialog = () => {
         history.push('/postoffice/orderlist');
     };
@@ -80,7 +88,6 @@ function CreatePostShipOrder(props) {
         setOpenAlert(true);
     };
     const loadPackageTypeData = () => {
-        let res;
         authGet(dispatch, token, '/get-post-package-type')
             .then((res) => {
                 setPackageTypeData(res)
@@ -151,6 +158,14 @@ function CreatePostShipOrder(props) {
             setToCustomerExist(true);
         }
     }
+
+    const fetchPlaces = (google, map) => {
+        // const service = new google.maps.places.AutocompleteService(map);
+        // setService(service);
+        // console.log(service);
+        // service.getPlacePredictions({ input: 'hà nội' }, (res) => { console.log(res) });
+    }
+
     const handleSubmit = () => {
         const data = {
             packageName: packageName,
@@ -187,14 +202,30 @@ function CreatePostShipOrder(props) {
                     }
                 })
             .catch(err => errHandling(err))
-
     };
+
+    const handleMapClick = (mapProps, map, event) => {
+        const lat = event.latLng.lat();
+        const lng = event.latLng.lng();
+        console.log(lat, lng)
+        if (fromListening) {
+            setFromCustomerLat(lat);
+            setFromCustomerLng(lng);
+            setFromListening(false);
+        }
+        if (toListening) {
+            setToCustomerLat(lat);
+            setToCustomerLng(lng);
+            setToListening(false);
+        }
+    }
     useEffect(() => {
         setIcon({
             url: "http://maps.google.com/mapfiles/kml/paddle/grn-blank.png", // url
             scaledSize: new props.google.maps.Size(40, 40), // scaled size
         });
     }, [])
+
     useEffect(() => {
         if (packageTypeData.length == 0)
             loadPackageTypeData();
@@ -208,8 +239,7 @@ function CreatePostShipOrder(props) {
         })
         if (bounded) map.map.fitBounds(bounds);
     })
-    const [isToCustomerAddressChange, setIsToCustomerAddressChange] = useState(false);
-    const [isFromCustomerAddressChange, setIsFromCustomerAddressChange] = useState(false);
+
 
     const handleSearchAddress = (user) => {
         if (isToCustomerAddressChange || isFromCustomerAddressChange) {
@@ -224,21 +254,8 @@ function CreatePostShipOrder(props) {
                 console.log('google searching ' + address)
                 setIsToCustomerAddressChange(false);
                 setIsFromCustomerAddressChange(false);
-                // fetch(url, {
-                //     method: "POST",
-                //     signal: controller.signal,
-                //     headers: {
-                //         "Content-Type": "application/json"
-                //     },
-                //     body: JSON.stringify(body)
-                // })
-                // .then(response => {response.json()})
-                // .then(result => {
-
-                // }) 
             }
         }
-
     }
     const handleFromCustomerAddressChange = event => {
         if (event.target.value != fromCustomerAddress) {
@@ -266,10 +283,9 @@ function CreatePostShipOrder(props) {
         height: '100%'
     }
 
-
     return (
         <Grid container spacing={3} xs={12}>
-            <Grid container item xs={7} direction="column" spacing={3}>
+            <Grid container item xs={6} direction="column" spacing={3}>
                 <Grid item xs={12}>
                     <Paper className={classes.paper}>
                         <Typography variant="h5" component="h2">
@@ -278,6 +294,7 @@ function CreatePostShipOrder(props) {
                         <SearchButton callback={handleChooseCallBack} data="fromCustomer" />
                         <form noValidate autoComplete="off" className={classes.root}>
                             <TextField
+                                required
                                 id="fromCustomerName"
                                 label="Họ tên người gửi"
                                 value={fromCustomerName == undefined ? '' : fromCustomerName}
@@ -285,6 +302,7 @@ function CreatePostShipOrder(props) {
                                 disabled={fromCustomerExist}
                             />
                             <TextField
+                                required
                                 id="fromCustomerPhoneNum"
                                 label="Số điện thoại người gửi"
                                 value={fromCustomerPhoneNum == undefined ? '' : fromCustomerPhoneNum}
@@ -292,6 +310,7 @@ function CreatePostShipOrder(props) {
                                 disabled={fromCustomerExist}
                             />
                             <TextField
+                                required
                                 id="fromCustomerAddress"
                                 label="Địa chỉ người gửi"
                                 value={fromCustomerAddress == undefined ? '' : fromCustomerAddress}
@@ -307,6 +326,14 @@ function CreatePostShipOrder(props) {
                                 disabled={fromCustomerExist}
                             />
                         </form>
+                        <Button
+                            color='primary'
+                            variant='outlined'
+                            onClick={() => setFromListening(true)}
+                        >
+                            {fromListening ? <CircularProgress /> : undefined}
+                            Chọn địa chỉ trên bản đồ
+                        </Button>
                     </Paper>
                 </Grid>
                 <Grid item xs={12}>
@@ -317,6 +344,7 @@ function CreatePostShipOrder(props) {
                         <SearchButton callback={handleChooseCallBack} data="toCustomer" />
                         <form noValidate autoComplete="off" className={classes.root}>
                             <TextField
+                                required
                                 id="toCustomerName"
                                 label="Họ tên người nhận"
                                 value={toCustomerName == undefined ? '' : toCustomerName}
@@ -324,6 +352,7 @@ function CreatePostShipOrder(props) {
                                 disabled={toCustomerExist}
                             />
                             <TextField
+                                required
                                 id="toCustomerPhoneNum"
                                 label="Số điện thoại người nhận"
                                 value={toCustomerPhoneNum == undefined ? '' : toCustomerPhoneNum}
@@ -331,6 +360,7 @@ function CreatePostShipOrder(props) {
                                 disabled={toCustomerExist}
                             />
                             <TextField
+                                required
                                 id="toCustomerAddress"
                                 label="Địa chỉ người nhận"
                                 value={toCustomerAddress == undefined ? '' : toCustomerAddress}
@@ -346,6 +376,14 @@ function CreatePostShipOrder(props) {
                                 disabled={toCustomerExist}
                             />
                         </form>
+                        <Button
+                            color='primary'
+                            variant='outlined'
+                            onClick={() => setToListening(true)}
+                        >
+                            {toListening ? <CircularProgress /> : undefined}
+                            Chọn địa chỉ trên bản đồ
+                        </Button>
                     </Paper>
                 </Grid>
                 <Grid item xs={12}>
@@ -360,12 +398,15 @@ function CreatePostShipOrder(props) {
                                 label="Tên hàng"
                                 value={packageName}
                                 onChange={handlePackageNameChange}
+                                required
                             />
                             <TextField
                                 id="weight"
-                                label="Khối lượng"
+                                label="Khối lượng (kg)"
                                 value={weight}
                                 onChange={handleWeightChange}
+                                type='number'
+                                required
                             />
                             <TextField
                                 id="description"
@@ -380,6 +421,7 @@ function CreatePostShipOrder(props) {
                                 value={postPackageTypeId}
                                 onChange={handlePostPackageTypeIdChange}
                                 helperText="Chọn loại hàng"
+                                required
                             >
                                 {
                                     packageTypeData.map((data) => {
@@ -395,15 +437,16 @@ function CreatePostShipOrder(props) {
                     color="primary"
                 >Submit</Button>
             </Grid>
-            <Grid item xs={5}>
+            <Grid item xs={6}>
                 <div style={{ position: 'relative', width: '100%', height: '400px', borderRadius: '10px', overflow: 'hidden' }}>
                     <Map
                         google={props.google}
-                        zoom={1}
+                        zoom={14}
                         style={style}
-                        zoom={5}
                         initialCenter={{ lat: 21.0003842, lng: 105.8331012 }}
                         ref={(ref) => { setMap(ref) }}
+                        onReady={() => fetchPlaces(props.google, map)}
+                        onClick={handleMapClick}
                     >
                         {toCustomerLat >= 0 && toCustomerLng >= 0
                             ? <Marker
@@ -575,10 +618,8 @@ function SearchButton(props) {
                             onChange={handleAddressChange}
                         />
                     </form>
-
                 </DialogActions>
                 <DialogContent>
-
                     <TableContainer className={classes.container}>
                         <Table stickyHeader aria-label="sticky table">
                             <TableHead>

@@ -1,9 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { makeStyles } from "@material-ui/core/styles";
-import Paper from "@material-ui/core/Paper";
 import Typography from "@material-ui/core/Typography";
 import { useDispatch, useSelector } from "react-redux";
-import { API_URL } from "../../../config/config";
 import { Link } from "react-router-dom";
 import { Tooltip } from "@material-ui/core";
 import MaterialTable from "material-table";
@@ -81,32 +79,26 @@ export default function PickAndDelivery(props) {
     const classes = useStyles();
     const dispatch = useDispatch();
     const token = useSelector((state) => state.auth.token);
-    const [page, setPage] = useState(0);
-    const [rowsPerPage, setRowsPerPage] = useState(10);
     const [data, setData] = useState([]);
     const [fromDate, setFromDate] = useState(new Date());
     const [toDate, setToDate] = useState(new Date());
     const handleFromDateChange = (date) => {
         setFromDate(date);
+        loadData(date, toDate);
     }
     const handleToDateChange = (date) => {
         setToDate(date);
+        loadData(fromDate, date);
     }
-    const handleChangePage = (event, newPage) => {
-        setPage(newPage);
-    };
-
-    const handleChangeRowsPerPage = (event) => {
-        setRowsPerPage(+event.target.value);
-        setPage(0);
-    };
-
-    useEffect(() => {
+    const loadData = (fromDate, toDate) => {
         authGet(dispatch, token, "/get-all-post-office-and-order-status?fromDate=" + formatDate(fromDate) + "&toDate=" + formatDate(toDate) + "&from=" + true)
             .then((response) => {
                 setData(response);
             })
             .catch(err => errHandling(err))
+    }
+    useEffect(() => {
+        loadData(fromDate, toDate);
     }, data);
 
     return (
@@ -114,31 +106,31 @@ export default function PickAndDelivery(props) {
             <Typography variant="h5" component="h2" align="center">
                 Danh sách bưu cục
             </Typography>
-                <br/>
-                <KeyboardDatePicker
-                    id="fromDate"
-                    label="Từ ngày"
-                    style={{ width: 400, margin: 5 }}
-                    required={true}
-                    InputLabelProps={{
-                        shrink: true,
-                    }}
-                    format='dd/MM/yyyy'
-                    onChange={handleFromDateChange}
-                    value={fromDate}
-                />
-                <KeyboardDatePicker
-                    id="toDate"
-                    label="Đến ngày"
-                    style={{ width: 400, margin: 5 }}
-                    required={true}
-                    InputLabelProps={{
-                        shrink: true,
-                    }}
-                    format='dd/MM/yyyy'
-                    onChange={handleToDateChange}
-                    value={toDate}
-                />
+            <br />
+            <KeyboardDatePicker
+                id="fromDate"
+                label="Từ ngày"
+                style={{ width: 400, margin: 5 }}
+                required={true}
+                InputLabelProps={{
+                    shrink: true,
+                }}
+                format='dd/MM/yyyy'
+                onChange={handleFromDateChange}
+                value={fromDate}
+            />
+            <KeyboardDatePicker
+                id="toDate"
+                label="Đến ngày"
+                style={{ width: 400, margin: 5 }}
+                required={true}
+                InputLabelProps={{
+                    shrink: true,
+                }}
+                format='dd/MM/yyyy'
+                onChange={handleToDateChange}
+                value={toDate}
+            />
             <br />
             <MaterialTable
                 className={classes.table}

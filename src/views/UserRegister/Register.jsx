@@ -420,8 +420,8 @@ export default function NewRegister() {
                                 {showPassword ? (
                                   <Visibility />
                                 ) : (
-                                  <VisibilityOff />
-                                )}
+                                    <VisibilityOff />
+                                  )}
                               </IconButton>
                             </InputAdornment>
                           }
@@ -476,8 +476,8 @@ export default function NewRegister() {
                                 {showPassword ? (
                                   <Visibility />
                                 ) : (
-                                  <VisibilityOff />
-                                )}
+                                    <VisibilityOff />
+                                  )}
                               </IconButton>
                             </InputAdornment>
                           }
@@ -531,16 +531,7 @@ export default function NewRegister() {
                       }
                       name="roles"
                       control={control}
-                      rules={{
-                        validate: {
-                          required: (roles) => {
-                            if (roles.length == 0) {
-                              return "Vui lòng chọn ít nhất một vai trò";
-                            }
-                            return true;
-                          },
-                        },
-                      }}
+
                     />
                   </ThemeProvider>
                   <Box

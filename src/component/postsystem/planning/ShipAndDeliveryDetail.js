@@ -24,6 +24,7 @@ import DateFnsUtils from "@date-io/date-fns";
 import TextField from '@material-ui/core/TextField';
 import Autocomplete from '@material-ui/lab/Autocomplete';
 import { errorNoti } from "../../../utils/Notification";
+import AlertDialog from "../../../utils/AlertDialog";
 function errHandling(err) {
     if (err.message == "Unauthorized")
         errorNoti("Phiên làm việc đã kết thúc, vui lòng đăng nhập lại !", true);
@@ -41,15 +42,6 @@ const useStyles = makeStyles((theme) => ({
         backgroundColor: theme.palette.background.paper,
     },
 }));
-const columns = [
-    { label: "Mã đơn hàng", id: "postShipOrderId", minWidth: 200, type: 'normal', 'align': 'left' },
-    { label: "Người gửi", id: "fromCustomer.postCustomerName", minWidth: 200, type: 'normal', 'align': 'left' },
-    { label: "Người nhận", id: "toCustomer.postCustomerName", minWidth: 200, type: 'normal', 'align': 'left' },
-    { label: "Số điện thoại người gửi", id: "fromCustomer.phoneNum", minWidth: 200, type: 'normal', 'align': 'left' },
-    { label: "Số điện thoại người nhận", id: "toCustomer.phoneNum", minWidth: 200, type: 'normal', 'align': 'left' },
-    { label: "Địa chỉ Người gửi", id: "toCustomer.postalAddress.address", minWidth: 200, type: 'normal', 'align': 'left' },
-    { label: "Địa chỉ người nhận", id: "fromCustomer.postalAddress.address", minWidth: 200, type: 'normal', 'align': 'left' },
-]
 
 function extendBoundRecursive(bounds, map, elements) {
     elements.forEach((child) => {
@@ -119,12 +111,19 @@ function ShipAndDeliveryDetail(props) {
     const [isSolving, setSolving] = useState(false);
     const [distances, setDistances] = useState([]);
     const [open, setOpen] = useState(false);
-    const [fromDate, setFromDate] = useState(new Date());
-    const [toDate, setToDate] = useState(new Date());
+    const [orderOpen, setOrderOpen] = useState(false);
     const [backupPostmen, setBackupPostmen] = useState([]);
     const [backupPostorders, setBackupPostorders] = useState([]);
     const [postmanTableRef, setPostmanTableRef] = useState();
     const [solvingPostmen, setSolvingPostmen] = useState([]);
+    const [fromDate, setFromDate] = useState(new Date());
+    const [toDate, setToDate] = useState(new Date());
+    const [alertAction, setAlertAction] = useState({
+        open: false,
+        handleSuccess: undefined,
+        title: undefined,
+        message: undefined
+    })
     const handleFromDateChange = (date) => {
         setFromDate(date);
         refreshPostOrders(date, toDate);
@@ -167,7 +166,7 @@ function ShipAndDeliveryDetail(props) {
             "postOfficeId": postOfficeId,
             "postmanIds": solvingPostmen,
             "postOrderIds": toPostOrder.map(postOrder => postOrder.postShipOrderId),
-            "type": "pick"
+            "type": "delivery"
         })
             .then(res => {
                 if (res.solutionFound) {
@@ -179,24 +178,26 @@ function ShipAndDeliveryDetail(props) {
                     solvingPostmen.forEach((solvingPostmanId, i) => {
                         newPostmen.forEach(postman => {
                             if (postman.postmanId == solvingPostmanId) {
-                                postman.viewRoute = true;
-                                postman.distance = res.distance[i];
-                                postman.geoPoints = [];
-                                postman.geoPoints.push(postOffice.postalAddress.geoPoint);
-                                let order = 0;
                                 postman.weight = 0;
                                 postman.distance = 0;
-                                res.routes[i].forEach(postOrder => {
-                                    solvedPostOrderId.push(postOrder.postShipOrderId);
-                                    postman.distance += distance(postOrder.tofromCustomer.postalAddress.geoPoint, postman.geoPoints[postman.geoPoints.length - 1]);
-                                    postman.geoPoints.push(postOrder.toCustomer.postalAddress.geoPoint);
-                                    postOrder['order'] = order++;
-                                    postman.weight += postOrder.weight;
-                                })
-                                postman.distance += distance(postOffice.postalAddress.geoPoint, postman.geoPoints[postman.geoPoints.length - 1]);
-                                postman.geoPoints.push(postOffice.postalAddress.geoPoint);
-                                postman.postOrders = res.routes[i];
-                                postman.isSolved = res.solutionFound;
+                                if (res.routes[i].length > 0) {
+                                    postman.viewRoute = true;
+                                    postman.distance = res.distance[i];
+                                    postman.geoPoints = [];
+                                    postman.geoPoints.push(postOffice.postalAddress.geoPoint);
+                                    let order = 0;
+                                    res.routes[i].forEach(postOrder => {
+                                        solvedPostOrderId.push(postOrder.postShipOrderId);
+                                        postman.distance += distance(postOrder.toCustomer.postalAddress.geoPoint, postman.geoPoints[postman.geoPoints.length - 1]);
+                                        postman.geoPoints.push(postOrder.toCustomer.postalAddress.geoPoint);
+                                        postOrder['order'] = order++;
+                                        postman.weight += postOrder.weight;
+                                    })
+                                    postman.distance += distance(postOffice.postalAddress.geoPoint, postman.geoPoints[postman.geoPoints.length - 1]);
+                                    postman.geoPoints.push(postOffice.postalAddress.geoPoint);
+                                    postman.postOrders = res.routes[i];
+                                    postman.isSolved = res.solutionFound;
+                                }
                             }
                         })
                     })
@@ -216,10 +217,16 @@ function ShipAndDeliveryDetail(props) {
                 })
             }
         })
-        authPost(dispatch, token, "/submit-postman-assign/", requestbody)
+        authPost(dispatch, token, "/submit-postman-assign?pick=" + false, requestbody)
             .then(res => {
                 if (res.status == "SUCCESS") {
-                    alert("Lập kế hoạch thu gom thành công")
+                    setAlertAction(
+                        {
+                            open: true,
+                            message: "Lập kế hoạch thu gom thành công !",
+                            title: 'Thông báo'
+                        }
+                    )
                 }
             })
             .catch(err => errHandling(err))
@@ -231,7 +238,7 @@ function ShipAndDeliveryDetail(props) {
                     setPostOffice(res.postOffice)
                     setToPostOrder(res.toPostOrders);
                     setBackupPostorders(copyObj(res.toPostOrders));
-                    authGet(dispatch, token, "/get-postman-list-order-bydate/" + postOfficeId + '?fromDate=' + formatDate(fromDate) + '&toDate=' + formatDate(toDate))
+                    authGet(dispatch, token, "/get-postman-list-order-bydate/" + postOfficeId + '?fromDate=' + formatDate(fromDate) + '&toDate=' + formatDate(toDate) + '&from=' + false)
                         .then(
                             res1 => {
                                 res1.forEach(postman => {
@@ -239,19 +246,19 @@ function ShipAndDeliveryDetail(props) {
                                     postman.color = colorList[Math.floor(Math.random() * (colorList.length + 1))];
                                     postman.isSolved = false;
                                     postman.geoPoints = []
+                                    postman.weight = 0;
+                                    postman.distance = 0;
                                     if (postman.postOrders.length > 0) {
                                         postman.isSolved = true;
                                         postman.geoPoints.push(res.postOffice.postalAddress.geoPoint);
                                         let order = 0;
-                                        postman.weight = 0;
-                                        postman.distance = 0;
                                         postman.postOrders.forEach(postOrder => {
                                             postOrder['order'] = order++;
                                             postman.distance += distance(postOrder.toCustomer.postalAddress.geoPoint, postman.geoPoints[postman.geoPoints.length - 1]);
                                             postman.geoPoints.push(postOrder.toCustomer.postalAddress.geoPoint);
                                             postman.weight += postOrder.weight;
                                         })
-                                        postman.distance += distance(postOffice.postalAddress.geoPoint, postman.geoPoints[postman.geoPoints.length - 1]);
+                                        postman.distance += distance(res.postOffice.postalAddress.geoPoint, postman.geoPoints[postman.geoPoints.length - 1]);
                                         postman.geoPoints.push(res.postOffice.postalAddress.geoPoint);
                                     }
                                 })
@@ -259,8 +266,7 @@ function ShipAndDeliveryDetail(props) {
                                 setBackupPostmen(copyObj(res1));
                             }
                         )
-                }
-            )
+                })
             .catch(err => errHandling(err))
     }, [])
 
@@ -341,7 +347,30 @@ function ShipAndDeliveryDetail(props) {
                 )
             }
         }
-
+    ]
+    const allOrderColumn = [
+        { title: "Mã đơn hàng", field: "postShipOrderId", sorting: false },
+        { title: "Người gửi", field: "fromCustomer.postCustomerName", sorting: false },
+        { title: "Người nhận", field: "toCustomer.postCustomerName", sorting: false },
+        { title: "Số điện thoại người gửi", field: "fromCustomer.phoneNum", sorting: false },
+        { title: "Số điện thoại người nhận", field: "toCustomer.phoneNum" },
+        { title: "Địa chỉ Người gửi", field: "fromCustomer.postalAddress.address", sorting: false },
+        { title: "Địa chỉ người nhận", field: "toCustomer.postalAddress.address", sorting: false },
+        {
+            title: "Chuyển cho", field: "",
+            render: postOrder => {
+                return (
+                    <Autocomplete
+                        id="combo-box-demo"
+                        options={postmen}
+                        getOptionLabel={(option) => option.postmanName}
+                        style={{ width: 200 }}
+                        renderInput={(params) => <TextField {...params} label="Chuyển cho" variant="outlined" />}
+                        onChange={(event, value) => moveToPostman(value ? value.postmanId : undefined, postOrder.postShipOrderId)}
+                    />
+                )
+            }
+        }
     ]
     const moveOrder = (postman, orderNum, direction) => {
         let newPostmen = JSON.parse(JSON.stringify(postmen))
@@ -361,6 +390,8 @@ function ShipAndDeliveryDetail(props) {
         newPostmen.forEach(_postman => {
             if (_postman.postmanId == activePostman.postmanId) {
                 _postman.postOrders = _postman.postOrders.filter(_postOrder => _postOrder.postShipOrderId != postOrder.postShipOrderId)
+                _postman.weight -= postOrder.weight
+                if (_postman.postOrders.length == 0) _postman.isSolved = false
                 _postman = geoPointsGen(_postman)
                 setActivePostman(_postman)
             }
@@ -370,29 +401,47 @@ function ShipAndDeliveryDetail(props) {
     }
     const moveToPostman = (toPostmanId, postOrderId) => {
         let newPostmen = JSON.parse(JSON.stringify(postmen))
-        let newActivePostman = JSON.parse(JSON.stringify(activePostman))
-        newPostmen.forEach(_postmanSource => {
-            if (_postmanSource.postmanId == activePostman.postmanId) {
-                newPostmen.forEach(_postmanTarget => {
-                    if (_postmanTarget.postmanId == toPostmanId) {
-                        _postmanSource.postOrders.forEach(postOrder => {
-                            if (postOrder.postShipOrderId == postOrderId) {
-                                _postmanTarget.postOrders.push(postOrder)
-                                _postmanTarget.weight += postOrder.weight
-                                _postmanSource.weight -= postOrder.weight
-                            }
-                        })
-                        _postmanTarget = geoPointsGen(_postmanTarget);
-                    }
-                })
-                let newPostOrders = _postmanSource.postOrders.filter(postOrder => postOrder.postShipOrderId != postOrderId)
-                _postmanSource.postOrders = newPostOrders
-                newActivePostman.postOrders = newPostOrders
-                _postmanSource = geoPointsGen(_postmanSource);
-            }
-        })
+        let newActivePostman = activePostman ? JSON.parse(JSON.stringify(activePostman)) : activePostman
+        if (activePostman) {
+            newPostmen.forEach(_postmanSource => {
+                if (_postmanSource.postmanId == activePostman.postmanId) {
+                    newPostmen.forEach(_postmanTarget => {
+                        if (_postmanTarget.postmanId == toPostmanId) {
+                            _postmanSource.postOrders.forEach(postOrder => {
+                                if (postOrder.postShipOrderId == postOrderId) {
+                                    _postmanTarget.postOrders.push(postOrder)
+                                    _postmanTarget.weight += postOrder.weight
+                                    _postmanSource.weight -= postOrder.weight
+                                }
+                            })
+                            _postmanTarget = geoPointsGen(_postmanTarget);
+                        }
+                    })
+                    let newPostOrders = _postmanSource.postOrders.filter(postOrder => postOrder.postShipOrderId != postOrderId)
+                    _postmanSource.postOrders = newPostOrders
+                    newActivePostman.postOrders = newPostOrders
+                    _postmanSource = geoPointsGen(_postmanSource);
+                }
+            })
+            setActivePostman(newActivePostman)
+        }
+        else {
+            newPostmen.forEach(_postmanTarget => {
+                if (_postmanTarget.postmanId == toPostmanId) {
+                    toPostOrder.forEach(postOrder => {
+                        if (postOrder.postShipOrderId == postOrderId) {
+                            _postmanTarget.postOrders.push(postOrder)
+                            _postmanTarget.weight += postOrder.weight
+                            _postmanTarget.isSolved = true;
+                            let newToPostOrder = toPostOrder.filter((postOrder) => postOrder.postShipOrderId != postOrderId)
+                            setToPostOrder(newToPostOrder);
+                        }
+                    })
+                    _postmanTarget = geoPointsGen(_postmanTarget);
+                }
+            })
+        }
         setPostmen(newPostmen)
-        setActivePostman(newActivePostman)
     }
     const handleOnSelectionChange = (rows) => {
         if (rows) {
@@ -406,7 +455,7 @@ function ShipAndDeliveryDetail(props) {
                     setPostOffice(res.postOffice)
                     setToPostOrder(res.toPostOrders);
                     setBackupPostorders(copyObj(res.toPostOrders));
-                    authGet(dispatch, token, "/get-postman-list-order-bydate/" + postOfficeId + '?fromDate=' + formatDate(fromDate) + '&toDate=' + formatDate(toDate))
+                    authGet(dispatch, token, "/get-postman-list-order-bydate/" + postOfficeId + '?fromDate=' + formatDate(fromDate) + '&toDate=' + formatDate(toDate) + '&from=' + false)
                         .then(
                             res1 => {
                                 res1.forEach(postman => {
@@ -414,15 +463,15 @@ function ShipAndDeliveryDetail(props) {
                                     postman.color = colorList[Math.floor(Math.random() * (colorList.length + 1))];
                                     postman.isSolved = false;
                                     postman.geoPoints = [];
+                                    postman.weight = 0;
+                                    postman.distance = 0;
                                     if (postman.postOrders.length > 0) {
                                         postman.isSolved = true;
                                         postman.geoPoints.push(postOffice.postalAddress.geoPoint);
                                         let order = 0;
-                                        postman.weight = 0;
-                                        postman.distance = 0;
                                         postman.postOrders.forEach(postOrder => {
                                             postOrder['order'] = order++;
-                                            postman.distance += distance(postOrder.tofromCustomer.postalAddress.geoPoint, postman.geoPoints[postman.geoPoints.length - 1]);
+                                            postman.distance += distance(postOrder.toCustomer.postalAddress.geoPoint, postman.geoPoints[postman.geoPoints.length - 1]);
                                             postman.geoPoints.push(postOrder.toCustomer.postalAddress.geoPoint);
                                             postman.weight += postOrder.weight;
                                         })
@@ -444,23 +493,13 @@ function ShipAndDeliveryDetail(props) {
                     <Typography variant="h5" component="h2">
                         Phân chia bưu tá
                     </Typography>
+                    <Typography variant="h5" component="h2">
+                        {postOffice ? ('Mã bưu cục: ' + postOffice.postOfficeId + ' - ' + postOffice.postOfficeName) : ''}
+                    </Typography>
                     <br />
                     <Typography variant="h6" component="h2">
                         Còn {toPostOrder.length} đơn hàng chưa phân công
                     </Typography>
-                    {/* <AppBar position="static">
-                        <Tabs value={tabValue} onChange={handleTabChange} aria-label="simple tabs example">
-                            <Tab label="Thu gom" />
-                            <Tab label="Giao hàng" />
-                        </Tabs>
-                    </AppBar>
-                    <TabPanel value={tabValue} index={0}>
-                        Item One
-                    </TabPanel>
-                    <TabPanel value={tabValue} index={1}>
-                        Item Two
-                    </TabPanel>
-                    */}
                     <div>
                         <KeyboardDatePicker
                             id="fromDate"
@@ -500,9 +539,15 @@ function ShipAndDeliveryDetail(props) {
                         }
                         label="Hiện tất cả đơn hàng"
                     />
-                    <Typography variant="h5" component="h2">
-                        Danh sách người vận chuyển
-                    </Typography>
+                    <br />
+                    <Button
+                        color='primary'
+                        onClick={() => { setOrderOpen(true) }}
+                        variant='outlined'
+                    >
+                        Lập kế hoạch
+                    </Button>
+                    <br />
                     <br />
                     <MaterialTable
                         className={classes.table}
@@ -534,7 +579,7 @@ function ShipAndDeliveryDetail(props) {
                         variant="outlined"
                         onClick={submitSolver}
                     >
-                        {isSolving ? <CircularProgress /> : "Giải"}
+                        {isSolving ? <CircularProgress /> : "Gợi ý"}
                     </Button>
                     <Button
                         color="primary"
@@ -552,11 +597,6 @@ function ShipAndDeliveryDetail(props) {
                             setPickMarkerVisible(false);
                             setSolved(false);
                             setToPostOrder(copyObj(backupPostorders));
-                            // let newPostmanTableRef = postmanTableRef;
-                            // newPostmanTableRef.state.data.forEach(row => {
-                            //     row.tableData.checked = false;
-                            // });
-                            // setPostmanTableRef(newPostmanTableRef);
                         }}
                         style={{ marginLeft: 5 }}
                     >
@@ -671,7 +711,7 @@ function ShipAndDeliveryDetail(props) {
                                     return postman.postOrders.map(order => {
                                         return postman.viewRoute ?
                                             <Marker
-                                                title={order.tofromCustomer.postCustomerName}
+                                                title={order.toCustomer.postCustomerName}
                                                 position={{
                                                     lat: order.toCustomer.postalAddress.geoPoint.latitude,
                                                     lng: order.toCustomer.postalAddress.geoPoint.longitude,
@@ -731,6 +771,36 @@ function ShipAndDeliveryDetail(props) {
                     />
                 </DialogContent>
             </Dialog>
+            <Dialog open={orderOpen} onClose={() => setOrderOpen(false)} fullWidth maxWidth>
+                <DialogTitle>{"Danh sách tất cả đơn hàng"}</DialogTitle>
+                <DialogContent>
+                    <MaterialTable
+                        className={classes.table}
+                        title={"Danh sách tất cả đơn hàng"}
+                        columns={allOrderColumn}
+                        options={{
+                            filtering: false,
+                            search: false,
+                            selection: false,
+                            actionsColumnIndex: -1,
+                            selection: false,
+                            sorting: true,
+                            draggable: true
+
+                        }}
+                        localization={localization}
+                        data={toPostOrder}
+                    />
+                </DialogContent>
+            </Dialog>
+            <AlertDialog
+                open={alertAction.open}
+                setOpen={() => setAlertAction({
+                    open: false,
+                })}
+                title={alertAction.title}
+                message={alertAction.message}
+            />
         </MuiPickersUtilsProvider >
     );
 

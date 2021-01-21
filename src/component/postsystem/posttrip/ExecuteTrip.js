@@ -3,7 +3,6 @@ import { makeStyles } from "@material-ui/core/styles";
 import Typography from "@material-ui/core/Typography";
 import Button from "@material-ui/core/Button";
 import Dialog from "@material-ui/core/Dialog";
-import DialogActions from "@material-ui/core/DialogActions";
 import DialogTitle from "@material-ui/core/DialogTitle";
 import { DialogContent, Tooltip, IconButton } from "@material-ui/core";
 import AlarmOnIcon from '@material-ui/icons/AlarmOn';
@@ -12,7 +11,7 @@ import PauseCircleOutlineIcon from '@material-ui/icons/PauseCircleOutline';
 import PlayArrowIcon from '@material-ui/icons/PlayArrow';
 import NotificationsIcon from '@material-ui/icons/Notifications';
 import NotificationsActiveIcon from '@material-ui/icons/NotificationsActive';
-import { authPost, authGet } from "../../../api";
+import { authPost, authGet, authDelete } from "../../../api";
 import { KeyboardDatePicker, MuiPickersUtilsProvider, KeyboardTimePicker } from "@material-ui/pickers";
 import DateFnsUtils from "@date-io/date-fns";
 import MaterialTable from "material-table";
@@ -118,14 +117,6 @@ export default function ExecuteTrip() {
         title: undefined,
         message: undefined
     })
-    const handleChangePage = (event, newPage) => {
-        setPage(newPage);
-    };
-
-    const handleChangeRowsPerPage = (event) => {
-        setRowsPerPage(+event.target.value);
-        setPage(0);
-    };
 
     const handlechooseDateChange = (date) => {
         setChooseDate(date);
@@ -181,13 +172,56 @@ export default function ExecuteTrip() {
         setOpen(true);
     }
     const onClickActions = (row) => {
+        let row1 = row
         switch (row.status) {
             case 'WAITING':
-                setAlertAction(
+                setConfirmAction(
                     {
                         open: true,
-                        message: 'Chuyến xe đang chờ thực thi !',
-                        title: 'Thông báo'
+                        handleSuccess: () => {
+                            authDelete(dispatch, token, '/delete-execute-trip', {
+                                postOfficeFixedTripExecuteId: row1.postOfficeFixedTripExecuteId
+                            })
+                                .then((res) => {
+                                    if (res.status == 'SUCCESS') {
+                                        let newAvailableAssignment;
+                                        let newFixedTripExecutes = copyObj(fixedTripExecutes)
+                                        delete fixedTripExecutes[row1.postOfficeFixedTripExecuteId]
+                                        let newData = copyObj(data);
+                                        newData.forEach(fixedtrip => {
+                                            if (fixedtrip.postOfficeFixedTripExecuteId == row1.postOfficeFixedTripExecuteId) {
+                                                newAvailableAssignment = [...availableAssignment, ...fixedtrip.assignment]
+                                                fixedtrip.assignment = []
+                                                fixedtrip.havingOrder = false
+                                                newAvailableAssignment.forEach(assignment => {
+                                                    if (assignment.postOfficeTrip.postOfficeTripId == fixedtrip.postOfficeTrip.postOfficeTripId) {
+                                                        fixedtrip.havingOrder = true
+                                                    }
+                                                })
+                                                fixedtrip.status = ''
+                                            }
+                                        })
+                                        setAvailableAssignment(newAvailableAssignment);
+                                        setFixedTripExecutes(newFixedTripExecutes)
+                                        setConfirmAction({ open: false })
+                                        setData(newData)
+                                        setAlertAction({
+                                            open: true,
+                                            message: 'Xoá chuyến xe thành công',
+                                            title: 'Thông báo'
+                                        })
+                                    }
+                                    else {
+                                        setAlertAction({
+                                            open: true,
+                                            message: 'Chuyến xe đã được bắt đầu, không thể huỷ !',
+                                            title: 'Thông báo'
+                                        })
+                                    }
+                                })
+                        },
+                        content: 'huỷ chuyến xe',
+                        title: 'Huỷ chuyến xe'
                     }
                 )
                 break
@@ -203,7 +237,6 @@ export default function ExecuteTrip() {
             case 'ARRIVED':
                 break
             default:
-                let row1 = row
                 setConfirmAction(
                     {
                         open: true,

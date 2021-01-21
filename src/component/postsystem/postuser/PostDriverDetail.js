@@ -216,7 +216,7 @@ function PostDriverDetail(props) {
                             zoom={14}
                             style={style}
                             ref={(ref) => { setMap(ref) }}
-                            center={{
+                            initialCenter={{
                                 lat: 21.027763,
                                 lng: 105.834160,
                             }}

@@ -182,7 +182,8 @@ function PostmanOrderAssignmentDetail(props) {
     }
 
     const tspSolve = () => {
-        authPost(dispatch, token, '/solve-postman-post-order-assignment-tsp', {
+        let pick = tabValue == 0 ? true : false;
+        authPost(dispatch, token, '/solve-postman-post-order-assignment-tsp?pick=' + pick + "&postOfficeId=" + postOffice.postOfficeId, {
             postShipOrderPostmanLastMileAssignmentIds: tabValue == 0 ? data.pickAssignment.map(x => x.postShipOrderPostmanLastMileAssignmentId) : data.shipAssignment.map(x => x.postShipOrderPostmanLastMileAssignmentId),
             pick: tabValue == 0 ? true : false,
             postOfficeId: postOffice.postOfficeId
@@ -191,11 +192,11 @@ function PostmanOrderAssignmentDetail(props) {
                 console.log(res)
                 let geoPoints = []
                 if (res.length > 0) {
-                    geoPoints.push(res.postalAddress.geoPoint);
+                    geoPoints.push(postOffice.postalAddress.geoPoint);
                     res.forEach(assignment => {
                         geoPoints.push(assignment.postOrder.fromCustomer.postalAddress.geoPoint);
                     })
-                    geoPoints.push(res.postalAddress.geoPoint);
+                    geoPoints.push(postOffice.postalAddress.geoPoint);
                     setPickGeoPoints(geoPoints)
                 }
             })
@@ -228,12 +229,20 @@ function PostmanOrderAssignmentDetail(props) {
                     })
                     return
                 }
-                const dataUpdate = copyObj(data)
                 const index = oldData.tableData.id;
-                if (pick)
+                const dataUpdate = copyObj(data)
+                if (pick) {
+                    let pickDataUpdate = copyObj(pickTableData)
                     dataUpdate.pickAssignment[index] = newData;
-                else
+                    pickDataUpdate[index] = newData
+                    setPickTableData(pickDataUpdate)
+                }
+                else {
+                    let shipDataUpdate = copyObj(shipTableData)
                     dataUpdate.shipAssignment[index] = newData;
+                    shipDataUpdate[index] = newData
+                    setShipTableData(newData)
+                }
                 setData(dataUpdate);
                 setAlertAction({
                     open: true,
@@ -415,7 +424,7 @@ function PostmanOrderAssignmentDetail(props) {
                             {
                                 data.finishedAssignment.map((assignment) => {
                                     let order = assignment.postOrder
-                                    if (assignment.statusId == 'POST_ORDER_ASSIGNMENT_PICKUP_SUCCESS')
+                                    if (assignment.statusId == 'POST_ORDER_ASSIGNMENT_PICKUP_SUCCESS' && tabValue == 0)
                                         return (
                                             <Marker
                                                 title={order.fromCustomer.postCustomerName}
@@ -425,15 +434,16 @@ function PostmanOrderAssignmentDetail(props) {
                                                 }}
                                             />
                                         )
-                                    else return (
-                                        <Marker
-                                            title={order.toCustomer.postCustomerName}
-                                            position={{
-                                                lat: order.toCustomer.postalAddress.geoPoint.latitude,
-                                                lng: order.toCustomer.postalAddress.geoPoint.longitude,
-                                            }}
-                                        />
-                                    )
+                                    else if (assignment.statusId == 'POST_ORDER_ASSIGNMENT_SHIP_SUCCESS' && tabValue == 1)
+                                        return (
+                                            <Marker
+                                                title={order.toCustomer.postCustomerName}
+                                                position={{
+                                                    lat: order.toCustomer.postalAddress.geoPoint.latitude,
+                                                    lng: order.toCustomer.postalAddress.geoPoint.longitude,
+                                                }}
+                                            />
+                                        )
                                 })
                             }
                             {

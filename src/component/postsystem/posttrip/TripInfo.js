@@ -18,12 +18,12 @@ function TripInfo(props) {
 
     useEffect(() => {
         setTripId(value.postOfficeFixedTripId)
-        setFromAddress(value.fromPostOffice.postalAddress.address)
-        setToAddress(value.toPostOffice.postalAddress.address)
-        setFromLat(parseFloat(value.fromPostOffice.postalAddress.geoPoint.latitude))
-        setFromLng(parseFloat(value.fromPostOffice.postalAddress.geoPoint.longitude))
-        setToLat(parseFloat(value.toPostOffice.postalAddress.geoPoint.latitude))
-        setToLng(parseFloat(value.toPostOffice.postalAddress.geoPoint.longitude))
+        setFromAddress(value.postOfficeTrip.fromPostOffice.postalAddress.address)
+        setToAddress(value.postOfficeTrip.toPostOffice.postalAddress.address)
+        setFromLat(parseFloat(value.postOfficeTrip.fromPostOffice.postalAddress.geoPoint.latitude))
+        setFromLng(parseFloat(value.postOfficeTrip.fromPostOffice.postalAddress.geoPoint.longitude))
+        setToLat(parseFloat(value.postOfficeTrip.toPostOffice.postalAddress.geoPoint.latitude))
+        setToLng(parseFloat(value.postOfficeTrip.toPostOffice.postalAddress.geoPoint.longitude))
         setIcon({
             url: "http://maps.google.com/mapfiles/kml/paddle/grn-blank.png", // url
             scaledSize: new props.google.maps.Size(40, 40), // scaled size
