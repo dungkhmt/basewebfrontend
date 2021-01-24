@@ -224,11 +224,10 @@ function CreatePostShipOrder(props) {
             url: "http://maps.google.com/mapfiles/kml/paddle/grn-blank.png", // url
             scaledSize: new props.google.maps.Size(40, 40), // scaled size
         });
+        loadPackageTypeData();
     }, [])
 
     useEffect(() => {
-        if (packageTypeData.length == 0)
-            loadPackageTypeData();
         if (!map) return;
         let bounded = false;
         map.props.children.forEach((child) => {

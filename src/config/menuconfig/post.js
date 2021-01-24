@@ -38,14 +38,6 @@ export const post = {
       child: [],
     },
     {
-      id: "MENU_POST_CREATE_POST_ORDER",
-      path: "",
-      isPublic: false,
-      icon: "StarBorder",
-      text: "Tạo mới đợt chuyển phát",
-      child: [],
-    },
-    {
       id: "MENU_POST_VIEW_PACKAGE_PICKUP_PLAN",
       path: "/postoffice/pickanddelivery",
       isPublic: false,
@@ -62,7 +54,7 @@ export const post = {
       child: [],
     },
     {
-      id: "MENU_POST_CREATE_POST_SHIP_ORDER",
+      id: "MENU_POST_CREATE_POST_ORDER",
       path: "/postoffice/createshiporder",
       isPublic: false,
       icon: "StarBorder",
@@ -74,7 +66,7 @@ export const post = {
       path: "/postoffice/executetrip",
       isPublic: false,
       icon: "StarBorder",
-      text: "Thực thi chuyến xe",
+      text: "Tạo mới đợt chuyển phát",
       child: [],
     },
     {

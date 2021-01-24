@@ -40,6 +40,14 @@ function CreatePostOffice(props) {
     history.push("/postoffice/list");
   };
 
+  const handleDragMarker = (coord) => {
+    const { latLng } = coord;
+    const lat = latLng.lat();
+    const lng = latLng.lng();
+    setLat(lat);
+    setLng(lng);
+  }
+
   const onSaveHandler = (event) => {
     if (
       values.postOfficeName === "" ||
@@ -47,6 +55,7 @@ function CreatePostOffice(props) {
       values.address === "" ||
       isNaN(values.postOfficeLevel)
     ) {
+      alert("Thông tin nhập không đúng!");
       event.preventDefault();
       return;
     } else {
@@ -59,11 +68,13 @@ function CreatePostOffice(props) {
           "X-Auth-Token": token,
         },
         body: JSON.stringify({ ...values, latitude: lat, longitude: lng }),
-      });
+      })
+        .then(res => {
+          setIsRequesting(false);
+          alert("Đã lưu bưu cục " + values.postOfficeName);
+          history.push("/postoffice/list");
+        });
     }
-    setIsRequesting(false);
-    history.push("/postoffice/list");
-    alert("Đã lưu bưu cục " + values.postOfficeName);
   };
 
   const style = {
@@ -164,12 +175,15 @@ function CreatePostOffice(props) {
             lng: lng,
           }}
           onClick={mapClicked}
+
         >
           <Marker
             position={{
               lat: lat,
               lng: lng,
             }}
+            onDragend={(t, map, coord) => handleDragMarker(coord)}
+            draggable={true}
           />
         </Map>
       </Grid>

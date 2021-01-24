@@ -72,8 +72,15 @@ export default function PostOfficeList(props) {
 
   const deletePostOffice = (postOffice) => {
     authDelete(dispatch, token, "/delete-post-office/" + postOffice.postOfficeId)
+      .then(res => {
+        const dataDelete = [...data];
+        const index = postOffice.tableData.id;
+        dataDelete.splice(index, 1);
+        setData([...dataDelete]);
+        alert("Đã xoá bưu cục " + postOffice.postOfficeId);
+      })
       .catch(err => errHandling(err));
-    props.callback(props.postOffice.postOfficeId);
+
   }
 
   useEffect(() => {
@@ -136,7 +143,7 @@ export default function PostOfficeList(props) {
           (postOffice) => ({
             icon: 'delete',
             tooltip: 'Xóa',
-            onClick: (event, postOrder) => deletePostOffice(postOffice)
+            onClick: (event, postOffice) => deletePostOffice(postOffice)
           })
         ]}
       />
