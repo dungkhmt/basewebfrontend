@@ -1,14 +1,14 @@
-import React, {useState} from "react";
-import {useHistory} from "react-router-dom";
-import {useSelector} from "react-redux";
+import React, { useState } from "react";
+import { useHistory } from "react-router-dom";
+import { useSelector } from "react-redux";
 import Typography from "@material-ui/core/Typography";
-import {CardContent, CircularProgress} from "@material-ui/core";
+import { CardContent, CircularProgress } from "@material-ui/core";
 import TextField from "@material-ui/core/TextField";
-import {GoogleApiWrapper, Map, Marker} from "google-maps-react";
+import { GoogleApiWrapper, Map, Marker } from "google-maps-react";
 import Grid from "@material-ui/core/Grid";
 import CardActions from "@material-ui/core/CardActions";
 import Button from "@material-ui/core/Button";
-import {API_URL} from "../../../config/config";
+import { API_URL } from "../../../config/config";
 
 function CreatePostOffice(props) {
   const token = useSelector((state) => state.auth.token);
@@ -26,7 +26,7 @@ function CreatePostOffice(props) {
   const [lng, setLng] = useState(105.853882)
 
   const onChangeHandler = (props) => (event) => {
-    setValues({...values, [props]: event.target.value});
+    setValues({ ...values, [props]: event.target.value });
   };
 
   const mapClicked = (mapProps, map, event) => {
@@ -40,6 +40,14 @@ function CreatePostOffice(props) {
     history.push("/postoffice/list");
   };
 
+  const handleDragMarker = (coord) => {
+    const { latLng } = coord;
+    const lat = latLng.lat();
+    const lng = latLng.lng();
+    setLat(lat);
+    setLng(lng);
+  }
+
   const onSaveHandler = (event) => {
     if (
       values.postOfficeName === "" ||
@@ -47,6 +55,7 @@ function CreatePostOffice(props) {
       values.address === "" ||
       isNaN(values.postOfficeLevel)
     ) {
+      alert("Thông tin nhập không đúng!");
       event.preventDefault();
       return;
     } else {
@@ -58,12 +67,14 @@ function CreatePostOffice(props) {
           "Content-Type": "application/json",
           "X-Auth-Token": token,
         },
-        body: JSON.stringify({...values, latitude: lat, longitude: lng}),
-      });
+        body: JSON.stringify({ ...values, latitude: lat, longitude: lng }),
+      })
+        .then(res => {
+          setIsRequesting(false);
+          alert("Đã lưu bưu cục " + values.postOfficeName);
+          history.push("/postoffice/list");
+        });
     }
-    setIsRequesting(false);
-    history.push("/postoffice/list");
-    alert("Đã lưu bưu cục " + values.postOfficeName);
   };
 
   const style = {
@@ -82,7 +93,7 @@ function CreatePostOffice(props) {
                 label="Tên bưu cục"
                 placeholder="Nhập tên bưu cục..."
                 onChange={onChangeHandler("postOfficeName")}
-                style={{width: 400, margin: 5}}
+                style={{ width: 400, margin: 5 }}
                 required={true}
                 InputLabelProps={{
                   shrink: true,
@@ -95,7 +106,7 @@ function CreatePostOffice(props) {
                 label="Mã bưu cục"
                 placeholder="Nhập mã bưu cục..."
                 onChange={onChangeHandler("postOfficeId")}
-                style={{width: 400, margin: 5}}
+                style={{ width: 400, margin: 5 }}
                 required={true}
                 InputLabelProps={{
                   shrink: true,
@@ -108,7 +119,7 @@ function CreatePostOffice(props) {
                 label="Cấp bưu cục"
                 placeholder="Nhập cấp bưu cục..."
                 onChange={onChangeHandler("postOfficeLevel")}
-                style={{width: 400, margin: 5}}
+                style={{ width: 400, margin: 5 }}
                 required={true}
                 InputLabelProps={{
                   shrink: true,
@@ -121,7 +132,7 @@ function CreatePostOffice(props) {
                 label="Địa chỉ"
                 placeholder="VD: 75 Đinh Tiên Hoàng, Tràng Tiền, Hoàn Kiếm, Hà Nội"
                 onChange={onChangeHandler("address")}
-                style={{width: 400, margin: 5}}
+                style={{ width: 400, margin: 5 }}
                 required={true}
                 InputLabelProps={{
                   shrink: true,
@@ -129,13 +140,13 @@ function CreatePostOffice(props) {
               />
             </div>
             <div>
-              <Typography variant="body" style={{margin: 5}}>
+              <Typography variant="body" style={{ margin: 5 }}>
                 Tọa độ: {lat} {" - "} {lng}
               </Typography>
             </div>
           </form>
         </CardContent>
-        <CardActions style={{marginLeft: 280}}>
+        <CardActions style={{ marginLeft: 280 }}>
           <Button variant="contained" size="small" onClick={onCancelHandler}>
             Hủy
           </Button>
@@ -146,7 +157,7 @@ function CreatePostOffice(props) {
             size="small"
             onClick={onSaveHandler}
           >
-            {isRequesting ? <CircularProgress/> : "Lưu"}
+            {isRequesting ? <CircularProgress /> : "Lưu"}
           </Button>
         </CardActions>
       </Grid>
@@ -164,12 +175,15 @@ function CreatePostOffice(props) {
             lng: lng,
           }}
           onClick={mapClicked}
+
         >
           <Marker
             position={{
               lat: lat,
               lng: lng,
             }}
+            onDragend={(t, map, coord) => handleDragMarker(coord)}
+            draggable={true}
           />
         </Map>
       </Grid>
