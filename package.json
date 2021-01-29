@@ -18,6 +18,7 @@
     "canvasjs": "^1.8.3",
     "chart.js": "^2.9.3",
     "classnames": "^2.2.6",
+    "clsx": "^1.1.1",
     "cross-fetch": "^3.0.4",
     "customize-cra": "^1.0.0",
     "date-fns": "^2.15.0",
