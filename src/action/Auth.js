@@ -1,10 +1,11 @@
-import {API_URL} from "../config/config";
+import { API_URL } from "../config/config";
 import base64 from "base-64";
-
+import { errorNoti, infoNoti } from "../utils/Notification";
 export const LOGIN_REQUESTING = "LOGIN_REQUESTING";
 export const LOGIN_SUCCESS = "LOGIN_SUCCESS";
 export const LOGOUT_SUCCESS = "LOGOUT_SUCCESS";
 export const LOGIN_FAILURE = "LOGIN_FAILURE";
+export const ERROR = "ERROR";
 
 
 export const logout = () => {
@@ -61,8 +62,9 @@ export const login = (username, password) => {
       .then(res => {
         if (res.ok) {
           dispatch(success(res.headers.get("X-Auth-Token")));
-        }else if(res.status===401){
-          dispatch(failed(true,"Username or password is incorrect!!"));
+        } else if (res.status === 401) {
+          dispatch(failed(true, "Username or password is incorrect!!"));
+          errorNoti("Tài khoản hoặc mật khẩu không đúng");
         }
         return res.json();
       })
@@ -86,7 +88,7 @@ const requesting = () => {
   };
 };
 
-export const failed = (errorState=false,errorMsg=null) => {
+export const failed = (errorState = false, errorMsg = null) => {
   return {
     type: LOGIN_FAILURE,
     errorState: errorState,
@@ -94,7 +96,7 @@ export const failed = (errorState=false,errorMsg=null) => {
   };
 };
 const success = token => {// token la tham so cua ham success
-//function success(token){   
+  //function success(token){   
   return {
     type: LOGIN_SUCCESS,
     token: token
@@ -104,5 +106,14 @@ const logoutsuccess = token => {// token la tham so cua ham success
   //function success(token){   
   return {
     type: LOGOUT_SUCCESS
+  };
+};
+
+export const error = (errorState = false, errorMsg = null) => {
+  console.log(errorMsg)
+  return {
+    type: ERROR,
+    errorState: errorState,
+    errorMsg: errorMsg
   };
 };

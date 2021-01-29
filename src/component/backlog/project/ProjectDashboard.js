@@ -4,12 +4,15 @@ import { Doughnut } from "react-chartjs-2";
 import { authPost, authGet } from "../../../api";
 import { useDispatch, useSelector } from "react-redux";
 import {
-  Box, Typography, Grid,
-  Paper, ListItem, ListItemIcon, ListItemText, List
+  Box, Typography, Grid, Avatar, 
+  Paper, ListItem, ListItemAvatar, ListItemText, List
 } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
 import Gantt from '../Gantt';
 import "ibm-gantt-chart/dist/ibm-gantt-chart.css";
+import randomColor from "randomcolor";
+
+const avtColor = [...Array(20)].map((value, index) => randomColor({luminosity: "light",hue: "random",}));
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -35,8 +38,16 @@ const useStyles = makeStyles((theme) => ({
   },
   ganttChartStyle: {
     height: '600px'
-  }
+  },
+  avatar: {
+    width: 36,
+    height: 36,
+  },
 }));
+
+const getFullName = (user) => {
+  return user.person ? user.person.firstName + " " + user.person.middleName + " " + user.person.lastName : ""
+}
 
 const taskCounterOpt = {
   responsive: true,
@@ -57,6 +68,13 @@ const taskCounterOpt = {
       right: 0,
       top: 10,
       bottom: 10
+    }
+  },
+  plugins: {
+    datalabels: {
+      display: function (context) {
+        return context.dataset.data[context.dataIndex] !== 0;
+      }
     }
   }
 }
@@ -80,7 +98,6 @@ export default function ProjectDashboard(props) {
   const taskCounterOption = taskCounterOpt;
   const ganttToolbarConfig = ganttToolbar;
   const [taskCounter, setTaskCounter] = useState([]);
-  const [ganttData, setGanttData] = useState([]);
   const [ganttConfig, setGanttConfig] = useState({});
   const [isPermissive, setIsPermissive] = useState(true);
   const [project, setProject] = useState({});
@@ -102,12 +119,12 @@ export default function ProjectDashboard(props) {
     );
     authGet(dispatch, token, "/backlog/get-project-detail/" + backlogProjectId).then(
       res => {
-        setTaskList(res);
+        // setTaskList(res);
 
         // task counter data
         let [taskOpen, taskInprogress, taskResolved] = [0, 0, 0];
         res.forEach(task => {
-          switch (task.backlogTask.statusId) {
+          switch (task.statusId) {
             case "TASK_OPEN":
               taskOpen++;
               break;
@@ -147,17 +164,17 @@ export default function ProjectDashboard(props) {
         setTaskCounter(data);
 
         // gantt data
-        let gantt = [
-        ];
+        let gantt = [];
         res.forEach(task => {
+          const t = task;
           gantt.push({
-            id: task.backlogTask.backlogTaskId,
-            name: task.backlogTask.backlogTaskName,
+            id: t.backlogTaskId,
+            name: t.backlogTaskName,
             activities: [{
-              id: task.backlogTask.backlogTaskId,
-              name: task.backlogTask.backlogTaskName,
-              start: new Date(task.backlogTask.fromDate).getTime(),
-              end: new Date(task.backlogTask.dueDate).getTime()
+              id: t.backlogTaskId,
+              name: t.backlogTaskName,
+              start: new Date(t.fromDate).getTime(),
+              end: new Date(t.dueDate).getTime()
             }]
           })
         });
@@ -206,13 +223,13 @@ export default function ProjectDashboard(props) {
           <Paper>
             <Box p={1}>
               <Typography component="div" align="center">
-                <Box fontWeight="fontWeightBold" fontSize="h6.fontSize" m={1}>Mã dự án: {project.backlogProjectId}</Box>
+                <Box fontWeight="fontWeightBold" fontSize="h6.fontSize" m={1}>Mã dự án: {project.backlogProjectCode}</Box>
                 <Box fontWeight="fontWeightBold" fontSize="h6.fontSize" m={1}>Tên dự án: {checkNull(project['backlogProjectName'])}</Box>
               </Typography>
             </Box>
           </Paper>
         </Grid>
-        <Grid xs={8} item container style={{ overflow: 'hidden' }}>
+        <Grid xs={9} item container style={{ overflow: 'hidden' }}>
           <Grid xs={12} item container spacing={2}>
             <Grid item xs={12}>
               <Paper>
@@ -234,13 +251,13 @@ export default function ProjectDashboard(props) {
                       </Box>
                     </Typography>
                   </Box>
-                  <Gantt config={ganttConfig} className={classes.ganttChartStyle}/>
+                  <Gantt config={ganttConfig} className={classes.ganttChartStyle} />
                 </Box>
               </Paper>
             </Grid>
           </Grid>
         </Grid>
-        <Grid xs={4} item>
+        <Grid xs={3} item>
           <Paper>
             <Box p={1}>
               <Typography component="div" align='center' className={classes.sectionHeaderStyle}>
@@ -252,10 +269,14 @@ export default function ProjectDashboard(props) {
             <List dense={false} disablePadding={true} className={classes.root}>
               {projectMember.map((item, index) => (
                 <ListItem>
-                  <ListItemIcon>
-                  </ListItemIcon>
+                  <ListItemAvatar>
+                    <Avatar className={classes.avatar} style={{ background: avtColor[index % avtColor.length] }}>
+                      {(item.person && item.person.lastName && item.person.lastName !== "") ? item.person.lastName.substring(0, 1) : ""}
+                    </Avatar>
+                  </ListItemAvatar>
                   <ListItemText
-                    primary={item.userLoginId}
+                    primary={getFullName(item)}
+                    secondary={item.userLoginId}
                   />
                 </ListItem>
               ))}

@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import {
-  Dialog, DialogContent, Typography, Button, AppBar, Toolbar, 
-  IconButton, Tabs, Tab, Box, Select, MenuItem, 
+  Dialog, DialogContent, Typography, Button, AppBar, Toolbar,
+  IconButton, Tabs, Tab, Box, Select, MenuItem,
 } from "@material-ui/core";
 import MaterialTable from "material-table";
 import { Bar } from 'react-chartjs-2';
@@ -16,13 +16,15 @@ import { Redirect, useHistory } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { makeStyles } from "@material-ui/core/styles";
 import CloseIcon from '@material-ui/icons/Close';
+import UserItem from '../components/UserItem';
+import 'chartjs-plugin-datalabels';
 
 const useStyles = makeStyles((theme) => ({
   root: {
     "& .MuiDialogContent-root": {
       padding: '0px',
-      width: '700px',
-      height: '650px'
+      width: '720px',
+      height: '700px'
     },
     "& .MuiDialog-paperWidthXs, .MuiDialog-paperWidthMd, .MuiDialog-paperWidthSm, .MuiDialog-paperWidthLg": {
       maxWidth: '100%',
@@ -49,7 +51,6 @@ function TabPanel(props) {
 export default function SuggestionResult(props) {
   const dispatch = useDispatch();
   const token = useSelector(state => state.auth.token);
-  const history = useHistory();
   const classes = useStyles();
   const [tab, setTab] = useState(0);
 
@@ -75,6 +76,13 @@ export default function SuggestionResult(props) {
     },
     legend: {
       display: false
+    },
+    plugins: {
+      datalabels: {
+        display: function (context) {
+          return context.dataset.data[context.dataIndex] !== 0;
+        }
+      }
     }
   }
 
@@ -84,16 +92,29 @@ export default function SuggestionResult(props) {
       title: 'Phân công', field: 'assign',
       render: rowData => {
         return (
-          <Select
-            value={rowData.assign.partyId}
-            onChange={(event) => { handleChangeAssign(event, rowData.tableData.id) }}
-            style={{ width: '200px' }}
-          >
-            {rowData.assignable.map((item) => (
-              <MenuItem key={item.partyId} value={item.partyId}>{item.userLoginId}</MenuItem>
-            ))}
-          </Select>
+          rowData.assign ?
+            <Select
+              value={rowData.assign ? rowData.assign.partyId : ''}
+              onChange={(event) => { handleChangeAssign(event, rowData.tableData.id) }}
+              style={{ width: '250px' }}
+            >
+              {rowData.assignable.map((item) => (
+                // <MenuItem key={item.partyId} value={item.partyId}>{item.userLoginId}</MenuItem>
+                <MenuItem key={item.partyId} value={item.partyId}>
+                  <UserItem
+                    user={item}
+                  />
+                </MenuItem>
+              ))}
+            </Select> : null
         )
+      },
+      customFilterAndSearch: (value, rowData) => {
+        if (rowData.assign == null) return false;
+        value = value.toLowerCase();
+        const user = rowData.assignable.find(e => e.partyId === rowData.assign.partyId);
+        const fullName = (user.person ? user.person.firstName + " " + user.person.middleName + " " + user.person.lastName : "").toLowerCase();
+        if (fullName.includes(value) || user.userLoginId.includes(value)) return true;
       }
     }
   ];
@@ -104,18 +125,31 @@ export default function SuggestionResult(props) {
 
   const handleChangeAssign = (event, rowIndex) => {
     let data = [...suggestData];
+    let labels = suggestChartData.labels;
+    let chartData = [...suggestChartData.datasets[0].data];
+
     const taskHasChanged = data[rowIndex];
     const newAssign = data[rowIndex].assignable.find(e => e.partyId === event.target.value).userLoginId;
 
-    let newIndex = suggestChartData.labels.findIndex(e => e === newAssign);
-    let oldIndex = suggestChartData.labels.findIndex(e => e === taskHasChanged.assign.userLoginId);
-    let chartData = [...suggestChartData.datasets[0].data];
-
+    let newIndex = labels.findIndex(e => e === newAssign);
+    console.log(newIndex, newAssign);
+    if(newIndex < 0) {
+      newIndex = labels.length;
+      labels.push(newAssign);
+      chartData.push(0);
+    }
+    let oldIndex = labels.findIndex(e => e === taskHasChanged.assign.userLoginId);
     chartData[oldIndex] = chartData[oldIndex] - taskHasChanged.duration;
     chartData[newIndex] = chartData[newIndex] + taskHasChanged.duration;
 
+    labels = labels.filter((e, index) => chartData[index] > 0);
+    chartData = chartData.filter(e => e > 0);
+
+    console.log(labels, chartData);
+
     setSuggestChartData({
       ...suggestChartData,
+      labels: labels,
       datasets: [
         { ...suggestChartData.datasets[0], data: chartData }
       ]
@@ -134,7 +168,7 @@ export default function SuggestionResult(props) {
         statusId: TASK_STATUS.DEFAULT_ID_ASSIGNED
       })
     });
-    console.log(addAssignmentBody);
+    // console.log(addAssignmentBody);
     authPost(dispatch, token, '/backlog/add-multi-task-assignments', addAssignmentBody);
 
     // clear data
@@ -159,7 +193,7 @@ export default function SuggestionResult(props) {
               <CloseIcon />
             </IconButton>
             <Typography variant="h6" style={{ flex: 1 }}>
-              Bảng gợi ý phân công
+              Kết quả gợi ý phân công
             </Typography>
             <Button variant="contained" color="secondary" onClick={applySuggestion}>
               Phê duyệt
@@ -177,7 +211,7 @@ export default function SuggestionResult(props) {
             title='Kết quả gợi ý'
             columns={resultColumns}
             data={suggestData}
-            options={{ search: false }}
+            options={{ search: false, filtering: true, thirdSortClick: false }}
             localization={localization}
           />
         </TabPanel>

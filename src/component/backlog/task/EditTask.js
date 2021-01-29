@@ -19,6 +19,10 @@ import AlertDialog from '../AlertDialog';
 import {
   TASK_STATUS, TASK_PRIORITY, TASK_CATEGORY
 } from '../BacklogConfig';
+import randomColor from "randomcolor";
+import UserItem from '../components/UserItem';
+
+const avtColor = [...Array(20)].map((value, index) => randomColor({ luminosity: "light", hue: "random", }));
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -336,9 +340,13 @@ export default function EditTask(props) {
               <MenuItem key='' value=''>
                 &nbsp;
               </MenuItem>
-              {projectMember.map((item) => (
+              {projectMember.map((item, index) => (
                 <MenuItem key={item.partyId} value={item.partyId} >
-                  {item.userLoginId}
+                  <UserItem
+                    user={item}
+                    avatarColor={avtColor[index % avtColor.length]}
+                  />
+                  {/* {item.userLoginId} */}
                 </MenuItem>
               ))}
             </TextField>
@@ -357,10 +365,14 @@ export default function EditTask(props) {
               fullWidth
               label="Người có thể thực hiện"
             >
-              {projectMember.map((item) => (
+              {projectMember.map((item, index) => (
                 <MenuItem key={item.partyId} value={item.partyId}>
                   <Checkbox checked={taskAssignable.includes(item.partyId)} />
-                  <ListItemText primary={item.userLoginId} />
+                  <UserItem
+                    user={item}
+                    avatarColor={avtColor[index % avtColor.length]}
+                  />
+                  {/* <ListItemText primary={item.userLoginId} /> */}
                 </MenuItem>
               ))}
             </TextField>

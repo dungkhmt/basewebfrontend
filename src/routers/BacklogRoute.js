@@ -8,7 +8,7 @@ import ViewTask from "../component/backlog/task/ViewTask";
 import EditTask from "../component/backlog/task/EditTask";
 import ProjectDashboard from "../component/backlog/project/ProjectDashboard";
 import AssignSuggestionProjectList from "../component/backlog/suggestion/AssignSuggestionProjectList";
-import AssignSuggestionTaskList from "../component/backlog/suggestion/AssignSuggestionTaskList";
+// import AssignSuggestionTaskList from "../component/backlog/suggestion/AssignSuggestionTaskList";
 
 export default function BacklogRoute() {
   let { path, url } = useRouteMatch();
@@ -23,7 +23,7 @@ export default function BacklogRoute() {
         <Route component={ViewTask} path={`${path}/view-task/:backlogProjectId/:taskId`} />
         <Route component={EditTask} path={`${path}/edit-task/:backlogProjectId/:taskId`} />
         <Route component={AssignSuggestionProjectList} path={`${path}/assign-suggestion/project-list`} />
-        <Route component={AssignSuggestionTaskList} path={`${path}/assign-suggestion/task-list/:backlogProjectId`} />
+        {/* <Route component={AssignSuggestionTaskList} path={`${path}/assign-suggestion/task-list/:backlogProjectId`} /> */}
         <Route component={ProjectDashboard} path={`${path}/dashboard/:backlogProjectId`} />
       </Switch>
     </div>

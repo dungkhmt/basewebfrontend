@@ -35,7 +35,7 @@ export default function CreateProject() {
 	const dispatch = useDispatch();
 	const token = useSelector(state => state.auth.token);
 	const classes = useStyles();
-	const [backlogProjectId, setProjectId] = useState(null);
+	const [backlogProjectCode, setProjectCode] = useState(null);
 	const [backlogProjectName, setProjectName] = useState(null);
 	const [alertMessage, setAlertMessage] = useState({
 		title: "Vui lòng nhập đầy đủ thông tin cần thiết",
@@ -57,7 +57,7 @@ export default function CreateProject() {
 	}
 
 	async function handleSubmit() {
-		if(backlogProjectId === '' || backlogProjectId == null || backlogProjectId === undefined
+		if(backlogProjectCode === '' || backlogProjectCode == null || backlogProjectCode === undefined
 			|| backlogProjectName === '' || backlogProjectName === null || backlogProjectName === undefined
 		) {
 			reDirect = null;
@@ -70,7 +70,7 @@ export default function CreateProject() {
 			return;
 		}
 
-		let body = {backlogProjectId, backlogProjectName};
+		let body = {backlogProjectCode, backlogProjectName};
 		let project = await authPost(dispatch, token, '/backlog/create-project', body).then(r => r.json());
 
 		if(project && project['backlogProjectId']) {
@@ -109,9 +109,9 @@ export default function CreateProject() {
 								id="projectId"
 								label="Mã dự án"
 								placeholder="Nhập mã dự án"
-								value={backlogProjectId}
+								value={backlogProjectCode}
 								onChange={(event) => {
-									setProjectId(event.target.value);
+									setProjectCode(event.target.value);
 								}}
 							/>
 						</div>
