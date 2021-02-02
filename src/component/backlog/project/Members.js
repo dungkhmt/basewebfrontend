@@ -6,7 +6,7 @@ import AlertDialog from '../AlertDialog';
 import {
   Dialog, DialogTitle, DialogContent, List, InputAdornment,
   Checkbox, DialogActions, Button, TextField, Typography,
-  IconButton,
+  IconButton, Box
 } from "@material-ui/core";
 import SearchIcon from '@material-ui/icons/Search';
 import ClearIcon from '@material-ui/icons/Clear';
@@ -14,6 +14,7 @@ import randomColor from "randomcolor";
 import InfiniteScroll from "react-infinite-scroll-component";
 import UseDebounce from '../components/UseDebounce';
 import UserItem from '../components/UserItem';
+import { errorNoti } from "../../../utils/Notification";
 
 const avtColor = [...Array(20)].map((value, index) => randomColor({ luminosity: "light", hue: "random", }));
 
@@ -63,6 +64,7 @@ export function MemberList(props) {
         <List>
           {projectMember.map((member, index) => (
             <UserItem
+              key={member.userLoginId}
               user={member}
               avatarColor={avtColor[index % avtColor.length]}
               avatarClass={classes.avatar}
@@ -91,6 +93,20 @@ export function AddMember(props) {
 
   const { open, onClose, projectId, successCallback } = props;
 
+  function errHandling(err) {
+    if (err.message == "Unauthorized")
+      errorNoti("Phiên làm việc đã kết thúc, vui lòng đăng nhập lại !", true);
+    else{
+      setInviteAlertProperties({
+        severity: 'error',
+        title: 'Mời thành viên thất bại',
+        content: 'Mời thất bại. Vui lòng thử lại.'
+      })
+      setInviteResultAlert(true);
+    }
+    console.trace(err);
+  }
+
   async function getUser() {
     authGet(dispatch, token, "/backlog/get-users-not-member/" + projectId + "?size=10&page=0")
       .then(res => setUsers(res));
@@ -98,7 +114,6 @@ export function AddMember(props) {
 
   const getNotMembers = (pageNumber) => {
     let param = "?size=10&page=" + (pageNumber) + (query.length > 0 ? "&search=" + query : "");
-    // console.log("/backlog/get-users-not-member/" + projectId + param);
     authGet(dispatch, token, "/backlog/get-users-not-member/" + projectId + param)
       .then(res => {
         if (pageNumber !== 0) setUsers(users.concat(res))
@@ -123,28 +138,16 @@ export function AddMember(props) {
     };
 
     authPost(dispatch, token, "/backlog/add-member", input)
-      .then((res) => res.json())
       .then((res) => {
-        if (res == null || res.backlogProjectId == null) {
-          setInviteAlertProperties({
-            severity: 'error',
-            title: 'Mời thành viên thất bại',
-            content: 'Mời thất bại. Vui lòng thử lại.'
-          })
-          setInviteResultAlert(true);
-          return;
-        } else {
-          setInviteAlertProperties({
-            severity: 'success',
-            title: 'Mời thành viên thành công',
-            content: 'Mời thành công.'
-          })
-          setInviteResultAlert(true);
-          getUser();
-          successCallback();
-          return;
-        }
-      })
+        setInviteAlertProperties({
+          severity: 'success',
+          title: 'Mời thành viên thành công',
+          content: 'Mời thành công.'
+        })
+        setInviteResultAlert(true);
+        getUser();
+        successCallback();
+      }).catch(err => errHandling(err));
 
     clearState()
   }
@@ -184,30 +187,32 @@ export function AddMember(props) {
         classes={{ paper: classes.dialogPaper }}
       >
         <DialogTitle id="form-dialog-title">
-          <Typography variant="h5">Thêm thành viên</Typography>
-          <TextField
-            id='search-bar'
-            variant="outlined"
-            value={query}
-            onChange={e => setQuery(e.target.value)}
-            type="text"
-            placeholder='Tìm kiếm'
-            fullWidth
-            style={{ marginTop: '20px' }}
-            InputProps={{
-              startAdornment: (
-                <InputAdornment position="start">
-                  <SearchIcon />
-                </InputAdornment>
-              ),
-              endAdornment: query && (
-                <IconButton
-                  aria-label="clear-search-text"
-                  onClick={() => setQuery("")}
-                ><ClearIcon /></IconButton>
-              )
-            }}
-          />
+          <Box>
+            <Typography variant="h5">Thêm thành viên</Typography>
+            <TextField
+              id='search-bar'
+              variant="outlined"
+              value={query}
+              onChange={e => setQuery(e.target.value)}
+              type="text"
+              placeholder='Tìm kiếm'
+              fullWidth
+              style={{ marginTop: '20px' }}
+              InputProps={{
+                startAdornment: (
+                  <InputAdornment position="start">
+                    <SearchIcon />
+                  </InputAdornment>
+                ),
+                endAdornment: query && (
+                  <IconButton
+                    aria-label="clear-search-text"
+                    onClick={() => setQuery("")}
+                  ><ClearIcon /></IconButton>
+                )
+              }}
+            />
+          </Box>
         </DialogTitle>
         <DialogContent dividers={true} id="scrollableDiv">
           <InfiniteScroll
@@ -219,6 +224,7 @@ export function AddMember(props) {
           >
             {users.map((user, index) => (
               <UserItem
+                key={user.userLoginId}
                 user={user}
                 avatarColor={avtColor[index % avtColor.length]}
                 avatarClass={classes.avatar}

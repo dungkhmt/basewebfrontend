@@ -8,11 +8,10 @@ import { Bar } from 'react-chartjs-2';
 import {
   localization
 } from '../../../utils/MaterialTableUtils';
-import { authPost, authGet, authPostMultiPart } from "../../../api";
+import { authPost } from "../../../api";
 import {
-  ChartColor, TASK_STATUS
+  TASK_STATUS
 } from '../BacklogConfig';
-import { Redirect, useHistory } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { makeStyles } from "@material-ui/core/styles";
 import CloseIcon from '@material-ui/icons/Close';
@@ -23,8 +22,9 @@ const useStyles = makeStyles((theme) => ({
   root: {
     "& .MuiDialogContent-root": {
       padding: '0px',
-      width: '720px',
-      height: '700px'
+      minWidth: '720px',
+      maxWidth: '70vw',
+      height: '720px'
     },
     "& .MuiDialog-paperWidthXs, .MuiDialog-paperWidthMd, .MuiDialog-paperWidthSm, .MuiDialog-paperWidthLg": {
       maxWidth: '100%',

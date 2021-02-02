@@ -39,6 +39,10 @@ const useStyles = makeStyles((theme) => ({
   }
 }));
 
+function checkEmpty(a) {
+  return a === undefined || a === null || a === '' || (Array.isArray(a) && a.length === 0);
+}
+
 export default function CreateTask(props) {
   const dispatch = useDispatch();
   const token = useSelector(state => state.auth.token);
@@ -123,12 +127,7 @@ export default function CreateTask(props) {
       return;
     }
 
-    let formData = new FormData();
-    for (const file of attachmentFiles) {
-      formData.append("file", file);
-    }
-
-    let addTaskBody = {
+    let taskInput = {
       backlogTaskName: taskName,
       categoryId: taskType,
       backlogDescription: taskDescription,
@@ -139,23 +138,25 @@ export default function CreateTask(props) {
       dueDate: taskDueDate,
       attachmentPaths: attachmentFiles.map(e => e.name)
     };
-    console.log(addTaskBody);
-    let task = await authPost(dispatch, token, '/backlog/add-task', addTaskBody).then(r => r.json());
-
-    let addAssignmentBody = {
-      backlogTaskId: task.backlogTaskId,
-      assignedToPartyId: [taskAssignment],
+    let assignmentInput = {
+      assignedToPartyId: checkEmpty(taskAssignment) ? [] : [taskAssignment],
       statusId: taskStatus
     };
-    authPost(dispatch, token, '/backlog/add-assignments', addAssignmentBody).then(r => r.json());
-
-    let addAssignableBody = {
-      backlogTaskId: task.backlogTaskId,
+    let assignableInput = {
       assignedToPartyId: taskAssignable,
-      statusId: taskStatus
     };
-    authPost(dispatch, token, '/backlog/add-assignable', addAssignableBody).then(r => r.json());
-    let responseMessage = authPostMultiPart(dispatch, token, "/backlog/upload-task-attachment-files/" + task.backlogTaskId, formData);
+    let body = {
+      taskInput: taskInput,
+      assignmentInput: assignmentInput,
+      assignableInput: assignableInput,
+    }
+    let formData = new FormData();
+    formData.append("inputJson", JSON.stringify(body));
+    for (const file of attachmentFiles) {
+      formData.append("files", file);
+    }
+
+    authPostMultiPart(dispatch, token, "/backlog/create-task", formData);
 
     history.push("/backlog/project/" + backlogProjectId);
   }
@@ -343,7 +344,7 @@ export default function CreateTask(props) {
               dropzoneText="Kéo và thả tệp vào đây hoặc nhấn để chọn tệp"
               previewText="Xem trước:"
               previewChipProps={
-                { variant: "outlined", color: "primary", size: "large", }
+                { variant: "outlined", color: "primary", size: "medium", }
               }
               getFileAddedMessage={(fileName) =>
                 `Tệp ${fileName} tải lên thành công`

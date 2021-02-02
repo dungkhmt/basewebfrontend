@@ -71,7 +71,8 @@ export default function CreateProject() {
 		}
 
 		let body = {backlogProjectCode, backlogProjectName};
-		let project = await authPost(dispatch, token, '/backlog/create-project', body).then(r => r.json());
+		let project = await authPost(dispatch, token, '/backlog/create-project', body);
+		console.log(project);
 
 		if(project && project['backlogProjectId']) {
 			reDirect = '/backlog/project-list';

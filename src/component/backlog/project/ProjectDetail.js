@@ -196,7 +196,7 @@ export default function ProjectDetail(props) {
     setTaskStatusChange({});
   }
 
-  const [taskListColumn] = useState([
+  const [taskListColumn, setTaskListColumn] = useState([
     {
       title: "Chủ đề", field: "backlogTask.backlogTaskName",
       defaultSort: 'asc'
@@ -302,6 +302,7 @@ export default function ProjectDetail(props) {
     let formData = new FormData();
     formData.append("taskId", taskId);
     formData.append("newStatus", newStatus);
+    resetStatusChange();
     authPostMultiPart(dispatch, token, "/backlog/update-task-status", formData).then(
       res => {
         if (res.status === 200) {
@@ -640,8 +641,8 @@ export default function ProjectDetail(props) {
                             <FormControl>
                               <InputLabel>Cập nhật trạng thái</InputLabel>
                               <Select
-                                labelId="update-select-select-label"
-                                id="update-status-select"
+                                // labelId="update-select-select-label"
+                                // id="update-status-select"
                                 value={taskStatusChange[rowData.backlogTask.backlogTaskId]}
                                 onChange={(event) => { handleUpdateTaskStatus(event, rowData) }}
                                 style={{ width: '200px' }}

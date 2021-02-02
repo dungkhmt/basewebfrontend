@@ -37,6 +37,10 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
+function checkEmpty(a) {
+  return a === undefined || a === null || a === '' || (Array.isArray(a) && a.length === 0);
+}
+
 export default function EditTask(props) {
   const dispatch = useDispatch();
   const token = useSelector(state => state.auth.token);
@@ -44,7 +48,7 @@ export default function EditTask(props) {
   const history = useHistory();
 
   const [taskDetail, setTaskDetail] = useState({});
-  const [taskAssignment, setTaskAssignment] = useState([]);
+  const [taskAssignment, setTaskAssignment] = useState('');
   const [taskAssignable, setTaskAssignable] = useState([]);
   const [projectMember, setProjectMember] = useState([]);
   const [attachmentFiles, setAttachmentFiles] = useState([]);
@@ -178,35 +182,39 @@ export default function EditTask(props) {
       return;
     }
 
-    let editTaskBody = {
+    let taskInput = {
       ...taskDetail,
       ...{
         attachmentPaths: attachmentFiles.map(e => e.name),
         attachmentStatus: attachmentStatus
       }
     }
-    await authPost(dispatch, token, '/backlog/edit-task', editTaskBody).then(r => r.json());
 
-    let addAssignmentBody = {
+    let assignmentInput = {
       backlogTaskId: backlogTaskId,
-      assignedToPartyId: [taskAssignment],
+      assignedToPartyId: checkEmpty(taskAssignment) ? [] : (Array.isArray(taskAssignment) ? taskAssignment : [taskAssignment]),
       statusId: taskDetail.statusId,
     };
-    await authPost(dispatch, token, '/backlog/add-assignments', addAssignmentBody).then(r => r.json());
 
-    let addAssignableBody = {
+    let assignableInput = {
       backlogTaskId: backlogTaskId,
       assignedToPartyId: taskAssignable,
-      statusId: taskDetail.statusId
     };
-    authPost(dispatch, token, '/backlog/add-assignable', addAssignableBody).then(r => r.json());
 
-    const newFiles = attachmentFiles.filter((file, index) => attachmentStatus[index] === "new");
-    let formData = new FormData();
-    for (const file of newFiles) {
-      formData.append("file", file);
+    let body = {
+      taskInput: taskInput,
+      assignmentInput: assignmentInput,
+      assignableInput: assignableInput,
     }
-    authPostMultiPart(dispatch, token, "/backlog/upload-task-attachment-files/" + backlogTaskId, formData);
+
+    let formData = new FormData();
+    formData.append("inputJson", JSON.stringify(body));
+    const newFiles = attachmentFiles.filter((file, index) => attachmentStatus[index] === "new");
+    for (const file of newFiles) {
+      formData.append("files", file);
+    }
+    console.log(JSON.stringify(body));
+    authPostMultiPart(dispatch, token, "/backlog/edit-task", formData);
 
     history.push("/backlog/project/" + backlogProjectId);
   }
