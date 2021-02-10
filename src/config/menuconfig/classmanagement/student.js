@@ -21,5 +21,13 @@ export const eduLearningManagement = {
       text: "Danh sách lớp",
       child: [],
     },
+    {
+      id: "MENU_EDUCATION_ASSIGNMENT_EXECUTION",
+      path: "/edu/student/contestprogramming",
+      isPublic: true,
+      icon: null,
+      text: "Programming Contest",
+      child: [],
+    },
   ],
 };
