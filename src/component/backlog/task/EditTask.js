@@ -19,6 +19,10 @@ import AlertDialog from '../AlertDialog';
 import {
   TASK_STATUS, TASK_PRIORITY, TASK_CATEGORY
 } from '../BacklogConfig';
+import randomColor from "randomcolor";
+import UserItem from '../components/UserItem';
+
+const avtColor = [...Array(20)].map((value, index) => randomColor({ luminosity: "light", hue: "random", }));
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -33,6 +37,10 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
+function checkEmpty(a) {
+  return a === undefined || a === null || a === '' || (Array.isArray(a) && a.length === 0);
+}
+
 export default function EditTask(props) {
   const dispatch = useDispatch();
   const token = useSelector(state => state.auth.token);
@@ -40,7 +48,7 @@ export default function EditTask(props) {
   const history = useHistory();
 
   const [taskDetail, setTaskDetail] = useState({});
-  const [taskAssignment, setTaskAssignment] = useState([]);
+  const [taskAssignment, setTaskAssignment] = useState('');
   const [taskAssignable, setTaskAssignable] = useState([]);
   const [projectMember, setProjectMember] = useState([]);
   const [attachmentFiles, setAttachmentFiles] = useState([]);
@@ -174,35 +182,39 @@ export default function EditTask(props) {
       return;
     }
 
-    let editTaskBody = {
+    let taskInput = {
       ...taskDetail,
       ...{
         attachmentPaths: attachmentFiles.map(e => e.name),
         attachmentStatus: attachmentStatus
       }
     }
-    await authPost(dispatch, token, '/backlog/edit-task', editTaskBody).then(r => r.json());
 
-    let addAssignmentBody = {
+    let assignmentInput = {
       backlogTaskId: backlogTaskId,
-      assignedToPartyId: [taskAssignment],
+      assignedToPartyId: checkEmpty(taskAssignment) ? [] : (Array.isArray(taskAssignment) ? taskAssignment : [taskAssignment]),
       statusId: taskDetail.statusId,
     };
-    await authPost(dispatch, token, '/backlog/add-assignments', addAssignmentBody).then(r => r.json());
 
-    let addAssignableBody = {
+    let assignableInput = {
       backlogTaskId: backlogTaskId,
       assignedToPartyId: taskAssignable,
-      statusId: taskDetail.statusId
     };
-    authPost(dispatch, token, '/backlog/add-assignable', addAssignableBody).then(r => r.json());
 
-    const newFiles = attachmentFiles.filter((file, index) => attachmentStatus[index] === "new");
-    let formData = new FormData();
-    for (const file of newFiles) {
-      formData.append("file", file);
+    let body = {
+      taskInput: taskInput,
+      assignmentInput: assignmentInput,
+      assignableInput: assignableInput,
     }
-    authPostMultiPart(dispatch, token, "/backlog/upload-task-attachment-files/" + backlogTaskId, formData);
+
+    let formData = new FormData();
+    formData.append("inputJson", JSON.stringify(body));
+    const newFiles = attachmentFiles.filter((file, index) => attachmentStatus[index] === "new");
+    for (const file of newFiles) {
+      formData.append("files", file);
+    }
+    console.log(JSON.stringify(body));
+    authPostMultiPart(dispatch, token, "/backlog/edit-task", formData);
 
     history.push("/backlog/project/" + backlogProjectId);
   }
@@ -336,9 +348,13 @@ export default function EditTask(props) {
               <MenuItem key='' value=''>
                 &nbsp;
               </MenuItem>
-              {projectMember.map((item) => (
+              {projectMember.map((item, index) => (
                 <MenuItem key={item.partyId} value={item.partyId} >
-                  {item.userLoginId}
+                  <UserItem
+                    user={item}
+                    avatarColor={avtColor[index % avtColor.length]}
+                  />
+                  {/* {item.userLoginId} */}
                 </MenuItem>
               ))}
             </TextField>
@@ -357,10 +373,14 @@ export default function EditTask(props) {
               fullWidth
               label="Người có thể thực hiện"
             >
-              {projectMember.map((item) => (
+              {projectMember.map((item, index) => (
                 <MenuItem key={item.partyId} value={item.partyId}>
                   <Checkbox checked={taskAssignable.includes(item.partyId)} />
-                  <ListItemText primary={item.userLoginId} />
+                  <UserItem
+                    user={item}
+                    avatarColor={avtColor[index % avtColor.length]}
+                  />
+                  {/* <ListItemText primary={item.userLoginId} /> */}
                 </MenuItem>
               ))}
             </TextField>

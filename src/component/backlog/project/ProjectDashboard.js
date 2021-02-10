@@ -69,6 +69,13 @@ const taskCounterOpt = {
       top: 10,
       bottom: 10
     }
+  },
+  plugins: {
+    datalabels: {
+      display: function (context) {
+        return context.dataset.data[context.dataIndex] !== 0;
+      }
+    }
   }
 }
 
@@ -91,7 +98,6 @@ export default function ProjectDashboard(props) {
   const taskCounterOption = taskCounterOpt;
   const ganttToolbarConfig = ganttToolbar;
   const [taskCounter, setTaskCounter] = useState([]);
-  const [ganttData, setGanttData] = useState([]);
   const [ganttConfig, setGanttConfig] = useState({});
   const [isPermissive, setIsPermissive] = useState(true);
   const [project, setProject] = useState({});
@@ -113,12 +119,12 @@ export default function ProjectDashboard(props) {
     );
     authGet(dispatch, token, "/backlog/get-project-detail/" + backlogProjectId).then(
       res => {
-        setTaskList(res);
+        // setTaskList(res);
 
         // task counter data
         let [taskOpen, taskInprogress, taskResolved] = [0, 0, 0];
         res.forEach(task => {
-          switch (task.backlogTask.statusId) {
+          switch (task.statusId) {
             case "TASK_OPEN":
               taskOpen++;
               break;
@@ -158,17 +164,17 @@ export default function ProjectDashboard(props) {
         setTaskCounter(data);
 
         // gantt data
-        let gantt = [
-        ];
+        let gantt = [];
         res.forEach(task => {
+          const t = task;
           gantt.push({
-            id: task.backlogTask.backlogTaskId,
-            name: task.backlogTask.backlogTaskName,
+            id: t.backlogTaskId,
+            name: t.backlogTaskName,
             activities: [{
-              id: task.backlogTask.backlogTaskId,
-              name: task.backlogTask.backlogTaskName,
-              start: new Date(task.backlogTask.fromDate).getTime(),
-              end: new Date(task.backlogTask.dueDate).getTime()
+              id: t.backlogTaskId,
+              name: t.backlogTaskName,
+              start: new Date(t.fromDate).getTime(),
+              end: new Date(t.dueDate).getTime()
             }]
           })
         });

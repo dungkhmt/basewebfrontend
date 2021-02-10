@@ -1,7 +1,7 @@
 import DateFnsUtils from "@date-io/date-fns";
 import {
   Button, Card, CardActions, CardContent, TextField, Typography,
-  MenuItem, Checkbox, ListItemText
+  MenuItem, Checkbox, 
 } from "@material-ui/core/";
 import { makeStyles } from "@material-ui/core/styles";
 import {
@@ -16,7 +16,11 @@ import { DropzoneArea } from "material-ui-dropzone";
 import {
   TASK_STATUS, TASK_PRIORITY, TASK_CATEGORY
 } from '../BacklogConfig';
+import randomColor from "randomcolor";
 import AlertDialog from '../AlertDialog';
+import UserItem from '../components/UserItem';
+
+const avtColor = [...Array(20)].map((value, index) => randomColor({ luminosity: "light", hue: "random", }));
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -34,6 +38,10 @@ const useStyles = makeStyles((theme) => ({
     height: '40px',
   }
 }));
+
+function checkEmpty(a) {
+  return a === undefined || a === null || a === '' || (Array.isArray(a) && a.length === 0);
+}
 
 export default function CreateTask(props) {
   const dispatch = useDispatch();
@@ -119,12 +127,7 @@ export default function CreateTask(props) {
       return;
     }
 
-    let formData = new FormData();
-    for (const file of attachmentFiles) {
-      formData.append("file", file);
-    }
-
-    let addTaskBody = {
+    let taskInput = {
       backlogTaskName: taskName,
       categoryId: taskType,
       backlogDescription: taskDescription,
@@ -135,23 +138,25 @@ export default function CreateTask(props) {
       dueDate: taskDueDate,
       attachmentPaths: attachmentFiles.map(e => e.name)
     };
-    console.log(addTaskBody);
-    let task = await authPost(dispatch, token, '/backlog/add-task', addTaskBody).then(r => r.json());
-
-    let addAssignmentBody = {
-      backlogTaskId: task.backlogTaskId,
-      assignedToPartyId: [taskAssignment],
+    let assignmentInput = {
+      assignedToPartyId: checkEmpty(taskAssignment) ? [] : [taskAssignment],
       statusId: taskStatus
     };
-    authPost(dispatch, token, '/backlog/add-assignments', addAssignmentBody).then(r => r.json());
-
-    let addAssignableBody = {
-      backlogTaskId: task.backlogTaskId,
+    let assignableInput = {
       assignedToPartyId: taskAssignable,
-      statusId: taskStatus
     };
-    authPost(dispatch, token, '/backlog/add-assignable', addAssignableBody).then(r => r.json());
-    let responseMessage = authPostMultiPart(dispatch, token, "/backlog/upload-task-attachment-files/" + task.backlogTaskId, formData);
+    let body = {
+      taskInput: taskInput,
+      assignmentInput: assignmentInput,
+      assignableInput: assignableInput,
+    }
+    let formData = new FormData();
+    formData.append("inputJson", JSON.stringify(body));
+    for (const file of attachmentFiles) {
+      formData.append("files", file);
+    }
+
+    authPostMultiPart(dispatch, token, "/backlog/create-task", formData);
 
     history.push("/backlog/project/" + backlogProjectId);
   }
@@ -287,9 +292,12 @@ export default function CreateTask(props) {
               <MenuItem key='' value=''>
                 &nbsp;
               </MenuItem>
-              {projectMember.map((item) => (
+              {projectMember.map((item, index) => (
                 <MenuItem key={item.partyId} value={item.partyId}>
-                  {item.userLoginId}
+                  <UserItem
+                    user={item}
+                    avatarColor={avtColor[index % avtColor.length]}
+                  />
                 </MenuItem>
               ))}
             </TextField>
@@ -308,10 +316,14 @@ export default function CreateTask(props) {
               fullWidth
               label="Người có thể thực hiện"
             >
-              {projectMember.map((item) => (
+              {projectMember.map((item, index) => (
                 <MenuItem key={item.partyId} value={item.partyId}>
                   <Checkbox checked={taskAssignable.includes(item.partyId)} />
-                  <ListItemText primary={item.userLoginId} />
+                  <UserItem
+                    user={item}
+                    avatarColor={avtColor[index % avtColor.length]}
+                  />
+                  {/* <ListItemText primary={item.userLoginId} /> */}
                 </MenuItem>
               ))}
             </TextField>
@@ -332,7 +344,7 @@ export default function CreateTask(props) {
               dropzoneText="Kéo và thả tệp vào đây hoặc nhấn để chọn tệp"
               previewText="Xem trước:"
               previewChipProps={
-                { variant: "outlined", color: "primary", size: "large", }
+                { variant: "outlined", color: "primary", size: "medium", }
               }
               getFileAddedMessage={(fileName) =>
                 `Tệp ${fileName} tải lên thành công`
