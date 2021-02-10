@@ -341,6 +341,14 @@ Upload file
 $ curl --header "Content-Type: multipart/form-data" -v POST http://localhost:8080/api/class/exercises/upload -u admin:123 -F "file=@package.json"
 
 
+curl --header "Content-Type: multipart/form-data" -v POST http://localhost:8080/api/edu/programsubmission/upload -u admin:123 -F "file=@package.json"
+
+-----------
+Submit program contest
+
+curl --header "Content-Type: multipart/form-data" -v POST http://localhost:8080/api/upload-program -u admin:sscm@123456 -F "file=@add.py"
+
+ 
 ------------
 MAINTENANCE
 Xóa dữ liệu hoạt động
@@ -468,4 +476,10 @@ curl --header "Content-Type: application/json" -v GET http://localhost:8080/api/
 Education
 curl --header "Content-Type: application/json" -v GET http://localhost:8080/api/edu/class/get-all-semesters -u admin:sscm@123456
 
+curl --header "Content-Type: application/json" -v GET http://localhost:8080/api/edu/class/get-all-courses -u admin:sscm@123456
+
+curl --header "Content-Type: application/json" -v GET http://localhost:8080/api/edu/class/get-all-departments -u admin:sscm@123456
+
+add a class
+curl --header "Content-Type: application/json" -v POST http://localhost:8080/api/edu/class/add -u admin:sscm@123456 -d '{"classCode":"123456","departmentId":"KCNTT","semesterId":"20201","courseId":"IT3052E"}'
 ------------------------------

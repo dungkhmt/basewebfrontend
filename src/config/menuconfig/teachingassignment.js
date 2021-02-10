@@ -78,5 +78,13 @@ export const teachingassignment = {
       text: "DS lớp giảng viên",
       child: [],
     },
+    {
+      id: "MENU_EDUCATION_ASSIGNMENT_EXECUTION",
+      path: "/edu/student/contestprogramming",
+      isPublic: false,
+      icon: null,
+      text: "Programming Contest",
+      child: [],
+    },
   ],
 };

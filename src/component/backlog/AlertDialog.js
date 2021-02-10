@@ -38,8 +38,8 @@ export default function AlertDialog(props) {
         </DialogContentText>
       </DialogContent>
       <DialogActions>
-        {buttons.map((btn) => {
-          return <Button {...btn}>{btn.text}</Button>;
+        {buttons.map((btn, index) => {
+          return <Button {...btn} key={index}>{btn.text}</Button>;
         })}
       </DialogActions>
     </Dialog>

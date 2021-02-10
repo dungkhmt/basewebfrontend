@@ -36,7 +36,6 @@ const SalemanRoute = lazy(() => import("./SalemanRoute"));
 const InventoryRoute = lazy(() => import("./InventoryRoute"));
 const FacilityRoute = lazy(() => import("./FacilityRoute"));
 const GeoRoute = lazy(() => import("./GeoRoute"));
-
 const TrackLocationRoute = lazy(() => import("./TrackLocationRoute"));
 const OrderRoute = lazy(() => import("./OrderRoute"));
 const DeliveryPlanRoute = lazy(() => import("./DeliveryPlanRoute"));
@@ -44,7 +43,6 @@ const VehicleDeliveryPlanRoute = lazy(() =>
   import("./VehicleDeliveryPlanRoute")
 );
 const UserLoginRoute = lazy(() => import("./UserLoginRoute"));
-
 const PaymentGroupRoute = lazy(() => import("./PaymentGroupRoute"));
 const ProductGroupRoute = lazy(() => import("./ProductGroupRoute"));
 const ShipmentGroupRoute = lazy(() => import("./ShipmentGroupRoute"));
@@ -58,20 +56,25 @@ const DriverGroupRoute = lazy(() => import("./DriverGroupRoute"));
 const ConfigGroupRoute = lazy(() => import("./ConfigGroupRoute"));
 const InvoiceGroupRoute = lazy(() => import("./InvoiceGroupRoute"));
 const SalesGroupRoute = lazy(() => import("./SalesGroupRoute"));
-
 const BacklogRoute = lazy(() => import("./BacklogRoute"));
-
 const ScheduleRoute = lazy(() => import("./ScheduleRoute"));
+
 function MainAppRoute(props) {
   const location = useLocation();
   const dispatch = useDispatch();
+
   useEffect(() => {
-    if (location.pathname === "/" || location.pathname === "")
+    if (location.pathname === "/" || location.pathname === "") {
       dispatch(updateSelectedFuction(null));
+    }
+
     let selectedFunction = mapPathMenu.get(location.pathname);
-    if (selectedFunction !== undefined && selectedFunction !== null)
+
+    if (selectedFunction) {
       dispatch(updateSelectedFuction(selectedFunction));
+    }
   }, [location]);
+
   return (
     <Layout>
       <Suspense fallback={<BouncingBallsLoader />}>
@@ -91,8 +94,7 @@ function MainAppRoute(props) {
             layout={Layout}
             path="/lake"
           />
-          
-          
+
           <PrivateRoute
             component={ShipmentItemDeliveryPlanRoute}
             path="/shipment-item-delivery-plan"
@@ -252,7 +254,7 @@ function MainAppRoute(props) {
           />
 
           {/* <Route component={error} path="*" /> */}
-          <Route component={NotFound }/>
+          <Route component={NotFound} />
         </Switch>
       </Suspense>
     </Layout>
