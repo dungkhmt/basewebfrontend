@@ -34,6 +34,7 @@ export const authPost = (dispatch, token, url, body) => {
   );
 };
 export const authPostMultiPart = (dispatch, token, url, body) => {
+  /*
   return fetch(API_URL + url, {
     method: "POST",
     headers: {
@@ -41,6 +42,36 @@ export const authPostMultiPart = (dispatch, token, url, body) => {
     },
     body: body,
   });
+  */
+
+ return fetch(API_URL + url, {
+  method: "POST",
+  headers: {
+    "X-Auth-Token": token,
+  },
+  body: body,
+}).then(
+  (res) => {
+    if (!res.ok) {
+      if (res.status === 401) {
+        dispatch(failed());
+        throw Error("Unauthorized");
+      }
+      else {
+        console.log(res)
+        try { res.json().then(res1 => console.log(res1)) }
+        catch (err) { }
+        throw Error();
+      }
+      return null;
+    }
+    return res.json();
+  },
+  (error) => {
+    console.log(error);
+  }
+);
+
 };
 export const authPut = (dispatch, token, url, body) => {
   return fetch(API_URL + url, {

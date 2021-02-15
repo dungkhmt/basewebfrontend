@@ -21,6 +21,10 @@ import SClassList from "../views/Education/ClassManagement/Student/SClassList";
 import SAssignmentDetail from "../views/Education/ClassManagement/Student/SAssignmentDetail";
 import CreateAssignment from "../views/Education/ClassManagement/Teacher/CreateAssignment";
 import ProgrammingContest from "../component/education/programmingcontest/ProgrammingContest";
+import ManagementProgrammingContest from "../component/education/programmingcontest/ManagementProgrammingContest";
+import CreateContestProblem from "../component/education/programmingcontest/CreateContestProblem";
+import ContestProblemDetail from "../component/education/programmingcontest/ContestProblemDetail";
+
 import NotFound from "../views/errors/NotFound";
 
 export default function EduRoute() {
@@ -66,6 +70,12 @@ export default function EduRoute() {
         <Route component={SClassDetail} path={`${path}/student/class/:id`} exact/>
 
         <Route component={TClassList} path={`${path}/teacher/class/list`} exact/>
+        
+        <Route component={ManagementProgrammingContest} path={`${path}/management/contestprogramming`} exact/>
+
+        <Route component={CreateContestProblem} path={`${path}/management/create-contest-problem`} exact/>
+
+        <Route component={ContestProblemDetail} path={`${path}/contest-problem/detail/:problemId`} exact/>
 
         <Route
           component={CreateAssignment}
