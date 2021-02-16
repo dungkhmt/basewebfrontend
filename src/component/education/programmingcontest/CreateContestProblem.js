@@ -13,7 +13,10 @@ import { useHistory } from "react-router-dom";
 import { authPost, authGet } from "../../../api";
 import { useDispatch, useSelector } from "react-redux";
 import AlertDialog from '../../common/AlertDialog';
+import { Editor } from "react-draft-wysiwyg";
+import { ContentState, convertToRaw, EditorState } from "draft-js";
 
+import draftToHtml from "draftjs-to-html";
 const useStyles = makeStyles((theme) => ({
 	root: {
 		padding: theme.spacing(4),
@@ -32,6 +35,16 @@ const useStyles = makeStyles((theme) => ({
 
 let reDirect = null;
 
+const editorStyle = {
+	toolbar: {
+	  background: "#90caf9",
+	},
+	editor: {
+	  border: "1px solid black",
+	  minHeight: "300px",
+	},
+  };
+
 function CreateContestProblem(){
     const dispatch = useDispatch();
     const token = useSelector(state => state.auth.token);
@@ -47,6 +60,8 @@ function CreateContestProblem(){
 	const [openAlert, setOpenAlert] = useState(false);
 	const history = useHistory();
 
+	const [editorState, setEditorState] = useState(EditorState.createEmpty());
+
 	const handleCloseAlert = () => {
 		setOpenAlert(false);
 	}
@@ -57,10 +72,20 @@ function CreateContestProblem(){
 			history.push(reDirect);
 		}
 	}
+	const onChangeEditorState = (editorState) => {
+    	setEditorState(editorState);
+  	};
 
     async function handleSubmit() {
-        console.log("handleSubmit");
-        let body = {problemId,problemName,problemStatement};
+		let statement = draftToHtml(convertToRaw(editorState.getCurrentContent()));
+        //setProblemStatement(statement);
+		//console.log("handleSubmit problem statement = " + problemStatement);
+        
+		let body = {problemId:problemId,
+			problemName: problemName,
+			problemStatement: statement
+		};
+		//let body = {problemId,problemName,statement};
         let contestProblem = await authPost(dispatch, token, '/create-contest-problem', body);
         console.log('return contest problem ',contestProblem);
         
@@ -110,6 +135,13 @@ function CreateContestProblem(){
 									setProblemStatement(event.target.value);
 								}}
 							/>
+							<Editor
+                    			editorState={editorState}
+                    			handlePastedText={() => false}
+                    			onEditorStateChange={onChangeEditorState}
+                    			toolbarStyle={editorStyle.toolbar}
+                    			editorStyle={editorStyle.editor}
+                  			/>
 						</div>
                         
 					</form>

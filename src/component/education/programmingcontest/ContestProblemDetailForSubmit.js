@@ -8,7 +8,8 @@ import {
   import { useDispatch, useSelector } from "react-redux";
   import { useParams } from "react-router";
   import MaterialTable from "material-table";
-
+  import parse from "html-react-parser";
+  
 function ContestProblemDetailForSubmit(props){
     const params = useParams();
     const problemId = params.problemId;
@@ -18,7 +19,8 @@ function ContestProblemDetailForSubmit(props){
 
     const [selectedFile, setSelectedFile] = useState(null);
     const [rows, setRows] = useState([]);
-
+    const [problem, setProblem] = useState(null);
+    const [problemStatement, setProblemStatement] = useState(null);
     const columns = [
         {field: 'test', title: 'Test'},
         {field: 'output', title: 'Result'}
@@ -44,9 +46,22 @@ function ContestProblemDetailForSubmit(props){
         );
         
     }
+    async function getContestProblem(){
+        let res = await authGet(dispatch, token, '/get-contest-problem/' + problemId);
+        setProblem(res);
+        console.log(res);
+        setProblemStatement(parse(res.problemStatement));
+    }
+    useEffect(() => {
+        getContestProblem();
+    }, []);
+
     return(
         <Card>
             <CardContent>
+            <div>
+                {problemStatement}
+            </div>    
             <input type="file" onChange={onFileChange} />
             <Button variant="contained"
                 color="primary"
