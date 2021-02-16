@@ -7,6 +7,7 @@ import {
   import { authPost, authGet, authPostMultiPart } from "../../../api";
   import { useDispatch, useSelector } from "react-redux";
   import { useParams } from "react-router";
+  import MaterialTable from "material-table";
 
 function ContestProblemDetail(props){
     const params = useParams();
@@ -19,6 +20,15 @@ function ContestProblemDetail(props){
     const [selectedOutputFile, setSelectedOutputFile] = useState(null);
     const [testName, setTestName] = useState(null);
     const [testPoint, setTestPoint] = useState(null);
+
+    const [problemTests, setProblemTests] = useState([]);
+
+    const columns = [
+        { title: 'ID bài tập', field: 'problemId'           
+        },
+        { title: 'Tên Test', field: 'problemTestFilename' },
+        { title: 'Điểm', field: 'problemTestPoint' },
+      ];
 
     function onUpload(){
         let body = {
@@ -39,6 +49,8 @@ function ContestProblemDetail(props){
             }
         );
 
+        //getProblemTests();
+        history.push("" + problemId);    
     }
     function onInputFileChange(event){
         setSelectedInputFile(event.target.files[0]);
@@ -47,6 +59,14 @@ function ContestProblemDetail(props){
         setSelectedOutputFile(event.target.files[0]);
     }
     
+    async function getProblemTests(){
+        let problemTestList = await authGet(dispatch, token, '/get-contest-problem-test-list/' + problemId);
+        setProblemTests(problemTestList);
+        console.log('getProblemTests, GOT ',problemTestList);
+    }
+    useEffect(() => {
+        getProblemTests();
+    },[]);
     return(
         <Card>
             <CardContent>
@@ -100,6 +120,14 @@ function ContestProblemDetail(props){
                 Hủy
             </Button>
             </form>
+
+            <MaterialTable
+                title={"Danh sách Test"}
+                columns={columns}
+                data = {problemTests}
+                
+            />
+
             </CardContent>
         </Card>
     );

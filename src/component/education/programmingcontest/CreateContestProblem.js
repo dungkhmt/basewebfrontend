@@ -89,6 +89,7 @@ function CreateContestProblem(){
         let contestProblem = await authPost(dispatch, token, '/create-contest-problem', body);
         console.log('return contest problem ',contestProblem);
         
+		history.push("contestprogramming");
     }
     
     return(
