@@ -4,59 +4,47 @@ import {useDispatch, useSelector} from "react-redux";
 import {API_URL} from "../../../config/config";
 import {Link} from "react-router-dom";
 import { authPost, authGet, authPostMultiPart } from "../../../api";
-
+import { useHistory } from "react-router-dom";
+import { CardContent, Tooltip, IconButton, BarChartIcon } from "@material-ui/core";
+import AddIcon from '@material-ui/icons/Add';
 
 function ProgrammingContest(){
     const dispatch = useDispatch();
     const token = useSelector(state => state.auth.token);
-    const [selectedFile, setSelectedFile] = useState(null);
-    const [rows, setRows] = useState([]);
+    const history = useHistory();
+    const [problems, setProblems] = useState([]);
 
     const columns = [
-        {field: 'test', title: 'Test'},
-        {field: 'output', title: 'Result'}
+        { title: 'ID bài tập', field: 'problemId', 
+          render: rowData => (
+            <Link to={"/edu/contest-problem/detail/submit/" + rowData["problemId"]}>
+            {rowData["problemId"]}
+            </Link>
+          )
+        },
+        { title: 'Tên bài tập', field: 'problemName' },
+        { title: 'Mô tả', field: 'problemStatement' },
       ];
 
-    function onFileChange(event){
-        setSelectedFile(event.target.files[0]);
-        console.log(event.target.files[0].name);
+    async function getContestProblemList(){
+        let problemList = await authGet(dispatch, token, '/contest-problem-list');
+        setProblems(problemList);
+        console.log(problemList);
     }
-    function onFileUpload(){
-        console.log("upload file " + selectedFile.name);
-        let body = {
-            problemId:"ADD"
-        }
-        let formData = new FormData();
-        formData.append("inputJson",JSON.stringify(body));
-        formData.append("file",selectedFile);
-        authPostMultiPart(dispatch, token, "/upload-program", formData).then(
-            res => {
-                console.log('result submit = ',res);
-                setRows(res.items);
-            }
-        );
-        
-    }
+    useEffect(() => {
+        getContestProblemList();
+      }, []);
+    
     return(
         <div>
-            
-            <select>
-            <option value="Ford">Ford</option>
-            <option value="Volvo" selected>Volvo</option>
-            <option value="Fiat">Fiat</option>
-            </select>
-
-            <input type="file" onChange={onFileChange} />
-                <button onClick={onFileUpload}>
-                  Upload!
-                </button>
-            <div>
-            <MaterialTable
-                options={{search: true}} title={"Kết quả"}
+            <CardContent>
+                <MaterialTable
+                title={"Danh sách Bài"}
                 columns={columns}
-                data={rows}
-            />
-            </div>    
+                data = {problems}
+                
+                />
+            </CardContent>
         </div>
     );
 }
