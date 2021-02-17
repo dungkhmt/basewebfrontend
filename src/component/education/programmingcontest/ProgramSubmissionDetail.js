@@ -7,6 +7,8 @@ import { authPost, authGet, authPostMultiPart } from "../../../api";
 import { useHistory } from "react-router-dom";
 import { CardContent, Tooltip, IconButton, BarChartIcon } from "@material-ui/core";
 import { useParams } from "react-router";
+import NewLineText from "./NewLineText";
+
 function ProgramSubmissionDetail(){
     const params = useParams();
     const contestProgramSubmissionId = params.contestProgramSubmissionId;
@@ -28,9 +30,9 @@ function ProgramSubmissionDetail(){
     return (
 
             <CardContent>
-                {programCode.split("\n").map((i,key) => {
-                    return <div key={key}>{i}</div>;
-                })}
+                        <NewLineText 
+                            text = {programCode}
+                        />
             </CardContent>
 
     );
