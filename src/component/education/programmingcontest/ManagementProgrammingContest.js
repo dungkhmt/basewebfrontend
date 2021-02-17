@@ -13,6 +13,26 @@ function ManagementProgrammingContest(){
     const token = useSelector(state => state.auth.token);
     const history = useHistory();
     const [problems, setProblems] = useState([]);
+    const [programSubmissions, setProgramSubmissions] = useState([]);
+
+    const columnSubmissions = [
+      { title: 'ID bài tập', field: 'problemId', 
+        render: rowData => (
+          <Link to={"/edu/contest-problem/detail/" + rowData["problemId"]}>
+          {rowData["problemId"]}
+          </Link>
+        )
+      },
+      { title: 'Tên bài tập', field: 'problemName' },
+      { title: 'Người nộp', field: 'submittedByUserLoginId' },
+      { title: 'ID', field: 'contestProgramSubmissionId', 
+        render: rowData => (
+          <Link to={"/edu/contest-program-submission/detail/" + rowData["contestProgramSubmissionId"]}>
+          {rowData["contestProgramSubmissionId"]}
+          </Link>
+        )
+      },
+    ];
 
     const columns = [
         { title: 'ID bài tập', field: 'problemId', 
@@ -31,13 +51,26 @@ function ManagementProgrammingContest(){
         setProblems(problemList);
         console.log(problemList);
     }
+    async function getContestProgramSubmissionList(){
+      let submissions = await authGet(dispatch, token, '/get-all-contest-program-submissions');
+      setProgramSubmissions(submissions);
+      
+  }
+
     useEffect(() => {
         getContestProblemList();
+        getContestProgramSubmissionList();
       }, []);
     
     return(
         <div>
             <CardContent>
+                <MaterialTable
+                title={"Danh sách Bài nộp"}
+                columns={columnSubmissions}
+                data = {programSubmissions}    
+                />  
+
                 <MaterialTable
                 title={"Danh sách Bài"}
                 columns={columns}
