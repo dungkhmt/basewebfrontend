@@ -31,6 +31,10 @@ function ContestProblemDetailForSubmit(props){
         console.log(event.target.files[0].name);
     }
     function onFileUpload(){
+        if(selectedFile == null){
+            alert('You must select a file');
+            return;
+        }
         console.log("upload file " + selectedFile.name);
         let body = {
             problemId:problemId
@@ -41,7 +45,14 @@ function ContestProblemDetailForSubmit(props){
         authPostMultiPart(dispatch, token, "/upload-program", formData).then(
             res => {
                 console.log('result submit = ',res);
-                setRows(res.items);
+                if(res != undefined)
+                    setRows(res.items);
+                else{
+                    alert('You should re-submit again');
+                }    
+                var f = document.getElementById('selected-upload-file');
+                f.value = null;
+                setSelectedFile(null);
             }
         );
         
@@ -62,7 +73,7 @@ function ContestProblemDetailForSubmit(props){
             <div>
                 {problemStatement}
             </div>    
-            <input type="file" onChange={onFileChange} />
+            <input type="file" id = 'selected-upload-file' onChange={onFileChange} />
             <Button variant="contained"
                 color="primary"
                 style={{ marginLeft: "45px" }}
