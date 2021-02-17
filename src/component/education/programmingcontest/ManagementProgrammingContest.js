@@ -25,6 +25,7 @@ function ManagementProgrammingContest(){
       },
       { title: 'Tên bài tập', field: 'problemName' },
       { title: 'Người nộp', field: 'submittedByUserLoginId' },
+      { title: 'Thời gian nộp', field: 'createdStamp' },      
       { title: 'ID', field: 'contestProgramSubmissionId', 
         render: rowData => (
           <Link to={"/edu/contest-program-submission/detail/" + rowData["contestProgramSubmissionId"]}>
