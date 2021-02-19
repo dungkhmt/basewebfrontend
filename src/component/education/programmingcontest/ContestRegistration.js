@@ -15,7 +15,7 @@ import { useDispatch, useSelector } from "react-redux";
 import AlertDialog from '../../common/AlertDialog';
 import { Editor } from "react-draft-wysiwyg";
 import { ContentState, convertToRaw, EditorState } from "draft-js";
-
+import { useParams } from "react-router";
 import draftToHtml from "draftjs-to-html";
 const useStyles = makeStyles((theme) => ({
 	root: {
@@ -45,13 +45,14 @@ const editorStyle = {
 	},
   };
 
-function CreateContestProblem(){
+function ContestRegistration(){
+    const params = useParams();
+    const contestId = params.contestId;
+
     const dispatch = useDispatch();
     const token = useSelector(state => state.auth.token);
     const classes = useStyles();
-    const [problemId, setProblemId] = useState(null);
-    const [problemName, setProblemName] = useState(null);
-    const [problemStatement, setProblemStatement] = useState(null);
+    
     const [alertMessage, setAlertMessage] = useState({
 		title: "Vui lòng nhập đầy đủ thông tin cần thiết",
 		content: "Một số thông tin yêu cầu cần phải được điền đầy đủ. Vui lòng kiểm tra lại."
@@ -77,17 +78,12 @@ function CreateContestProblem(){
   	};
 
     async function handleSubmit() {
-		let statement = draftToHtml(convertToRaw(editorState.getCurrentContent()));
-        //setProblemStatement(statement);
-		//console.log("handleSubmit problem statement = " + problemStatement);
-        
-		let body = {problemId:problemId,
-			problemName: problemName,
-			problemStatement: statement
+		
+		let body = {contestId:contestId
 		};
 		//let body = {problemId,problemName,statement};
-        let contestProblem = await authPost(dispatch, token, '/create-contest-problem', body);
-        console.log('return contest problem ',contestProblem);
+        let contest = await authPost(dispatch, token, '/register-programming-contest', body);
+        console.log('return contest registration  ',contest);
         
 		history.push("contestprogramming");
     }
@@ -97,55 +93,9 @@ function CreateContestProblem(){
 			<Card>
 				<CardContent>
 					<Typography variant="h5" component="h2">
-						Tạo bài tập
+						Đăng ký Join vào Contest
           </Typography>
-					<form className={classes.root} noValidate autoComplete="off">
-						<div>
-							<TextField
-								autoFocus
-								required
-								id="problemId"
-								label="Mã bài tập"
-								placeholder="Nhập mã bài tập"
-								value={problemId}
-								onChange={(event) => {
-									setProblemId(event.target.value);
-								}}
-							/>
-						</div>
-						<div>
-							<TextField
-								required
-								id="problemName"
-								label="Tên bài tập"
-								placeholder="Nhập tên bài tập"
-								value={problemName}
-								onChange={(event) => {
-									setProblemName(event.target.value);
-								}}
-							/>
-						</div>
-                        <div>
-							<TextField
-								required
-								id="problemStatement"
-								label="Mô tả bài tập"
-								placeholder="Mô tả bài tập"
-								value={problemStatement}
-								onChange={(event) => {
-									setProblemStatement(event.target.value);
-								}}
-							/>
-							<Editor
-                    			editorState={editorState}
-                    			handlePastedText={() => false}
-                    			onEditorStateChange={onChangeEditorState}
-                    			toolbarStyle={editorStyle.toolbar}
-                    			editorStyle={editorStyle.editor}
-                  			/>
-						</div>
-                        
-					</form>
+					
 				</CardContent>
 				<CardActions>
           <Button
@@ -154,7 +104,7 @@ function CreateContestProblem(){
             style={{ marginLeft: "45px" }}
             onClick={handleSubmit}
           >
-            Lưu
+            Register
           </Button>
           <Button
             variant="contained"
@@ -183,4 +133,4 @@ function CreateContestProblem(){
     );
 }
 
-export default CreateContestProblem;
+export default ContestRegistration;

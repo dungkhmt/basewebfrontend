@@ -23,9 +23,13 @@ import CreateAssignment from "../views/Education/ClassManagement/Teacher/CreateA
 import ProgrammingContest from "../component/education/programmingcontest/ProgrammingContest";
 import ManagementProgrammingContest from "../component/education/programmingcontest/ManagementProgrammingContest";
 import CreateContestProblem from "../component/education/programmingcontest/CreateContestProblem";
+import CreateProgrammingContest from "../component/education/programmingcontest/CreateProgrammingContest";
+
 import ContestProblemDetail from "../component/education/programmingcontest/ContestProblemDetail";
 import ContestProblemDetailForSubmit from "../component/education/programmingcontest/ContestProblemDetailForSubmit";
 import ProgramSubmissionDetail from "../component/education/programmingcontest/ProgramSubmissionDetail";
+import ContestRegistration from "../component/education/programmingcontest/ContestRegistration";
+
 
 import NotFound from "../views/errors/NotFound";
 
@@ -77,11 +81,16 @@ export default function EduRoute() {
 
         <Route component={CreateContestProblem} path={`${path}/management/create-contest-problem`} exact/>
 
+        <Route component={CreateProgrammingContest} path={`${path}/management/create-programming-contest`} exact/>
+
         <Route component={ContestProblemDetail} path={`${path}/contest-problem/detail/:problemId`} exact/>
+
+        <Route component={ContestRegistration} path={`${path}/contest-registration/:contestId`} exact/>
 
         <Route component={ContestProblemDetailForSubmit} path={`${path}/contest-problem/detail/submit/:problemId`} exact/>
 
         <Route component={ProgramSubmissionDetail} path={`${path}/contest-program-submission/detail/:contestProgramSubmissionId`} exact/>
+
 
         <Route
           component={CreateAssignment}

@@ -15,6 +15,9 @@ function ContestProblemDetail(props){
     const dispatch = useDispatch();
     const token = useSelector(state => state.auth.token);
     const history = useHistory();
+    const [problem, setProblem] = useState(null);
+    const [timeLimit, setTimeLimit] = useState(null);
+    const [problemName, setProblemName] = useState(null);
 
     const [selectedInputFile, setSelectedInputFile] = useState(null);
     const [selectedOutputFile, setSelectedOutputFile] = useState(null);
@@ -64,11 +67,81 @@ function ContestProblemDetail(props){
         setProblemTests(problemTestList);
         console.log('getProblemTests, GOT ',problemTestList);
     }
+    async function getContestProblem(){
+        let res = await authGet(dispatch, token, '/get-contest-problem/' + problemId);
+        setProblem(res);
+        console.log(res);
+        setTimeLimit(res.timeLimit);
+        setProblemName(res.problemName);
+        //setProblemStatement(parse(res.problemStatement));
+    }
+    function handleSubmit(){
+        let body = {
+            problemId: problemId,
+            problemName: problemName,
+            timeLimit: timeLimit
+        };
+
+        let formData = new FormData();
+        formData.append("inputJson", JSON.stringify(body));
+        //formData.append("files",selectedInputFile);
+        //formData.append("files",selectedOutputFile);
+
+        authPostMultiPart(dispatch, token, "/update-contest-problem", formData).then(
+            res => {
+                console.log('res = ',res);
+                alert('Update thành công');                
+            }
+        );
+    }
+
     useEffect(() => {
+        getContestProblem();
         getProblemTests();
     },[]);
     return(
         <Card>
+            <CardContent>
+                <form>
+                
+                <TextField
+                  id="problemName"
+                  label="Tên bài"
+                  placeholder="Tên bài"
+                  value={problemName}
+                  multiline={true}
+                  rows="1"
+                  fullWidth
+                  onChange={(event) => {
+                    setProblemName(event.target.value);
+                    }}
+                />
+                
+                <TextField
+                  id="timeLimit"
+                  label="Giới hạn thời gian"
+                  placeholder="Giới hạn thời gian"
+                  value={timeLimit}
+                  multiline={true}
+                  rows="1"
+                  fullWidth
+                  onChange={(event) => {
+                    setTimeLimit(event.target.value);
+                    }}
+                />
+
+                <br></br><br></br>
+                <Button
+                variant="contained"
+                color="primary"
+                style={{ marginLeft: "40px" }}
+                onClick={handleSubmit}
+                >
+                    Lưu
+                </Button>
+                
+            </form>
+            </CardContent>
             <CardContent>
                 <form>
                 <TextField

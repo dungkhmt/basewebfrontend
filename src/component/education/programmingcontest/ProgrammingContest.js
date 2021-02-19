@@ -7,6 +7,7 @@ import { authPost, authGet, authPostMultiPart } from "../../../api";
 import { useHistory } from "react-router-dom";
 import { CardContent, Tooltip, IconButton, BarChartIcon } from "@material-ui/core";
 import AddIcon from '@material-ui/icons/Add';
+import ContestTableForRegistration from "./ContestTableForRegistration";
 
 function ProgrammingContest(){
     const dispatch = useDispatch();
@@ -37,6 +38,7 @@ function ProgrammingContest(){
     
     return(
         <div>
+            <ContestTableForRegistration/>
             <CardContent>
                 <MaterialTable
                 title={"Danh sách Bài"}

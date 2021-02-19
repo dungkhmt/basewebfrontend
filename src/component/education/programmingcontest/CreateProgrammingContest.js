@@ -2,7 +2,7 @@
 import DateFnsUtils from "@date-io/date-fns";
 import Button from "@material-ui/core/Button";
 import {
-	Card, CardActions, CardContent, TextField, Typography
+	Card, CardActions, CardContent, TextField, Typography,MenuItem
 } from "@material-ui/core/";
 import { makeStyles } from "@material-ui/core/styles";
 import {
@@ -45,13 +45,15 @@ const editorStyle = {
 	},
   };
 
-function CreateContestProblem(){
+function CreateProgrammingContest(){
     const dispatch = useDispatch();
     const token = useSelector(state => state.auth.token);
     const classes = useStyles();
-    const [problemId, setProblemId] = useState(null);
-    const [problemName, setProblemName] = useState(null);
-    const [problemStatement, setProblemStatement] = useState(null);
+    const [contestId, setContestId] = useState(null);
+    const [contestName, setContestName] = useState(null);
+	const [contestType, setContestType] = useState(null);
+	const [contestTypeList, setContestTypeList] = useState([]);
+
     const [alertMessage, setAlertMessage] = useState({
 		title: "Vui lòng nhập đầy đủ thông tin cần thiết",
 		content: "Một số thông tin yêu cầu cần phải được điền đầy đủ. Vui lòng kiểm tra lại."
@@ -75,29 +77,35 @@ function CreateContestProblem(){
 	const onChangeEditorState = (editorState) => {
     	setEditorState(editorState);
   	};
-
+	async function getContestTypes(){
+		let lst = await authGet(dispatch, token, '/get-programming-contest-types');
+		setContestTypeList(lst);
+		console.log('type list = ',lst);
+	}  
     async function handleSubmit() {
-		let statement = draftToHtml(convertToRaw(editorState.getCurrentContent()));
-        //setProblemStatement(statement);
-		//console.log("handleSubmit problem statement = " + problemStatement);
-        
-		let body = {problemId:problemId,
-			problemName: problemName,
-			problemStatement: statement
+		
+		let body = {contestId:contestId,
+			contestName: contestName,
+			contestTypeId: contestType
 		};
 		//let body = {problemId,problemName,statement};
-        let contestProblem = await authPost(dispatch, token, '/create-contest-problem', body);
-        console.log('return contest problem ',contestProblem);
+        let contest = await authPost(dispatch, token, '/create-programming-contest', body);
+        console.log('return contest  ',contest);
         
 		history.push("contestprogramming");
     }
     
+	useEffect(() => {
+		getContestTypes();
+		
+		},[]
+	);
     return(
         <MuiPickersUtilsProvider utils={DateFnsUtils}>
 			<Card>
 				<CardContent>
 					<Typography variant="h5" component="h2">
-						Tạo bài tập
+						Tạo Contest
           </Typography>
 					<form className={classes.root} noValidate autoComplete="off">
 						<div>
@@ -105,46 +113,45 @@ function CreateContestProblem(){
 								autoFocus
 								required
 								id="problemId"
-								label="Mã bài tập"
-								placeholder="Nhập mã bài tập"
-								value={problemId}
+								label="Mã Contest"
+								placeholder="Nhập mã contest"
+								value={contestId}
 								onChange={(event) => {
-									setProblemId(event.target.value);
+									setContestId(event.target.value);
 								}}
 							/>
 						</div>
 						<div>
 							<TextField
 								required
-								id="problemName"
-								label="Tên bài tập"
-								placeholder="Nhập tên bài tập"
-								value={problemName}
+								id="contestName"
+								label="Tên contest"
+								placeholder="Nhập tên contest"
+								value={contestName}
 								onChange={(event) => {
-									setProblemName(event.target.value);
+									setContestName(event.target.value);
 								}}
 							/>
 						</div>
-                        <div>
-							<TextField
-								required
-								id="problemStatement"
-								label="Mô tả bài tập"
-								placeholder="Mô tả bài tập"
-								value={problemStatement}
-								onChange={(event) => {
-									setProblemStatement(event.target.value);
-								}}
-							/>
-							<Editor
-                    			editorState={editorState}
-                    			handlePastedText={() => false}
-                    			onEditorStateChange={onChangeEditorState}
-                    			toolbarStyle={editorStyle.toolbar}
-                    			editorStyle={editorStyle.editor}
-                  			/>
-						</div>
-                        
+						<div>
+                        	<TextField
+                				required
+                				id="contestType"
+                				select
+                				label="Loại"
+                				value={contestTypeList === null || contestTypeList === undefined ? '' : contestTypeList}
+                				onChange={(event) => {
+                  					setContestType(event.target.value);
+									  console.log(contestType,event.target.value);
+                				}}
+              				>
+                			{contestTypeList.map((item) => (
+                  				<MenuItem key={item} value={item}>
+                    				{item}
+                  				</MenuItem>
+                			))}
+              				</TextField>
+			  			</div>
 					</form>
 				</CardContent>
 				<CardActions>
@@ -183,4 +190,4 @@ function CreateContestProblem(){
     );
 }
 
-export default CreateContestProblem;
+export default CreateProgrammingContest;

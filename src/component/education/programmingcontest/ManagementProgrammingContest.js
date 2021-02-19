@@ -7,14 +7,20 @@ import { authPost, authGet, authPostMultiPart } from "../../../api";
 import { useHistory } from "react-router-dom";
 import { CardContent, Tooltip, IconButton, BarChartIcon } from "@material-ui/core";
 import AddIcon from '@material-ui/icons/Add';
+import ContestUserProblemTable from "./ContestUserProblemTable";
+import ProgramSubmissionTable from "./ProgramSubmissionTable";
+import ProgrammingContestUserRegistrationTable from "./ProgrammingContestUserRegistrationTable";
+
+import ContestTable from "./ContestTable";
 
 function ManagementProgrammingContest(){
     const dispatch = useDispatch();
     const token = useSelector(state => state.auth.token);
     const history = useHistory();
     const [problems, setProblems] = useState([]);
-    const [programSubmissions, setProgramSubmissions] = useState([]);
+    //const [programSubmissions, setProgramSubmissions] = useState([]);
 
+    /*
     const columnSubmissions = [
       { title: 'ID bài tập', field: 'problemId', 
         render: rowData => (
@@ -34,6 +40,7 @@ function ManagementProgrammingContest(){
         )
       },
     ];
+    */
 
     const columns = [
         { title: 'ID bài tập', field: 'problemId', 
@@ -52,26 +59,31 @@ function ManagementProgrammingContest(){
         setProblems(problemList);
         console.log(problemList);
     }
+    /*
     async function getContestProgramSubmissionList(){
       let submissions = await authGet(dispatch, token, '/get-all-contest-program-submissions');
       setProgramSubmissions(submissions);
-      
-  }
+     
+    }
+    */
 
     useEffect(() => {
         getContestProblemList();
-        getContestProgramSubmissionList();
+        //getContestProgramSubmissionList();
       }, []);
     
     return(
         <div>
-            <CardContent>
-                <MaterialTable
-                title={"Danh sách Bài nộp"}
-                columns={columnSubmissions}
-                data = {programSubmissions}    
-                />  
+            <ContestTable/>
+            <ProgrammingContestUserRegistrationTable/>
+            <ContestUserProblemTable
 
+            />
+            <ProgramSubmissionTable
+            />
+
+            <CardContent>
+            
                 <MaterialTable
                 title={"Danh sách Bài"}
                 columns={columns}
