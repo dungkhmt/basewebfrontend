@@ -83,7 +83,7 @@ function CreateProgrammingContest(){
 		console.log('type list = ',lst);
 	}  
     async function handleSubmit() {
-		
+		console.log('handle submit, contest type = ',contestType);
 		let body = {contestId:contestId,
 			contestName: contestName,
 			contestTypeId: contestType

@@ -47,7 +47,7 @@ function ContestTableForRegistration(){
         <Card>
             <CardContent>
             <MaterialTable
-                title={"Danh sách Contest"}
+                title={"Danh sách Contest để đăng ký"}
                 columns={columns}
                 data = {contests}    
                 

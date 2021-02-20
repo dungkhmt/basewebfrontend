@@ -10,7 +10,7 @@ import {
   import MaterialTable from "material-table";
   import {Link} from "react-router-dom";
   import AddIcon from '@material-ui/icons/Add';
-function ContestTable(){
+function ContestTableForRegistration(){
     const params = useParams();
     const dispatch = useDispatch();
     const token = useSelector(state => state.auth.token);
@@ -19,11 +19,11 @@ function ContestTable(){
 
     const columns = [
         { title: 'ID Contest', field: 'contestId',
-          render: rowData => (
-          <Link to={"/edu/programming-contest-detail/" + rowData["contestId"]}>
-          {rowData["contestId"]}
-          </Link>
-          )
+            render: rowData => (
+                <Link to={"/edu/contest-problem-for-submission/" + rowData["contestId"]}>
+                {rowData["contestId"]}
+                </Link>
+            )
         },
         { title: 'Tên Contest', field: 'contestName' },
         { title: 'Contest Type', field: 'contestTypeId' },
@@ -32,7 +32,7 @@ function ContestTable(){
       ];
 
       async function getContesList(){
-        let lst = await authGet(dispatch, token, '/get-all-programming-contest-list');
+        let lst = await authGet(dispatch, token, '/get-approved-programming-contests-of-user');
         setContests(lst);
         
     }
@@ -47,22 +47,14 @@ function ContestTable(){
         <Card>
             <CardContent>
             <MaterialTable
-                title={"Danh sách Contest"}
+                title={"Danh sách Contest để làm bài"}
                 columns={columns}
                 data = {contests}    
-                actions={[
-                    {
-                      icon: () => { return <AddIcon color='primary' fontSize='large' /> },
-                      tooltip: 'Thêm Contest',
-                      isFreeAction: true,
-                      onClick: () => { history.push('create-programming-contest') }
-                    },
-                  ]}
-
+                
                 />                
             </CardContent>
         </Card>
     );
 }
 
-export default ContestTable;
+export default ContestTableForRegistration;

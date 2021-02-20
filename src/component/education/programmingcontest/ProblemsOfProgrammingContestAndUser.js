@@ -17,6 +17,10 @@ import { Editor } from "react-draft-wysiwyg";
 import { ContentState, convertToRaw, EditorState } from "draft-js";
 import { useParams } from "react-router";
 import draftToHtml from "draftjs-to-html";
+import {Link} from "react-router-dom";
+import AddIcon from '@material-ui/icons/Add';
+import MaterialTable from "material-table";
+
 const useStyles = makeStyles((theme) => ({
 	root: {
 		padding: theme.spacing(4),
@@ -45,14 +49,16 @@ const editorStyle = {
 	},
   };
 
-function ContestRegistration(){
+function ProblemsOfProgrammingContestAndUser(props){
     const params = useParams();
     const contestId = params.contestId;
+    //const contestId = props.contestId;
 
     const dispatch = useDispatch();
     const token = useSelector(state => state.auth.token);
     const classes = useStyles();
-    
+    const [problems, setProblems] = useState([]);
+
     const [alertMessage, setAlertMessage] = useState({
 		title: "Vui lòng nhập đầy đủ thông tin cần thiết",
 		content: "Một số thông tin yêu cầu cần phải được điền đầy đủ. Vui lòng kiểm tra lại."
@@ -61,7 +67,17 @@ function ContestRegistration(){
 	const [openAlert, setOpenAlert] = useState(false);
 	const history = useHistory();
 
-	const [editorState, setEditorState] = useState(EditorState.createEmpty());
+    const columns = [
+        { title: 'ID bài tập', field: 'problemId', 
+          render: rowData => (
+            <Link to={"/edu/contest-problem/detail/submit/" + rowData["problemId"]}>
+            {rowData["problemId"]}
+            </Link>
+          )
+        },
+        { title: 'Tên bài tập', field: 'problemName' },
+        { title: 'Mô tả', field: 'problemStatement' },
+      ];
 
 	const handleCloseAlert = () => {
 		setOpenAlert(false);
@@ -73,9 +89,6 @@ function ContestRegistration(){
 			history.push(reDirect);
 		}
 	}
-	const onChangeEditorState = (editorState) => {
-    	setEditorState(editorState);
-  	};
 
     async function handleSubmit() {
 		
@@ -84,54 +97,23 @@ function ContestRegistration(){
 		//let body = {problemId,problemName,statement};
         let contest = await authPost(dispatch, token, '/register-programming-contest', body);
         console.log('return contest registration  ',contest);
-        alert('FINISHED');
+        
 		history.push("contestprogramming");
-
     }
-    
+    async function getProblemsOfTheProgrammingContest(){
+        let lst = await authGet(dispatch, token, '/get-problems-of-programming-contest-and-user/' + contestId);
+        setProblems(lst);
+    }
+    useEffect(()=>{
+        getProblemsOfTheProgrammingContest();
+    },[]);
     return(
-        <MuiPickersUtilsProvider utils={DateFnsUtils}>
-			<Card>
-				<CardContent>
-					<Typography variant="h5" component="h2">
-						Đăng ký Join vào Contest
-          </Typography>
-					
-				</CardContent>
-				<CardActions>
-          <Button
-            variant="contained"
-            color="primary"
-            style={{ marginLeft: "45px" }}
-            onClick={handleSubmit}
-          >
-            Register
-          </Button>
-          <Button
-            variant="contained"
-            onClick={() => history.push("contestprogramming")}
-          >
-            Hủy
-          </Button>
-        </CardActions>
-			</Card>
-
-			<AlertDialog
-				open={openAlert}
-				onClose={handleCloseAlert}
-				severity={alertSeverity}
-        {...alertMessage}
-        buttons={[
-          {
-            onClick: onClickAlertBtn,
-            color: "primary",
-            autoFocus: true,
-            text: "OK"
-          }
-        ]}
-			/>
-		</MuiPickersUtilsProvider>
+                <MaterialTable
+                title={"Danh sách Bài"}
+                columns={columns}
+                data = {problems}                
+                />
     );
 }
 
-export default ContestRegistration;
+export default ProblemsOfProgrammingContestAndUser;

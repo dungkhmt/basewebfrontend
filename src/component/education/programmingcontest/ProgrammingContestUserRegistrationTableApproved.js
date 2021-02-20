@@ -10,47 +10,23 @@ import {
   import MaterialTable from "material-table";
   import {Link} from "react-router-dom";
   
-function ProgrammingContestUserRegistrationTable(){
+function ProgrammingContestUserRegistrationTableApprove(props){
     const params = useParams();
+    const contestId = props.contestId
     const dispatch = useDispatch();
     const token = useSelector(state => state.auth.token);
     const history = useHistory();
     const [contestUserRegistrations, setContestUserRegistrations] = useState([]);
 
-    async function approve(contestId, userLoginId){
-        //alert('approve ' + contestId + ',' + userLoginId);
-        let body = {
-            contestId:contestId,
-            userLoginId: userLoginId
-		};
-		//let body = {problemId,problemName,statement};
-        let contest = await authPost(dispatch, token, '/approve-programming-contest-registration', body);
-        console.log('return contest registration approve ',contest);
-        alert('FINISHED');
-        
-		history.push("contestprogramming");
-    }
+    
     const columns = [
         { title: 'Contest', field: 'contestId'},
         { title: 'User', field: 'userLoginId' },
-        { title: 'Status', field: 'statusId' },
-        {title: 'Action',
-            render: rowData => (
-                <Button
-                    variant="contained"
-                    color="primary"
-                    style={{ marginLeft: "45px" }}
-                    onClick= {() => approve(rowData['contestId'],rowData['userLoginId'])}
-                >
-                
-                    Approve
-                </Button>
-            )
-        }
+        { title: 'Status', field: 'statusId' }
     ];
 
     async function getProgrammingContestUserRegistration(){
-        let lst = await authGet(dispatch, token, '/get-all-programming-contest-user-registration-list');
+        let lst = await authGet(dispatch, token, '/get-all-programming-contest-user-registration-approved-list/' + contestId);
         setContestUserRegistrations(lst);
     }
     useEffect(() => {
@@ -61,7 +37,7 @@ function ProgrammingContestUserRegistrationTable(){
         <Card>
             <CardContent>
                 <MaterialTable
-                title={"Danh sách user đăng ký Contest"}
+                title={"Danh sách tham gia Contest"}
                 columns={columns}
                 data = {contestUserRegistrations}    
                 /> 
@@ -70,4 +46,4 @@ function ProgrammingContestUserRegistrationTable(){
     );
 }
 
-export default ProgrammingContestUserRegistrationTable;
+export default ProgrammingContestUserRegistrationTableApprove;

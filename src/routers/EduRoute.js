@@ -29,9 +29,13 @@ import ContestProblemDetail from "../component/education/programmingcontest/Cont
 import ContestProblemDetailForSubmit from "../component/education/programmingcontest/ContestProblemDetailForSubmit";
 import ProgramSubmissionDetail from "../component/education/programmingcontest/ProgramSubmissionDetail";
 import ContestRegistration from "../component/education/programmingcontest/ContestRegistration";
+import ProgrammingContestDetail from "../component/education/programmingcontest/ProgrammingContestDetail";
+
 
 
 import NotFound from "../views/errors/NotFound";
+import AddProblemToProgrammingContest from "../component/education/programmingcontest/AddProblemToProgrammingContest";
+import ProblemsOfProgrammingContestAndUser from "../component/education/programmingcontest/ProblemsOfProgrammingContestAndUser";
 
 export default function EduRoute() {
   let { path, url } = useRouteMatch();
@@ -86,11 +90,15 @@ export default function EduRoute() {
         <Route component={ContestProblemDetail} path={`${path}/contest-problem/detail/:problemId`} exact/>
 
         <Route component={ContestRegistration} path={`${path}/contest-registration/:contestId`} exact/>
+        <Route component={ProblemsOfProgrammingContestAndUser} path={`${path}/contest-problem-for-submission/:contestId`} exact/>
 
         <Route component={ContestProblemDetailForSubmit} path={`${path}/contest-problem/detail/submit/:problemId`} exact/>
 
         <Route component={ProgramSubmissionDetail} path={`${path}/contest-program-submission/detail/:contestProgramSubmissionId`} exact/>
 
+        <Route component={ProgrammingContestDetail} path={`${path}/programming-contest-detail/:contestId`} exact/>
+
+        <Route component={AddProblemToProgrammingContest} path={`${path}/programming-contest-detail/add-problem-to-programming-contest/:contestId`} exact/>
 
         <Route
           component={CreateAssignment}

@@ -17,6 +17,9 @@ import { Editor } from "react-draft-wysiwyg";
 import { ContentState, convertToRaw, EditorState } from "draft-js";
 import { useParams } from "react-router";
 import draftToHtml from "draftjs-to-html";
+import ProblemsOfProgrammingContest from "./ProblemsOfProgrammingContest";
+import ProgrammingContestUserRegistrationTableApprove from "./ProgrammingContestUserRegistrationTableApproved";
+
 const useStyles = makeStyles((theme) => ({
 	root: {
 		padding: theme.spacing(4),
@@ -45,14 +48,15 @@ const editorStyle = {
 	},
   };
 
-function ContestRegistration(){
+function ProgrammingContestDetail(){
     const params = useParams();
     const contestId = params.contestId;
 
     const dispatch = useDispatch();
     const token = useSelector(state => state.auth.token);
     const classes = useStyles();
-    
+    const [contest, setContest] = useState(null);
+
     const [alertMessage, setAlertMessage] = useState({
 		title: "Vui lòng nhập đầy đủ thông tin cần thiết",
 		content: "Một số thông tin yêu cầu cần phải được điền đầy đủ. Vui lòng kiểm tra lại."
@@ -61,7 +65,7 @@ function ContestRegistration(){
 	const [openAlert, setOpenAlert] = useState(false);
 	const history = useHistory();
 
-	const [editorState, setEditorState] = useState(EditorState.createEmpty());
+   
 
 	const handleCloseAlert = () => {
 		setOpenAlert(false);
@@ -73,65 +77,43 @@ function ContestRegistration(){
 			history.push(reDirect);
 		}
 	}
-	const onChangeEditorState = (editorState) => {
-    	setEditorState(editorState);
-  	};
-
-    async function handleSubmit() {
-		
-		let body = {contestId:contestId
-		};
-		//let body = {problemId,problemName,statement};
-        let contest = await authPost(dispatch, token, '/register-programming-contest', body);
-        console.log('return contest registration  ',contest);
-        alert('FINISHED');
-		history.push("contestprogramming");
-
+	
+    async function getProgrammingContest(){
+        let cts = await authGet(dispatch, token, '/get-programming-contest/' + contestId);
+        setContest(cts);
     }
-    
-    return(
-        <MuiPickersUtilsProvider utils={DateFnsUtils}>
-			<Card>
-				<CardContent>
-					<Typography variant="h5" component="h2">
-						Đăng ký Join vào Contest
-          </Typography>
-					
-				</CardContent>
-				<CardActions>
-          <Button
-            variant="contained"
-            color="primary"
-            style={{ marginLeft: "45px" }}
-            onClick={handleSubmit}
-          >
-            Register
-          </Button>
-          <Button
-            variant="contained"
-            onClick={() => history.push("contestprogramming")}
-          >
-            Hủy
-          </Button>
-        </CardActions>
-			</Card>
+   async function distributeProblemsToParticipants(){
+	   let body = {
+		   contestId: contest.contestId
+	   };
+	   let rs = authPost(dispatch,token,'/distribute-problems-of-contest-to-participants',body);
+	   console.log('distribute-problems-of-contest-to-participants, rs = ' + rs);
+	   alert('FINISHED');
+   }
 
-			<AlertDialog
-				open={openAlert}
-				onClose={handleCloseAlert}
-				severity={alertSeverity}
-        {...alertMessage}
-        buttons={[
-          {
-            onClick: onClickAlertBtn,
-            color: "primary",
-            autoFocus: true,
-            text: "OK"
-          }
-        ]}
-			/>
-		</MuiPickersUtilsProvider>
+    useEffect(() =>{
+        getProgrammingContest();
+    },[]);
+    return(
+            <Card>
+                <div>    
+                    CONTEST: {contest == undefined? '': contest.contestName}
+                </div>
+                
+				<Button
+					variant="contained"
+                    color="primary"
+                    style={{ marginLeft: "45px" }}
+                    onClick= {() => distributeProblemsToParticipants()}
+				>
+					Phân chia bài cho thí sinh
+				</Button>
+				<br></br><br></br>
+				<ProgrammingContestUserRegistrationTableApprove contestId = {contestId}/>
+			    <ProblemsOfProgrammingContest contestId = {contestId}/>
+			</Card>
+		
     );
 }
 
-export default ContestRegistration;
+export default ProgrammingContestDetail;

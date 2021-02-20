@@ -2,7 +2,7 @@
 import DateFnsUtils from "@date-io/date-fns";
 import Button from "@material-ui/core/Button";
 import {
-	Card, CardActions, CardContent, TextField, Typography
+	Card, CardActions, CardContent, TextField, Typography, MenuItem
 } from "@material-ui/core/";
 import { makeStyles } from "@material-ui/core/styles";
 import {
@@ -52,6 +52,13 @@ function CreateContestProblem(){
     const [problemId, setProblemId] = useState(null);
     const [problemName, setProblemName] = useState(null);
     const [problemStatement, setProblemStatement] = useState(null);
+	const [timeLimit, setTimeLimit] = useState(null);
+	const [levelId,setLevelId] = useState(null);
+	const [categoryId, setCategoryId] = useState(null);
+
+	const [levelIdList, setLevelIdList] = useState([]);
+	const [categoryIdList, setCategoryIdList] = useState([]);
+
     const [alertMessage, setAlertMessage] = useState({
 		title: "Vui lòng nhập đầy đủ thông tin cần thiết",
 		content: "Một số thông tin yêu cầu cần phải được điền đầy đủ. Vui lòng kiểm tra lại."
@@ -76,6 +83,20 @@ function CreateContestProblem(){
     	setEditorState(editorState);
   	};
 
+	async function getContestProblemLevels(){
+		let lst = await authGet(dispatch,token,'/get-contest-problem-level-list')
+		setLevelIdList(lst);
+	}  
+	async function getContestProblemCategories(){
+		let lst = await authGet(dispatch, token,'/get-contest-problem-category-list');
+		setCategoryIdList(lst);
+	}
+	  useEffect(() => {
+		getContestProblemLevels();
+		getContestProblemCategories();
+	  },[]
+
+	  );
     async function handleSubmit() {
 		let statement = draftToHtml(convertToRaw(editorState.getCurrentContent()));
         //setProblemStatement(statement);
@@ -83,7 +104,10 @@ function CreateContestProblem(){
         
 		let body = {problemId:problemId,
 			problemName: problemName,
-			problemStatement: statement
+			problemStatement: statement,
+			timeLimit: timeLimit,
+			levelId: levelId,
+			categoryId: categoryId
 		};
 		//let body = {problemId,problemName,statement};
         let contestProblem = await authPost(dispatch, token, '/create-contest-problem', body);
@@ -92,6 +116,7 @@ function CreateContestProblem(){
 		history.push("contestprogramming");
     }
     
+
     return(
         <MuiPickersUtilsProvider utils={DateFnsUtils}>
 			<Card>
@@ -125,6 +150,60 @@ function CreateContestProblem(){
 								}}
 							/>
 						</div>
+						<div>
+							<TextField
+								required
+								id="timeLimit"
+								label="Thời gian tối đa"
+								placeholder="Nhập thời gian tối đa"
+								value={timeLimit}
+								onChange={(event) => {
+									setTimeLimit(event.target.value);
+								}}
+							/>
+						</div>
+						
+						<div>
+							<TextField
+                				required
+                				id="levelId"
+                				select
+                				label="Mức độ bài"
+                				value={levelIdList === null || levelIdList === undefined ? '' : levelIdList}
+                                fullWidth
+                				onChange={(event) => {
+                  					setLevelId(event.target.value);
+									  //console.log(problemId,event.target.value);
+                				}}
+              				>
+                			{levelIdList.map((item) => (
+                  				<MenuItem key={item} value={item}>
+                    				{item}
+                  				</MenuItem>
+                			))}
+            				</TextField>
+						</div>
+						<div>
+							<TextField
+                				required
+                				id="levelId"
+                				select
+                				label="Thể loại"
+                				value={categoryIdList === null || categoryIdList === undefined ? '' : categoryIdList}
+                                fullWidth
+                				onChange={(event) => {
+                  					setCategoryId(event.target.value);
+									  //console.log(problemId,event.target.value);
+                				}}
+              				>
+                			{categoryIdList.map((item) => (
+                  				<MenuItem key={item} value={item}>
+                    				{item}
+                  				</MenuItem>
+                			))}
+            				</TextField>
+						</div>
+
                         <div>
 							<TextField
 								required

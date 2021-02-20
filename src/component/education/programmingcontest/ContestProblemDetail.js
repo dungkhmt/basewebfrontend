@@ -18,6 +18,11 @@ function ContestProblemDetail(props){
     const [problem, setProblem] = useState(null);
     const [timeLimit, setTimeLimit] = useState(null);
     const [problemName, setProblemName] = useState(null);
+	const [levelId,setLevelId] = useState(null);
+	const [categoryId, setCategoryId] = useState(null);
+	const [levelIdList, setLevelIdList] = useState([]);
+	const [categoryIdList, setCategoryIdList] = useState([]);
+
 
     const [selectedInputFile, setSelectedInputFile] = useState(null);
     const [selectedOutputFile, setSelectedOutputFile] = useState(null);
@@ -79,7 +84,9 @@ function ContestProblemDetail(props){
         let body = {
             problemId: problemId,
             problemName: problemName,
-            timeLimit: timeLimit
+            timeLimit: timeLimit,
+            levelId: levelId,
+            categoryId: categoryId
         };
 
         let formData = new FormData();
@@ -94,10 +101,20 @@ function ContestProblemDetail(props){
             }
         );
     }
+	async function getContestProblemLevels(){
+		let lst = await authGet(dispatch,token,'/get-contest-problem-level-list')
+		setLevelIdList(lst);
+	}  
+	async function getContestProblemCategories(){
+		let lst = await authGet(dispatch, token,'/get-contest-problem-category-list');
+		setCategoryIdList(lst);
+	}
 
     useEffect(() => {
         getContestProblem();
         getProblemTests();
+        getContestProblemLevels();
+        getContestProblemCategories();
     },[]);
     return(
         <Card>
@@ -129,6 +146,43 @@ function ContestProblemDetail(props){
                     setTimeLimit(event.target.value);
                     }}
                 />
+							<TextField
+                				required
+                				id="levelId"
+                				select
+                				label="Mức độ bài"
+                				value={levelIdList === null || levelIdList === undefined ? '' : levelIdList}
+                                fullWidth
+                				onChange={(event) => {
+                  					setLevelId(event.target.value);
+									  //console.log(problemId,event.target.value);
+                				}}
+              				>
+                			{levelIdList.map((item) => (
+                  				<MenuItem key={item} value={item}>
+                    				{item}
+                  				</MenuItem>
+                			))}
+            				</TextField>
+							<TextField
+                				required
+                				id="levelId"
+                				select
+                				label="Thể loại"
+                				value={categoryIdList === null || categoryIdList === undefined ? '' : categoryIdList}
+                                fullWidth
+                				onChange={(event) => {
+                  					setCategoryId(event.target.value);
+									  //console.log(problemId,event.target.value);
+                				}}
+              				>
+                			{categoryIdList.map((item) => (
+                  				<MenuItem key={item} value={item}>
+                    				{item}
+                  				</MenuItem>
+                			))}
+            				</TextField>
+
 
                 <br></br><br></br>
                 <Button

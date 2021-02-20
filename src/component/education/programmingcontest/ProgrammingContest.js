@@ -8,6 +8,7 @@ import { useHistory } from "react-router-dom";
 import { CardContent, Tooltip, IconButton, BarChartIcon } from "@material-ui/core";
 import AddIcon from '@material-ui/icons/Add';
 import ContestTableForRegistration from "./ContestTableForRegistration";
+import ContestTableForSubmission from "./ContestTableForSubmission";
 
 function ProgrammingContest(){
     const dispatch = useDispatch();
@@ -39,6 +40,8 @@ function ProgrammingContest(){
     return(
         <div>
             <ContestTableForRegistration/>
+            <ContestTableForSubmission/>
+            {/*
             <CardContent>
                 <MaterialTable
                 title={"Danh sách Bài"}
@@ -47,6 +50,7 @@ function ProgrammingContest(){
                 
                 />
             </CardContent>
+            */}
         </div>
     );
 }
