@@ -13,6 +13,7 @@ import {
 function ContestProblemDetailForSubmit(props){
     const params = useParams();
     const problemId = params.problemId;
+    const contestId = params.contestId;
     const dispatch = useDispatch();
     const token = useSelector(state => state.auth.token);
     const history = useHistory();
@@ -37,7 +38,8 @@ function ContestProblemDetailForSubmit(props){
         }
         console.log("upload file " + selectedFile.name);
         let body = {
-            problemId:problemId
+            problemId:problemId,
+            contestId: contestId
         }
         let formData = new FormData();
         formData.append("inputJson",JSON.stringify(body));

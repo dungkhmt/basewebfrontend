@@ -70,7 +70,7 @@ function ProblemsOfProgrammingContestAndUser(props){
     const columns = [
         { title: 'ID bài tập', field: 'problemId', 
           render: rowData => (
-            <Link to={"/edu/contest-problem/detail/submit/" + rowData["problemId"]}>
+            <Link to={"/edu/contest-problem/detail/submit/" + rowData["problemId"] + '/' + contestId}>
             {rowData["problemId"]}
             </Link>
           )

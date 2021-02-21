@@ -92,7 +92,7 @@ export default function EduRoute() {
         <Route component={ContestRegistration} path={`${path}/contest-registration/:contestId`} exact/>
         <Route component={ProblemsOfProgrammingContestAndUser} path={`${path}/contest-problem-for-submission/:contestId`} exact/>
 
-        <Route component={ContestProblemDetailForSubmit} path={`${path}/contest-problem/detail/submit/:problemId`} exact/>
+        <Route component={ContestProblemDetailForSubmit} path={`${path}/contest-problem/detail/submit/:problemId/:contestId`} exact/>
 
         <Route component={ProgramSubmissionDetail} path={`${path}/contest-program-submission/detail/:contestProgramSubmissionId`} exact/>
 
