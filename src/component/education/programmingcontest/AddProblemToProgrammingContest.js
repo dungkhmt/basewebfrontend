@@ -36,7 +36,7 @@ function AddProblemToProgrammingContest(){
         let contest = await authPost(dispatch, token, '/create-programmingcontest-problem', body);
         console.log('return add problem 2 contest  ',contest);
         
-		history.push("programming-contest-detail/" + contestId);
+		history.push("/edu/programming-contest-detail/" + contestId);
         
 
         /*
@@ -61,7 +61,7 @@ function AddProblemToProgrammingContest(){
                 				id="contestType"
                 				select
                 				label="Chọn bài"
-                				value={problems === null || problems === undefined ? '' : problems}
+                				value={problemId}
                                 fullWidth
                 				onChange={(event) => {
                   					setProblemId(event.target.value);

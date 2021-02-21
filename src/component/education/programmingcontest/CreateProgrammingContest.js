@@ -139,7 +139,7 @@ function CreateProgrammingContest(){
                 				id="contestType"
                 				select
                 				label="Loại"
-                				value={contestTypeList === null || contestTypeList === undefined ? '' : contestTypeList}
+                				value={contestType}
                 				onChange={(event) => {
                   					setContestType(event.target.value);
 									  console.log(contestType,event.target.value);

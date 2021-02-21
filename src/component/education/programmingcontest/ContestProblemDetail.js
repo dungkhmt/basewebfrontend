@@ -78,6 +78,8 @@ function ContestProblemDetail(props){
         console.log(res);
         setTimeLimit(res.timeLimit);
         setProblemName(res.problemName);
+        setLevelId(res.levelId);
+        setCategoryId(res.categoryId);
         //setProblemStatement(parse(res.problemStatement));
     }
     function handleSubmit(){
@@ -151,7 +153,7 @@ function ContestProblemDetail(props){
                 				id="levelId"
                 				select
                 				label="Mức độ bài"
-                				value={levelIdList === null || levelIdList === undefined ? '' : levelIdList}
+                				value={levelId}
                                 fullWidth
                 				onChange={(event) => {
                   					setLevelId(event.target.value);
@@ -169,7 +171,7 @@ function ContestProblemDetail(props){
                 				id="levelId"
                 				select
                 				label="Thể loại"
-                				value={categoryIdList === null || categoryIdList === undefined ? '' : categoryIdList}
+                				value={categoryId}
                                 fullWidth
                 				onChange={(event) => {
                   					setCategoryId(event.target.value);
