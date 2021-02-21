@@ -97,7 +97,7 @@ function ProblemsOfProgrammingContestAndUser(props){
 		};
 		//let body = {problemId,problemName,statement};
         let contest = await authPost(dispatch, token, '/register-programming-contest', body);
-        console.log('return contest registration  ',contest);
+        console.log('return ',contest);
         
 		history.push("contestprogramming");
     }
