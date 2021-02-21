@@ -169,7 +169,7 @@ function CreateContestProblem(){
                 				id="levelId"
                 				select
                 				label="Mức độ bài"
-                				value={levelIdList === null || levelIdList === undefined ? '' : levelIdList}
+                				value={levelId}
                                 fullWidth
                 				onChange={(event) => {
                   					setLevelId(event.target.value);
@@ -189,7 +189,7 @@ function CreateContestProblem(){
                 				id="levelId"
                 				select
                 				label="Thể loại"
-                				value={categoryIdList === null || categoryIdList === undefined ? '' : categoryIdList}
+                				value={categoryId}
                                 fullWidth
                 				onChange={(event) => {
                   					setCategoryId(event.target.value);
