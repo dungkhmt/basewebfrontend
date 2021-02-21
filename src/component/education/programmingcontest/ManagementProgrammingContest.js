@@ -51,7 +51,8 @@ function ManagementProgrammingContest(){
           )
         },
         { title: 'Tên bài tập', field: 'problemName' },
-        { title: 'Mô tả', field: 'problemStatement' },
+        { title: 'Level', field: 'levelId' },
+	    	{ title: 'Thể loại', field: 'categoryId' },
       ];
 
     async function getContestProblemList(){

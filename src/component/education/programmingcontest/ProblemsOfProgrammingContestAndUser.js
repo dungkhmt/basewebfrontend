@@ -76,7 +76,8 @@ function ProblemsOfProgrammingContestAndUser(props){
           )
         },
         { title: 'Tên bài tập', field: 'problemName' },
-        { title: 'Mô tả', field: 'problemStatement' },
+        { title: 'Level', field: 'levelId' },
+		{ title: 'Thể loại', field: 'categoryId' },
       ];
 
 	const handleCloseAlert = () => {
