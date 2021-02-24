@@ -16,6 +16,8 @@ function ProgrammingContestUserRegistrationTable(){
     const token = useSelector(state => state.auth.token);
     const history = useHistory();
     const [contestUserRegistrations, setContestUserRegistrations] = useState([]);
+    const [userLoginId, setUserLoginId] = useState(null);
+    
 
     async function approve(contestId, userLoginId){
         //alert('approve ' + contestId + ',' + userLoginId);
@@ -49,6 +51,16 @@ function ProgrammingContestUserRegistrationTable(){
         }
     ];
 
+    async function handleSearch(){
+        let body = {
+           
+            userLoginId: userLoginId,
+           
+        };
+        let lst = await authPost(dispatch, token, '/search-programming-contest-user-registration',body);
+        setContestUserRegistrations(lst);
+
+    }
     async function getProgrammingContestUserRegistration(){
         let lst = await authGet(dispatch, token, '/get-all-programming-contest-user-registration-list');
         setContestUserRegistrations(lst);
@@ -60,6 +72,24 @@ function ProgrammingContestUserRegistrationTable(){
     return(
         <Card>
             <CardContent>
+                        <TextField
+								required
+								id="userLoginId"
+								label="user"
+								placeholder="Nhập ID user"
+								value={userLoginId}
+								onChange={(event) => {
+									setUserLoginId(event.target.value);
+								}}
+						/>
+                <Button
+                    variant="contained"
+                    color="primary"
+                    style={{ marginLeft: "45px" }}
+                    onClick = {() => {
+                        handleSearch();
+                    }}
+                >Tìm</Button>
                 <MaterialTable
                 title={"Danh sách user đăng ký Contest"}
                 columns={columns}

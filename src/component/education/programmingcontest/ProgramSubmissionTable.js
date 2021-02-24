@@ -24,7 +24,9 @@ function ProgramSubmissionTable() {
   const token = useSelector((state) => state.auth.token);
   const history = useHistory();
   const [programSubmissions, setProgramSubmissions] = useState([]);
-
+  const [userLoginId, setUserLoginId] = useState(null);
+  const [problemId, setProblemId] = useState(null);
+  const [contestId, setContestId] = useState(null);
   const columnSubmissions = [
     {
       title: "ID bài tập",
@@ -110,6 +112,17 @@ function ProgramSubmissionTable() {
     );
     setProgramSubmissions(submissions);
   }
+async function handleSearch(){
+  
+    let body = {
+       contestId: contestId,
+       problemId: problemId,
+        submittedByUserLoginId: userLoginId       
+    };
+    let lst = await authPost(dispatch, token, '/search-program-submission',body);
+    setProgramSubmissions(lst);
+
+}
 
   useEffect(() => {
     getContestProgramSubmissionList();
@@ -118,6 +131,37 @@ function ProgramSubmissionTable() {
   return (
     <Card>
       <CardContent>
+          <TextField
+								required
+								id="userLoginId"
+								label="user"
+								placeholder="Nhập ID user"
+								value={userLoginId}
+								onChange={(event) => {
+									setUserLoginId(event.target.value);
+								}}
+						/>
+            <br></br>
+          <TextField
+								required
+								id="problemId"
+								label="problem"
+								placeholder="Problem"
+								value={problemId}
+								onChange={(event) => {
+									setProblemId(event.target.value);
+								}}
+						/>
+            
+                <Button
+                    variant="contained"
+                    color="primary"
+                    style={{ marginLeft: "45px" }}
+                    onClick = {() => {
+                        handleSearch();
+                    }}
+                >Tìm</Button>
+
         <MaterialTable
           title={"Danh sách Bài nộp"}
           columns={columnSubmissions}
