@@ -108,25 +108,16 @@ function ContestProblemDetailForSubmit(props) {
             components={{
               Body: (props) => {
                 return isProcessing ? (
-                  <tr
-                    style={{
-                      height: 245,
-                      verticalAlign: "middle",
-                      textAlign: "center",
-                    }}
-                  >
-                    <table
-                      style={{
-                        height: 245,
-                        width: columns.length * 100 + "%",
-                        verticalAlign: "inherit",
-                      }}
-                    >
-                      <td>
+                  <tbody>
+                    <tr>
+                      <td
+                        colspan={columns.length}
+                        style={{ height: 245, textAlign: "center" }}
+                      >
                         <CircularProgress />
                       </td>
-                    </table>
-                  </tr>
+                    </tr>
+                  </tbody>
                 ) : (
                   <MTableBody {...props} />
                 );
