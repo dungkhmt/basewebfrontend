@@ -140,7 +140,7 @@ function TAssignmentDetail() {
 
   //Submission.
   const [selectedSubmissions, setSelectedSubmission] = useState([]);
-  const [isZipping, setIsZipping] = useState(false);
+  // const [isZipping, setIsZipping] = useState(false);
 
   // Dialog.
   const [open, setOpen] = useState(false);
@@ -222,26 +222,43 @@ function TAssignmentDetail() {
   };
 
   const onDownload = () => {
-    setIsZipping(true);
+    const form = document.createElement("form");
 
-    let studentIds = selectedSubmissions.map(
-      (submission) => submission.studentId
+    form.setAttribute("method", "post");
+    form.setAttribute("target", "_blank");
+    form.setAttribute(
+      "action",
+      `${API_URL}/edu/assignment/${params.assignmentId}/submissions?token=${token}`
     );
 
-    request(
-      token,
-      history,
-      "post",
-      `/edu/assignment/${params.assignmentId}/submissions`,
-      (res) => {
-        setIsZipping(false);
-        window.location.href = `${API_URL}/edu/assignment/${params.assignmentId}/download-file/${res.data}`;
-      },
-      { onError: () => setIsZipping(false) },
-      {
-        studentIds: studentIds,
-      }
-    );
+    for (const submission of selectedSubmissions) {
+      const input = document.createElement("input");
+
+      input.setAttribute("type", "hidden");
+      input.setAttribute("name", "studentIds");
+      input.setAttribute("value", submission.studentId);
+
+      form.appendChild(input);
+    }
+
+    document.body.appendChild(form);
+    form.submit();
+    form.parentNode.removeChild(form);
+
+    // request(
+    //   token,
+    //   history,
+    //   "post",
+    //   `/edu/assignment/${params.assignmentId}/submissions`,
+    //   (res) => {
+    //     setIsZipping(false);
+    //     window.location.href = `${API_URL}/edu/assignment/${params.assignmentId}/download-file/${res.data}`;
+    //   },
+    //   { onError: () => setIsZipping(false) },
+    //   {
+    //     studentIds: studentIds,
+    //   }
+    // );
   };
 
   // Delete assignment.
@@ -433,22 +450,23 @@ function TAssignmentDetail() {
                     <div className={classes.wrapper}>
                       <Button
                         className={classes.downloadBtn}
-                        disabled={isZipping}
+                        // disabled={isZipping}
                         variant="outlined"
                         color="primary"
-                        startIcon={isZipping ? null : <FcDownload size={24} />}
+                        startIcon={<FcDownload size={24} />} // isZipping ? null : <FcDownload size={24} />
                         onClick={(event) =>
                           props.action.onClick(event, props.data)
                         }
                       >
-                        {isZipping ? "Đang nén các tệp" : "Tải xuống"}
+                        Tải xuống
+                        {/* {isZipping ? "Đang nén các tệp" : "Tải xuống"} */}
                       </Button>
-                      {isZipping && (
+                      {/* {isZipping && (
                         <CircularProgress
                           size={24}
                           className={classes.buttonProgress}
                         />
-                      )}
+                      )}*/}
                     </div>
                   );
                 }

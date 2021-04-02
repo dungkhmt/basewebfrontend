@@ -58,14 +58,14 @@ const useStyles = makeStyles(() => ({
     borderBottomRightRadius: "6px",
   },
   imgWrapper: {
-    minWidth: 690,
-    minHeight: 570,
+    minWidth: 730,
+    minHeight: 580,
   },
   wrapper: {
     background: "#311b92",
     height: "100vh",
-    minHeight: 400,
-    minWidth: 1316,
+    minHeight: 694,
+    minWidth: 1366,
   },
   form: {
     background: "white",
@@ -73,7 +73,7 @@ const useStyles = makeStyles(() => ({
     borderBottomLeftRadius: "6px",
     paddingLeft: 24,
     paddingRight: 24,
-    maxWidth: 490,
+    maxWidth: 540,
   },
   formField: {
     width: 220,

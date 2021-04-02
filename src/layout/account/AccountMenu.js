@@ -4,12 +4,14 @@ import { useHistory } from "react-router-dom";
 
 export function AccountMenu(props) {
   const history = useHistory();
+
   const handlePasswordChange = () => {
-    props.handleClose();
+    props.handleMenuClose();
     history.push("/userlogin/change-password/" + props.userName);
   };
+
   const handleViewAccount = () => {
-    props.handleClose();
+    props.handleMenuClose();
     history.push("/userlogin/" + props.partyId);
   };
 
