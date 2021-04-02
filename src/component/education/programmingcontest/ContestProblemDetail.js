@@ -56,7 +56,7 @@ function ContestProblemDetail(props){
                 
             }
         );
-
+        alert('Upload test successfully!');
         //getProblemTests();
         history.push("" + problemId);    
     }
