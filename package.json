@@ -58,6 +58,7 @@
     "react-native-modal-datetime-picker": "^8.6.0",
     "react-native-vector-icons": "^6.6.0",
     "react-number-format": "^4.4.1",
+    "react-player": "^2.9.0",
     "react-redux": "^7.1.1",
     "react-router": "latest",
     "react-router-dom": "^5.1.2",
