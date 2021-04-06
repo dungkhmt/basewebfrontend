@@ -340,6 +340,13 @@ Get date based revenue
 Upload file
 $ curl --header "Content-Type: multipart/form-data" -v POST http://localhost:8080/api/class/exercises/upload -u admin:123 -F "file=@package.json"
 
+curl --location --request POST 'http://localhost:8080/api/files' \
+--header 'X-Auth-Token: f4959252-f9d2-4547-8cdf-86a0653ddf9b' \
+--form 'file=@"/D:/videos/test3.mp4"'
+
+ curl --location --request POST 'http://localhost:8080/api/files' -u admin:sscm@123456 --form 'file=@"D:/teaching/soict/nhom-chuyen-mon/thuat-toan-ung-dung/quay-video/cbus/BranchAndBound.mp4"'
+
+
 
 curl --header "Content-Type: multipart/form-data" -v POST http://localhost:8080/api/edu/programsubmission/upload -u admin:123 -F "file=@package.json"
 

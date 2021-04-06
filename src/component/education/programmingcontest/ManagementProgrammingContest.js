@@ -19,6 +19,8 @@ import Box from '@material-ui/core/Box';
 import PropTypes from 'prop-types';
 
 import ContestTable from "./ContestTable";
+import Player from "../../../utils/Player";
+
 
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -134,6 +136,7 @@ function ManagementProgrammingContest(){
 
           <TabPanel value={value} index={0}>
             <ContestTable/>
+            <Player id = '07091e01-976a-420e-83ea-1d63525a6ad3'/>
           </TabPanel>
           <TabPanel value={value} index={1}>
             <ProgrammingContestUserRegistrationTable/>
