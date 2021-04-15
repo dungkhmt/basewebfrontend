@@ -4,6 +4,13 @@ import AssignmentList from "../component/education/AssignmentList";
 import BCASolver from "../component/education/BCASolver";
 import CreateSemester from "../component/education/CreateSemester";
 import CourseList from "../component/education/course/CourseList";
+import TeacherCourseList from "../component/education/course/TeacherCourseList";
+import TeacherCourseDetail from "../component/education/course/TeacherCourseDetail";
+import TeacherCourseChapterDetail from "../component/education/course/TeacherCourseChapterDetail";
+import CreateChapterOfCourse from "../component/education/course/CreateChapterOfCourse";
+import CreateChapterMaterialOfCourse from "../component/education/course/CreateChapterMaterialOfCourse";
+import TeacherCourseChapterMaterialDetail from "../component/education/course/TeacherCourseChapterMaterialDetail";
+
 import AddNewCourse from "../component/education/course/AddNewCourse";
 import ClassesList from "../component/education/class/ClassesList";
 import CreateClass from "../component/education/class/CreateClass";
@@ -42,6 +49,15 @@ export default function EduRoute() {
   return (
     <div>
       <Switch>
+        <Route component={TeacherCourseList} path={`${path}/teacher/course/list`} />
+        <Route component={TeacherCourseDetail} path={`${path}/course/detail/:id`} exact/>
+        <Route component={CreateChapterOfCourse} path={`${path}/course/detail/chapter/create/:courseId`} exact/>
+
+        <Route component={TeacherCourseChapterDetail} path={`${path}/course/chapter/detail/:chapterId`} exact/>
+        <Route component={CreateChapterMaterialOfCourse} path={`${path}/course/detail/chapter/material/create/:chapterId`} exact/>
+        <Route component={TeacherCourseChapterMaterialDetail} path={`${path}/course/chapter/material/detail/:chapterMaterialId`} exact/>
+
+
         <Route component={CourseList} path={`${path}/courses/list`} />
 
         <Route component={CourseDetail} path={`${path}/course/detail`} />
