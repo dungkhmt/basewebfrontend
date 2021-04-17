@@ -12,7 +12,7 @@ import {
   import {Link} from "react-router-dom";
   import Player from "../../../utils/Player";
 
-function TeacherCourseChapterMaterialDetail(){
+function StudentCourseChapterMaterialDetail(){
     const params = useParams();
     const chapterMaterialId = params.chapterMaterialId;
     const dispatch = useDispatch();
@@ -37,7 +37,7 @@ function TeacherCourseChapterMaterialDetail(){
     return (
         <Card>
             <CardContent>
-                MaterialDetail <Link to={'/edu/teacher/course/chapter/detail/' + chapterMaterialId}>
+                MaterialDetail <Link to={'/edu/student/course/chapter/detail/' + chapterMaterialId}>
                     {chapterMaterialId}
                   </Link>
                 <Player id = {sourceId}/>
@@ -46,4 +46,4 @@ function TeacherCourseChapterMaterialDetail(){
     );
 }
 
-export default TeacherCourseChapterMaterialDetail;
+export default StudentCourseChapterMaterialDetail;

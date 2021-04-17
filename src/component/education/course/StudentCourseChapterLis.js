@@ -11,7 +11,7 @@ import {
   import {Link} from "react-router-dom";
   import AddIcon from '@material-ui/icons/Add';
 
-function TeacherCourseChapterList(props){
+function StudentCourseChapterList(props){
     const params = useParams();
     const courseId = props.courseId;
     const dispatch = useDispatch();
@@ -22,7 +22,7 @@ function TeacherCourseChapterList(props){
     const columns = [
         { title: 'ChapterId', field: 'chapterId',
             render: rowData => (
-                <Link to={"/edu/teacher/course/chapter/detail/" + rowData["chapterId"]}>
+                <Link to={"/edu/student/course/chapter/detail/" + rowData["chapterId"]}>
                 {rowData["chapterId"]}
                 </Link>
             )
@@ -39,7 +39,7 @@ function TeacherCourseChapterList(props){
       useEffect(() => {
           
         getChapterList();
-        console.log('TeacherCourseChapterList, courseId = ' + courseId);
+        console.log('StudentCourseChapterList, courseId = ' + courseId);
         }, []);
      
     return (
@@ -49,14 +49,7 @@ function TeacherCourseChapterList(props){
                 title={"Chương"}
                 columns={columns}
                 data = {chapters}    
-                actions={[
-                    {
-                      icon: () => { return <AddIcon color='primary' fontSize='large' /> },
-                      tooltip: 'Thêm mới',
-                      isFreeAction: true,
-                      onClick: () => { history.push('chapter/create/' + courseId) }
-                    },
-                  ]}
+                
                 />                
             </CardContent>
         </Card>
@@ -64,4 +57,4 @@ function TeacherCourseChapterList(props){
   
 }
 
-export default TeacherCourseChapterList;
+export default StudentCourseChapterList;

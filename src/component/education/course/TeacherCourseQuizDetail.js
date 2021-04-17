@@ -1,4 +1,5 @@
 
+
 import {
     Button, Card, CardActions, CardContent, TextField, Typography,
     MenuItem, Checkbox, 
@@ -10,30 +11,30 @@ import {
   import { useParams } from "react-router";
   import MaterialTable from "material-table";
   import {Link} from "react-router-dom";
-  import TeacherCourseChapterList from "./TeacherCourseChapterList";
-import TeacherCourseQuizList from "./TeacherCourseQuizList";
+  import TeacherCourseChapterMaterialList from "./TeacherCourseChapterMaterialList";
+  import TeacherCourseQuizChoiceAnswerList from "./TeacherCourseQuizChoiceAnswerList";
 
-function TeacherCourseDetail(){
+function TeacherCourseQuizDetail(){
     const params = useParams();
-    const courseId = params.id;
+    const questionId = params.questionId;
     const dispatch = useDispatch();
     const token = useSelector(state => state.auth.token);
     const history = useHistory();
-    const [course, setCourse] = useState(null);
+    const [courseChapter, setCourseChapter] = useState(null);
     
     useEffect(() => {
           
-        console.log(courseId);
+        
         }, []);
 
     return(
         <Card>
             <CardContent>
-                <TeacherCourseChapterList courseId={courseId}/>
-                <TeacherCourseQuizList courseId={courseId}/>
+                <TeacherCourseQuizChoiceAnswerList questionId={questionId}/>
+
             </CardContent>
         </Card>
     );
 }
 
-export default TeacherCourseDetail;
+export default TeacherCourseQuizDetail;

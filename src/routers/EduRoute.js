@@ -7,9 +7,17 @@ import CourseList from "../component/education/course/CourseList";
 import TeacherCourseList from "../component/education/course/TeacherCourseList";
 import TeacherCourseDetail from "../component/education/course/TeacherCourseDetail";
 import TeacherCourseChapterDetail from "../component/education/course/TeacherCourseChapterDetail";
+import TeacherCourseQuizDetail from "../component/education/course/TeacherCourseQuizDetail";
+import StudentCourseChapterDetail from "../component/education/course/StudentCourseChapterDetail";
 import CreateChapterOfCourse from "../component/education/course/CreateChapterOfCourse";
+import CreateQuizOfCourse from "../component/education/course/CreateQuizOfCourse";
+
 import CreateChapterMaterialOfCourse from "../component/education/course/CreateChapterMaterialOfCourse";
+import CreateQuizChoiceAnswerOfCourse from "../component/education/course/CreateQuizChoiceAnswerOfCourse";
+
 import TeacherCourseChapterMaterialDetail from "../component/education/course/TeacherCourseChapterMaterialDetail";
+import StudentCourseChapterMaterialDetail from "../component/education/course/StudentCourseChapterMaterialDetail";
+
 
 import AddNewCourse from "../component/education/course/AddNewCourse";
 import ClassesList from "../component/education/class/ClassesList";
@@ -52,10 +60,17 @@ export default function EduRoute() {
         <Route component={TeacherCourseList} path={`${path}/teacher/course/list`} />
         <Route component={TeacherCourseDetail} path={`${path}/course/detail/:id`} exact/>
         <Route component={CreateChapterOfCourse} path={`${path}/course/detail/chapter/create/:courseId`} exact/>
+        <Route component={CreateQuizOfCourse} path={`${path}/course/detail/quiz/create/:courseId`} exact/>
 
-        <Route component={TeacherCourseChapterDetail} path={`${path}/course/chapter/detail/:chapterId`} exact/>
+        <Route component={TeacherCourseChapterDetail} path={`${path}/teacher/course/chapter/detail/:chapterId`} exact/>
+        <Route component={TeacherCourseQuizDetail} path={`${path}/teacher/course/quiz/detail/:questionId`} exact/>
+        <Route component={StudentCourseChapterDetail} path={`${path}/student/course/chapter/detail/:chapterId`} exact/>
+
         <Route component={CreateChapterMaterialOfCourse} path={`${path}/course/detail/chapter/material/create/:chapterId`} exact/>
-        <Route component={TeacherCourseChapterMaterialDetail} path={`${path}/course/chapter/material/detail/:chapterMaterialId`} exact/>
+        <Route component={CreateQuizChoiceAnswerOfCourse} path={`${path}/course/detail/quiz/choiceanswer/create/:questionId`} exact/>
+        <Route component={TeacherCourseChapterMaterialDetail} path={`${path}/teacher/course/chapter/material/detail/:chapterMaterialId`} exact/>
+        <Route component={StudentCourseChapterMaterialDetail} path={`${path}/student/course/chapter/material/detail/:chapterMaterialId`} exact/>
+        
 
 
         <Route component={CourseList} path={`${path}/courses/list`} />

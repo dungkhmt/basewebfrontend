@@ -11,50 +11,50 @@ import {
   import {Link} from "react-router-dom";
   import AddIcon from '@material-ui/icons/Add';
 
-function TeacherCourseChapterMaterialList(props){
+function TeacherCourseQuizList(props){
     const params = useParams();
-    const chapterId = props.chapterId;
+    const courseId = props.courseId;
     const dispatch = useDispatch();
     const token = useSelector(state => state.auth.token);
     const history = useHistory();
-    const [chapterMaterials, setChapterMaterials] = useState([]);
+    const [quizs, setQuizs] = useState([]);
 
     const columns = [
-        { title: 'ChapterMaterialId', field: 'eduCourseMaterialId',
+        { title: 'QuestionId', field: 'questionId',
             render: rowData => (
-                <Link to={"/edu/teacher/course/chapter/material/detail/" + rowData["eduCourseMaterialId"]}>
-                {rowData["eduCourseMaterialId"]}
+                <Link to={"/edu/teacher/course/quiz/detail/" + rowData["questionId"]}>
+                {rowData["questionId"]}
                 </Link>
             )
         },
-        { title: 'Name', field: 'eduCourseMaterialName'}
+        { title: 'Level', field: 'levelId'}
        
       ];
 
-    async function getChapterMaterialList(){
-        let lst = await authGet(dispatch, token, '/edu/class/get-chapter-materials-of-course/' + chapterId);
-        setChapterMaterials(lst);        
+    async function getQuestionList(){
+        let lst = await authGet(dispatch, token, '/get-all-quiz-questions');
+        setQuizs(lst);        
     }
   
       useEffect(() => {
           
-        getChapterMaterialList();
-        console.log('TeacherCourseChapterMaterialList, chapterId = ' + chapterId);
+        getQuestionList();
+        
         }, []);
      
     return (
         <Card>
             <CardContent>
             <MaterialTable
-                title={"Material"}
+                title={"Quizs"}
                 columns={columns}
-                data = {chapterMaterials}    
+                data = {quizs}    
                 actions={[
                     {
                       icon: () => { return <AddIcon color='primary' fontSize='large' /> },
                       tooltip: 'Thêm mới',
                       isFreeAction: true,
-                      onClick: () => { history.push('/edu/course/detail/chapter/material/create/' + chapterId) }
+                      onClick: () => { history.push('quiz/create/' + courseId) }
                     },
                   ]}
                 />                
@@ -64,4 +64,4 @@ function TeacherCourseChapterMaterialList(props){
 
 }
 
-export default TeacherCourseChapterMaterialList;
+export default TeacherCourseQuizList;

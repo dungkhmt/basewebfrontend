@@ -11,50 +11,53 @@ import {
   import {Link} from "react-router-dom";
   import AddIcon from '@material-ui/icons/Add';
 
-function TeacherCourseChapterMaterialList(props){
+function TeacherCourseQuizChoiceAnswerList(props){
     const params = useParams();
-    const chapterId = props.chapterId;
+    const questionId = props.questionId;
     const dispatch = useDispatch();
     const token = useSelector(state => state.auth.token);
     const history = useHistory();
-    const [chapterMaterials, setChapterMaterials] = useState([]);
+    const [choiceAnswers, setChoiceAnswers] = useState([]);
 
     const columns = [
-        { title: 'ChapterMaterialId', field: 'eduCourseMaterialId',
+        { title: 'choiceAnswerId', field: 'choiceAnswerId',
             render: rowData => (
-                <Link to={"/edu/teacher/course/chapter/material/detail/" + rowData["eduCourseMaterialId"]}>
-                {rowData["eduCourseMaterialId"]}
+                <Link to={"/edu/teacher/course/quiz/choiceanswer/detail/" + rowData["choiceAnswerId"]}>
+                {rowData["choiceAnswerId"]}
                 </Link>
             )
         },
-        { title: 'Name', field: 'eduCourseMaterialName'}
+        { title: 'Content', field: 'choiceAnswerContent'},
+        { title: 'isCorrectAnswer', field: 'isCorrectAnswer'}
        
       ];
 
-    async function getChapterMaterialList(){
-        let lst = await authGet(dispatch, token, '/edu/class/get-chapter-materials-of-course/' + chapterId);
-        setChapterMaterials(lst);        
+    async function getChoiceAnswerList(){
+
+        let lst = await authGet(dispatch, token, '/get-quiz-choice-answer-of-a-quiz/' + questionId);
+        setChoiceAnswers(lst);        
+        console.log('getCHoiceAnsweList, questionId = ' + questionId);
     }
   
       useEffect(() => {
           
-        getChapterMaterialList();
-        console.log('TeacherCourseChapterMaterialList, chapterId = ' + chapterId);
+        getChoiceAnswerList();
+        
         }, []);
      
     return (
         <Card>
             <CardContent>
             <MaterialTable
-                title={"Material"}
+                title={"Choice Answer"}
                 columns={columns}
-                data = {chapterMaterials}    
+                data = {choiceAnswers}    
                 actions={[
                     {
                       icon: () => { return <AddIcon color='primary' fontSize='large' /> },
                       tooltip: 'Thêm mới',
                       isFreeAction: true,
-                      onClick: () => { history.push('/edu/course/detail/chapter/material/create/' + chapterId) }
+                      onClick: () => { history.push('/edu/course/detail/quiz/choiceanswer/create/' + questionId) }
                     },
                   ]}
                 />                
@@ -64,4 +67,4 @@ function TeacherCourseChapterMaterialList(props){
 
 }
 
-export default TeacherCourseChapterMaterialList;
+export default TeacherCourseQuizChoiceAnswerList;

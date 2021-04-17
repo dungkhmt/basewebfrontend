@@ -11,7 +11,7 @@ import {
   import {Link} from "react-router-dom";
   import AddIcon from '@material-ui/icons/Add';
 
-function TeacherCourseChapterMaterialList(props){
+function StudentCourseChapterMaterialList(props){
     const params = useParams();
     const chapterId = props.chapterId;
     const dispatch = useDispatch();
@@ -22,7 +22,7 @@ function TeacherCourseChapterMaterialList(props){
     const columns = [
         { title: 'ChapterMaterialId', field: 'eduCourseMaterialId',
             render: rowData => (
-                <Link to={"/edu/teacher/course/chapter/material/detail/" + rowData["eduCourseMaterialId"]}>
+                <Link to={"/edu/student/course/chapter/material/detail/" + rowData["eduCourseMaterialId"]}>
                 {rowData["eduCourseMaterialId"]}
                 </Link>
             )
@@ -49,14 +49,7 @@ function TeacherCourseChapterMaterialList(props){
                 title={"Material"}
                 columns={columns}
                 data = {chapterMaterials}    
-                actions={[
-                    {
-                      icon: () => { return <AddIcon color='primary' fontSize='large' /> },
-                      tooltip: 'Thêm mới',
-                      isFreeAction: true,
-                      onClick: () => { history.push('/edu/course/detail/chapter/material/create/' + chapterId) }
-                    },
-                  ]}
+                
                 />                
             </CardContent>
         </Card>
@@ -64,4 +57,4 @@ function TeacherCourseChapterMaterialList(props){
 
 }
 
-export default TeacherCourseChapterMaterialList;
+export default StudentCourseChapterMaterialList;
