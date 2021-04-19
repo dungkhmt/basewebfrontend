@@ -33,7 +33,9 @@ import changePageSize, {
 } from "../../../../utils/MaterialTableUtils";
 
 //import StudentCourseChapterList from "../../../../component/education/course/StudentCourseChapterList";
-import StudentCourseChapterList from "../../../../component/education/course/StudentCourseChapterLis";
+import StudentCourseChapterList from "../../../../component/education/course/StudentCourseChapterList";
+import StudentCourseQuizList from "../../../../component/education/course/StudentCourseQuizList";
+
 
 const useStyles = makeStyles((theme) => ({
   card: {
@@ -130,6 +132,7 @@ function SClassDetail() {
   const getClassDetail = () => {
     request(token, history, "get", `/edu/class/${params.id}`, (res) => {
       setClassDetail(res.data);
+      
     });
   };
 
@@ -170,6 +173,8 @@ function SClassDetail() {
   useEffect(() => {
     getClassDetail();
     getAssign();
+
+    console.log("classDetail = ",classDetail);
   }, []);
 
   return (
@@ -241,7 +246,7 @@ function SClassDetail() {
 
 
       <StudentCourseChapterList />          
-
+      <StudentCourseQuizList courseId = {classDetail.courseId}/>
 
 
       <Card className={classes.card}>
