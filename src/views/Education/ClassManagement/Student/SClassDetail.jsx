@@ -32,6 +32,9 @@ import changePageSize, {
   tableIcons,
 } from "../../../../utils/MaterialTableUtils";
 
+//import StudentCourseChapterList from "../../../../component/education/course/StudentCourseChapterList";
+import StudentCourseChapterList from "../../../../component/education/course/StudentCourseChapterLis";
+
 const useStyles = makeStyles((theme) => ({
   card: {
     marginTop: theme.spacing(2),
@@ -235,6 +238,11 @@ function SClassDetail() {
           </Grid>
         </CardContent>
       </Card>
+
+
+      <StudentCourseChapterList />          
+
+
 
       <Card className={classes.card}>
         <CardActionArea disableRipple onClick={onCLickStudentCard}>
