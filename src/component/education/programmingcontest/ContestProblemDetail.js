@@ -2,13 +2,26 @@ import {
     Button, Card, CardActions, CardContent, TextField, Typography,
     MenuItem, Checkbox, 
   } from "@material-ui/core/";
-  import React, { useState, useEffect } from "react";
-  import { useHistory } from "react-router-dom";
-  import { authPost, authGet, authPostMultiPart } from "../../../api";
-  import { useDispatch, useSelector } from "react-redux";
-  import { useParams } from "react-router";
-  import MaterialTable from "material-table";
+import React, { useState, useEffect } from "react";
+import { useHistory } from "react-router-dom";
+import { authPost, authGet, authPostMultiPart } from "../../../api";
+import { useDispatch, useSelector } from "react-redux";
+import { useParams } from "react-router";
+import MaterialTable from "material-table";
+import { Editor } from "react-draft-wysiwyg";
+import { ContentState, convertToRaw, EditorState } from "draft-js";
+import draftToHtml from "draftjs-to-html";
+import htmlToDraft from 'html-to-draftjs';
 
+const editorStyle = {
+    toolbar: {
+	  background: "#90caf9",
+	},
+	editor: {
+	  border: "1px solid black",
+	  minHeight: "300px",
+	},
+  };  
 function ContestProblemDetail(props){
     const params = useParams();
     const problemId = params.problemId;
@@ -18,6 +31,7 @@ function ContestProblemDetail(props){
     const [problem, setProblem] = useState(null);
     const [timeLimit, setTimeLimit] = useState(null);
     const [problemName, setProblemName] = useState(null);
+    const [problemStatement, setProblemStatement] = useState(null);
 	const [levelId,setLevelId] = useState(null);
 	const [categoryId, setCategoryId] = useState(null);
 	const [levelIdList, setLevelIdList] = useState([]);
@@ -30,7 +44,8 @@ function ContestProblemDetail(props){
     const [testPoint, setTestPoint] = useState(null);
 
     const [problemTests, setProblemTests] = useState([]);
-
+    const [editorState, setEditorState] = useState(EditorState.createEmpty());
+    const [initDataState, setInitDataSate] = useState(false);
     const columns = [
         { title: 'ID bài tập', field: 'problemId'           
         },
@@ -74,23 +89,37 @@ function ContestProblemDetail(props){
     }
     async function getContestProblem(){
         let res = await authGet(dispatch, token, '/get-contest-problem/' + problemId);
+        
         setProblem(res);
         console.log(res);
         setTimeLimit(res.timeLimit);
         setProblemName(res.problemName);
         setLevelId(res.levelId);
         setCategoryId(res.categoryId);
+        let blocksFromHtml = htmlToDraft(res.problemStatement);
+        let { contentBlocks, entityMap } = blocksFromHtml;
+        let contentState = ContentState.createFromBlockArray(contentBlocks, entityMap);
+        let statement = EditorState.createWithContent(contentState);
+        setEditorState(statement);
+        setInitDataSate(true);
         //setProblemStatement(parse(res.problemStatement));
     }
+
+    const onChangeEditorState = (editorState) => {
+    	setEditorState(editorState);
+  	};
+
     function handleSubmit(){
+        let statement = draftToHtml(convertToRaw(editorState.getCurrentContent()));
         let body = {
             problemId: problemId,
             problemName: problemName,
+            problemStatement: statement,
             timeLimit: timeLimit,
             levelId: levelId,
             categoryId: categoryId
         };
-
+        
         let formData = new FormData();
         formData.append("inputJson", JSON.stringify(body));
         //formData.append("files",selectedInputFile);
@@ -118,146 +147,176 @@ function ContestProblemDetail(props){
         getContestProblemLevels();
         getContestProblemCategories();
     },[]);
-    return(
-        <Card>
-            <CardContent>
-                <form>
-                
-                <TextField
-                  id="problemName"
-                  label="Tên bài"
-                  placeholder="Tên bài"
-                  value={problemName}
-                  multiline={true}
-                  rows="1"
-                  fullWidth
-                  onChange={(event) => {
-                    setProblemName(event.target.value);
-                    }}
-                />
-                
-                <TextField
-                  id="timeLimit"
-                  label="Giới hạn thời gian"
-                  placeholder="Giới hạn thời gian"
-                  value={timeLimit}
-                  multiline={true}
-                  rows="1"
-                  fullWidth
-                  onChange={(event) => {
-                    setTimeLimit(event.target.value);
-                    }}
-                />
-							<TextField
-                				required
-                				id="levelId"
-                				select
-                				label="Mức độ bài"
-                				value={levelId}
+    return(        
+        <Card>   
+            {!initDataState?
+            <div></div>:
+            <div>        
+                <CardContent>
+                    <form>
+                        <div>
+                            <TextField
+                                id="problemName"
+                                label="Tên bài"
+                                value={problemName}
+                                multiline={true}
+                                rows="1"
                                 fullWidth
-                				onChange={(event) => {
-                  					setLevelId(event.target.value);
-									  //console.log(problemId,event.target.value);
-                				}}
-              				>
-                			{levelIdList.map((item) => (
-                  				<MenuItem key={item} value={item}>
-                    				{item}
-                  				</MenuItem>
-                			))}
-            				</TextField>
-							<TextField
-                				required
-                				id="levelId"
-                				select
-                				label="Thể loại"
-                				value={categoryId}
+                                onChange={(event) => {
+                                    setProblemName(event.target.value);
+                                    }}
+                            />
+                        </div>
+                        <div>
+                            <TextField
+                                id="timeLimit"
+                                type="number"
+                                label="Giới hạn thời gian"
+                                placeholder="Giới hạn thời gian"
+                                value={timeLimit}
+                                multiline={true}
+                                rows="1"
                                 fullWidth
-                				onChange={(event) => {
-                  					setCategoryId(event.target.value);
-									  //console.log(problemId,event.target.value);
-                				}}
-              				>
-                			{categoryIdList.map((item) => (
-                  				<MenuItem key={item} value={item}>
-                    				{item}
-                  				</MenuItem>
-                			))}
-            				</TextField>
+                                onChange={(event) => {
+                                    setTimeLimit(event.target.value);
+                                    }}
+                            />
+                        </div>
+                        <div>
+                            <TextField
+                                required
+                                id="levelId"
+                                select
+                                label="Mức độ bài"
+                                value={levelId}
+                                fullWidth
+                                onChange={(event) => {
+                                    setLevelId(event.target.value);
+                                        //console.log(problemId,event.target.value);
+                                }}
+                            >
+                                {levelIdList.map((item) => (
+                                    <MenuItem key={item} value={item}>
+                                        {item}
+                                    </MenuItem>
+                                ))}
+                            </TextField>
+                        </div>
+                        <div>
+                            <TextField
+                                required
+                                id="levelId"
+                                select
+                                label="Thể loại"
+                                value={categoryId}
+                                fullWidth
+                                onChange={(event) => {
+                                    setCategoryId(event.target.value);
+                                        //console.log(problemId,event.target.value);
+                                }}
+                            >
+                            {categoryIdList.map((item) => (
+                                <MenuItem key={item} value={item}>
+                                    {item}
+                                </MenuItem>
+                            ))}
+                            </TextField>
+                        </div>   
+                        <div>       
+                            <TextField
+                                required
+                                id="problemStatement"
+                                label="Mô tả bài tập"
+                                placeholder="Mô tả bài tập"
+                                value={problemStatement} 
+                                disabled
+                                fullWidth                   
+                                onChange={(event) => {
+                                    setProblemStatement(event.target.value);
+                                }}			
+                            />
+                            <Editor
+                                editorState={editorState}
+                                handlePastedText={() => false}
+                                onEditorStateChange={onChangeEditorState}
+                                toolbarStyle={editorStyle.toolbar}
+                                editorStyle={editorStyle.editor}
+                            />    
+                        </div>                                 
+                        <br></br><br></br>
+                        <Button
+                        variant="contained"
+                        color="primary"
+                        style={{ marginLeft: "40px" }}
+                        onClick={handleSubmit}
+                        >
+                            Lưu
+                        </Button>
+                    
+                    </form>
+                </CardContent>
 
-
+                <CardContent>
+                    <form>
+                    <TextField
+                id="testName"
+                label="Tên Test"
+                placeholder="Tên Test"
+                value={testName}
+                multiline={true}
+                rows="1"
+                
+                onChange={(event) => {
+                    setTestName(event.target.value);
+                }}
+                />
+                <br></br><br></br>
+                <TextField
+                id="testPoint"
+                label="Điểm Test"
+                placeholder="Điểm Test"
+                value={testPoint}
+                multiline={true}
+                rows="1"
+                
+                onChange={(event) => {
+                    setTestPoint(event.target.value);
+                }}
+                />
+                <br></br><br></br>
+                <label>Select Input file</label>
+                <input type="file" onChange={onInputFileChange} /><br></br><br></br>
+                
+                <label>Select Output file</label>
+                <input type="file" onChange={onOutputFileChange} />
+                
+                
                 <br></br><br></br>
                 <Button
-                variant="contained"
-                color="primary"
-                style={{ marginLeft: "40px" }}
-                onClick={handleSubmit}
+                    variant="contained"
+                    color="primary"
+                    style={{ marginLeft: "40px" }}
+                    onClick={onUpload}
                 >
                     Lưu
                 </Button>
-                
-            </form>
-            </CardContent>
-            <CardContent>
-                <form>
-                <TextField
-              id="testName"
-              label="Tên Test"
-              placeholder="Tên Test"
-              value={testName}
-              multiline={true}
-              rows="1"
-              
-              onChange={(event) => {
-                setTestName(event.target.value);
-              }}
-            />
-            <br></br><br></br>
-            <TextField
-              id="testPoint"
-              label="Điểm Test"
-              placeholder="Điểm Test"
-              value={testPoint}
-              multiline={true}
-              rows="1"
-              
-              onChange={(event) => {
-                setTestPoint(event.target.value);
-              }}
-            />
-            <br></br><br></br>
-            <label>Select Input file</label>
-            <input type="file" onChange={onInputFileChange} /><br></br><br></br>
-            
-            <label>Select Output file</label>
-            <input type="file" onChange={onOutputFileChange} />
-            
-            
-            <br></br><br></br>
-            <Button
-                variant="contained"
-                color="primary"
-                style={{ marginLeft: "40px" }}
-                onClick={onUpload}
-            >
-                Lưu
-            </Button>
-            <Button
-                variant="contained"
-                onClick={() => history.push("/edu/management/contestprogramming")}
-            >
-                Hủy
-            </Button>
-            </form>
+                <Button
+                    variant="contained"
+                    onClick={() => history.push("/edu/management/contestprogramming")}
+                >
+                    Hủy
+                </Button>
+                </form>
 
-            <MaterialTable
-                title={"Danh sách Test"}
-                columns={columns}
-                data = {problemTests}
-                
-            />
+                <MaterialTable
+                    title={"Danh sách Test"}
+                    columns={columns}
+                    data = {problemTests}
+                    
+                />
 
-            </CardContent>
+                </CardContent>
+            </div>} 
         </Card>
     );
 }
