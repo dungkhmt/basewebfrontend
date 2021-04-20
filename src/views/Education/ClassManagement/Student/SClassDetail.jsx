@@ -137,8 +137,8 @@ function SClassDetail() {
   };
   const getQuizListOfClass = () => {
     request(token, history, "get", `/get-quiz-of-class/${params.id}`, (res) => {
-      setQuizList(res.data);
       console.log("getQuizListOfClass, res.data = ", res.data);
+      setQuizList(res.data);
     });
   };
 
