@@ -34,7 +34,8 @@ function StudentCourseQuizList(props){
 
     async function getQuizList(){
         let lst = await authGet(dispatch, token, '/get-quiz-of-course/' + courseId);
-        setQuizs(lst);        
+        setQuizs(lst);   
+        console.error('quiz list = ',lst);     
     }
   
       useEffect(() => {
