@@ -36,7 +36,6 @@ import changePageSize, {
 import StudentCourseChapterList from "../../../../component/education/course/StudentCourseChapterList";
 import StudentCourseQuizList from "../../../../component/education/course/StudentCourseQuizList";
 
-
 const useStyles = makeStyles((theme) => ({
   card: {
     marginTop: theme.spacing(2),
@@ -67,6 +66,8 @@ function SClassDetail() {
   const [students, setStudents] = useState([]);
 
   const [openStudentList, setOpenStudentList] = useState(false);
+
+  const [quizList, setQuizList] = useState([]);
 
   // Table refs.
   const studentTableRef = useRef(null);
@@ -132,7 +133,12 @@ function SClassDetail() {
   const getClassDetail = () => {
     request(token, history, "get", `/edu/class/${params.id}`, (res) => {
       setClassDetail(res.data);
-      
+    });
+  };
+  const getQuizListOfClass = () => {
+    request(token, history, "get", `/get-quiz-of-class/${params.id}`, (res) => {
+      console.log("getQuizListOfClass, res.data = ", res.data);
+      setQuizList(res.data);
     });
   };
 
@@ -173,8 +179,9 @@ function SClassDetail() {
   useEffect(() => {
     getClassDetail();
     getAssign();
+    getQuizListOfClass();
 
-    console.log("classDetail = ",classDetail);
+    console.log("classDetail = ", classDetail);
   }, []);
 
   return (
@@ -244,10 +251,8 @@ function SClassDetail() {
         </CardContent>
       </Card>
 
-
-      <StudentCourseChapterList />          
-      <StudentCourseQuizList courseId = {classDetail.courseId}/>
-
+      <StudentCourseChapterList />
+      <StudentCourseQuizList quizzList={quizList} />
 
       <Card className={classes.card}>
         <CardActionArea disableRipple onClick={onCLickStudentCard}>
