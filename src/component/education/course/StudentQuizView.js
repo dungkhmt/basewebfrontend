@@ -1,10 +1,13 @@
-import React, { Fragment } from "react";
+import React, { Fragment, useState } from "react";
 import { withStyles } from "@material-ui/core/styles";
 import { green } from "@material-ui/core/colors";
 import FormGroup from "@material-ui/core/FormGroup";
 import FormControlLabel from "@material-ui/core/FormControlLabel";
 import { Checkbox, Typography, Button, Box } from "@material-ui/core";
 import parse from "html-react-parser";
+import { useSelector } from "react-redux";
+import { useHistory } from "react-router";
+import { request } from "../../../api";
 
 const GreenCheckbox = withStyles({
   root: {
@@ -17,23 +20,61 @@ const GreenCheckbox = withStyles({
 })((props) => <Checkbox color="default" {...props} />);
 
 export default function StudentQuizView({ quizz, index }) {
-  const [state, setState] = React.useState(() => {
-    const answers = {};
+  const token = useSelector((state) => state.auth.token);
+  const history = useHistory();
 
-    quizz.quizChoiceAnswerList.forEach((answer) => {
-      answers[answer.choiceAnswerId] = false;
+  const [result, setResult] = useState({ submited: false, isCorrect: false });
+  const [chkState, setChkState] = useState(() => {
+    const isChecked = {};
+
+    quizz.quizChoiceAnswerList.forEach((ans) => {
+      isChecked[ans.choiceAnswerId] = false;
     });
 
-    return answers;
+    return isChecked;
   });
 
   const handleChange = (event) => {
-    setState({ ...state, [event.target.name]: event.target.checked });
+    setChkState({ ...chkState, [event.target.name]: event.target.checked });
+  };
+
+  const onClickTestBtn = () => {
+    setResult({ ...result, submited: false });
+    const chooseAnsIds = [];
+
+    for (var id in chkState) {
+      if (chkState[id] === true) {
+        chooseAnsIds.push(id);
+      }
+    }
+
+    request(
+      token,
+      history,
+      "post",
+      "/quiz-choose_answer",
+      (res) => {
+        setResult({ submited: true, isCorrect: res.data });
+      },
+      {},
+      { questionId: quizz.questionId, chooseAnsIds: chooseAnsIds }
+    );
   };
 
   return (
     <Fragment>
-      <Box display="flex" alignItems="center">
+      <Box
+        display="flex"
+        alignItems="center"
+        style={{
+          fontSize: "1rem",
+          backgroundColor: result.submited
+            ? result.isCorrect
+              ? "green"
+              : "red"
+            : "white",
+        }}
+      >
         <Typography>{`Câu ${index}.`}&nbsp;</Typography>
         {parse(quizz.statement)}
       </Box>
@@ -46,7 +87,7 @@ export default function StudentQuizView({ quizz, index }) {
             <FormControlLabel
               control={
                 <GreenCheckbox
-                  checked={state[answer.choiceAnswerId]}
+                  checked={chkState[answer.choiceAnswerId]}
                   onChange={handleChange}
                   name={answer.choiceAnswerId}
                 />
@@ -55,7 +96,12 @@ export default function StudentQuizView({ quizz, index }) {
             />
           </div>
         ))}
-        <Button color="primary" variant="contained" style={{ marginLeft: 32 }}>
+        <Button
+          color="primary"
+          variant="contained"
+          style={{ marginLeft: 32 }}
+          onClick={onClickTestBtn}
+        >
           Kiểm tra
         </Button>
       </FormGroup>
