@@ -17,11 +17,11 @@ export const authPost = (dispatch, token, url, body) => {
         if (res.status === 401) {
           dispatch(failed());
           throw Error("Unauthorized");
-        }
-        else {
-          console.log(res)
-          try { res.json().then(res1 => console.log(res1)) }
-          catch (err) { }
+        } else {
+          console.log(res);
+          try {
+            res.json().then((res1) => console.log(res1));
+          } catch (err) {}
           throw Error();
         }
         return null;
@@ -44,34 +44,33 @@ export const authPostMultiPart = (dispatch, token, url, body) => {
   });
   */
 
- return fetch(API_URL + url, {
-  method: "POST",
-  headers: {
-    "X-Auth-Token": token,
-  },
-  body: body,
-}).then(
-  (res) => {
-    if (!res.ok) {
-      if (res.status === 401) {
-        dispatch(failed());
-        throw Error("Unauthorized");
+  return fetch(API_URL + url, {
+    method: "POST",
+    headers: {
+      "X-Auth-Token": token,
+    },
+    body: body,
+  }).then(
+    (res) => {
+      if (!res.ok) {
+        if (res.status === 401) {
+          dispatch(failed());
+          throw Error("Unauthorized");
+        } else {
+          console.log(res);
+          try {
+            res.json().then((res1) => console.log(res1));
+          } catch (err) {}
+          throw Error();
+        }
+        return null;
       }
-      else {
-        console.log(res)
-        try { res.json().then(res1 => console.log(res1)) }
-        catch (err) { }
-        throw Error();
-      }
-      return null;
+      return res.json();
+    },
+    (error) => {
+      console.log(error);
     }
-    return res.json();
-  },
-  (error) => {
-    console.log(error);
-  }
-);
-
+  );
 };
 export const authPut = (dispatch, token, url, body) => {
   return fetch(API_URL + url, {
@@ -104,11 +103,11 @@ export const authGet = (dispatch, token, url) => {
         if (res.status === 401) {
           dispatch(failed());
           throw Error("Unauthorized");
-        }
-        else {
-          console.log(res)
-          try { res.json().then(res1 => console.log(res1)) }
-          catch (err) { }
+        } else {
+          console.log(res);
+          try {
+            res.json().then((res1) => console.log(res1));
+          } catch (err) {}
           throw Error();
         }
         return null;
@@ -134,11 +133,11 @@ export const authDelete = (dispatch, token, url, body) => {
         if (res.status === 401) {
           dispatch(failed());
           throw Error("Unauthorized");
-        }
-        else {
+        } else {
           console.log(res);
-          try { res.json().then(res1 => console.log(res1)) }
-          catch (err) { }
+          try {
+            res.json().then((res1) => console.log(res1));
+          } catch (err) {}
           throw Error();
         }
         return null;
@@ -214,8 +213,8 @@ export const request = async (
     }
   } catch (e) {
     // Handling work to do when encountering all kinds of errors, e.g turn off the loading icon.
-    if (isFunction(errorHandlers['onError'])) {
-      errorHandlers['onError'](e)
+    if (isFunction(errorHandlers["onError"])) {
+      errorHandlers["onError"](e);
     }
 
     if (e.response) {
@@ -223,14 +222,14 @@ export const request = async (
       switch (e.response.status) {
         case 401:
           if (isFunction(errorHandlers[401])) {
-            errorHandlers[401](e)
+            errorHandlers[401](e);
           } else {
             history.push({ pathname: "/login" });
           }
           break;
         case 403:
           if (isFunction(errorHandlers[403])) {
-            errorHandlers[403](e)
+            errorHandlers[403](e);
           } else {
             infoNoti("Bạn cần được cấp quyền để thực hiện hành động này.");
           }
@@ -253,8 +252,8 @@ export const request = async (
         e.request
       );
 
-      if (isFunction(errorHandlers['noResponse'])) {
-        errorHandlers['noResponse'](e)
+      if (isFunction(errorHandlers["noResponse"])) {
+        errorHandlers["noResponse"](e);
       }
 
       errorNoti("Không thể kết nối tới máy chủ.");
@@ -265,6 +264,6 @@ export const request = async (
         e.message
       );
     }
-    console.log('Request config', e.config);
+    console.log("Request config", e.config);
   }
 };
