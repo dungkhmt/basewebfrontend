@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useState, useReducer } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import MaterialTable from "material-table";
 import { authPost, authGet, authPostMultiPart } from "../../../api";
@@ -33,6 +33,9 @@ import SuggestionResult from '../suggestion/SuggestionResult';
 import OverlayLoading from '../components/OverlayLoading';
 import { MemberList, AddMember } from './Members';
 import UserItem from '../components/UserItem';
+
+import CloseIcon from '@material-ui/icons/Close';
+import Dialog from '@material-ui/core/Dialog';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -448,6 +451,165 @@ export default function ProjectDetail(props) {
       });
   }
 
+  function getModalStyle() {
+    return {
+      width: '100%',
+      height: '100%',
+      backgroundColor: 'rgb(200, 200, 200, 0.4)'
+    };
+  }
+
+  const ImageUI = (props) =>{
+    const classes = useStyles();
+    const [modalStyle] = React.useState(getModalStyle);
+    const [open, setOpen] = React.useState(false);
+
+    let item = props.item;
+    let label = item.substring(item.indexOf("-") + 1);
+
+    const [isHovered, setHovered] = useState(false);
+
+    const [, forceUpdate] = useReducer(x => x + 1, 0);
+  
+    const handleOpen = (e) => {
+      setOpen(true);
+      setHovered(false);
+    };
+  
+    const handleClose = (e) => {
+      setOpen(false);
+      setHovered(false);
+    };
+
+    const contentClick = (e) => {
+      e.stopPropagation(); 
+      //alert("hahah");
+    };
+
+    function update(){
+      forceUpdate();
+    }
+
+    useEffect(() => {
+      window.addEventListener('resize', update);
+      return () => {
+        window.removeEventListener('resize', update);
+      }
+    }, [])
+
+    const calculatedStyle = isHovered ?
+      {
+        backgroundColor: 'red',
+        color: 'white',
+      } :
+      {
+        backgroundColor: 'rgb(255, 0, 0, 0.6)',
+        color: 'white',
+      };
+
+    
+
+    let body = (
+      <div style={modalStyle} className={classes.paper} onClick={handleClose}>
+        <Grid
+          container
+          spacing={0}
+          direction="row"
+          alignItems="center"
+          justify="center"
+          style={{ minHeight: '300px', height: '95%' }}
+        >
+        
+          <Grid item xs='auto' >
+            <img src={API_URL + '/resources/backlog/' + item} style={{maxHeight: `${window.innerHeight - 40}px`, objectFit: "scale-down"}} onClick={contentClick}/>
+          </Grid>   
+
+          {/* <Grid item xs={12} style={{width: '100%'}}>
+            
+          </Grid> */}
+        
+        </Grid> 
+        <div style={{
+              position: 'absolute',
+              top: '95.5%',
+              width: '100%', 
+              height: 'auto', 
+              color: 'white', 
+              backgroundColor: 'rgb(0,0,0,0.7)', 
+              display: 'flex',
+              justifyContent: 'center',
+              alignItems: 'center',
+              textAlign: 'center',
+              fontSize: '20px',
+              }} 
+              onClick={contentClick}
+              >
+                <div style={{
+                  width: '98%', 
+                  height: 'auto',  
+                  display: 'inline-block',
+                  fontSize: '20px',
+                  }}
+                >
+                  &nbsp;&nbsp;
+                  {label}
+                </div>
+
+                <div style={{
+                  width: '2%', 
+                  height: '100%',  
+                  display: 'inline-block',
+                  marginBottom: '-7px',
+                  }}
+                >
+
+                  <CloseIcon  
+                    style={calculatedStyle} 
+                    onClick={handleClose}
+                    onMouseEnter={() => setHovered(true)}
+                    onMouseLeave={() => setHovered(false)}
+                  />
+
+                </div>
+
+            </div>
+        
+      </div>
+    );
+  
+    return (
+      <div style={{display: 'inline'}}>
+        <div style={{
+          position: 'absolute',
+          width: '100%', 
+          height: '100%',  
+          }}>
+          <Dialog onClose={handleClose} aria-labelledby="simple-dialog-title" open={open} fullScreen={true} 
+            PaperProps={{
+              style: {
+                backgroundColor: 'transparent',
+                boxShadow: 'none',
+              },
+            }}
+            
+          >
+            {body}
+          </Dialog>
+        </div>
+        
+        <Box mr={1} mb={0.5} display="inline" key={item}>
+          <Chip
+            label={item.substring(item.indexOf("-") + 1)}
+            onClick={handleOpen}
+            variant="outlined"
+            size="medium"
+            color="primary"
+          /> 
+        </Box>
+      </div>
+    );
+  }
+
   if (!isPermissive) {
     return (
       <Redirect to={{ pathname: "/", state: { from: history.location } }} />
@@ -621,19 +783,25 @@ export default function ProjectDetail(props) {
                           disabled
                         />
                         <Box mt={1} >
-                          {rowData.backlogTask.attachmentPaths.map(item => (
-                            <Box mr={1} mb={0.5} display="inline" key={item}>
-                              <Chip
-                                label={item.substring(item.indexOf("-") + 1)}
-                                onClick={() => {
-                                  downloadFiles(item);
-                                }}
-                                variant="outlined"
-                                size="medium"
-                                color="primary"
-                              />
-                            </Box>
-                          ))}
+                          {rowData.backlogTask.attachmentPaths.map(item => {
+                            if(item.match(/.(jpg|jpeg|png|gif)$/i)) {
+                              return <ImageUI item={item}/>
+                            }
+                            else {
+                              return <Box mr={1} mb={0.5} display="inline" key={item}>
+                                <Chip
+                                  label={item.substring(item.indexOf("-") + 1)}
+                                  onClick={() => {
+                                    downloadFiles(item);
+                                  }}
+                                  
+                                  variant="outlined"
+                                  size="medium"
+                                  color="primary"
+                                /> 
+                              </Box>
+                            }
+                            })}
                         </Box>
 
                         {rowData.updateStatusPermission ?
