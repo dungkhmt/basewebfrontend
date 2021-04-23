@@ -6,6 +6,14 @@ export const eduTeachingManagement = {
   text: "Quản lý giảng dạy",
   child: [
     {
+      id: "MENU_EDUCATION_TEACHING_MANAGEMENT_TEACHER_VIEW_LIST_COURSE",
+      path: "/edu/teacher/course/list",
+      isPublic: false,
+      icon: null,
+      text: "Danh sách môn",
+      child: [],
+    },
+    {
       id: "MENU_EDUCATION_TEACHING_MANAGEMENT_TEACHER_VIEW_LIST_CLASS",
       path: "/edu/teacher/class/list",
       isPublic: false,
