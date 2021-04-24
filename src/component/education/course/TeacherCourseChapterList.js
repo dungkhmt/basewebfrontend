@@ -10,9 +10,20 @@ import {
   import MaterialTable from "material-table";
   import {Link} from "react-router-dom";
   import AddIcon from '@material-ui/icons/Add';
+  import { makeStyles } from "@material-ui/core/styles";
+  import PositiveButton from "../classmanagement/PositiveButton";
+
+  const useStyles = makeStyles((theme) => ({
+    card: {
+      marginTop: theme.spacing(2),
+      borderRadius: "6px",
+    },
+    registrationBtn: {},
+  }));
 
 function TeacherCourseChapterList(props){
     const params = useParams();
+    const classes = useStyles();
     const courseId = props.courseId;
     const dispatch = useDispatch();
     const token = useSelector(state => state.auth.token);
@@ -27,12 +38,35 @@ function TeacherCourseChapterList(props){
                 </Link>
             )
         },
-        { title: 'Chapter Name', field: 'chapterName'}
+        { title: 'Chapter Name', field: 'chapterName'},
+        { title: 'Status', field: 'statusId'},
        
+        {
+          field: "",
+          title: "",
+          cellStyle: { textAlign: "center" },
+          render: (rowData) =>
+            
+              <PositiveButton
+                label="Thay đổi trạng thái"
+                disableRipple
+                className={classes.registrationBtn}
+                onClick={() => changeStatus(rowData)}
+              />
+           
+        },
+
       ];
 
+    const changeStatus = (rowData) => {
+      //alert('change status');
+      let statusId = authGet(dispatch, token, '/edu/class/change-chapter-status/' + rowData.chapterId);
+      console.log('change status, return status = ' + statusId);
+      history.push('/edu/course/detail/' + courseId);
+    } 
+
     async function getChapterList(){
-        let lst = await authGet(dispatch, token, '/edu/class/get-chapters-of-course');
+        let lst = await authGet(dispatch, token, '/edu/class/get-chapters-of-course/' + courseId);
         setChapters(lst);        
     }
   
@@ -48,7 +82,10 @@ function TeacherCourseChapterList(props){
             <MaterialTable
                 title={"Chương"}
                 columns={columns}
-                data = {chapters}    
+                data = {chapters}   
+                onRowClick={(event, rowData) => {
+                  console.log(rowData);                  
+                }} 
                 actions={[
                     {
                       icon: () => { return <AddIcon color='primary' fontSize='large' /> },

@@ -68,6 +68,7 @@ function SClassDetail() {
   const [openStudentList, setOpenStudentList] = useState(false);
 
   const [quizList, setQuizList] = useState([]);
+  const [chapterList, setChapterList] = useState([]);
 
   // Table refs.
   const studentTableRef = useRef(null);
@@ -128,6 +129,17 @@ function SClassDetail() {
       ),
     },
   ];
+  const chapterColumns = [
+    { title: 'ChapterId', field: 'chapterId',
+        render: rowData => (
+            <Link to={"/edu/student/course/chapter/detail/" + rowData["chapterId"]}>
+            {rowData["chapterId"]}
+            </Link>
+        )
+    },
+    { title: 'Chapter Name', field: 'chapterName'}
+   
+  ];
 
   // Functions.
   const getClassDetail = () => {
@@ -136,11 +148,21 @@ function SClassDetail() {
     });
   };
   const getQuizListOfClass = () => {
-    request(token, history, "get", `/get-quiz-of-class/${params.id}`, (res) => {
+    //request(token, history, "get", `/get-quiz-of-class/${params.id}`, (res) => {
+      request(token, history, "get", `/get-published-quiz-of-class/${params.id}`, (res) => {  
       console.log("getQuizListOfClass, res.data = ", res.data);
       setQuizList(res.data);
     });
   };
+
+  const getChapterListOfClass = () => {
+    //request(token, history, "get", `/get-quiz-of-class/${params.id}`, (res) => {
+      request(token, history, "get", `/edu/class/get-chapters-of-class/${params.id}`, (res) => {  
+      console.log("getChapterListOfClass, res.data = ", res.data);
+      setChapterList(res.data);
+    });
+  };
+  
 
   const getStudentsOfClass = () => {
     request(
@@ -180,6 +202,7 @@ function SClassDetail() {
     getClassDetail();
     getAssign();
     getQuizListOfClass();
+    getChapterListOfClass();
 
     console.log("classDetail = ", classDetail);
   }, []);
@@ -251,7 +274,12 @@ function SClassDetail() {
         </CardContent>
       </Card>
 
-      <StudentCourseChapterList />
+      <MaterialTable
+                title={"Chương"}
+                columns={chapterColumns}
+                data={chapterList}
+                />         
+
       <StudentCourseQuizList quizzList={quizList} />
 
       <Card className={classes.card}>
