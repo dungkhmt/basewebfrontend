@@ -14,10 +14,16 @@ import {
 function StudentCourseChapterList(props){
     const params = useParams();
     const courseId = props.courseId;
+    const classId = props.classId;
+    const chapterList = props.chapters;
+    const [chapters, setChapters] = useState(() => {
+        console.log('StudentCourseChapterList, chapters = ', props.chapters);
+        return props.chapters;
+    });
     const dispatch = useDispatch();
     const token = useSelector(state => state.auth.token);
     const history = useHistory();
-    const [chapters, setChapters] = useState([]);
+    //const [chapters, setChapters] = useState([]);
 
     const columns = [
         { title: 'ChapterId', field: 'chapterId',
@@ -37,9 +43,10 @@ function StudentCourseChapterList(props){
     }
   
       useEffect(() => {
-          
-        getChapterList();
-        console.log('StudentCourseChapterList, courseId = ' + courseId);
+        //setChapters(chapterList);  
+        //getChapterList();
+        //console.log('StudentCourseChapterList, courseId = ' + courseId);
+
         }, []);
      
     return (
@@ -48,7 +55,11 @@ function StudentCourseChapterList(props){
             <MaterialTable
                 title={"Chương"}
                 columns={columns}
-                data = {chapters}    
+                data={
+                    props.chapters.map(chap => (
+                        <chap.chapterId />
+                      ))
+                }    
                 
                 />                
             </CardContent>

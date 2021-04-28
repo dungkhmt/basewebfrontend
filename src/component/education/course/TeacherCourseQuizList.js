@@ -11,8 +11,20 @@ import {
   import {Link} from "react-router-dom";
   import AddIcon from '@material-ui/icons/Add';
 
+  import { makeStyles } from "@material-ui/core/styles";
+  import PositiveButton from "../classmanagement/PositiveButton";
+
+  const useStyles = makeStyles((theme) => ({
+    card: {
+      marginTop: theme.spacing(2),
+      borderRadius: "6px",
+    },
+    registrationBtn: {},
+  }));
+
 function TeacherCourseQuizList(props){
     const params = useParams();
+    const classes = useStyles();
     const courseId = props.courseId;
     const dispatch = useDispatch();
     const token = useSelector(state => state.auth.token);
@@ -27,12 +39,35 @@ function TeacherCourseQuizList(props){
                 </Link>
             )
         },
-        { title: 'Level', field: 'levelId'}
+        { title: 'Level', field: 'levelId'},
+        { title: 'Status', field: 'statusId'},
        
+        {
+          field: "",
+          title: "",
+          cellStyle: { textAlign: "center" },
+          render: (rowData) =>
+            
+              <PositiveButton
+                label="Thay đổi trạng thái"
+                disableRipple
+                className={classes.registrationBtn}
+                onClick={() => changeStatus(rowData)}
+              />
+           
+        },
       ];
 
+      const changeStatus = (rowData) => {
+        //alert('change status');
+        let quiz = authGet(dispatch, token, '/change-quiz-open-close-status/' + rowData.questionId);
+        console.log('change status, return status = ' + quiz);
+        history.push('/edu/course/detail/' + courseId);
+      }   
+
     async function getQuestionList(){
-        let lst = await authGet(dispatch, token, '/get-all-quiz-questions');
+        //let lst = await authGet(dispatch, token, '/get-all-quiz-questions');
+        let lst = await authGet(dispatch, token, '/get-quiz-of-course/' + courseId);
         setQuizs(lst);        
     }
   

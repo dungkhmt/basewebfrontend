@@ -213,7 +213,7 @@ export default function ClassCreate(){
             }
           )
           .then((res) => {
-            history.push("/classes-list");
+            history.push("/edu/teacher/class/list");
           });
       };
     
@@ -334,7 +334,7 @@ export default function ClassCreate(){
             </Button>
             <Button
               variant="contained"
-              onClick={() => history.push("/edu/classes-list")}
+              onClick={() => history.push("/edu/teacher/class/list")}
             >
               Hủy
             </Button>
