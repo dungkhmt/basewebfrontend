@@ -31,6 +31,7 @@ import changePageSize, {
   localization,
   tableIcons,
 } from "../../../../utils/MaterialTableUtils";
+import { Link as RouterLink } from "react-router-dom";
 
 //import StudentCourseChapterList from "../../../../component/education/course/StudentCourseChapterList";
 import StudentCourseChapterList from "../../../../component/education/course/StudentCourseChapterList";
@@ -135,7 +136,8 @@ function SClassDetail() {
       field: "chapterId",
       render: (rowData) => (
         <Link
-          href={`/edu/student/course/chapter/detail/${rowData["chapterId"]}`}
+          component={RouterLink}
+          to={`/edu/student/course/chapter/detail/${rowData["chapterId"]}`}
         >
           {rowData["chapterId"]}
         </Link>
