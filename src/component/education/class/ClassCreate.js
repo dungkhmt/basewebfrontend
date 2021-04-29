@@ -376,7 +376,7 @@ export default function ClassCreate(){
             </Button>
             <Button
               variant="contained"
-              onClick={() => history.push("/edu/classes-list")}
+              onClick={() => history.push("/edu/teacher/class/list")}
             >
               Hủy
             </Button>

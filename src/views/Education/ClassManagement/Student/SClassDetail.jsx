@@ -31,9 +31,11 @@ import changePageSize, {
   localization,
   tableIcons,
 } from "../../../../utils/MaterialTableUtils";
+import { Link as RouterLink } from "react-router-dom";
 
 //import StudentCourseChapterList from "../../../../component/education/course/StudentCourseChapterList";
-import StudentCourseChapterList from "../../../../component/education/course/StudentCourseChapterLis";
+import StudentCourseChapterList from "../../../../component/education/course/StudentCourseChapterList";
+import StudentCourseQuizList from "../../../../component/education/course/StudentCourseQuizList";
 
 const useStyles = makeStyles((theme) => ({
   card: {
@@ -65,6 +67,9 @@ function SClassDetail() {
   const [students, setStudents] = useState([]);
 
   const [openStudentList, setOpenStudentList] = useState(false);
+
+  const [quizList, setQuizList] = useState([]);
+  const [chapterList, setChapterList] = useState([]);
 
   // Table refs.
   const studentTableRef = useRef(null);
@@ -125,12 +130,54 @@ function SClassDetail() {
       ),
     },
   ];
+  const chapterColumns = [
+    {
+      title: "ChapterId",
+      field: "chapterId",
+      render: (rowData) => (
+        <Link
+          component={RouterLink}
+          to={`/edu/student/course/chapter/detail/${rowData["chapterId"]}`}
+        >
+          {rowData["chapterId"]}
+        </Link>
+      ),
+    },
+    { title: "Chapter Name", field: "chapterName" },
+  ];
 
   // Functions.
   const getClassDetail = () => {
     request(token, history, "get", `/edu/class/${params.id}`, (res) => {
       setClassDetail(res.data);
     });
+  };
+  const getQuizListOfClass = () => {
+    //request(token, history, "get", `/get-quiz-of-class/${params.id}`, (res) => {
+    request(
+      token,
+      history,
+      "get",
+      `/get-published-quiz-of-class/${params.id}`,
+      (res) => {
+        console.log("getQuizListOfClass, res.data = ", res.data);
+        setQuizList(res.data);
+      }
+    );
+  };
+
+  const getChapterListOfClass = () => {
+    //request(token, history, "get", `/get-quiz-of-class/${params.id}`, (res) => {
+    request(
+      token,
+      history,
+      "get",
+      `/edu/class/get-chapters-of-class/${params.id}`,
+      (res) => {
+        console.log("getChapterListOfClass, res.data = ", res.data);
+        setChapterList(res.data);
+      }
+    );
   };
 
   const getStudentsOfClass = () => {
@@ -170,6 +217,10 @@ function SClassDetail() {
   useEffect(() => {
     getClassDetail();
     getAssign();
+    getQuizListOfClass();
+    getChapterListOfClass();
+
+    console.log("classDetail = ", classDetail);
   }, []);
 
   return (
@@ -239,10 +290,17 @@ function SClassDetail() {
         </CardContent>
       </Card>
 
+      <Card>
+        <CardContent>
+          <MaterialTable
+            title={"Chương"}
+            columns={chapterColumns}
+            data={chapterList}
+          />
+        </CardContent>
+      </Card>
 
-      <StudentCourseChapterList />          
-
-
+      <StudentCourseQuizList quizzList={quizList} />
 
       <Card className={classes.card}>
         <CardActionArea disableRipple onClick={onCLickStudentCard}>

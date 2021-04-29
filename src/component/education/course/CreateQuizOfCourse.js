@@ -10,7 +10,7 @@ import {
 } from "@material-ui/pickers";
 import React, { useState, useEffect } from "react";
 import { useHistory } from "react-router-dom";
-import { authPost, authGet } from "../../../api";
+import { authPost, authGet, authPostMultiPart } from "../../../api";
 import { useDispatch, useSelector } from "react-redux";
 import AlertDialog from '../../common/AlertDialog';
 import { Editor } from "react-draft-wysiwyg";
@@ -18,6 +18,8 @@ import { useParams } from "react-router";
 import { ContentState, convertToRaw, EditorState } from "draft-js";
 
 import draftToHtml from "draftjs-to-html";
+
+import { DropzoneArea } from "material-ui-dropzone";
 
 
 let reDirect = null;
@@ -57,6 +59,12 @@ function CreateQuizOfCourse(){
 	const [problemStatement, setProblemStatement] = useState(null);
 	const [levelList, setLevelList] = useState([]);
 	const [topicList, setTopicList] = useState([]);
+
+	const [attachmentFiles, setAttachmentFiles] = useState([]);
+
+	const handleAttachmentFiles = (files) => {
+		setAttachmentFiles(files);
+	}
 
 
     const [alertMessage, setAlertMessage] = useState({
@@ -103,8 +111,16 @@ function CreateQuizOfCourse(){
 			levelId: levelId,
 			questionContent: statement
         };
-        let chapter = await authPost(dispatch, token, '/create-quiz-question', body);
-        console.log('Create chapter success, chapter = ',chapter);
+
+		let formData = new FormData();
+		formData.append("QuizQuestionCreateInputModel", JSON.stringify(body));
+		for (const file of attachmentFiles) {
+			formData.append("files", file);
+		}
+
+		authPostMultiPart(dispatch, token, "/create-quiz-question", formData);
+        //let chapter = await authPost(dispatch, token, '/create-quiz-question', body);
+        //console.log('Create chapter success, chapter = ',chapter);
         history.push("/edu/course/detail/" + courseId);
 
     }
@@ -121,7 +137,7 @@ function CreateQuizOfCourse(){
 				<CardContent>
 					<Typography variant="h5" component="h2">
 						Tạo bài tập
-          </Typography>
+          			</Typography>
 					<form className={classes.root} noValidate autoComplete="off">
 						<div>
 							
@@ -173,6 +189,41 @@ function CreateQuizOfCourse(){
 
 						</div>
 						
+						<Typography 
+							variant='subtitle1'
+							display='block'
+							style={{margin: '5px 0 0 7px', width: "100%"}}
+							>
+							File đính kèm
+						</Typography>
+						<DropzoneArea 
+							dropzoneClass={classes.dropZone}
+							filesLimit={20}
+							showPreviews={true}
+							showPreviewsInDropzone={false}
+							useChipsForPreview
+							dropzoneText="Kéo và thả tệp vào đây hoặc nhấn để chọn tệp"
+							previewText="Xem trước:"
+							previewChipProps={
+								{ variant: "outlined", color: "primary", size: "medium", }
+							}
+							getFileAddedMessage={(fileName) =>
+								`Tệp ${fileName} tải lên thành công`
+							}
+							getFileRemovedMessage={(fileName) =>
+								`Tệp ${fileName} đã loại bỏ`
+							}
+							getFileLimitExceedMessage={(filesLimit) =>
+								`Vượt quá số lượng tệp tối đa được cho phép. Chỉ được phép tải lên tối đa ${filesLimit} tệp.`
+							}
+							alertSnackbarProps={{
+								anchorOrigin: { vertical: "bottom", horizontal: "right" },
+								autoHideDuration: 1800,
+							}}
+							onChange={(files) => handleAttachmentFiles(files)}
+							>
+						</DropzoneArea>
+
 					</form>
 				</CardContent>
 				<CardActions>
