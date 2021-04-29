@@ -10,8 +10,9 @@ import {
   import { useParams } from "react-router";
   import MaterialTable from "material-table";
   import {Link} from "react-router-dom";
-  import TeacherCourseChapterList from "./TeacherCourseChapterList";
+import TeacherCourseChapterList from "./TeacherCourseChapterList";
 import TeacherCourseQuizList from "./TeacherCourseQuizList";
+import TeacherCourseTopicList from "./TeacherCourseTopicList";
 
 function TeacherCourseDetail(){
     const params = useParams();
@@ -31,6 +32,7 @@ function TeacherCourseDetail(){
             <CardContent>
                 <TeacherCourseChapterList courseId={courseId}/>
                 <TeacherCourseQuizList courseId={courseId}/>
+                <TeacherCourseTopicList courseId={courseId}/>
             </CardContent>
         </Card>
     );
