@@ -134,7 +134,9 @@ function SClassDetail() {
       title: "ChapterId",
       field: "chapterId",
       render: (rowData) => (
-        <Link to={"/edu/student/course/chapter/detail/" + rowData["chapterId"]}>
+        <Link
+          href={`/edu/student/course/chapter/detail/${rowData["chapterId"]}`}
+        >
           {rowData["chapterId"]}
         </Link>
       ),
