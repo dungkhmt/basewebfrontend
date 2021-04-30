@@ -44,8 +44,12 @@ import displayTime from "../../../../utils/DateTimeUtils";
 import { StyledBadge } from "../../../../component/education/classmanagement/StyledBadge";
 import AssignList from "../../../../component/education/classmanagement/AssignList";
 // import withAsynchScreenSecurity from "../../../../component/education/classmanagement/withAsynchScreenSecurity";
-
+import Button from "@material-ui/core/Button";
 import clsx from "clsx";
+import ReactExport from "react-data-export";
+
+const ExcelFile = ReactExport.ExcelFile;
+const ExcelSheet = ReactExport.ExcelFile.ExcelSheet;
 
 const useStyles = makeStyles((theme) => ({
   card: {
@@ -89,7 +93,7 @@ function TClassDetail() {
 
   // Class.
   const [classDetail, setClassDetail] = useState({});
-
+  const [fetchedClassDetail, setFetchedClassDetail] = useState(false);
   // Student.
   const [students, setStudents] = useState([]);
   const [stuWillBeDeleted, setStuWillBeDeleted] = useState();
@@ -106,18 +110,23 @@ function TClassDetail() {
     { title: "Đã xoá", data: [] },
   ]);
   // const [deletedAssignId, setDeletedAssignId] = useState();
-
+  // Student Assignment
+  const [assignmentList, setAssignmentList] = useState([]);
+  const [studentAssignmentList, setStudentAssignmentList] = useState([]);
+  const [fetchedStudentAssignment, setFetchedStudentAssignment] = useState(false);
   // Dialog.
   const [openDelStuDialog, setOpenDelStuDialog] = useState(false);
 
   // Tables.
   const [openClassStuCard, setOpenClassStuCard] = useState(false);
   const [openRegistCard, setOpenRegistCard] = useState(false);
+  const [openStuAssignCard, setOpenStuAssignCard] = useState(false);
 
   // Tables's ref.
   const studentTableRef = useRef(null);
   const registTableRef = useRef(null);
   const assignTableRef = useRef(null);
+  const studentAssignTableRef = useRef(null);
 
   const headerProperties = {
     headerStyle: {
@@ -178,10 +187,69 @@ function TClassDetail() {
     },
   ];
 
+  const stuAssignCols = [
+    {
+      field: "studentName",
+      title: "Họ và tên sinh viên",
+      ...headerProperties,
+    }
+  ].concat(!fetchedStudentAssignment ? [] : !studentAssignmentList.length ? [] : studentAssignmentList[0].assignmentList.map((assignment, index) => {
+    return {
+      field: "assignmentList["+index+"].assignmentStatus", 
+      title: assignment.assignmentName,
+      ...headerProperties,
+    }
+  }),[
+    {
+      field: "totalSubmitedAssignment",
+      //field: "totalSubmitedAssignment",
+      title: "Tổng số bài nộp",
+      ...headerProperties,
+    }    
+  ])
+
+  const TableBorderStyle = "medium";
+  const TableHeaderStyle = {
+    style: {font: {sz: "14", bold: true}, 
+    alignment: {vertical: "center", horizontal: "center"}, 
+    border: {top: {style: TableBorderStyle}, bottom: {style: TableBorderStyle}, 
+      left: {style: TableBorderStyle}, right: {style: TableBorderStyle}}}
+  }
+
+  const TableCellStyle = {
+    style: {font: {sz: "14"}, 
+    alignment: {vertical: "center", horizontal: "center"}, 
+    border: {top: {style: TableBorderStyle}, bottom: {style: TableBorderStyle}, 
+      left: {style: TableBorderStyle}, right: {style: TableBorderStyle}}}
+  }
+
+  const DataSet = [
+    {
+      columns:[
+        {title: "Họ và tên sinh viên", ...TableHeaderStyle, width: {wch: "Họ và tên sinh viên".length}}
+      ].concat(!fetchedStudentAssignment ? [] : !studentAssignmentList.length ? [] : studentAssignmentList[0].assignmentList.map((assignment) => {
+        return {title: assignment.assignmentName, ...TableHeaderStyle, width: {wch: assignment.assignmentName.length+3}}
+      }),
+        [{title: "Tổng số bài nộp", ...TableHeaderStyle, width: {wch: "Tổng số bài nộp".length}}]
+      ),
+      data: !fetchedStudentAssignment ? [] :
+        studentAssignmentList.map((data)=>{
+          return [
+          {value: data.studentName, ...TableCellStyle}]
+          .concat(
+            data.assignmentList.map(data2=>{
+              return {value: data2.assignmentStatus, ...TableCellStyle}
+            }), [{value: data.totalSubmitedAssignment, ...TableCellStyle}]
+          )
+        }) 
+    }
+  ]
+
   // Functions.
   const getClassDetail = () => {
     request(token, history, "get", `/edu/class/${params.id}`, (res) => {
       setClassDetail(res.data);
+      setFetchedClassDetail(!fetchedClassDetail);
     });
   };
 
@@ -224,7 +292,7 @@ function TClassDetail() {
         let opened = [];
         let deleted = [];
         let current = new Date();
-
+        setAssignmentList(res.data);   
         res.data.forEach((assign) => {
           if (assign.deleted) {
             deleted.push(assign);
@@ -252,6 +320,55 @@ function TClassDetail() {
         ]);
       }
     );
+  };
+
+  const getAssignmentSubmission = () => {
+    request(
+      token,
+      history,
+      "get",
+      `/edu/class/${params.id}/assignments/teacher`,
+      (res) => {
+        // changePageSize(res.data.length, assignTableRef);
+        let wait4Opening = [];
+        let opened = [];
+        let deleted = [];
+        let current = new Date();
+        setAssignmentList(res.data);   
+        res.data.forEach((assign) => {
+          if (assign.deleted) {
+            deleted.push(assign);
+          } else {
+            let open = new Date(assign.openTime);
+
+            if (current.getTime() < open.getTime()) {
+              wait4Opening.push(assign);
+            } else {
+              let close = new Date(assign.closeTime);
+
+              if (close.getTime() < current.getTime()) {
+                opened.push({ ...assign, opening: false });
+              } else {
+                opened.push({ ...assign, opening: true });
+              }
+            }
+          }
+        });
+
+        setAssignSets([
+          { ...assignSets[0], data: opened },
+          { ...assignSets[1], data: wait4Opening },
+          { ...assignSets[2], data: deleted },
+        ]);
+      }
+    );
+  };
+  // Functions.
+  const getStudentAssignment = () => {
+    request(token, history, "get", `/edu/class/${params.id}/all-student-assignments/teacher`, (res) => {
+      setStudentAssignmentList(res.data);      
+      setFetchedStudentAssignment(true);     
+    });
   };
 
   const onClickStuCard = () => {
@@ -363,9 +480,24 @@ function TClassDetail() {
     setOpenDelStuDialog(false);
   };
 
+  const onClickStuAssignCard = () => {
+    setOpenStuAssignCard(!openStuAssignCard);
+
+    if (fetchedStudentAssignment === false) {
+      getStudentAssignment();
+    }
+
+    if (fetchedClassDetail === false){
+      getClassDetail();
+    }
+
+  }
+
   useEffect(() => {
     getClassDetail();
     getAssigns();
+    getAssignmentSubmission();
+    getStudentAssignment();
     getStudents("register");
   }, []);
 
@@ -680,6 +812,89 @@ function TClassDetail() {
         </Grid>
       </Card>
 
+      <Card className={classes.card}>
+        <CardActionArea disableRipple onClick={onClickStuAssignCard}>
+          <CardHeader
+            avatar={
+              <Avatar style={{ background: "white" }}>
+                {/*#ffeb3b <PeopleAltRoundedIcon /> */}
+                <FcConferenceCall size={40} />
+              </Avatar>
+            }
+            title={<Typography variant="h5">Danh sách nộp bài tập</Typography>}
+            action={
+              <div>
+                <IconButton aria-label="show more">
+                  <FcExpand
+                    size={24}
+                    className={clsx(
+                      !openStuAssignCard && classes.close,
+                      openStuAssignCard && classes.open
+                    )}
+                  />
+                </IconButton>
+              </div>
+            }
+          />
+        </CardActionArea>
+        <Collapse in={openStuAssignCard} timeout="auto">              
+          <CardContent>    
+            {studentAssignmentList.length !==0 ?(        
+             <ExcelFile
+                filename = {"Danh sách nộp bài tập lớp " + classDetail.code}
+                element = {
+                  
+                    <Button
+                      variant="contained"
+                      color="secondary"
+                      style={{ marginLeft: "0px" }}                      
+                    >
+                      Xuất Excel
+                    </Button>  
+                  }
+              >
+                <ExcelSheet dataSet={DataSet} name ={"Danh sách nộp bài tập lớp " + classDetail.code}/> 
+              </ExcelFile>  
+                
+            ) : null}
+            <MaterialTable
+              title=""
+              columns={stuAssignCols}
+              icons={tableIcons}
+              tableRef={studentAssignTableRef}
+              localization={localization}
+              data={studentAssignmentList}
+              components={{
+                Container: (props) => <Paper {...props} elevation={0} />,
+              }}
+              options={{
+                fixedColumns: {
+                  left: 1, 
+                  right: 1
+                },
+                draggable: false,
+                filtering: true,
+                sorting: true,
+                search: false,
+                pageSize: 10,
+                debounceInterval: 500,
+                headerStyle: {
+                  backgroundColor: "#673ab7",
+                  fontWeight: "bold",
+                  fontSize: "1rem",
+                  color: "white",
+                },
+                filterCellStyle: { textAlign: "center" },
+                cellStyle: { fontSize: "1rem", textAlign: "center" },
+                toolbarButtonAlignment: "left",
+                // exportButton: true,
+                // exportFileName: "Danh sách nộp bài tập lớp " + classDetail.code,
+                // exportDelimiter: ",",
+              }}
+            />
+          </CardContent>
+        </Collapse>
+      </Card>                            
       {/* Dialogs */}
       <CustomizedDialogs
         open={openDelStuDialog}

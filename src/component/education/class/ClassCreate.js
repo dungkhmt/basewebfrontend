@@ -78,6 +78,17 @@ export default function ClassCreate(){
       { type: "DA" },
     ];
     const [invalidCourseId, setInvalidCourseId] = useState(false);
+    const [invalidClassId, setInvalidClassId] = useState(false);
+    const [invalidRequirementField, setInvalidRequirementField] = useState(false);
+    function isNormalInteger(str) {
+      str = str.trim();
+      if (!str) {
+          return false;
+      }
+      str = str.replace(/^0+/, "") || "0";
+      var n = Math.floor(Number(str));
+      return n !== Infinity && String(n) === str && n >= 0;
+    }
 
     const getAllCourses = () => {
         fetch(API_URL + "/edu/class/get-all-courses", {
@@ -159,6 +170,15 @@ export default function ClassCreate(){
         getAllSemesters();
         console.log('departments = ',departmentPool);
       }, []);
+
+    const onClassIdChange = (event) => {
+      setClassId(event.target.value);
+      let classIdTemp = event.target.value;
+      if (classIdTemp === null || classIdTemp.trim() === "" || isNormalInteger(classIdTemp))
+        setInvalidClassId(false);          
+      else
+        setInvalidClassId(true);      
+    }
     
     const onCourseIdChange = (event) => {
         let id = event.target.value;
@@ -193,13 +213,31 @@ export default function ClassCreate(){
           classType: classType,
           departmentId: departmentId,
         };
+        
+        let invalidRequirementFieldTemp = classId === null || classId.trim() === "" || semesterId === null||
+          courseId === null || classType === null || departmentId === null;
+
+        setInvalidRequirementField(invalidRequirementFieldTemp);
+        if (invalidClassId){
+          alert("Mã học phần không thỏa mãn");
+          return;
+        }
+        
+        if (invalidRequirementFieldTemp){
+          alert("Điền các trường còn trống");
+          return;
+        }
+
+
         setIsRequesting(true);
         authPost(dispatch, token, "/edu/class/add", data)
           .then(
             (res) => {
-              console.log(res);
               setIsRequesting(false);
-              if (res.status === 401) {
+              if (res.message === "duplicate"){
+                alert("Mã lớp đã tồn tại");
+                return "duplicate";      
+              }else if (res.status === 401) {
                 dispatch(failed());
                 throw Error("Unauthorized");
               } else if (res.status === 409) {
@@ -213,7 +251,8 @@ export default function ClassCreate(){
             }
           )
           .then((res) => {
-            history.push("/edu/teacher/class/list");
+            if (res !== "duplicate")
+              history.push("/edu/teacher/class/list");
           });
       };
     
@@ -231,6 +270,11 @@ export default function ClassCreate(){
                   Không tồn tại mã học phần {" " + courseId}
                 </Typography>
               )}
+              {invalidClassId && (
+                <Typography variant="h5" component="h5" color="error">
+                  Mã học phần không thỏa mãn, chỉ bao gồm số không dấu
+                </Typography>
+              )}
               <div>
                 <div>
                   <TextField
@@ -240,9 +284,7 @@ export default function ClassCreate(){
                     label="Mã lớp"
                     placeholder="Nhập mã lớp"
                     value={classId}
-                    onChange={(event) => {
-                      setClassId(event.target.value);
-                    }}
+                    onChange={onClassIdChange}
                     InputLabelProps={{
                       shrink: true,
                     }}
