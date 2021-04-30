@@ -2,7 +2,7 @@ import React, { useRef, useEffect, useState } from "react";
 import {
   Card,
   CardContent,
-  Typography,
+  //Typography,
   CardHeader,
   Paper,
   Collapse,
@@ -33,9 +33,52 @@ import changePageSize, {
 } from "../../../../utils/MaterialTableUtils";
 import { Link as RouterLink } from "react-router-dom";
 
+import AppBar from '@material-ui/core/AppBar';
+import Tabs from '@material-ui/core/Tabs';
+import Tab from '@material-ui/core/Tab';
+import Typography from '@material-ui/core/Typography';
+import Box from '@material-ui/core/Box';
+import PropTypes from 'prop-types';
+
 //import StudentCourseChapterList from "../../../../component/education/course/StudentCourseChapterList";
 import StudentCourseChapterList from "../../../../component/education/course/StudentCourseChapterList";
 import StudentCourseQuizList from "../../../../component/education/course/StudentCourseQuizList";
+
+
+function TabPanel(props) {
+  const { children, value, index, ...other } = props;
+
+  return (
+    <div
+      role="tabpanel"
+      hidden={value !== index}
+      id={`simple-tabpanel-${index}`}
+      aria-labelledby={`simple-tab-${index}`}
+      {...other}
+    >
+      {value === index && (
+        <Box p={3}>
+          <Typography>{children}</Typography>
+        </Box>
+      )}
+    </div>
+  );
+}
+
+TabPanel.propTypes = {
+  children: PropTypes.node,
+  index: PropTypes.any.isRequired,
+  value: PropTypes.any.isRequired,
+};
+
+function a11yProps(index) {
+  return {
+    id: `simple-tab-${index}`,
+    'aria-controls': `simple-tabpanel-${index}`,
+  };
+}
+
+
 
 const useStyles = makeStyles((theme) => ({
   card: {
@@ -74,6 +117,13 @@ function SClassDetail() {
   // Table refs.
   const studentTableRef = useRef(null);
   const assignTableRef = useRef(null);
+
+  //const classes = useStyles();
+  const [value, setValue] = React.useState(0);
+
+  const handleChange = (event, newValue) => {
+    setValue(newValue);
+  };
 
   const headerProperties = {
     headerStyle: {
@@ -224,17 +274,32 @@ function SClassDetail() {
   }, []);
 
   return (
+    
+
     <MuiThemeProvider>
-      <Card className={classes.card}>
-        <CardHeader
-          avatar={
-            <Avatar style={{ background: "#ff7043" }}>
+      <div className={classes.root}>
+      <AppBar position="static">
+        <Tabs value={value} onChange={handleChange} aria-label="simple tabs example">
+          <Tab label="Thông tin chung" {...a11yProps(0)} />
+          <Tab label="Nội dung" {...a11yProps(1)} />
+          <Tab label="Quiz" {...a11yProps(2)} />
+          <Tab label="Sinh viên" {...a11yProps(3)} />
+          <Tab label="Bài tập" {...a11yProps(4)} />
+        </Tabs>
+      </AppBar>
+
+
+      <TabPanel value={value} index={0}>
+        <Card className={classes.card}>
+          <CardHeader
+            avatar={
+              <Avatar style={{ background: "#ff7043" }}>
               <BiDetail size={32} />
-            </Avatar>
-          }
-          title={<Typography variant="h5">Thông tin lớp</Typography>}
-        />
-        <CardContent>
+              </Avatar>
+            }
+            title={<Typography variant="h5">Thông tin lớp</Typography>}
+            />
+          <CardContent>
           <Grid container className={classes.grid}>
             <Grid item md={3} sm={3} xs={3} direction="column">
               <Typography>Mã lớp</Typography>
@@ -285,32 +350,40 @@ function SClassDetail() {
                   </Link>
                 }
               </div>
+              </Grid>
             </Grid>
-          </Grid>
-        </CardContent>
-      </Card>
+          </CardContent>
+        </Card>
+      </TabPanel>
 
-      <Card>
-        <CardContent>
+
+      <TabPanel value={value} index={1}>
+        <Card>
+          <CardContent>
           <MaterialTable
             title={"Chương"}
             columns={chapterColumns}
             data={chapterList}
           />
-        </CardContent>
-      </Card>
+          </CardContent>
+        </Card>
+      </TabPanel>
 
-      <StudentCourseQuizList quizzList={quizList} />
 
-      <Card className={classes.card}>
-        <CardActionArea disableRipple onClick={onCLickStudentCard}>
-          <CardHeader
-            avatar={
-              <Avatar style={{ background: "white" }}>
-                {/*#ffeb3b <PeopleAltRoundedIcon /> */}
-                <FcConferenceCall size={40} />
-              </Avatar>
-            }
+      <TabPanel value={value} index={2}>
+        <StudentCourseQuizList quizzList={quizList} />
+      </TabPanel>
+
+      <TabPanel value={value} index={3}>
+        <Card className={classes.card}>
+          <CardActionArea disableRipple onClick={onCLickStudentCard}>
+            <CardHeader
+              avatar={
+                <Avatar style={{ background: "white" }}>
+                  {/*#ffeb3b <PeopleAltRoundedIcon /> */}
+                  <FcConferenceCall size={40} />
+                </Avatar>
+              }
             title={<Typography variant="h5">Danh sách sinh viên</Typography>}
             action={
               <div>
@@ -323,9 +396,9 @@ function SClassDetail() {
                 </IconButton>
               </div>
             }
-          />
-        </CardActionArea>
-        <Collapse in={openStudentList} timeout="auto">
+            />
+          </CardActionArea>
+          <Collapse in={openStudentList} timeout="auto">
           <CardContent>
             <MaterialTable
               title=""
@@ -353,21 +426,25 @@ function SClassDetail() {
                 toolbarButtonAlignment: "left",
               }}
             />
-          </CardContent>
-        </Collapse>
-      </Card>
+            </CardContent>
+          </Collapse>
+        </Card>
 
-      <Card className={classes.card}>
-        <CardHeader
-          avatar={
-            <Avatar style={{ background: "white" }}>
-              <FcMindMap size={40} />
-            </Avatar>
-          }
-          title={<Typography variant="h5">Bài tập</Typography>}
-        />
-        <CardContent>
-          <MaterialTable
+      </TabPanel>
+      
+
+      <TabPanel value={value} index={4}>
+        <Card className={classes.card}>
+          <CardHeader
+            avatar={
+              <Avatar style={{ background: "white" }}>
+                <FcMindMap size={40} />
+              </Avatar>
+            }
+            title={<Typography variant="h5">Bài tập</Typography>}
+          />
+          <CardContent>
+            <MaterialTable
             title=""
             columns={assignCols}
             localization={localization}
@@ -393,16 +470,28 @@ function SClassDetail() {
                 wordBreak: "break-word",
               },
               toolbarButtonAlignment: "left",
-            }}
-            onRowClick={(event, rowData) => {
+              }}
+              onRowClick={(event, rowData) => {
               // console.log(rowData);
               history.push(
                 `/edu/student/class/${params.id}/assignment/${rowData.id}`
               );
-            }}
-          />
-        </CardContent>
-      </Card>
+              }}
+            />
+            </CardContent>
+          </Card>
+      </TabPanel>
+      
+    </div>
+
+      
+
+     
+
+      
+
+
+      
     </MuiThemeProvider>
   );
 }
