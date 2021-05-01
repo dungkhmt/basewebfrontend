@@ -1,19 +1,18 @@
-import React, { useRef, useEffect, useState } from "react";
 import {
+  Avatar,
   Card,
   CardContent,
-  Typography,
   CardHeader,
   Paper,
+  Typography,
 } from "@material-ui/core";
+import { makeStyles, MuiThemeProvider } from "@material-ui/core/styles";
 import MaterialTable from "material-table";
+import React, { useEffect, useRef, useState } from "react";
+import { FaListUl } from "react-icons/fa";
 import { useSelector } from "react-redux";
 import { useHistory } from "react-router";
 import { request } from "../../../../api";
-import { MuiThemeProvider } from "material-ui/styles";
-import { Avatar } from "material-ui";
-import { makeStyles } from "@material-ui/core/styles";
-import { FaListUl } from "react-icons/fa";
 import changePageSize, {
   localization,
   tableIcons,
@@ -25,7 +24,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-function ClassList() {
+function TClassList() {
   const classes = useStyles();
   const history = useHistory();
   const token = useSelector((state) => state.auth.token);
@@ -140,4 +139,5 @@ function ClassList() {
   );
 }
 
-export default ClassList;
+export default TClassList;
+// export default withAsynchScreenSecurity(TClassList, "SCR_TCLASSLIST");

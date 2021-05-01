@@ -3,14 +3,14 @@ import { useDispatch, useSelector } from "react-redux";
 import { useForm, Controller } from "react-hook-form";
 import { authPost, authGet } from "../../../api";
 
-import { MuiThemeProvider } from "material-ui/styles";
-import { MenuItem } from "material-ui";
+import { MuiThemeProvider } from "@material-ui/core/styles";
 import {
   Card,
   CardContent,
   Button,
   TextField,
   Typography,
+  MenuItem,
 } from "@material-ui/core";
 import { Save, Cancel } from "@material-ui/icons";
 import SelectWeekdays from "./SelectWeekdays";

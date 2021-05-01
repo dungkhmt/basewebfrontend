@@ -7,14 +7,14 @@ import {
   CardHeader,
   Paper,
   Chip,
+  Avatar,
 } from "@material-ui/core";
 import MaterialTable from "material-table";
 import { useSelector } from "react-redux";
 import { useHistory } from "react-router";
 import { request } from "../../../../api";
-import { MuiThemeProvider } from "material-ui/styles";
+import { MuiThemeProvider } from "@material-ui/core/styles";
 import { FcApproval } from "react-icons/fc";
-import { Avatar } from "material-ui";
 import { makeStyles } from "@material-ui/core/styles";
 import { FaListUl } from "react-icons/fa";
 import { GiSandsOfTime } from "react-icons/gi";

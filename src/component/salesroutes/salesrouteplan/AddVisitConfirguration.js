@@ -1,11 +1,5 @@
 import React, { useState, useEffect } from "react";
-import MuiThemeProvider from "material-ui/styles/MuiThemeProvider";
-import Card from "material-ui/Card";
-import MenuItem from "material-ui/MenuItem";
-import CardContent from "@material-ui/core/CardContent";
-import Typography from "@material-ui/core/Typography";
-import TextField from "@material-ui/core/TextField";
-import Button from "@material-ui/core/Button";
+import { MuiThemeProvider } from "@material-ui/core/styles";
 import { axiosPost, axiosGet } from "../../../api";
 import { useDispatch, useSelector } from "react-redux";
 import { Save, Cancel } from "@material-ui/icons";
@@ -13,16 +7,24 @@ import { Controller, useForm } from "react-hook-form";
 import { DevTool } from "react-hook-form-devtools";
 import { useHistory } from "react-router";
 import { toast } from "react-toastify";
-import { Box, Menu } from "@material-ui/core";
 import { IconContext } from "react-icons/lib/cjs";
 import { MdCancel } from "react-icons/md";
-import { CircularProgress } from "material-ui";
+import {
+  Box,
+  Menu,
+  CircularProgress,
+  Card,
+  MenuItem,
+  CardContent,
+  Typography,
+  TextField,
+  Button,
+} from "@material-ui/core";
 import { errorNoti } from "../../../utils/Notification";
 import { object, string } from "yup";
 
 function AddVisitConfirguration(props) {
   const history = useHistory();
-  const dispatch = useDispatch();
   const token = useSelector((state) => state.auth.token);
 
   // Form data.
@@ -260,7 +262,7 @@ function AddVisitConfirguration(props) {
               "-"
             ),
     })
-      .then((res) => {
+      .then(() => {
         toast.dismiss();
         history.goBack();
       })

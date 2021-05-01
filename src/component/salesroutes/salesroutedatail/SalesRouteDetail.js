@@ -6,7 +6,7 @@ import moment from "moment";
 import MaterialTable from "material-table";
 import { tableIcons } from "../../../utils/iconutil";
 import { Typography, Card, CardContent } from "@material-ui/core";
-import { MuiThemeProvider } from "material-ui/styles";
+import { MuiThemeProvider } from "@material-ui/core/styles";
 
 function SalesRouteDetail(props) {
   const token = useSelector((state) => state.auth.token);

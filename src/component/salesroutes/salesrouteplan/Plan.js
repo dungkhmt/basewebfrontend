@@ -1,46 +1,38 @@
-import React, { useEffect, useState, forwardRef } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { useForm } from "react-hook-form";
-import { axiosPost } from "../../../api";
-import { Link } from "react-router-dom";
 import MomentUtils from "@date-io/moment";
-import { Save, Cancel } from "@material-ui/icons";
-import { IconButton, Card } from "material-ui";
-import { MuiThemeProvider } from "material-ui/styles";
-import { RiMenuAddLine } from "react-icons/ri";
-import { IconContext } from "react-icons/lib/cjs";
-import MaterialTable, { MTableToolbar } from "material-table";
-import { toast } from "react-toastify";
-import { tableIcons } from "../../../utils/iconutil";
-import { GiInfo } from "react-icons/gi";
-import { FiCheckCircle } from "react-icons/fi";
-import { MdCancel } from "react-icons/md";
 import {
-  MuiPickersUtilsProvider,
-  KeyboardDatePicker,
-} from "@material-ui/pickers";
-import {
+  Box,
   Button,
-  TextField,
+  Card,
+  CardContent,
   Dialog,
   DialogActions,
   DialogContent,
   DialogTitle,
-  Box,
-  CardContent,
-  Slide,
+  TextField,
 } from "@material-ui/core";
+import { MuiThemeProvider } from "@material-ui/core/styles";
+import { Cancel, Save } from "@material-ui/icons";
+import {
+  KeyboardDatePicker,
+  MuiPickersUtilsProvider,
+} from "@material-ui/pickers";
+import MaterialTable, { MTableToolbar } from "material-table";
+import React, { useEffect, useState } from "react";
+import { useForm } from "react-hook-form";
+import { useSelector } from "react-redux";
+import { Link } from "react-router-dom";
+import { axiosPost } from "../../../api";
+import { tableIcons } from "../../../utils/iconutil";
 import {
   processingNoti,
-  updateSuccessNoti,
   updateErrorNoti,
+  updateSuccessNoti,
 } from "../../../utils/Notification";
 
 // const Transition = forwardRef((props, ref) => <Slide direction="down" ref={ref} {...props}/>);
 
 function Plan() {
   const token = useSelector((state) => state.auth.token);
-  const dispatch = useDispatch();
 
   // Modal.
   const [creationDialogOpen, setCreationDialogOpen] = useState(false);

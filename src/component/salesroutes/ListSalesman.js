@@ -1,29 +1,33 @@
-import React, {useState} from "react";
-import {useDispatch, useSelector} from "react-redux";
-import {Link} from 'react-router-dom'
-import {Card} from "material-ui";
-import {MuiThemeProvider} from "material-ui/styles";
+import React, { useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { Link } from "react-router-dom";
+import { MuiThemeProvider } from "@material-ui/core/styles";
 import MaterialTable from "material-table";
-import {tableIcons} from "../../utils/iconutil";
-import {CardContent} from "@material-ui/core";
+import { tableIcons } from "../../utils/iconutil";
+import { CardContent, Card } from "@material-ui/core";
 
 function ListSalesman() {
   const token = useSelector((state) => state.auth.token);
   const dispatch = useDispatch();
 
   // Table
-  const [data, setData] = useState([{
-    salesmanCode: "SM00001",
-    salesmanName: "Nguyen Van A",
-    noRetailOutlets: 3,
-    noDistributors: 2
-  }]);
+  const [data, setData] = useState([
+    {
+      salesmanCode: "SM00001",
+      salesmanName: "Nguyen Van A",
+      noRetailOutlets: 3,
+      noDistributors: 2,
+    },
+  ]);
   const columns = [
     {
       field: "salesmanCode",
       title: "Mã NVBH",
-      render: rowData => <Link
-        to={'/salesroutes/salesman/detail/' + rowData['salesmanCode']}>{rowData['salesmanCode']}</Link>
+      render: (rowData) => (
+        <Link to={"/salesroutes/salesman/detail/" + rowData["salesmanCode"]}>
+          {rowData["salesmanCode"]}
+        </Link>
+      ),
     },
     {
       field: "salesmanName",
@@ -31,13 +35,13 @@ function ListSalesman() {
     },
     {
       field: "noRetailOutlets",
-      title: "Số ĐLBL"
+      title: "Số ĐLBL",
     },
     {
       field: "noDistributors",
-      title: "Số NPP"
-    }
-  ]
+      title: "Số NPP",
+    },
+  ];
 
   return (
     <div>
@@ -51,21 +55,20 @@ function ListSalesman() {
               icons={tableIcons}
               options={{
                 search: false,
-                actionsColumnIndex: -1
+                actionsColumnIndex: -1,
               }}
               localization={{
                 header: {
-                  actions: ''
+                  actions: "",
                 },
                 body: {
-                  emptyDataSourceMessage: 'Không có bản ghi nào để hiển thị',
-                }
+                  emptyDataSourceMessage: "Không có bản ghi nào để hiển thị",
+                },
               }}
             />
           </CardContent>
         </Card>
       </MuiThemeProvider>
-
     </div>
   );
 }

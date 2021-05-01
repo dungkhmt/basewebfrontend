@@ -10,7 +10,7 @@ import {
 } from "@material-ui/core";
 import MaterialTable from "material-table";
 import { request } from "../../api";
-import { MuiThemeProvider } from "material-ui/styles";
+import { MuiThemeProvider } from "@material-ui/core/styles";
 import { makeStyles } from "@material-ui/core/styles";
 import { FcApproval } from "react-icons/fc";
 import { errorNoti } from "../../utils/Notification";

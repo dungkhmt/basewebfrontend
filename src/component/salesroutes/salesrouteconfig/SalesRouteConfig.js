@@ -4,7 +4,7 @@ import { authPost } from "../../../api";
 
 import MaterialTable, { MTableToolbar } from "material-table";
 import { tableIcons } from "../../../utils/iconutil";
-import { MuiThemeProvider } from "material-ui/styles";
+import { MuiThemeProvider } from "@material-ui/core/styles";
 import { Card, CardContent, Box, Button } from "@material-ui/core";
 import { useHistory } from "react-router";
 

@@ -1,26 +1,27 @@
-import React, {useEffect, useState} from "react";
-import {useDispatch, useSelector} from "react-redux";
-import {useHistory} from 'react-router-dom'
-import {Card} from "material-ui";
-import {MuiThemeProvider} from "material-ui/styles";
+import React, { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { useHistory } from "react-router-dom";
+import { MuiThemeProvider } from "@material-ui/core/styles";
 import MaterialTable from "material-table";
-import {tableIcons} from "../../utils/iconutil";
-import {CardContent} from "@material-ui/core";
+import { tableIcons } from "../../utils/iconutil";
+import { CardContent, Card } from "@material-ui/core";
 
 function SalesmanDetail() {
-  const history = useHistory()
+  const history = useHistory();
   const token = useSelector((state) => state.auth.token);
   const dispatch = useDispatch();
 
   // Table
-  const [data, setData] = useState([{
-    retailOutletCode: "RO00001",
-    retailOutletName: "VM+ DCV",
-    distributorCode: "D001",
-    distributorName: "HBT",
-    visitFrequency: "1 tuần thăm 1 lần",
-    visitConfig: "Thứ 4"
-  }]);
+  const [data, setData] = useState([
+    {
+      retailOutletCode: "RO00001",
+      retailOutletName: "VM+ DCV",
+      distributorCode: "D001",
+      distributorName: "HBT",
+      visitFrequency: "1 tuần thăm 1 lần",
+      visitConfig: "Thứ 4",
+    },
+  ]);
   const columns = [
     {
       field: "retailOutletCode",
@@ -40,21 +41,18 @@ function SalesmanDetail() {
     },
     {
       field: "visitFrequency",
-      title: "Tần suất thăm"
+      title: "Tần suất thăm",
     },
     {
       field: "visitConfig",
-      title: "Cấu hình thăm"
+      title: "Cấu hình thăm",
     },
+  ];
 
-  ]
-
-  const getSalesmanDetail = () => {
-
-  }
+  const getSalesmanDetail = () => {};
 
   useEffect(() => {
-    getSalesmanDetail()
+    getSalesmanDetail();
   }, []);
 
   return (
@@ -69,29 +67,28 @@ function SalesmanDetail() {
               icons={tableIcons}
               options={{
                 search: false,
-                actionsColumnIndex: -1
+                actionsColumnIndex: -1,
               }}
               localization={{
                 header: {
-                  actions: ''
+                  actions: "",
                 },
                 body: {
-                  emptyDataSourceMessage: 'Không có bản ghi nào để hiển thị',
-                }
+                  emptyDataSourceMessage: "Không có bản ghi nào để hiển thị",
+                },
               }}
               actions={[
-                rowData => ({
-                  icon: 'edit',
-                  tooltip: 'Thiết lập',
+                (rowData) => ({
+                  icon: "edit",
+                  tooltip: "Thiết lập",
                   isFreeAction: true,
-                  onClick: rowData => history.push("/salesroutes/plan")
-                })
+                  onClick: (rowData) => history.push("/salesroutes/plan"),
+                }),
               ]}
             />
           </CardContent>
         </Card>
       </MuiThemeProvider>
-
     </div>
   );
 }

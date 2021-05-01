@@ -6,9 +6,15 @@ import { useHistory, Link, useParams } from "react-router-dom";
 import moment from "moment";
 import MaterialTable, { MTableToolbar } from "material-table";
 import { tableIcons } from "../../../utils/iconutil";
-import { Typography, Card, CardContent, Box } from "@material-ui/core";
-import { IconButton, Toolbar } from "material-ui";
-import { MuiThemeProvider } from "material-ui/styles";
+import {
+  Typography,
+  Card,
+  CardContent,
+  Box,
+  IconButton,
+  Toolbar,
+} from "@material-ui/core";
+import { MuiThemeProvider } from "@material-ui/core/styles";
 import { FcViewDetails, FcRadarPlot } from "react-icons/fc";
 import { RiMenuAddLine } from "react-icons/ri";
 import { IconContext } from "react-icons/lib/cjs";

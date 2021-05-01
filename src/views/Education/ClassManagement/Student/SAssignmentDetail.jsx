@@ -1,43 +1,28 @@
-import React, { useRef, useEffect, useState, Fragment } from "react";
 import {
+  Avatar,
+  Box,
+  Button,
   Card,
   CardContent,
-  Button,
-  Typography,
   CardHeader,
-  Paper,
-  Grid,
-  Tooltip,
-  Zoom,
-  IconButton,
-  Box,
-  TextField,
   Chip,
   Divider,
+  Grid,
+  Typography,
 } from "@material-ui/core";
-import MaterialTable from "material-table";
-import { MuiThemeProvider } from "material-ui/styles";
-import { useHistory, useParams } from "react-router";
-import { makeStyles } from "@material-ui/core/styles";
-import PeopleAltRoundedIcon from "@material-ui/icons/PeopleAltRounded";
-import { Avatar } from "material-ui";
-import { BiDetail } from "react-icons/bi";
-import { CountdownCircleTimer } from "react-countdown-circle-timer";
-import { FcUpload } from "react-icons/fc";
-import { DropzoneArea, DropzoneAreaBase } from "material-ui-dropzone";
-import AttachFileIcon from "@material-ui/icons/AttachFile";
-import AudiotrackIcon from "@material-ui/icons/Audiotrack";
-import DescriptionIcon from "@material-ui/icons/Description";
-import PictureAsPdfIcon from "@material-ui/icons/PictureAsPdf";
-import TheatersIcon from "@material-ui/icons/Theaters";
-import { axiosGet, axiosPost, request } from "../../../../api";
-import { useDispatch, useSelector } from "react-redux";
-import Snackbar from "@material-ui/core/Snackbar";
-import MuiAlert from "@material-ui/lab/Alert";
+import { makeStyles, MuiThemeProvider } from "@material-ui/core/styles";
 import parse from "html-react-parser";
-import displayTime from "../../../../utils/DateTimeUtils";
-import PositiveButton from "../../../../component/education/classmanagement/PositiveButton";
+import { DropzoneArea } from "material-ui-dropzone";
+import React, { Fragment, useEffect, useState } from "react";
+import { CountdownCircleTimer } from "react-countdown-circle-timer";
+import { BiDetail } from "react-icons/bi";
+import { FcUpload } from "react-icons/fc";
+import { useSelector } from "react-redux";
+import { useHistory, useParams } from "react-router";
+import { request } from "../../../../api";
 import NegativeButton from "../../../../component/education/classmanagement/NegativeButton";
+import PositiveButton from "../../../../component/education/classmanagement/PositiveButton";
+import displayTime from "../../../../utils/DateTimeUtils";
 import { errorNoti, successNoti } from "../../../../utils/Notification";
 
 const useStyles = makeStyles((theme) => ({
@@ -448,7 +433,6 @@ function SAssignmentDetail() {
                 className={classes.submitBtn}
                 onClick={onClickSubmitBtn}
               />
-
             </CardContent>
           </Fragment>
         ) : null}

@@ -4,9 +4,8 @@ import Button from "@material-ui/core/Button";
 import MaterialTable, { MTableToolbar } from "material-table";
 import { tableIcons } from "../../utils/iconutil";
 import { Card, CardContent, Box } from "@material-ui/core";
-import { makeStyles } from "@material-ui/core/styles";
+import { makeStyles, MuiThemeProvider } from "@material-ui/core/styles";
 import { useSelector, useDispatch } from "react-redux";
-import { MuiThemeProvider } from "material-ui/styles";
 import { authPost, authGet } from "../../api";
 import TextField from "@material-ui/core/TextField";
 import Dialog from "@material-ui/core/Dialog";
@@ -58,13 +57,16 @@ export default function CreateSemester(props) {
     if (flag) {
       alert("Mã học kì " + data["semesterId"] + " đã tồn tại trong hệ thống.");
     } else {
-      let input = { semesterId: data["semesterId"], semesterName: data["semesterName"] };
+      let input = {
+        semesterId: data["semesterId"],
+        semesterName: data["semesterName"],
+      };
       authPost(dispatch, token, "/edu/create-semester", input)
-      .then((res) => res.json())
-      .then((res) => {
-        alert("Đã lưu học kì " + data["semesterId"] + ".");
-        window.location.reload(); 
-      });
+        .then((res) => res.json())
+        .then((res) => {
+          alert("Đã lưu học kì " + data["semesterId"] + ".");
+          window.location.reload();
+        });
     }
   };
 
@@ -121,7 +123,9 @@ export default function CreateSemester(props) {
                             <DialogTitle id="form-dialog-title">
                               Thêm mới học kì
                             </DialogTitle>
-                            <form onSubmit={handleSubmit(onSaveSemesterHandler)}>
+                            <form
+                              onSubmit={handleSubmit(onSaveSemesterHandler)}
+                            >
                               <DialogContent>
                                 <DialogContentText>
                                   Điền thông tin vào form dưới đây và nhấn Lưu

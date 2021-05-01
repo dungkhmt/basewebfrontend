@@ -9,10 +9,9 @@ import {
   Button,
   InputAdornment,
   IconButton,
+  Avatar,
 } from "@material-ui/core";
-import { MuiThemeProvider } from "material-ui/styles";
-import { makeStyles } from "@material-ui/core/styles";
-import { Avatar } from "material-ui";
+import { makeStyles, MuiThemeProvider } from "@material-ui/core/styles";
 import AddIcon from "@material-ui/icons/Add";
 import { useForm } from "react-hook-form";
 import { Editor } from "react-draft-wysiwyg";

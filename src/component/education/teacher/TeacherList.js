@@ -1,13 +1,12 @@
 import React, { useState, useEffect } from "react";
 import { axiosGet, axiosPost } from "../../../api";
 import UploadButton from "../UploadButton";
-import { CardContent, Box, Button } from "@material-ui/core";
-import { Card } from "material-ui";
+import { CardContent, Box, Button, Card } from "@material-ui/core";
 import MaterialTable, { MTableToolbar } from "material-table";
 import { useDispatch, useSelector } from "react-redux";
 import { tableIcons } from "../../../utils/iconutil";
 import { Link, useHistory } from "react-router-dom";
-import { MuiThemeProvider } from "material-ui/styles";
+import { MuiThemeProvider } from "@material-ui/core/styles";
 import XLSX from "xlsx";
 import {
   errorNoti,

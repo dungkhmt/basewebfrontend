@@ -10,13 +10,13 @@ import {
   Box,
   Divider,
   CircularProgress,
+  Avatar,
 } from "@material-ui/core";
 import MaterialTable from "material-table";
-import { MuiThemeProvider } from "material-ui/styles";
+import { MuiThemeProvider } from "@material-ui/core/styles";
 import { useHistory, useParams } from "react-router";
 import { makeStyles } from "@material-ui/core/styles";
 import PeopleAltRoundedIcon from "@material-ui/icons/PeopleAltRounded";
-import { Avatar } from "material-ui";
 import { BiDetail } from "react-icons/bi";
 import { CountdownCircleTimer } from "react-countdown-circle-timer";
 import { FcDownload } from "react-icons/fc";
