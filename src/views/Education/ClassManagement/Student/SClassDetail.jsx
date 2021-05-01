@@ -182,18 +182,17 @@ function SClassDetail() {
   ];
   const chapterColumns = [
     {
-      title: "ChapterId",
+      title: "Chương",
       field: "chapterId",
       render: (rowData) => (
         <Link
           component={RouterLink}
           to={`/edu/student/course/chapter/detail/${rowData["chapterId"]}`}
         >
-          {rowData["chapterId"]}
+          {rowData["chapterName"]}
         </Link>
       ),
-    },
-    { title: "Chapter Name", field: "chapterName" },
+    }
   ];
 
   // Functions.

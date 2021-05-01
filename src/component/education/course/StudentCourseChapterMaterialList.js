@@ -20,14 +20,13 @@ function StudentCourseChapterMaterialList(props){
     const [chapterMaterials, setChapterMaterials] = useState([]);
 
     const columns = [
-        { title: 'ChapterMaterialId', field: 'eduCourseMaterialId',
+        { title: 'Tên', field: 'eduCourseMaterialId',
             render: rowData => (
                 <Link to={"/edu/student/course/chapter/material/detail/" + rowData["eduCourseMaterialId"]}>
-                {rowData["eduCourseMaterialId"]}
+                {rowData["eduCourseMaterialName"]}
                 </Link>
             )
-        },
-        { title: 'Name', field: 'eduCourseMaterialName'}
+        }
        
       ];
 

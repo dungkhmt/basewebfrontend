@@ -20,6 +20,8 @@ function StudentCourseChapterMaterialDetail(){
     const history = useHistory();
     const [chapterMaterial, setChapterMaterial] = useState(null);
     const [sourceId, setSourceId] = useState(null);
+    const [chapterId, setChapterId] = useState(null);
+    const [chapterName, setChapterName] = useState(null);
 
     async function getCourseChapterMaterialDetail(){
         let res = await authGet(dispatch, token, '/edu/class/get-course-chapter-material-detail/' + chapterMaterialId);
@@ -27,6 +29,8 @@ function StudentCourseChapterMaterialDetail(){
         setChapterMaterial(res);
         console.log('getCourseChapterMaterialDetail ',res);
         setSourceId(res.sourceId);
+        setChapterId(res.eduCourseChapter.chapterId);
+        setChapterName(res.eduCourseChapter.chapterName);
     }
 
     useEffect(() => {
@@ -37,9 +41,10 @@ function StudentCourseChapterMaterialDetail(){
     return (
         <Card>
             <CardContent>
-                MaterialDetail <Link to={'/edu/student/course/chapter/detail/' + chapterMaterialId}>
-                    {chapterMaterialId}
+                Quay về chương: <Link to={'/edu/student/course/chapter/detail/' + chapterId}>
+                    {chapterName}
                   </Link>
+
                 <Player id = {sourceId}/>
             </CardContent>
         </Card>
