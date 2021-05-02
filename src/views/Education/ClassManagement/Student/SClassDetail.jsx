@@ -2,13 +2,10 @@ import {
   Avatar,
   Box,
   Card,
-  CardActionArea,
   CardContent,
   CardHeader,
-  Collapse,
   Divider,
   Grid,
-  IconButton,
   Link,
   Paper,
   Tab,
@@ -20,21 +17,16 @@ import MaterialTable from "material-table";
 import PropTypes from "prop-types";
 import React, { Fragment, useEffect, useRef, useState } from "react";
 import { BiDetail } from "react-icons/bi";
-import {
-  FcCollapse,
-  FcConferenceCall,
-  FcExpand,
-  FcMindMap,
-} from "react-icons/fc";
+import { FcMindMap } from "react-icons/fc";
 import { useSelector } from "react-redux";
 import { useHistory, useParams } from "react-router";
 import { Link as RouterLink } from "react-router-dom";
 import { request } from "../../../../api";
 import QuizzTab from "../../../../component/education/classmanagement/student/QuizzTab";
+import StudentListTab from "../../../../component/education/classmanagement/student/StudentListTab";
 import displayTime from "../../../../utils/DateTimeUtils";
 import changePageSize, {
   localization,
-  tableIcons,
 } from "../../../../utils/MaterialTableUtils";
 
 const AntTabs = withStyles({
@@ -150,14 +142,10 @@ function SClassDetail() {
 
   // Tables.
   const [assigns, setAssigns] = useState([]);
-  const [students, setStudents] = useState([]);
-
-  const [openStudentList, setOpenStudentList] = useState(false);
 
   const [chapterList, setChapterList] = useState([]);
 
   // Table refs.
-  const studentTableRef = useRef(null);
   const assignTableRef = useRef(null);
 
   const [activeTab, setActiveTab] = useState(0);
@@ -206,21 +194,6 @@ function SClassDetail() {
     },
   ];
 
-  const studentCols = [
-    {
-      field: "name",
-      title: "Họ và tên",
-      ...headerProperties,
-    },
-    {
-      field: "email",
-      title: "Email",
-      ...headerProperties,
-      render: (rowData) => (
-        <Link href={`mailto:${rowData.email}`}>{rowData.email}</Link>
-      ),
-    },
-  ];
   const chapterColumns = [
     {
       title: "Chương",
@@ -257,19 +230,6 @@ function SClassDetail() {
     );
   };
 
-  const getStudentsOfClass = () => {
-    request(
-      token,
-      history,
-      "get",
-      `/edu/class/${params.id}/students`,
-      (res) => {
-        changePageSize(res.data.length, studentTableRef);
-        setStudents(res.data);
-      }
-    );
-  };
-
   const getAssign = () => {
     request(
       token,
@@ -281,14 +241,6 @@ function SClassDetail() {
         setAssigns(res.data);
       }
     );
-  };
-
-  const onCLickStudentCard = () => {
-    if (false == openStudentList && 0 == students.length) {
-      getStudentsOfClass();
-    }
-
-    setOpenStudentList(!openStudentList);
   };
 
   useEffect(() => {
@@ -403,60 +355,7 @@ function SClassDetail() {
       </TabPanel>
 
       <TabPanel value={activeTab} index={3}>
-        <Card className={classes.card}>
-          <CardActionArea disableRipple onClick={onCLickStudentCard}>
-            <CardHeader
-              avatar={
-                <Avatar style={{ background: "white" }}>
-                  {/*#ffeb3b <PeopleAltRoundedIcon /> */}
-                  <FcConferenceCall size={40} />
-                </Avatar>
-              }
-              title={<Typography variant="h5">Danh sách sinh viên</Typography>}
-              action={
-                <div>
-                  <IconButton aria-label="show more">
-                    {openStudentList ? (
-                      <FcCollapse size={24} />
-                    ) : (
-                      <FcExpand size={24} />
-                    )}
-                  </IconButton>
-                </div>
-              }
-            />
-          </CardActionArea>
-          <Collapse in={openStudentList} timeout="auto">
-            <CardContent>
-              <MaterialTable
-                title=""
-                columns={studentCols}
-                icons={tableIcons}
-                tableRef={studentTableRef}
-                localization={localization}
-                data={students}
-                components={{
-                  Container: (props) => <Paper {...props} elevation={0} />,
-                }}
-                options={{
-                  filtering: true,
-                  search: false,
-                  pageSize: 10,
-                  debounceInterval: 500,
-                  headerStyle: {
-                    backgroundColor: "#673ab7",
-                    fontWeight: "bold",
-                    fontSize: "1rem",
-                    color: "white",
-                  },
-                  filterCellStyle: { textAlign: "center" },
-                  cellStyle: { fontSize: "1rem" },
-                  toolbarButtonAlignment: "left",
-                }}
-              />
-            </CardContent>
-          </Collapse>
-        </Card>
+        <StudentListTab classId={params.id} />
       </TabPanel>
 
       <TabPanel value={activeTab} index={4}>
