@@ -23,20 +23,6 @@ const useStyles = makeStyles((theme) => ({
   card: {
     marginTop: theme.spacing(2),
   },
-  grid: {
-    paddingLeft: 56,
-  },
-  divider: {
-    width: "91.67%",
-    marginTop: 16,
-    marginBottom: 16,
-  },
-  rootDivider: {
-    backgroundColor: "black",
-  },
-  tabs: {
-    backgroundColor: theme.palette.background.paper,
-  },
 }));
 
 function StudentListTab({ classId }) {
