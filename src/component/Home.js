@@ -14,6 +14,12 @@ export default function Home(props) {
   const [dateRevenue, setDateRevenue] = useState([]);
   const [revenue, setRevenue] = useState([]);
 
+  const [dateStudentParticipation, setDateStudentParticipation] = useState([]);
+  const [totalParticipation, setTotalParticipation] = useState([]);
+
+  const [dateQuizParticipation, setDateQuizParticipation] = useState([]);
+  const [totalQuizParticipation, setTotalQuizParticipation] = useState([]);
+  
   const data = {
     labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July'],
     datasets: [
@@ -59,6 +65,63 @@ export default function Home(props) {
     ]
   };
 
+const dataStudentParticipation = {
+    labels: dateStudentParticipation,
+    datasets: [
+      {
+        label: 'Participation',
+        backgroundColor: 'rgba(255,99,132,0.2)',
+        borderColor: 'rgba(255,99,132,1)',
+        borderWidth: 1,
+        hoverBackgroundColor: 'rgba(255,99,132,0.4)',
+        hoverBorderColor: 'rgba(255,99,132,1)',
+        data: totalParticipation
+      }
+    ]
+  };
+
+const dataQuizParticipation = {
+    labels: dateQuizParticipation,
+    datasets: [
+      {
+        label: 'Quiz Participation',
+        backgroundColor: 'rgba(255,99,132,0.2)',
+        borderColor: 'rgba(255,99,132,1)',
+        borderWidth: 1,
+        hoverBackgroundColor: 'rgba(255,99,132,0.4)',
+        hoverBorderColor: 'rgba(255,99,132,1)',
+        data: totalQuizParticipation
+      }
+    ]
+  };
+
+  async function getStudentParticipation(){
+    let lst = await authPost(dispatch, token, '/get-class-participation-statistic', {"fromDate": "", "thruDate":""});
+    let dates = [];
+    let participations = [];
+    console.log('getStudentParticipation, lst = ', lst);
+    lst.forEach(r => {
+      dates.push(r.date);
+      participations.push(r.count);
+    });
+    setDateStudentParticipation(dates);
+    setTotalParticipation(participations);
+    
+  }
+  async function getQuizParticipation(){
+    let lst = await authPost(dispatch, token, '/get-quiz-participation-statistic', {"fromDate": "", "thruDate":""});
+    let dates = [];
+    let participations = [];
+    console.log('getQuizParticipation, lst = ', lst);
+    lst.forEach(r => {
+      dates.push(r.date);
+      participations.push(r.count);
+    });
+    setDateQuizParticipation(dates);
+    setTotalQuizParticipation(participations);
+    
+  }
+  
 
   function getRevenueDateRecent() {
     console.log("getRevenueDateRecent");
@@ -114,11 +177,22 @@ export default function Home(props) {
   useEffect(() => {
     getVehicleDistance();
     getRevenueDateRecent();
+    getStudentParticipation();
+     getQuizParticipation();
   }, []);
 
   return (
     <div>
       <Grid container spacing={3}>
+        <Grid item xs={6}>
+          <h2>Thống kê học course</h2>
+          <HorizontalBar data={dataStudentParticipation}/>
+        </Grid>
+        <Grid item xs={6}>
+          <h2>Thống kê làm quiz</h2>
+          <HorizontalBar data={dataQuizParticipation}/>
+        </Grid>
+
         <Grid item xs={6}>
           <h2>Thống kê doanh số</h2>
           <HorizontalBar data={dataRevenue}/>
@@ -127,6 +201,8 @@ export default function Home(props) {
           <h2>Thống kê khoảng cách di chuyển các xe</h2>
           <HorizontalBar data={dataVehicleDistance}/>
         </Grid>
+        
+        
       </Grid>
     </div>
   );
