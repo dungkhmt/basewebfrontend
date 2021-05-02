@@ -41,7 +41,7 @@ function TeacherCourseQuizList(props){
         },
         { title: 'Level', field: 'levelId'},
         { title: 'Status', field: 'statusId'},
-       
+        { title: 'Created date', field: 'createdStamp'},
         {
           field: "",
           title: "",
