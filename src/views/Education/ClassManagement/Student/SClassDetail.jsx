@@ -15,19 +15,15 @@ import {
 import { makeStyles, withStyles } from "@material-ui/core/styles";
 import MaterialTable from "material-table";
 import PropTypes from "prop-types";
-import React, { Fragment, useEffect, useRef, useState } from "react";
+import React, { Fragment, useEffect, useState } from "react";
 import { BiDetail } from "react-icons/bi";
-import { FcMindMap } from "react-icons/fc";
 import { useSelector } from "react-redux";
 import { useHistory, useParams } from "react-router";
 import { Link as RouterLink } from "react-router-dom";
 import { request } from "../../../../api";
+import AssignmentTab from "../../../../component/education/classmanagement/student/AssignmentTab";
 import QuizzTab from "../../../../component/education/classmanagement/student/QuizzTab";
 import StudentListTab from "../../../../component/education/classmanagement/student/StudentListTab";
-import displayTime from "../../../../utils/DateTimeUtils";
-import changePageSize, {
-  localization,
-} from "../../../../utils/MaterialTableUtils";
 
 const AntTabs = withStyles({
   root: {
@@ -140,59 +136,13 @@ function SClassDetail() {
 
   const [classDetail, setClassDetail] = useState({});
 
-  // Tables.
-  const [assigns, setAssigns] = useState([]);
-
   const [chapterList, setChapterList] = useState([]);
-
-  // Table refs.
-  const assignTableRef = useRef(null);
 
   const [activeTab, setActiveTab] = useState(0);
 
   const handleChange = (event, tabIndex) => {
     setActiveTab(tabIndex);
   };
-
-  const headerProperties = {
-    headerStyle: {
-      textAlign: "center",
-    },
-    cellStyle: {
-      textAlign: "center",
-      fontSize: "1rem",
-    },
-  };
-
-  const assignCols = [
-    // {
-    //   field: "id",
-    //   title: "Mã bài tập",
-    //   headerStyle: {
-    //     textAlign: "center",
-    //   },
-    //   width: 150,
-    //   cellStyle: {
-    //     textAlign: "center",
-    //     fontSize: "1rem",
-    //     padding: 5,
-    //   },
-    // },
-    {
-      field: "name",
-      title: "Tên bài tập",
-      ...headerProperties,
-    },
-    {
-      field: "closeTime",
-      title: "Hạn nộp",
-      ...headerProperties,
-      render: (rowData) => {
-        let closeTime = new Date(rowData.closeTime);
-        return displayTime(closeTime);
-      },
-    },
-  ];
 
   const chapterColumns = [
     {
@@ -230,22 +180,8 @@ function SClassDetail() {
     );
   };
 
-  const getAssign = () => {
-    request(
-      token,
-      history,
-      "get",
-      `/edu/class/${params.id}/assignments/student`,
-      (res) => {
-        changePageSize(res.data.length, assignTableRef);
-        setAssigns(res.data);
-      }
-    );
-  };
-
   useEffect(() => {
     getClassDetail();
-    getAssign();
     getChapterListOfClass();
     // console.log("classDetail = ", classDetail);
   }, []);
@@ -359,52 +295,7 @@ function SClassDetail() {
       </TabPanel>
 
       <TabPanel value={activeTab} index={4}>
-        <Card className={classes.card}>
-          <CardHeader
-            avatar={
-              <Avatar style={{ background: "white" }}>
-                <FcMindMap size={40} />
-              </Avatar>
-            }
-            title={<Typography variant="h5">Bài tập</Typography>}
-          />
-          <CardContent>
-            <MaterialTable
-              title=""
-              columns={assignCols}
-              localization={localization}
-              tableRef={assignTableRef}
-              data={assigns}
-              components={{
-                Container: (props) => <Paper {...props} elevation={0} />,
-              }}
-              options={{
-                pageSize: 10,
-                search: false,
-                debounceInterval: 300,
-                headerStyle: {
-                  backgroundColor: "#673ab7",
-                  fontWeight: "bold",
-                  fontSize: "1rem",
-                  color: "white",
-                },
-                sorting: false,
-                cellStyle: {
-                  fontSize: "1rem",
-                  whiteSpace: "normal",
-                  wordBreak: "break-word",
-                },
-                toolbarButtonAlignment: "left",
-              }}
-              onRowClick={(event, rowData) => {
-                // console.log(rowData);
-                history.push(
-                  `/edu/student/class/${params.id}/assignment/${rowData.id}`
-                );
-              }}
-            />
-          </CardContent>
-        </Card>
+        <AssignmentTab classId={params.id} />
       </TabPanel>
     </Fragment>
   );
