@@ -1,6 +1,7 @@
 import { Box, Paper, Typography } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
-import React, { useEffect, useState } from "react";
+import { Skeleton } from "@material-ui/lab";
+import React, { Fragment, useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { useHistory } from "react-router";
 import { request } from "../../../../api";
@@ -19,6 +20,10 @@ const useStyles = makeStyles(() => ({
   quizzList: {
     padding: "0px 20px",
   },
+  skeletonAnswer: {
+    marginLeft: 20,
+    marginTop: 20,
+  },
 }));
 
 function QuizzTab({ classId }) {
@@ -27,6 +32,7 @@ function QuizzTab({ classId }) {
   const history = useHistory();
 
   const [quizzList, setQuizList] = useState([]);
+  const [loading, setLoading] = useState(true);
 
   const getQuizListOfClass = () => {
     request(
@@ -35,8 +41,14 @@ function QuizzTab({ classId }) {
       "get",
       `/get-published-quiz-of-class/${classId}`,
       (res) => {
-        console.log("getQuizListOfClass, res.data = ", res.data);
+        // console.log("getQuizListOfClass, res.data = ", res.data);
         setQuizList(res.data);
+        setLoading(false);
+      },
+      {
+        onError: () => {
+          setLoading(false);
+        },
       }
     );
   };
@@ -61,9 +73,48 @@ function QuizzTab({ classId }) {
       </div>
       <div className={classes.body}>
         <div className={classes.quizzList}>
-          {quizzList.map((quizz, index) => (
-            <Quizz key={quizz.questionId} quizz={quizz} index={index} />
-          ))}
+          {loading ? (
+            <Fragment>
+              <Skeleton
+                variant="rect"
+                width={800}
+                height={24}
+                animation="wave"
+              />
+              <Skeleton
+                className={classes.skeletonAnswer}
+                variant="rect"
+                width={200}
+                height={24}
+                animation="wave"
+              />
+              <Skeleton
+                className={classes.skeletonAnswer}
+                variant="rect"
+                width={600}
+                height={24}
+                animation="wave"
+              />
+              <Skeleton
+                className={classes.skeletonAnswer}
+                variant="rect"
+                width={400}
+                height={24}
+                animation="wave"
+              />
+              <Skeleton
+                className={classes.skeletonAnswer}
+                variant="rect"
+                width={700}
+                height={24}
+                animation="wave"
+              />
+            </Fragment>
+          ) : (
+            quizzList.map((quizz, index) => (
+              <Quizz key={quizz.questionId} quizz={quizz} index={index} />
+            ))
+          )}
         </div>
       </div>
     </Paper>
