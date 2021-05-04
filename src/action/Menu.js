@@ -5,13 +5,12 @@ export const MENU_REQUEST_SUCCESS = "MENU_REQUEST_SUCCESS";
 export const MENU_REQUEST_FAILURE = "MENU_REQUEST_FAILURE";
 export const SELECTED_FUNCTION_UPDATE = "SELECTED_FUNCTION_UPDATE";
 
-
 export const getMenu = () => {
   return (dispatch, getState) => {
     dispatch(menuRequesting());
     api.getMenu(dispatch, getState().auth.token).then(
       (res) => {
-        console.log(res);
+        // console.info(res);
         dispatch(menuRequestSuccess(res));
       },
       (error) => {
