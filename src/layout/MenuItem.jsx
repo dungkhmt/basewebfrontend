@@ -1,7 +1,3 @@
-import React, { Fragment, useState } from "react";
-import { menuIconMap } from "../config/menuconfig";
-import styles from "../assets/jss/material-dashboard-react/components/sidebarStyle";
-import makeStyles from "@material-ui/core/styles/makeStyles";
 import {
   Collapse,
   Fade,
@@ -9,11 +5,15 @@ import {
   ListItem,
   ListItemText,
 } from "@material-ui/core";
-import classNames from "classnames";
-import { NavLink } from "react-router-dom";
+import makeStyles from "@material-ui/core/styles/makeStyles";
 import ArrowDropDownIcon from "@material-ui/icons/ArrowDropDown";
+import classNames from "classnames";
+import React, { Fragment, useState } from "react";
 import { connect } from "react-redux";
+import { NavLink } from "react-router-dom";
 import { whiteColor } from "../assets/jss/material-dashboard-react";
+import styles from "../assets/jss/material-dashboard-react/components/sidebarStyle";
+import { menuIconMap } from "../config/menuconfig";
 
 const useStyles = makeStyles(() => ({
   firstOrderMenu: {
@@ -88,6 +88,7 @@ function MenuItem(props) {
         <Collapse in={expanded} timeout="auto">
           {config.child.map((childItem) => (
             <MenuItem
+              key={childItem.text}
               config={childItem}
               open={open}
               color={color}
@@ -107,7 +108,6 @@ function MenuItem(props) {
       >
         <ListItem
           button
-          key={config.id}
           className={classNames(assetClasses.itemLink + listItemClasses, {
             [classes.firstOrderMenu]: !(selectedMenu?.id == config.id),
           })}

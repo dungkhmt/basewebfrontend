@@ -1,16 +1,16 @@
 import Drawer from "@material-ui/core/Drawer";
 import List from "@material-ui/core/List";
 import makeStyles from "@material-ui/core/styles/makeStyles";
+import classNames from "classnames";
+import PropTypes from "prop-types";
 import React from "react";
 import { useSelector } from "react-redux";
-import { MENU_LIST } from "../config/menuconfig";
-import styles from "../assets/jss/material-dashboard-react/components/sidebarStyle";
-import classNames from "classnames";
-import MenuItem from "./MenuItem";
 import SimpleBar from "simplebar-react";
 import "simplebar/dist/simplebar.min.css";
-import PropTypes from "prop-types";
 import { drawerWidth } from "../assets/jss/material-dashboard-react";
+import styles from "../assets/jss/material-dashboard-react/components/sidebarStyle";
+import { MENU_LIST } from "../config/menuconfig";
+import MenuItem from "./MenuItem";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -94,6 +94,7 @@ export default function SideBar(props) {
             <List>
               {MENU_LIST.map((config) => (
                 <MenuItem
+                  key={config.text}
                   config={config}
                   color={bgColor}
                   open={open}
