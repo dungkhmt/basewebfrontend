@@ -1,17 +1,12 @@
-import Box from "@material-ui/core/Box";
 import Button from "@material-ui/core/Button";
-import Checkbox from "@material-ui/core/Checkbox";
 import CircularProgress from "@material-ui/core/CircularProgress";
-import Container from "@material-ui/core/Container";
-import CssBaseline from "@material-ui/core/CssBaseline";
-import FormControlLabel from "@material-ui/core/FormControlLabel";
-import Grid from "@material-ui/core/Grid";
 import Link from "@material-ui/core/Link";
 import { makeStyles } from "@material-ui/core/styles";
 import TextField from "@material-ui/core/TextField";
 import Typography from "@material-ui/core/Typography";
 import React, { useState } from "react";
 import { Redirect, useHistory } from "react-router";
+import { NavLink } from "react-router-dom";
 
 function Copyright() {
   return (
@@ -32,13 +27,13 @@ const useStyles = makeStyles((theme) => ({
       backgroundColor: theme.palette.common.white,
     },
   },
-
   paper: {
     padding: 20,
     maxWidth: 400,
     display: "flex",
     flexDirection: "column",
     alignItems: "center",
+    textAlign: "center",
   },
   avatar: {
     margin: theme.spacing(1),
@@ -49,7 +44,7 @@ const useStyles = makeStyles((theme) => ({
     width: "100%", // Fix IE 11 issue.
     marginTop: theme.spacing(1),
   },
-  form2: {
+  container: {
     display: "flex",
     alignItems: "center",
     height: "100vh",
@@ -95,6 +90,7 @@ export default function SignIn(props) {
     setIsTyping(false);
     props.requestLogin(userName, password);
   };
+
   if (props.isAuthenticated === true) {
     props.getScreenSecurityInfo(history);
     if (history.location.state && history.location.state.from) {
@@ -106,15 +102,18 @@ export default function SignIn(props) {
       );
   } else
     return (
-      <div className={classes.form2}>
-        <img src="/static/images/welcome.jpg" className={classes.image}></img>
-        <CssBaseline />
+      <div className={classes.container}>
+        <img
+          alt="Welcome"
+          src="/static/images/welcome.jpg"
+          className={classes.image}
+        ></img>
         <div className={classes.paper}>
-          <img
+          {/* <img
           // alt="Hust"
           // className={classes.avatar}
           // src={process.env.PUBLIC_URL + "/soict-logo.png"}
-          />
+          /> */}
           <Typography
             component="h1"
             variant="h4"
@@ -169,7 +168,6 @@ export default function SignIn(props) {
             /> */}
             {props.isRequesting === true ? (
               <Button
-                backgroundColor
                 disabled={true}
                 type="submit"
                 fullWidth
@@ -189,26 +187,26 @@ export default function SignIn(props) {
                 Đăng nhập
               </Button>
             )}
-            <Grid container md={12} justify="center">
-              {/* <Grid item xs>
+
+            {/* <Grid item xs>
                 
                 <Link href="#" variant="body2" style = {{position:"relative"}}>
                   Quên mật khẩu?
                 </Link>
               </Grid> */}
 
-              <Link
-                href={process.env.PUBLIC_URL + "/user/register"}
-                variant="body2"
-                style={{ position: "relative", fontSize: "18px" }}
-              >
-                {"Tạo tài khoản"}
-              </Link>
+            <Link
+              component={NavLink}
+              to={process.env.PUBLIC_URL + "/user/register"}
+              variant="body2"
+              style={{ position: "relative", fontSize: "18px" }}
+            >
+              {"Tạo tài khoản"}
+            </Link>
 
-              {/* <Box mt={2} className={classes.cp}>
+            {/* <Box mt={2} className={classes.cp}>
                 <Copyright />
               </Box> */}
-            </Grid>
           </form>
         </div>
       </div>
