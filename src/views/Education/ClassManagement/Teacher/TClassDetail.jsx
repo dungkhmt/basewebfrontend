@@ -975,51 +975,6 @@ function TClassDetail() {
                       Xuất Excel
                     </Button>
                   }
-<<<<<<< HEAD
-              >
-                <ExcelSheet dataSet={DataSet} name ={"Danh sách nộp bài tập lớp " + classDetail.code}/> 
-              </ExcelFile>  
-                
-            ) : null}
-            <MaterialTable
-              title=""
-              columns={stuAssignCols}
-              icons={tableIcons}
-              tableRef={studentAssignTableRef}
-              localization={localization}
-              data={studentAssignmentList}
-              components={{
-                Container: (props) => <Paper {...props} elevation={0} />,
-              }}
-              options={{
-                // fixedColumns: {
-                //   left: 1, 
-                //   right: 1
-                // },
-                draggable: false,
-                filtering: true,
-                sorting: true,
-                search: false,
-                pageSize: 10,
-                debounceInterval: 500,
-                headerStyle: {
-                  backgroundColor: "#673ab7",
-                  fontWeight: "bold",
-                  fontSize: "1rem",
-                  color: "white",
-                },
-                filterCellStyle: { textAlign: "center" },
-                cellStyle: { fontSize: "1rem", textAlign: "center" },
-                toolbarButtonAlignment: "left",
-                // exportButton: true,
-                // exportFileName: "Danh sách nộp bài tập lớp " + classDetail.code,
-                // exportDelimiter: ",",
-              }}
-            />
-          </CardContent>
-        </Collapse>
-      </Card>                            
-=======
                 >
                   <ExcelSheet
                     dataSet={DataSet}
@@ -1074,7 +1029,6 @@ function TClassDetail() {
         Lich su lam quiz
       </TabPanel>
 
->>>>>>> af531fc08309ad6195dd99f5298cc5fea34b9130
       {/* Dialogs */}
       <CustomizedDialogs
         open={openDelStuDialog}
