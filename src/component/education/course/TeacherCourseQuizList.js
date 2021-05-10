@@ -200,13 +200,11 @@ function TeacherCourseQuizList(props) {
                 return  <ExcelFile
                           filename={"Danh sách câu hỏi môn " + courseId}
                           element={
-                            <Button
-                              variant="contained"
-                              color="primary"
-                              style={{ marginLeft: "0px" }}
-                            >
-                              Xuất Excel
-                            </Button>
+                            <img
+                              alt="Xuất Excel"
+                              src="/static/images/icons/excel_icon.png" 
+                              style = {{width: "35px", height: "35px"}}                       
+                            ></img>
                           }
                           >
                             <ExcelSheet
@@ -221,18 +219,17 @@ function TeacherCourseQuizList(props) {
             quizs.length===0?null:
             {
               icon: () => {
-                return  <Button
-                          variant="contained"
-                          color="secondary"
-                          style={{ marginLeft: "0px" }}
-                        >
-                          Xuất PDF
-                        </Button> ;
+                return  <img
+                          alt="Xuất PDF"
+                          src="/static/images/icons/pdf_icon.png" 
+                          style = {{width: "35px", height: "35px"}}                       
+                        ></img>;
+                        
               },
               tooltip: "Xuất PDF",
               isFreeAction: true,
-              onClick: () => {
-                exportQuizsListPdf(quizs, courseId)
+              onClick: () => {                
+                exportQuizsListPdf(quizs, courseId);
               },
             },
             {
