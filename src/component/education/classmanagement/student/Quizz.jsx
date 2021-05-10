@@ -24,6 +24,7 @@ const useStyles = makeStyles(() => ({
         display: "inline-block",
         "& p": {
           margin: 0,
+          textAlign: "justify",
         },
       },
     },

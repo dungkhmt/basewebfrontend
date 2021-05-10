@@ -126,6 +126,38 @@ export default function Home(props) {
     );
   }
   async function getQuizParticipation() {
+    // // send multipart form
+    // var formData = new FormData();
+    // formData.append("file", null);
+
+    // request(
+    //   token,
+    //   history,
+    //   "post",
+    //   "/get-quiz-participation-statistic",
+    //   (res) => {
+    //     let lst = res.data;
+    //     let dates = [];
+    //     let participations = [];
+
+    //     console.log("getQuizParticipation, lst = ", lst);
+
+    //     lst.forEach((r) => {
+    //       dates.push(r.date);
+    //       participations.push(r.count);
+    //     });
+
+    //     setDateQuizParticipation(dates);
+    //     setTotalQuizParticipation(participations);
+    //   },
+    //   {},
+    //   formData,
+    //   {
+    //     headers: {
+    //       "Content-Type": "multipart/form-data",
+    //     },
+    //   }
+    // );
     request(
       token,
       history,

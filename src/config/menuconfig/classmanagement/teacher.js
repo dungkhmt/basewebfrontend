@@ -30,6 +30,14 @@ export const eduTeachingManagement = {
       child: [],
     },
     {
+      id: "MENU_EDUCATION_TEACHING_MANAGEMENT_TEACHER_QUIZ_TEST_LIST",
+      path: "/edu/class/quiztest/list",
+      isPublic: false,
+      icon: null,
+      text: "Danh sach Quiz Test",
+      child: [],
+    },
+    {
       id: "MENU_EDUCATION_MANAGEMENT_PROGRAMMING_CONTEST",
       path: "/edu/management/contestprogramming",
       isPublic: true,

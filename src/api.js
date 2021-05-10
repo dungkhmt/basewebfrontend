@@ -1,6 +1,6 @@
-import { failed, error } from "./action/Auth";
-import { API_URL } from "./config/config";
 import axios from "axios";
+import { failed } from "./action/Auth";
+import { API_URL } from "./config/config";
 import { errorNoti, infoNoti } from "./utils/Notification";
 
 export const authPost = (dispatch, token, url, body) => {
@@ -188,6 +188,17 @@ const isFunction = (func) =>
     "function" === typeof func ||
     func instanceof Function);
 
+/**
+ * url, method, and data properties don't need to be specified in config.
+ * @param {*} token
+ * @param {*} history
+ * @param {*} method
+ * @param {*} url
+ * @param {*} onSuccess
+ * @param {*} onErrors
+ * @param {*} data
+ * @param {*} config
+ */
 export const request = async (
   token,
   history,
@@ -195,17 +206,21 @@ export const request = async (
   url,
   successHandler,
   errorHandlers = {},
-  data
+  data,
+  config
 ) => {
   try {
     const res = await axios({
+      baseURL: API_URL,
       method: method.toLowerCase(),
-      url: API_URL + url,
+      url: url,
+      data: data,
+      ...config,
       headers: {
         "content-type": "application/json",
         "X-Auth-Token": token,
+        ...config?.headers,
       },
-      data: data,
     });
 
     if (isFunction(successHandler)) {
