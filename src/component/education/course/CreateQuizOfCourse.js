@@ -97,7 +97,7 @@ function CreateQuizOfCourse(){
 		setLevelList(lst);
 	} 
 	async function getTopicList(){
-		let lst = await authGet(dispatch,token,'/get-all-quiz-course-topics')
+		let lst = await authGet(dispatch,token,'/get-quiz-course-topics-of-course/' + courseId);
 		setTopicList(lst);
 	} 
 	
