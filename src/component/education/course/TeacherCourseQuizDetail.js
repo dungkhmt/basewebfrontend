@@ -13,7 +13,7 @@ import {
   import {Link} from "react-router-dom";
   import TeacherCourseChapterMaterialList from "./TeacherCourseChapterMaterialList";
   import TeacherCourseQuizChoiceAnswerList from "./TeacherCourseQuizChoiceAnswerList";
-
+  import TeacherCourseQuizContent from "./TeacherCourseQuizContent";
 function TeacherCourseQuizDetail(){
     const params = useParams();
     const questionId = params.questionId;
@@ -30,8 +30,8 @@ function TeacherCourseQuizDetail(){
     return(
         <Card>
             <CardContent>
+                <TeacherCourseQuizContent questionId={questionId}/>
                 <TeacherCourseQuizChoiceAnswerList questionId={questionId}/>
-
             </CardContent>
         </Card>
     );

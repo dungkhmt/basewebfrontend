@@ -868,10 +868,10 @@ function TClassDetail() {
                 Container: (props) => <Paper {...props} elevation={0} />,
               }}
               options={{
-                fixedColumns: {
-                  left: 1, 
-                  right: 1
-                },
+                // fixedColumns: {
+                //   left: 1, 
+                //   right: 1
+                // },
                 draggable: false,
                 filtering: true,
                 sorting: true,
