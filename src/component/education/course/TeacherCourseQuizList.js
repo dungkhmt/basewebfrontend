@@ -194,6 +194,7 @@ function TeacherCourseQuizList(props) {
           columns={columns}
           data={quizs}
           actions={[
+            quizs.length===0?null: 
             {
               icon: () => {
                 return  <ExcelFile
@@ -217,6 +218,7 @@ function TeacherCourseQuizList(props) {
               tooltip: "Xuất Excel",
               isFreeAction: true,
             },
+            quizs.length===0?null:
             {
               icon: () => {
                 return  <Button
