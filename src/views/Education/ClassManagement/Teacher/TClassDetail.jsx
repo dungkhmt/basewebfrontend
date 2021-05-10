@@ -1,60 +1,49 @@
-import React, { useRef, useEffect, useState, Fragment } from "react";
 import {
+  Avatar,
   Card,
   CardContent,
-  Typography,
   CardHeader,
-  Paper,
-  Collapse,
-  CardActionArea,
   Grid,
   Link,
-  Avatar,
-  IconButton,
   List,
   ListItem,
-  ListItemText,
   ListItemIcon,
+  ListItemText,
+  Paper,
+  Typography,
 } from "@material-ui/core";
-import MaterialTable from "material-table";
-import { useSelector } from "react-redux";
-import { useHistory } from "react-router";
-import { request } from "../../../../api";
-import { useParams } from "react-router";
-import { makeStyles } from "@material-ui/core/styles";
-import {
-  FcApproval,
-  FcMindMap,
-  FcExpand,
-  FcConferenceCall,
-  FcExpired,
-  FcClock,
-} from "react-icons/fc";
-import { BiDetail } from "react-icons/bi";
-import changePageSize, {
-  localization,
-  tableIcons,
-} from "../../../../utils/MaterialTableUtils";
-import { errorNoti } from "../../../../utils/Notification";
-import CustomizedDialogs from "../../../../utils/CustomizedDialogs";
-import PositiveButton from "../../../../component/education/classmanagement/PositiveButton";
-
-import NegativeButton from "../../../../component/education/classmanagement/NegativeButton";
-import displayTime from "../../../../utils/DateTimeUtils";
-import { StyledBadge } from "../../../../component/education/classmanagement/StyledBadge";
-import AssignList from "../../../../component/education/classmanagement/AssignList";
-import TeacherViewLogUserCourseChapterMaterialList from "../../../../component/education/course/TeacherViewLogUserCourseChapterMaterialList";
-
+import AppBar from "@material-ui/core/AppBar";
+import Box from "@material-ui/core/Box";
 // import withAsynchScreenSecurity from "../../../../component/education/classmanagement/withAsynchScreenSecurity";
 import Button from "@material-ui/core/Button";
-import clsx from "clsx";
-import ReactExport from "react-data-export";
-
-import PropTypes from "prop-types";
-import AppBar from "@material-ui/core/AppBar";
-import Tabs from "@material-ui/core/Tabs";
+import { makeStyles } from "@material-ui/core/styles";
 import Tab from "@material-ui/core/Tab";
-import Box from "@material-ui/core/Box";
+import Tabs from "@material-ui/core/Tabs";
+import MaterialTable from "material-table";
+import PropTypes from "prop-types";
+import React, { useEffect, useRef, useState } from "react";
+import ReactExport from "react-data-export";
+import { BiDetail } from "react-icons/bi";
+import {
+  FcApproval,
+  FcClock,
+  FcConferenceCall,
+  FcExpired,
+  FcMindMap,
+} from "react-icons/fc";
+import { useSelector } from "react-redux";
+import { useHistory, useParams } from "react-router";
+import { request } from "../../../../api";
+import { drawerWidth } from "../../../../assets/jss/material-dashboard-react";
+import AssignList from "../../../../component/education/classmanagement/AssignList";
+import NegativeButton from "../../../../component/education/classmanagement/NegativeButton";
+import PositiveButton from "../../../../component/education/classmanagement/PositiveButton";
+import { StyledBadge } from "../../../../component/education/classmanagement/StyledBadge";
+import TeacherViewLogUserCourseChapterMaterialList from "../../../../component/education/course/TeacherViewLogUserCourseChapterMaterialList";
+import CustomizedDialogs from "../../../../utils/CustomizedDialogs";
+import displayTime from "../../../../utils/DateTimeUtils";
+import { localization, tableIcons } from "../../../../utils/MaterialTableUtils";
+import { errorNoti } from "../../../../utils/Notification";
 
 const ExcelFile = ReactExport.ExcelFile;
 const ExcelSheet = ReactExport.ExcelFile.ExcelSheet;
@@ -66,8 +55,8 @@ function TabPanel(props) {
     <div
       role="tabpanel"
       hidden={value !== index}
-      id={`simple-tabpanel-${index}`}
-      aria-labelledby={`simple-tab-${index}`}
+      id={`scrollable-auto-tabpanel-${index}`}
+      aria-labelledby={`scrollable-auto-tab-${index}`}
       {...other}
     >
       {value === index && (
@@ -87,12 +76,17 @@ TabPanel.propTypes = {
 
 function a11yProps(index) {
   return {
-    id: `simple-tab-${index}`,
-    "aria-controls": `simple-tabpanel-${index}`,
+    id: `scrollable-auto-tab-${index}`,
+    "aria-controls": `scrollable-auto-tabpanel-${index}`,
   };
 }
 
 const useStyles = makeStyles((theme) => ({
+  root: {
+    flexGrow: 1,
+    width: `calc(100vw - ${drawerWidth + theme.spacing(4) * 2}px)`,
+    backgroundColor: theme.palette.background.paper,
+  },
   card: {
     marginTop: theme.spacing(2),
   },
@@ -123,6 +117,16 @@ const useStyles = makeStyles((theme) => ({
   close: { transition: "0.3s" },
   item: {
     paddingLeft: 32,
+  },
+  tabs: { padding: theme.spacing(2) },
+  tabSelected: {
+    background: "rgba(254,243,199,1)",
+    color: "rgba(180,83,9,1) !important",
+  },
+  tabRoot: {
+    margin: "0px 0.5rem",
+    borderRadius: "0.375rem",
+    textTransform: "none",
   },
 }));
 
@@ -342,7 +346,7 @@ function TClassDetail() {
         "get",
         `/edu/class/${params.id}/registered-students`,
         (res) => {
-          changePageSize(res.data.length, registTableRef);
+          // changePageSize(res.data.length, registTableRef);
           setRegistStudents(res.data);
           console.log("registered students = " + res.data);
         }
@@ -354,7 +358,7 @@ function TClassDetail() {
         "get",
         `/edu/class/${params.id}/students`,
         (res) => {
-          changePageSize(res.data.length, studentTableRef);
+          // changePageSize(res.data.length, studentTableRef);
           setStudents(res.data);
           setFetchedStudents(true);
         }
@@ -459,13 +463,13 @@ function TClassDetail() {
     );
   };
 
-  const onClickStuCard = () => {
-    setOpenClassStuCard(!openClassStuCard);
+  // const onClickStuCard = () => {
+  //   setOpenClassStuCard(!openClassStuCard);
 
-    if (fetchedStudents == false) {
-      getStudents("class");
-    }
-  };
+  //   if (fetchedStudents == false) {
+  //     getStudents("class");
+  //   }
+  // };
 
   // Delete student.
   const onClickRemoveBtn = (rowData) => {
@@ -568,17 +572,17 @@ function TClassDetail() {
     setOpenDelStuDialog(false);
   };
 
-  const onClickStuAssignCard = () => {
-    setOpenStuAssignCard(!openStuAssignCard);
+  // const onClickStuAssignCard = () => {
+  //   setOpenStuAssignCard(!openStuAssignCard);
 
-    if (fetchedStudentAssignment === false) {
-      getStudentAssignment();
-    }
+  //   if (fetchedStudentAssignment === false) {
+  //     getStudentAssignment();
+  //   }
 
-    if (fetchedClassDetail === false) {
-      getClassDetail();
-    }
-  };
+  //   if (fetchedClassDetail === false) {
+  //     getClassDetail();
+  //   }
+  // };
 
   const [value, setValue] = React.useState(0);
 
@@ -595,228 +599,268 @@ function TClassDetail() {
   }, []);
 
   return (
-    <Fragment>
-      <Card className={classes.card}>
-        <AppBar position="static">
-          <Tabs
-            value={value}
-            onChange={handleChange}
-            aria-label="simple tabs example"
-          >
-            <Tab label="Thong tin chung" {...a11yProps(0)} />
-            <Tab label="DS SV" {...a11yProps(1)} />
-            <Tab label="SV dang ky" {...a11yProps(2)} />
-            <Tab label="Bai tap" {...a11yProps(3)} />
-            <Tab label="DS nop bai tap" {...a11yProps(4)} />
-            <Tab label="Lịch sử học" {...a11yProps(5)} />
-            <Tab label="Lịch sử làm quiz" {...a11yProps(6)} />
-          </Tabs>
-        </AppBar>
+    <div className={classes.root}>
+      {/* <Card className={classes.card}> */}
+      <AppBar position="static" color="inherit" elevation={0}>
+        <Tabs
+          className={classes.tabs}
+          value={value}
+          onChange={handleChange}
+          // indicatorColor="primary"
+          // textColor="primary"
+          variant="scrollable"
+          scrollButtons="on"
+          aria-label="scrollable auto tabs example"
+          TabIndicatorProps={{
+            style: {
+              display: "none",
+            },
+          }}
+        >
+          <Tab
+            disableRipple
+            classes={{ root: classes.tabRoot, selected: classes.tabSelected }}
+            label="Thong tin chung"
+            {...a11yProps(0)}
+          />
+          <Tab
+            disableRipple
+            classes={{ root: classes.tabRoot, selected: classes.tabSelected }}
+            label="DS SV"
+            {...a11yProps(1)}
+          />
+          <Tab
+            disableRipple
+            classes={{ root: classes.tabRoot, selected: classes.tabSelected }}
+            label="SV dang ky"
+            {...a11yProps(2)}
+          />
+          <Tab
+            disableRipple
+            classes={{ root: classes.tabRoot, selected: classes.tabSelected }}
+            label="Bai tap"
+            {...a11yProps(3)}
+          />
+          <Tab
+            disableRipple
+            classes={{ root: classes.tabRoot, selected: classes.tabSelected }}
+            label="DS nop bai tap"
+            {...a11yProps(4)}
+          />
+          <Tab
+            disableRipple
+            classes={{ root: classes.tabRoot, selected: classes.tabSelected }}
+            label="Lịch sử học"
+            {...a11yProps(5)}
+          />
+          <Tab
+            disableRipple
+            classes={{ root: classes.tabRoot, selected: classes.tabSelected }}
+            label="Lịch sử làm quiz"
+            {...a11yProps(6)}
+          />
+        </Tabs>
+      </AppBar>
 
-        <TabPanel value={value} index={0}>
+      <TabPanel value={value} index={0}>
+        <CardHeader
+          avatar={
+            <Avatar style={{ background: "#ff7043" }}>
+              <BiDetail size={32} />
+            </Avatar>
+          }
+          title={<Typography variant="h5">Thông tin lớp</Typography>}
+        />
+        <CardContent>
+          <Grid container className={classes.grid}>
+            <Grid item md={3} sm={3} xs={3} container direction="column">
+              <Typography>Mã lớp</Typography>
+              <Typography>Mã học phần</Typography>
+              <Typography>Tên học phần</Typography>
+              <Typography>Loại lớp</Typography>
+            </Grid>
+            <Grid item md={8} sm={8} xs={8} container direction="column">
+              <Typography>
+                <b>:</b> {classDetail.code}
+              </Typography>
+              <Typography>
+                <b>:</b> {classDetail.courseId}
+              </Typography>
+              <Typography>
+                <b>:</b> {classDetail.name}
+              </Typography>
+              <Typography>
+                <b>:</b> {classDetail.classType}
+              </Typography>
+            </Grid>
+          </Grid>
+        </CardContent>
+      </TabPanel>
+
+      <TabPanel value={value} index={1}>
+        <Card className={classes.card} elevation={0}>
+          {/* <CardActionArea disableRipple onClick={onClickStuCard}> */}
           <CardHeader
             avatar={
-              <Avatar style={{ background: "#ff7043" }}>
-                <BiDetail size={32} />
+              <Avatar style={{ background: "white" }}>
+                {/*#ffeb3b <PeopleAltRoundedIcon /> */}
+                <FcConferenceCall size={40} />
               </Avatar>
             }
-            title={<Typography variant="h5">Thông tin lớp</Typography>}
+            title={<Typography variant="h5">Danh sách sinh viên</Typography>}
+            // action={
+            //   <div>
+            //     <IconButton aria-label="show more">
+            //       <FcExpand
+            //         size={24}
+            //         className={clsx(
+            //           !openClassStuCard && classes.close,
+            //           openClassStuCard && classes.open
+            //         )}
+            //       />
+            //     </IconButton>
+            //   </div>
+            // }
           />
+          {/* </CardActionArea>
+            <Collapse in={openClassStuCard} timeout="auto"> */}
           <CardContent>
-            <Grid container className={classes.grid}>
-              <Grid item md={3} sm={3} xs={3} container direction="column">
-                <Typography>Mã lớp</Typography>
-                <Typography>Mã học phần</Typography>
-                <Typography>Tên học phần</Typography>
-                <Typography>Loại lớp</Typography>
-              </Grid>
-              <Grid item md={8} sm={8} xs={8} container direction="column">
-                <Typography>
-                  <b>:</b> {classDetail.code}
-                </Typography>
-                <Typography>
-                  <b>:</b> {classDetail.courseId}
-                </Typography>
-                <Typography>
-                  <b>:</b> {classDetail.name}
-                </Typography>
-                <Typography>
-                  <b>:</b> {classDetail.classType}
-                </Typography>
-              </Grid>
-            </Grid>
+            <MaterialTable
+              title=""
+              columns={stuCols}
+              icons={tableIcons}
+              tableRef={studentTableRef}
+              localization={localization}
+              data={students}
+              components={{
+                Container: (props) => <Paper {...props} elevation={0} />,
+              }}
+              options={{
+                filtering: true,
+                sorting: false,
+                search: false,
+                pageSize: 10,
+                debounceInterval: 500,
+                headerStyle: {
+                  backgroundColor: "#673ab7",
+                  fontWeight: "bold",
+                  fontSize: "1rem",
+                  color: "white",
+                },
+                filterCellStyle: { textAlign: "center" },
+                cellStyle: { fontSize: "1rem", textAlign: "center" },
+                toolbarButtonAlignment: "left",
+              }}
+            />
           </CardContent>
-        </TabPanel>
-
-        <TabPanel value={value} index={1}>
-          <Card className={classes.card}>
-            <CardActionArea disableRipple onClick={onClickStuCard}>
-              <CardHeader
-                avatar={
-                  <Avatar style={{ background: "white" }}>
-                    {/*#ffeb3b <PeopleAltRoundedIcon /> */}
-                    <FcConferenceCall size={40} />
-                  </Avatar>
-                }
-                title={
-                  <Typography variant="h5">Danh sách sinh viên</Typography>
-                }
-                action={
-                  <div>
-                    <IconButton aria-label="show more">
-                      <FcExpand
-                        size={24}
-                        className={clsx(
-                          !openClassStuCard && classes.close,
-                          openClassStuCard && classes.open
-                        )}
-                      />
-                    </IconButton>
-                  </div>
-                }
-              />
-            </CardActionArea>
-            <Collapse in={openClassStuCard} timeout="auto">
-              <CardContent>
-                <MaterialTable
-                  title=""
-                  columns={stuCols}
-                  icons={tableIcons}
-                  tableRef={studentTableRef}
-                  localization={localization}
-                  data={students}
-                  components={{
-                    Container: (props) => <Paper {...props} elevation={0} />,
-                  }}
-                  options={{
-                    filtering: true,
-                    sorting: false,
-                    search: false,
-                    pageSize: 10,
-                    debounceInterval: 500,
-                    headerStyle: {
-                      backgroundColor: "#673ab7",
-                      fontWeight: "bold",
-                      fontSize: "1rem",
-                      color: "white",
-                    },
-                    filterCellStyle: { textAlign: "center" },
-                    cellStyle: { fontSize: "1rem", textAlign: "center" },
-                    toolbarButtonAlignment: "left",
-                  }}
-                />
-              </CardContent>
-            </Collapse>
-          </Card>
-        </TabPanel>
-        <TabPanel value={value} index={2}>
-          <Card className={classes.card}>
-            <CardActionArea
+          {/* </Collapse> */}
+        </Card>
+      </TabPanel>
+      <TabPanel value={value} index={2}>
+        <Card className={classes.card} elevation={0}>
+          {/* <CardActionArea
               disableRipple
               onClick={() => setOpenRegistCard(!openRegistCard)}
-            >
-              <CardHeader
-                avatar={
-                  <Avatar style={{ background: "white" }}>
-                    <FcApproval size={40} />
-                  </Avatar>
-                }
-                title={
-                  <StyledBadge
-                    badgeContent={registStudents.length}
-                    color="error"
-                  >
-                    Phê duyệt sinh viên đăng ký
-                  </StyledBadge>
-                }
-                titleTypographyProps={{
-                  variant: "h5",
-                }}
-                action={
-                  <div>
-                    <IconButton aria-label="show more">
-                      <FcExpand
-                        size={24}
-                        className={clsx(
-                          !openRegistCard && classes.close,
-                          openRegistCard && classes.open
-                        )}
+            > */}
+          <CardHeader
+            avatar={
+              <Avatar style={{ background: "white" }}>
+                <FcApproval size={40} />
+              </Avatar>
+            }
+            title={
+              <StyledBadge badgeContent={registStudents.length} color="error">
+                Phê duyệt sinh viên đăng ký
+              </StyledBadge>
+            }
+            titleTypographyProps={{
+              variant: "h5",
+            }}
+            // action={
+            //   <div>
+            //     <IconButton aria-label="show more">
+            //       <FcExpand
+            //         size={24}
+            //         className={clsx(
+            //           !openRegistCard && classes.close,
+            //           openRegistCard && classes.open
+            //         )}
+            //       />
+            //     </IconButton>
+            //   </div>
+            // }
+          />
+          {/* </CardActionArea> */}
+          {/* <Collapse in={openRegistCard} timeout="auto"> */}
+          <CardContent>
+            <MaterialTable
+              title=""
+              columns={registCols}
+              tableRef={registTableRef}
+              data={registStudents}
+              localization={localization}
+              components={{
+                Container: (props) => <Paper {...props} elevation={0} />,
+                Action: (props) => {
+                  if (props.action.icon === "refuse") {
+                    return (
+                      <NegativeButton
+                        label="Từ chối"
+                        className={classes.negativeBtn}
+                        onClick={(event) =>
+                          props.action.onClick(event, props.data)
+                        }
                       />
-                    </IconButton>
-                  </div>
-                }
-              />
-            </CardActionArea>
-            <Collapse in={openRegistCard} timeout="auto">
-              <CardContent>
-                <MaterialTable
-                  title=""
-                  columns={registCols}
-                  tableRef={registTableRef}
-                  data={registStudents}
-                  localization={localization}
-                  components={{
-                    Container: (props) => <Paper {...props} elevation={0} />,
-                    Action: (props) => {
-                      if (props.action.icon === "refuse") {
-                        return (
-                          <NegativeButton
-                            label="Từ chối"
-                            className={classes.negativeBtn}
-                            onClick={(event) =>
-                              props.action.onClick(event, props.data)
-                            }
-                          />
-                        );
-                      }
-                      if (props.action.icon === "approve") {
-                        return (
-                          <PositiveButton
-                            label="Phê duyệt"
-                            className={classes.positiveBtn}
-                            onClick={(event) =>
-                              props.action.onClick(event, props.data)
-                            }
-                          />
-                        );
-                      }
-                    },
-                  }}
-                  options={{
-                    search: false,
-                    pageSize: 10,
-                    selection: true,
-                    debounceInterval: 500,
-                    headerStyle: {
-                      backgroundColor: "#673ab7",
-                      fontWeight: "bold",
-                      fontSize: "1rem",
-                      color: "white",
-                    },
-                    sorting: false,
-                    cellStyle: { fontSize: "1rem" },
-                    toolbarButtonAlignment: "left",
-                    showTextRowsSelected: false,
-                  }}
-                  actions={[
-                    {
-                      icon: "approve",
-                      position: "toolbarOnSelect",
-                      onClick: () => onUpdateStatus("APPROVED"),
-                    },
-                    {
-                      icon: "refuse",
-                      position: "toolbarOnSelect",
-                      onClick: () => onUpdateStatus("REFUSED"),
-                    },
-                  ]}
-                  onSelectionChange={(rows) => onSelectionChange(rows)}
-                />
-              </CardContent>
-            </Collapse>
-          </Card>
-        </TabPanel>
-      </Card>
+                    );
+                  }
+                  if (props.action.icon === "approve") {
+                    return (
+                      <PositiveButton
+                        label="Phê duyệt"
+                        className={classes.positiveBtn}
+                        onClick={(event) =>
+                          props.action.onClick(event, props.data)
+                        }
+                      />
+                    );
+                  }
+                },
+              }}
+              options={{
+                search: false,
+                pageSize: 10,
+                selection: true,
+                debounceInterval: 500,
+                headerStyle: {
+                  backgroundColor: "#673ab7",
+                  fontWeight: "bold",
+                  fontSize: "1rem",
+                  color: "white",
+                },
+                sorting: false,
+                cellStyle: { fontSize: "1rem" },
+                toolbarButtonAlignment: "left",
+                showTextRowsSelected: false,
+              }}
+              actions={[
+                {
+                  icon: "approve",
+                  position: "toolbarOnSelect",
+                  onClick: () => onUpdateStatus("APPROVED"),
+                },
+                {
+                  icon: "refuse",
+                  position: "toolbarOnSelect",
+                  onClick: () => onUpdateStatus("REFUSED"),
+                },
+              ]}
+              onSelectionChange={(rows) => onSelectionChange(rows)}
+            />
+          </CardContent>
+          {/* </Collapse> */}
+        </Card>
+      </TabPanel>
+      {/* </Card> */}
 
       <TabPanel value={value} index={3}>
         <Card className={classes.card}>
@@ -935,90 +979,88 @@ function TClassDetail() {
 
       <TabPanel value={value} index={4}>
         <Card className={classes.card}>
-          <CardActionArea disableRipple onClick={onClickStuAssignCard}>
-            <CardHeader
-              avatar={
-                <Avatar style={{ background: "white" }}>
-                  {/*#ffeb3b <PeopleAltRoundedIcon /> */}
-                  <FcConferenceCall size={40} />
-                </Avatar>
-              }
-              title={
-                <Typography variant="h5">Danh sách nộp bài tập</Typography>
-              }
-              action={
-                <div>
-                  <IconButton aria-label="show more">
-                    <FcExpand
-                      size={24}
-                      className={clsx(
-                        !openStuAssignCard && classes.close,
-                        openStuAssignCard && classes.open
-                      )}
-                    />
-                  </IconButton>
-                </div>
-              }
+          {/* <CardActionArea disableRipple onClick={onClickStuAssignCard}> */}
+          <CardHeader
+            avatar={
+              <Avatar style={{ background: "white" }}>
+                {/*#ffeb3b <PeopleAltRoundedIcon /> */}
+                <FcConferenceCall size={40} />
+              </Avatar>
+            }
+            title={<Typography variant="h5">Danh sách nộp bài tập</Typography>}
+            // action={
+            //   <div>
+            //     <IconButton aria-label="show more">
+            //       <FcExpand
+            //         size={24}
+            //         className={clsx(
+            //           !openStuAssignCard && classes.close,
+            //           openStuAssignCard && classes.open
+            //         )}
+            //       />
+            //     </IconButton>
+            //   </div>
+            // }
+          />
+          {/* </CardActionArea>
+          <Collapse in={openStuAssignCard} timeout="auto"> */}
+          <CardContent>
+            {studentAssignmentList.length !== 0 ? (
+              <ExcelFile
+                filename={"Danh sách nộp bài tập lớp " + classDetail.code}
+                element={
+                  <Button
+                    variant="contained"
+                    color="secondary"
+                    style={{ marginLeft: "0px" }}
+                  >
+                    Xuất Excel
+                  </Button>
+                }
+              >
+                <ExcelSheet
+                  dataSet={DataSet}
+                  name={"Danh sách nộp bài tập lớp " + classDetail.code}
+                />
+              </ExcelFile>
+            ) : null}
+            <MaterialTable
+              title=""
+              columns={stuAssignCols}
+              icons={tableIcons}
+              tableRef={studentAssignTableRef}
+              localization={localization}
+              data={studentAssignmentList}
+              components={{
+                Container: (props) => <Paper {...props} elevation={0} />,
+              }}
+              options={{
+                fixedColumns: {
+                  left: 1,
+                  right: 1,
+                },
+                draggable: false,
+                filtering: true,
+                sorting: true,
+                search: false,
+                pageSize: 10,
+                debounceInterval: 500,
+                headerStyle: {
+                  backgroundColor: "#673ab7",
+                  fontWeight: "bold",
+                  fontSize: "1rem",
+                  color: "white",
+                },
+                filterCellStyle: { textAlign: "center" },
+                cellStyle: { fontSize: "1rem", textAlign: "center" },
+                toolbarButtonAlignment: "left",
+                // exportButton: true,
+                // exportFileName: "Danh sách nộp bài tập lớp " + classDetail.code,
+                // exportDelimiter: ",",
+              }}
             />
-          </CardActionArea>
-          <Collapse in={openStuAssignCard} timeout="auto">
-            <CardContent>
-              {studentAssignmentList.length !== 0 ? (
-                <ExcelFile
-                  filename={"Danh sách nộp bài tập lớp " + classDetail.code}
-                  element={
-                    <Button
-                      variant="contained"
-                      color="secondary"
-                      style={{ marginLeft: "0px" }}
-                    >
-                      Xuất Excel
-                    </Button>
-                  }
-                >
-                  <ExcelSheet
-                    dataSet={DataSet}
-                    name={"Danh sách nộp bài tập lớp " + classDetail.code}
-                  />
-                </ExcelFile>
-              ) : null}
-              <MaterialTable
-                title=""
-                columns={stuAssignCols}
-                icons={tableIcons}
-                tableRef={studentAssignTableRef}
-                localization={localization}
-                data={studentAssignmentList}
-                components={{
-                  Container: (props) => <Paper {...props} elevation={0} />,
-                }}
-                options={{
-                  fixedColumns: {
-                    left: 1,
-                    right: 1,
-                  },
-                  draggable: false,
-                  filtering: true,
-                  sorting: true,
-                  search: false,
-                  pageSize: 10,
-                  debounceInterval: 500,
-                  headerStyle: {
-                    backgroundColor: "#673ab7",
-                    fontWeight: "bold",
-                    fontSize: "1rem",
-                    color: "white",
-                  },
-                  filterCellStyle: { textAlign: "center" },
-                  cellStyle: { fontSize: "1rem", textAlign: "center" },
-                  toolbarButtonAlignment: "left",
-                  // exportButton: true,
-                  // exportFileName: "Danh sách nộp bài tập lớp " + classDetail.code,
-                  // exportDelimiter: ",",
-                }}
-              />
-            </CardContent>
-          </Collapse>
+          </CardContent>
+          {/* </Collapse> */}
         </Card>
       </TabPanel>
 
@@ -1051,7 +1093,7 @@ function TClassDetail() {
           />
         }
       />
-    </Fragment>
+    </div>
   );
 }
 
