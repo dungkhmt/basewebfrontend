@@ -44,6 +44,7 @@ import displayTime from "../../../../utils/DateTimeUtils";
 import { StyledBadge } from "../../../../component/education/classmanagement/StyledBadge";
 import AssignList from "../../../../component/education/classmanagement/AssignList";
 import TeacherViewLogUserCourseChapterMaterialList from "../../../../component/education/course/TeacherViewLogUserCourseChapterMaterialList";
+import TeacherViewLogUserQuizList from "../../../../component/education/course/TeacherViewLogUserQuizList";
 
 // import withAsynchScreenSecurity from "../../../../component/education/classmanagement/withAsynchScreenSecurity";
 import Button from "@material-ui/core/Button";
@@ -1026,7 +1027,7 @@ function TClassDetail() {
         <TeacherViewLogUserCourseChapterMaterialList classId={params.id} />
       </TabPanel>
       <TabPanel value={value} index={6}>
-        Lich su lam quiz
+        <TeacherViewLogUserQuizList classId={params.id} />
       </TabPanel>
 
       {/* Dialogs */}
