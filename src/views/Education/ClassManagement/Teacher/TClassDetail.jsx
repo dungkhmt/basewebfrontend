@@ -423,50 +423,6 @@ function TClassDetail() {
     );
   };
 
-  const getAssignmentSubmission = () => {
-    request(
-      token,
-      history,
-      "get",
-      `/edu/class/${params.id}/assignments/teacher`,
-      (res) => {
-        // changePageSize(res.data.length, assignTableRef);
-        let wait4Opening = [];
-        let opened = [];
-        let deleted = [];
-        let current = new Date();
-
-        setAssignmentList(res.data);
-
-        res.data.forEach((assign) => {
-          if (assign.deleted) {
-            deleted.push(assign);
-          } else {
-            let open = new Date(assign.openTime);
-
-            if (current.getTime() < open.getTime()) {
-              wait4Opening.push(assign);
-            } else {
-              let close = new Date(assign.closeTime);
-
-              if (close.getTime() < current.getTime()) {
-                opened.push({ ...assign, opening: false });
-              } else {
-                opened.push({ ...assign, opening: true });
-              }
-            }
-          }
-        });
-
-        setAssignSets([
-          { ...assignSets[0], data: opened },
-          { ...assignSets[1], data: wait4Opening },
-          { ...assignSets[2], data: deleted },
-        ]);
-      }
-    );
-  };
-
   // Functions.
   const getStudentAssignment = () => {
     request(
@@ -611,7 +567,6 @@ function TClassDetail() {
   useEffect(() => {
     getClassDetail();
     getAssigns();
-    getAssignmentSubmission();
     getStudentAssignment();
     getStudents("register");
     getStudents();
