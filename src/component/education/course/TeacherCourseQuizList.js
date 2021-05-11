@@ -172,7 +172,9 @@ function TeacherCourseQuizList(props) {
     //let lst = await authGet(dispatch, token, '/get-all-quiz-questions');
     await authGet(dispatch, token, "/get-quiz-of-course/" + courseId).then((res)=>{
       setfetchedQuizs(true);
-      setQuizs(res);
+      if (res){
+        setQuizs(res);
+      }
     });
   }
 
@@ -183,12 +185,6 @@ function TeacherCourseQuizList(props) {
   return (
     <Card>
       <CardContent>
-        {quizs.length !== 0 ? (
-          <div>
-            
-          </div>
-          
-        ) : null}
         <MaterialTable
           title={"Quizs"}
           columns={columns}
