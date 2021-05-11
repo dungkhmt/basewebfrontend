@@ -42,7 +42,10 @@ import { StyledBadge } from "../../../../component/education/classmanagement/Sty
 import TeacherViewLogUserCourseChapterMaterialList from "../../../../component/education/course/TeacherViewLogUserCourseChapterMaterialList";
 import CustomizedDialogs from "../../../../utils/CustomizedDialogs";
 import displayTime from "../../../../utils/DateTimeUtils";
-import { localization, tableIcons } from "../../../../utils/MaterialTableUtils";
+import changePageSize, {
+  localization,
+  tableIcons,
+} from "../../../../utils/MaterialTableUtils";
 import { errorNoti } from "../../../../utils/Notification";
 
 const ExcelFile = ReactExport.ExcelFile;
@@ -135,6 +138,16 @@ function TClassDetail() {
   const params = useParams();
   const history = useHistory();
   const token = useSelector((state) => state.auth.token);
+
+  const tabs = [
+    "Thong tin chung",
+    "DS SV",
+    "SV dang ky",
+    "Bai tap",
+    "DS nop bai tap",
+    "Lịch sử học",
+    "Lịch sử làm quiz",
+  ];
 
   // Class.
   const [classDetail, setClassDetail] = useState({});
@@ -346,9 +359,9 @@ function TClassDetail() {
         "get",
         `/edu/class/${params.id}/registered-students`,
         (res) => {
-          // changePageSize(res.data.length, registTableRef);
           setRegistStudents(res.data);
-          console.log("registered students = " + res.data);
+          // console.log("registered students = " + res.data);
+          changePageSize(res.data.length, registTableRef);
         }
       );
     } else {
@@ -358,9 +371,9 @@ function TClassDetail() {
         "get",
         `/edu/class/${params.id}/students`,
         (res) => {
-          // changePageSize(res.data.length, studentTableRef);
           setStudents(res.data);
           setFetchedStudents(true);
+          changePageSize(res.data.length, studentTableRef);
         }
       );
     }
@@ -378,7 +391,9 @@ function TClassDetail() {
         let opened = [];
         let deleted = [];
         let current = new Date();
+
         setAssignmentList(res.data);
+
         res.data.forEach((assign) => {
           if (assign.deleted) {
             deleted.push(assign);
@@ -420,7 +435,9 @@ function TClassDetail() {
         let opened = [];
         let deleted = [];
         let current = new Date();
+
         setAssignmentList(res.data);
+
         res.data.forEach((assign) => {
           if (assign.deleted) {
             deleted.push(assign);
@@ -449,6 +466,7 @@ function TClassDetail() {
       }
     );
   };
+
   // Functions.
   const getStudentAssignment = () => {
     request(
@@ -596,6 +614,7 @@ function TClassDetail() {
     getAssignmentSubmission();
     getStudentAssignment();
     getStudents("register");
+    getStudents();
   }, []);
 
   return (
@@ -606,8 +625,6 @@ function TClassDetail() {
           className={classes.tabs}
           value={value}
           onChange={handleChange}
-          // indicatorColor="primary"
-          // textColor="primary"
           variant="scrollable"
           scrollButtons="on"
           aria-label="scrollable auto tabs example"
@@ -617,48 +634,14 @@ function TClassDetail() {
             },
           }}
         >
-          <Tab
-            disableRipple
-            classes={{ root: classes.tabRoot, selected: classes.tabSelected }}
-            label="Thong tin chung"
-            {...a11yProps(0)}
-          />
-          <Tab
-            disableRipple
-            classes={{ root: classes.tabRoot, selected: classes.tabSelected }}
-            label="DS SV"
-            {...a11yProps(1)}
-          />
-          <Tab
-            disableRipple
-            classes={{ root: classes.tabRoot, selected: classes.tabSelected }}
-            label="SV dang ky"
-            {...a11yProps(2)}
-          />
-          <Tab
-            disableRipple
-            classes={{ root: classes.tabRoot, selected: classes.tabSelected }}
-            label="Bai tap"
-            {...a11yProps(3)}
-          />
-          <Tab
-            disableRipple
-            classes={{ root: classes.tabRoot, selected: classes.tabSelected }}
-            label="DS nop bai tap"
-            {...a11yProps(4)}
-          />
-          <Tab
-            disableRipple
-            classes={{ root: classes.tabRoot, selected: classes.tabSelected }}
-            label="Lịch sử học"
-            {...a11yProps(5)}
-          />
-          <Tab
-            disableRipple
-            classes={{ root: classes.tabRoot, selected: classes.tabSelected }}
-            label="Lịch sử làm quiz"
-            {...a11yProps(6)}
-          />
+          {tabs.map((label, index) => (
+            <Tab
+              disableRipple
+              classes={{ root: classes.tabRoot, selected: classes.tabSelected }}
+              label={label}
+              {...a11yProps(index)}
+            />
+          ))}
         </Tabs>
       </AppBar>
 
