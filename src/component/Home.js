@@ -1,28 +1,24 @@
+import { Box, Grid, Paper } from "@material-ui/core";
+import { makeStyles } from "@material-ui/core/styles";
 import React, { useEffect, useState } from "react";
-import { HorizontalBar } from "react-chartjs-2";
+import { Doughnut, HorizontalBar } from "react-chartjs-2";
 import { useDispatch, useSelector } from "react-redux";
 import { useHistory } from "react-router";
-import { authPost, request ,authGet } from "../api";
-import { Doughnut } from "react-chartjs-2";
-import {
-  Box, Typography, Grid, Avatar, 
-  Paper, ListItem, ListItemAvatar, ListItemText, List
-} from "@material-ui/core";
-import { makeStyles } from "@material-ui/core/styles";
+import { authPost, request } from "../api";
 
 const useStyles = makeStyles((theme) => ({
   root: {
-    width: '100%',
+    width: "100%",
     backgroundColor: theme.palette.background.paper,
-    position: 'relative',
-    overflow: 'auto',
+    position: "relative",
+    overflow: "auto",
     maxHeight: 1030,
   },
   listSection: {
-    backgroundColor: 'inherit',
+    backgroundColor: "inherit",
   },
   ul: {
-    backgroundColor: 'inherit',
+    backgroundColor: "inherit",
     padding: 0,
   },
   doughnutStyle: {
@@ -30,10 +26,10 @@ const useStyles = makeStyles((theme) => ({
     minHeight: 400,
   },
   sectionHeaderStyle: {
-    color: '#666'
+    color: "#666",
   },
   ganttChartStyle: {
-    height: '600px'
+    height: "600px",
   },
   avatar: {
     width: 36,
@@ -47,35 +43,36 @@ const taskCounterOpt = {
     display: true,
     text: "Thống kê tình trạng dự án",
     fontSize: 20,
-    lineHeight: 1.5
+    lineHeight: 1.5,
   },
   legend: {
-    position: 'bottom',
-    align: 'center'
+    position: "bottom",
+    align: "center",
   },
   layout: {
     padding: {
       left: 0,
       right: 0,
       top: 10,
-      bottom: 10
-    }
+      bottom: 10,
+    },
   },
   plugins: {
     datalabels: {
       display: function (context) {
         return context.dataset.data[context.dataIndex] !== 0;
-      }
-    }
-  }
-}
+      },
+    },
+  },
+};
 
 export default function Home(props) {
+  const classes = useStyles();
   const dispatch = useDispatch();
   const token = useSelector((state) => state.auth.token);
   const history = useHistory();
   const taskCounterOption = taskCounterOpt;
-  const classes = useStyles();
+
   const [dataAllProject, setDataAllProject] = useState({});
   const [vehicle, setVehicle] = useState([]);
   const [distance, setDistance] = useState([]);
@@ -309,15 +306,19 @@ export default function Home(props) {
       .catch(console.log);
   }
   async function getChartBackLog() {
-    authGet(dispatch, token, "/backlog/get-all-dash-board" ).then(
-      res => {
-         //setTaskList(res);
-        console.log(res)
-        let [taskOpen, taskInprogress, taskResolved,taskclose] = [0, 0, 0,0];
-        Object.keys(res).map(function(key, index) {
+    request(
+      token,
+      history,
+      "get",
+      "/backlog/get-all-dash-board",
+      (res) => {
+        //setTaskList(res);
+        console.log(res);
+        let [taskOpen, taskInprogress, taskResolved, taskclose] = [0, 0, 0, 0];
+        Object.keys(res).map((key, index) => {
           // task counter data
           let listTask = res[key];
-          listTask.forEach(task => {
+          listTask.forEach((task) => {
             switch (task.statusId) {
               case "TASK_OPEN":
                 taskOpen++;
@@ -336,30 +337,23 @@ export default function Home(props) {
           });
         });
         let data = {
-          datasets: [{
-            data: [taskOpen, taskInprogress, taskResolved,taskclose],
-            backgroundColor: [
-              '#e91e63',
-              '#2196f3',
-              '#4caf50',
-              '#000000',
-            ],
-            hoverBackgroundColor: [
-              '#f50057',
-              '#2979ff',
-              '#00e676',
-              '#56525c',
-            ]
-          }],
-          labels: [
-            'Tạo mới',
-            'Đang thực hiện',
-            'Đã hoàn thành',
-            'Đã đóng'
-          ]
+          datasets: [
+            {
+              data: [taskOpen, taskInprogress, taskResolved, taskclose],
+              backgroundColor: ["#e91e63", "#2196f3", "#4caf50", "#000000"],
+              hoverBackgroundColor: [
+                "#f50057",
+                "#2979ff",
+                "#00e676",
+                "#56525c",
+              ],
+            },
+          ],
+          labels: ["Tạo mới", "Đang thực hiện", "Đã hoàn thành", "Đã đóng"],
         };
         setDataAllProject(data);
-      }
+      },
+      { 401: () => {} }
     );
   }
   useEffect(() => {
@@ -376,13 +370,10 @@ export default function Home(props) {
         <Grid item xs={12}>
           <Paper>
             <Box className={classes.doughnutStyle}>
-              <Doughnut
-                data={dataAllProject}
-                options={taskCounterOption}
-              />
+              <Doughnut data={dataAllProject} options={taskCounterOption} />
             </Box>
           </Paper>
-         </Grid>
+        </Grid>
         <Grid item xs={6}>
           <h2>Thống kê học course</h2>
           <HorizontalBar data={dataStudentParticipation} />
