@@ -177,8 +177,9 @@ const dataQuizParticipation = {
   useEffect(() => {
     getVehicleDistance();
     getRevenueDateRecent();
-    getStudentParticipation();
-     getQuizParticipation();
+    //getStudentParticipation();
+    //getQuizParticipation();
+    
   }, []);
 
   return (
