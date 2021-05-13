@@ -1,21 +1,10 @@
+import { Box, Grid, Paper } from "@material-ui/core";
+import { makeStyles } from "@material-ui/core/styles";
 import React, { useEffect, useState } from "react";
-import { HorizontalBar } from "react-chartjs-2";
+import { Doughnut, HorizontalBar } from "react-chartjs-2";
 import { useDispatch, useSelector } from "react-redux";
 import { useHistory } from "react-router";
-import { authPost, request, authGet } from "../api";
-import { Doughnut } from "react-chartjs-2";
-import {
-  Box,
-  Typography,
-  Grid,
-  Avatar,
-  Paper,
-  ListItem,
-  ListItemAvatar,
-  ListItemText,
-  List,
-} from "@material-ui/core";
-import { makeStyles } from "@material-ui/core/styles";
+import { authPost, request } from "../api";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -78,11 +67,12 @@ const taskCounterOpt = {
 };
 
 export default function Home(props) {
+  const classes = useStyles();
   const dispatch = useDispatch();
   const token = useSelector((state) => state.auth.token);
   const history = useHistory();
   const taskCounterOption = taskCounterOpt;
-  const classes = useStyles();
+
   const [dataAllProject, setDataAllProject] = useState({});
   const [vehicle, setVehicle] = useState([]);
   const [distance, setDistance] = useState([]);
@@ -317,43 +307,55 @@ export default function Home(props) {
       .catch(console.log);
   }
   async function getChartBackLog() {
-    authGet(dispatch, token, "/backlog/get-all-dash-board").then((res) => {
-      //setTaskList(res);
-      console.log(res);
-      let [taskOpen, taskInprogress, taskResolved, taskclose] = [0, 0, 0, 0];
-      Object.keys(res).map(function (key, index) {
-        // task counter data
-        let listTask = res[key];
-        listTask.forEach((task) => {
-          switch (task.statusId) {
-            case "TASK_OPEN":
-              taskOpen++;
-              break;
-            case "TASK_INPROGRESS":
-              taskInprogress++;
-              break;
-            case "TASK_RESOLVED":
-              taskResolved++;
-              break;
-            case "TASK_CLOSED":
-              taskclose++;
-              break;
-            default:
-          }
+    request(
+      token,
+      history,
+      "get",
+      "/backlog/get-all-dash-board",
+      (res) => {
+        //setTaskList(res);
+        console.log(res);
+        let [taskOpen, taskInprogress, taskResolved, taskclose] = [0, 0, 0, 0];
+        Object.keys(res).map((key, index) => {
+          // task counter data
+          let listTask = res[key];
+          listTask.forEach((task) => {
+            switch (task.statusId) {
+              case "TASK_OPEN":
+                taskOpen++;
+                break;
+              case "TASK_INPROGRESS":
+                taskInprogress++;
+                break;
+              case "TASK_RESOLVED":
+                taskResolved++;
+                break;
+              case "TASK_CLOSED":
+                taskclose++;
+                break;
+              default:
+            }
+          });
         });
-      });
-      let data = {
-        datasets: [
-          {
-            data: [taskOpen, taskInprogress, taskResolved, taskclose],
-            backgroundColor: ["#e91e63", "#2196f3", "#4caf50", "#000000"],
-            hoverBackgroundColor: ["#f50057", "#2979ff", "#00e676", "#56525c"],
-          },
-        ],
-        labels: ["Tạo mới", "Đang thực hiện", "Đã hoàn thành", "Đã đóng"],
-      };
-      setDataAllProject(data);
-    });
+        let data = {
+          datasets: [
+            {
+              data: [taskOpen, taskInprogress, taskResolved, taskclose],
+              backgroundColor: ["#e91e63", "#2196f3", "#4caf50", "#000000"],
+              hoverBackgroundColor: [
+                "#f50057",
+                "#2979ff",
+                "#00e676",
+                "#56525c",
+              ],
+            },
+          ],
+          labels: ["Tạo mới", "Đang thực hiện", "Đã hoàn thành", "Đã đóng"],
+        };
+        setDataAllProject(data);
+      },
+      { 401: () => {} }
+    );
   }
   useEffect(() => {
     getChartBackLog();
