@@ -53,6 +53,9 @@ import NotFound from "../views/errors/NotFound";
 import AddProblemToProgrammingContest from "../component/education/programmingcontest/AddProblemToProgrammingContest";
 import ProblemsOfProgrammingContestAndUser from "../component/education/programmingcontest/ProblemsOfProgrammingContestAndUser";
 
+import QuizTestList from "../component/education/quiztest/QuizTestList";
+import CreateQuizTest from "../component/education/quiztest/CreateQuizTest";
+
 export default function EduRoute() {
   let { path, url } = useRouteMatch();
   return (
@@ -96,6 +99,18 @@ export default function EduRoute() {
         <Route component={CreateSemester} path={`${path}/semester`} />
 
         <Route component={ClassCreate} path={`${path}/class/add`} />
+
+
+
+
+        {/**
+         * route for quiz test
+         */}
+        <Route component={QuizTestList} path={`${path}/class/quiztest/list`} />
+        <Route component={CreateQuizTest} path={`${path}/class/quiztest/create-quiz-test`} />
+
+
+
 
         {/* Class management. */}
         <Route component={ClassRegistration} path={`${path}/class/register`} exact/>
