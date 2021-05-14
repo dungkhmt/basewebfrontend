@@ -12,7 +12,7 @@ import StudentCourseChapterDetail from "../component/education/course/StudentCou
 import CreateChapterOfCourse from "../component/education/course/CreateChapterOfCourse";
 import CreateQuizOfCourse from "../component/education/course/CreateQuizOfCourse";
 import CreateTopicOfCourse from "../component/education/course/CreateTopicOfCourse";
-
+import TeacherCourseQuizChoiceAnswerDetail from "../component/education/course/TeacherCourseQuizChoiceAnswerDetail";
 import CreateChapterMaterialOfCourse from "../component/education/course/CreateChapterMaterialOfCourse";
 import CreateQuizChoiceAnswerOfCourse from "../component/education/course/CreateQuizChoiceAnswerOfCourse";
 
@@ -70,6 +70,7 @@ export default function EduRoute() {
 
         <Route component={CreateChapterMaterialOfCourse} path={`${path}/course/detail/chapter/material/create/:chapterId`} exact/>
         <Route component={CreateQuizChoiceAnswerOfCourse} path={`${path}/course/detail/quiz/choiceanswer/create/:questionId`} exact/>
+        <Route component={TeacherCourseQuizChoiceAnswerDetail} path={`${path}/teacher/course/quiz/choiceanswer/detail/:choiceAnswerId`} exact/>
         <Route component={TeacherCourseChapterMaterialDetail} path={`${path}/teacher/course/chapter/material/detail/:chapterMaterialId`} exact/>
         <Route component={StudentCourseChapterMaterialDetail} path={`${path}/student/course/chapter/material/detail/:chapterMaterialId`} exact/>
         

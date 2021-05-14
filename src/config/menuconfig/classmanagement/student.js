@@ -22,6 +22,14 @@ export const eduLearningManagement = {
       child: [],
     },
     {
+      id: "MENU_EDUCATION_TEACHING_MANAGEMENT_STUDENT_QUIZ_TEST_LIST",
+      path: "/edu/class/student/quiztest/list",
+      isPublic: false,
+      icon: null,
+      text: "Danh sach Quiz Test",
+      child: [],
+    },
+    {
       id: "MENU_EDUCATION_ASSIGNMENT_EXECUTION",
       path: "/edu/student/contestprogramming",
       isPublic: true,
