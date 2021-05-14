@@ -295,6 +295,31 @@ function CreateQuizTest() {
         //console.log(selectedCourse)
         //console.log(selectedDate)
 
+        if(!testId || testId.length == 0) {
+            alert("Mã đề thi không được bỏ trống");
+            return;
+        }
+
+        if(!quizName || quizName.length == 0) {
+            alert("Tên đề thi không được bỏ trống");
+            return;
+        }
+
+        if(!selectedCourse || selectedCourse == ' ' || selectedCourse.length == 0) {
+            alert("Hãy chọn học phần");
+            return;
+        }
+
+        if(!selectedClass || selectedClass == ' ' || selectedClass.length == 0) {
+            alert("Hãy chọn mã lớp");
+            return;
+        }
+
+        if(!duration){
+            alert("Thời gian làm bài không được để trống");
+            return;
+        }
+
         let body = {
             'testId': testId,
             'testName': quizName,
