@@ -18,8 +18,10 @@ import { useParams } from "react-router";
 import { ContentState, convertToRaw, EditorState } from "draft-js";
 
 import draftToHtml from "draftjs-to-html";
+import htmlToDraft from 'html-to-draftjs';
 
 import { DropzoneArea } from "material-ui-dropzone";
+import QuizzTab from "../classmanagement/student/QuizzTab";
 
 
 let reDirect = null;
@@ -52,18 +54,19 @@ const editorStyle = {
 function CreateQuizOfCourse(){
     const params = useParams();
     const classes = useStyles();
-    const courseId = params.courseId;
+    const questionId = params.questionId;
     const [quizCourseTopicId, setQuizCourseTopicId] = useState(null);
 	const [levelId, setLevelId] = useState(null);
-	
+	const [courseId, setCourseId] = useState(null);
 	const [problemStatement, setProblemStatement] = useState(null);
 	const [levelList, setLevelList] = useState([]);
 	const [topicList, setTopicList] = useState([]);
 
 	const [attachmentFiles, setAttachmentFiles] = useState([]);
-
+    const [initState, setInitSate] = useState(false);
 	const handleAttachmentFiles = (files) => {
 		setAttachmentFiles(files);
+		//alert(JSON.stringify(files));
 	}
 
 
@@ -93,14 +96,36 @@ function CreateQuizOfCourse(){
   	};
 
 	async function getLevelList(){
-		let lst = await authGet(dispatch,token,'/get-quiz-levels')
+		let lst = await authGet(dispatch,token,'/get-quiz-levels');
 		setLevelList(lst);
 	} 
-	async function getTopicList(){
+	async function getTopicList(courseId){
 		let lst = await authGet(dispatch,token,'/get-quiz-course-topics-of-course/' + courseId);
 		setTopicList(lst);
 	} 
 	
+    async function getQuizContent(){
+        await authGet(dispatch,token, '/edu/teacher/course/quiz/detail/' + questionId).then((res)=>{
+			if (res){
+				let quizQuestion = res;
+				setQuizCourseTopicId(quizQuestion.quizCourseTopic.quizCourseTopicId);				
+				setLevelId(quizQuestion.levelId);
+				let blocksFromHtml = htmlToDraft(quizQuestion.questionContent);
+				let { contentBlocks, entityMap } = blocksFromHtml;
+				let contentState = ContentState.createFromBlockArray(contentBlocks, entityMap);
+				let statement = EditorState.createWithContent(contentState);
+				setEditorState(statement);
+				setCourseId(quizQuestion.quizCourseTopic.eduCourse.id);
+				return quizQuestion.quizCourseTopic.eduCourse.id;
+			}
+			else{
+				alert("Lỗi kết nối, thử tải lại trang");
+			}            
+        }).then((courseId)=>{
+            getTopicList(courseId);
+            getLevelList();
+        }).then(()=>{setInitSate(true);});
+    }
 
     async function handleSubmit(){
 		let statement = draftToHtml(convertToRaw(editorState.getCurrentContent()));
@@ -113,34 +138,43 @@ function CreateQuizOfCourse(){
         };
 
 		let formData = new FormData();
-		formData.append("QuizQuestionCreateInputModel", JSON.stringify(body));
+		formData.append("QuizQuestionUpdateInputModel", JSON.stringify(body));
 		for (const file of attachmentFiles) {
 			formData.append("files", file);
 		}
 
-		authPostMultiPart(dispatch, token, "/create-quiz-question", formData);
+		authPostMultiPart(dispatch, token, "/update-quiz-question/" + questionId, formData).then((res)=>{
+            if (res.length !== 0){
+                //alert(JSON.stringify(res));
+                alert("Cập nhật thành công");                
+            }else{
+                alert("Cập nhật thất bại");                
+            }
+            history.push("/edu/course/detail/" + courseId);
+        },(error)=>{
+            alert("Cập nhật thất bại");
+        });
         //let chapter = await authPost(dispatch, token, '/create-quiz-question', body);
-        //console.log('Create chapter success, chapter = ',chapter);
-        history.push("/edu/course/detail/" + courseId);
+        //console.log('Create chapter success, chapter = ',chapter);       
 
     }
     useEffect(
         () => {
-			getLevelList();
-			getTopicList();
-            console.log('Create chapter of course ' + courseId);
+            getQuizContent();
+            // console.log('Create chapter of course ' + courseId);
         },[]
     );
     return(
         <MuiPickersUtilsProvider utils={DateFnsUtils}>
+			 {!initState?<div/>:
 			<Card>
 				<CardContent>
 					<Typography variant="h5" component="h2">
-						Tạo bài tập
+						Nội dung bài tập
           			</Typography>
 					<form className={classes.root} noValidate autoComplete="off">
-						<div>
-							
+                       
+						<div>							
 							<TextField
                 				required
                 				id="levelId"
@@ -188,7 +222,6 @@ function CreateQuizOfCourse(){
                   			/>
 
 						</div>
-						
 						<Typography 
 							variant='subtitle1'
 							display='block'
@@ -237,12 +270,12 @@ function CreateQuizOfCourse(){
           </Button>
           <Button
             variant="contained"
-            onClick={() => history.push("")}
+            onClick={() => history.push("/edu/course/detail/" + courseId)}
           >
             Hủy
           </Button>
         </CardActions>
-			</Card>
+			</Card>}
 
 			<AlertDialog
 				open={openAlert}
