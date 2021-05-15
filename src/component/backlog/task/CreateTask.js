@@ -113,8 +113,10 @@ export default function CreateTask(props) {
 
   const handleTaskAssignmentChange = (event) => {
     setTaskAssignment(event.target.value);
-    if (event.target.value === '') setTaskStatus(TASK_STATUS.DEFAULT_ID_NOT_ASSIGN);
-    else setTaskStatus(TASK_STATUS.DEFAULT_ID_ASSIGNED);
+    // if (event.target.value === '') setTaskStatus(TASK_STATUS.DEFAULT_ID_NOT_ASSIGN);
+    // else setTaskStatus(TASK_STATUS.DEFAULT_ID_NOT_ASSIGN);
+
+    setTaskStatus(TASK_STATUS.DEFAULT_ID_NOT_ASSIGN);
   }
 
   const handleTaskAssignableChange = (event) => {
