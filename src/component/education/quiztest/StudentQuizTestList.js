@@ -23,7 +23,10 @@ function StudentQuizList(){
         getQuizList()
     }
     const  onClickQuizId = (quizid)=>{
-        alert('click ' + quizid)
+        console.log('click ' + quizid)
+        history.push( "/edu/class/student/quiztest/detail" ,{
+            testId: quizid,
+          });
     }
     const columns = [
         { title: 'Mã Quiz Test', field: 'testId',
@@ -33,7 +36,8 @@ function StudentQuizList(){
         //   </Link>
         //   )
             render: rowData => (
-                <a style = {{ cursor : "pointer", }} onClick={()=> {onClickQuizId(rowData['testId'])}}> {rowData['testId']} </a>
+                (rowData['statusId'] == 'STATUS_APPROVED' ) ?
+                <a style = {{ cursor : "pointer", }} onClick={()=> {onClickQuizId(rowData['testId'])}}> {rowData['testId']} </a> : <p>{rowData['testId']}</p>
             )
         },
         { title: 'Tên ', field: 'testName' },
