@@ -296,12 +296,12 @@ function CreateQuizTest() {
         //console.log(selectedDate)
 
         if(!testId || testId.length == 0) {
-            alert("Mã đề thi không được bỏ trống");
+            alert("Mã kỳ thi không được bỏ trống");
             return;
         }
 
         if(!quizName || quizName.length == 0) {
-            alert("Tên đề thi không được bỏ trống");
+            alert("Tên kỳ thi không được bỏ trống");
             return;
         }
 
@@ -348,28 +348,28 @@ function CreateQuizTest() {
             padding: "3% 10% 7% 10%",
             minWidth: '1024px'
         }}>
-            <h1 style={{fontWeight: "normal", padding: "2% 2% 2% 0"}}>Tạo mới đề thi trắc nghiệm</h1>
+            <h1 style={{fontWeight: "normal", padding: "2% 2% 2% 0"}}>Tạo mới kỳ thi trắc nghiệm</h1>
             {/* <ColoredLine color="blue" /> */}
             <div style={{ borderTop: "3px double rgb(0, 110, 227)", marginLeft: "-11%", marginRight: "-11%" }}></div>
             {lineBreak}
             {page == 0 &&
             <form noValidate autoComplete="off">
-                <div style={styles.label}>Mã đề thi </div>
+                <div style={styles.label}>Mã kỳ thi </div>
                 {nextLine}
                 <TextField 
                     label="" 
-                    placeholder="Mã đề thi *" 
+                    placeholder="Mã kỳ thi *" 
                     fullWidth={true} 
                     InputProps={{ classes: { input: classes.input } }}
                     onChange={handleChangeTestId}
                 />
                 {lineBreak}
 
-                <div style={styles.label}>Tên đề thi trắc nghiệm </div>
+                <div style={styles.label}>Tên kỳ thi trắc nghiệm </div>
                 {nextLine}
                 <TextField 
                     label="" 
-                    placeholder="Tên đề thi trắc nhiệm *" 
+                    placeholder="Tên kỳ thi trắc nhiệm *" 
                     fullWidth={true} 
                     InputProps={{ classes: { input: classes.input } }}
                     onChange={handleChangeQuizName}
@@ -636,13 +636,22 @@ function CreateQuizTest() {
                         </Button>
                     </Grid>
                 } */}
+                <Grid item xs={6} sm={3}>
+                    <Button variant="contained" color='default' fullWidth 
+                        onClick={(e) => {
+                            if(window.confirm("Tất cả mọi thứ bạn làm sẽ không được lưu lại !!!"))
+                                history.push("/edu/class/quiztest/list");
+                        }}>
+                        Hủy
+                    </Button>
+                </Grid>
                 
                 <Grid item xs={6} sm={3}>
                     <Button variant="contained" color="primary" fullWidth 
                         onClick={(e)=> { 
                             handleSubmit();
                         }}>
-                        Tạo đề thi &#8287; &#62;
+                        Tạo kỳ thi
                     </Button>
                 </Grid>
             </Grid>
@@ -653,3 +662,8 @@ function CreateQuizTest() {
 }
 
 export default CreateQuizTest;
+
+export {
+    CreateQuizTest,
+    styles,
+}

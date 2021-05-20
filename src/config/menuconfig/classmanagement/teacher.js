@@ -34,7 +34,8 @@ export const eduTeachingManagement = {
       path: "/edu/class/quiztest/list",
       isPublic: false,
       icon: null,
-      text: "Danh sach Quiz Test",
+      //Danh sách kỳ thi trắc nghiệm
+      text: "Danh sách Quiz Test",
       child: [],
     },
     {
