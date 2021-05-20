@@ -11,6 +11,7 @@ import {
 import { makeStyles, useTheme } from '@material-ui/core/styles';
 
 import PropTypes from 'prop-types';
+import QuizTestStudentList from "./QuizTestStudentList";
 //import SwipeableViews from 'react-swipeable-views';
 
 
@@ -74,7 +75,7 @@ const tempCourseInfo = {
     'credit': '3'
 }
 
-const tempStudentList = [
+/* const tempStudentList = [
     {
         'MSSV': '20180000',
         'name': 'Nguyễn Văn A',
@@ -95,7 +96,7 @@ const tempStudentList = [
         'name': 'Nguyễn Văn D',
         'emal': 'abcDDD@gmail.com'
     },
-]
+] */
 
 function a11yProps(index) {
     return {
@@ -138,7 +139,7 @@ export default function QuizTestDetail(props) {
     const dispatch = useDispatch();
     const token = useSelector(state => state.auth.token);
 
-    const [studentList, setStudentList] = useState([]);
+    //const [studentList, setStudentList] = useState([]);
     const [testInfo, setTestInfo] = useState([]);
     const [courseInfo, setCourseInfo] = useState([]);
 
@@ -167,11 +168,11 @@ export default function QuizTestDetail(props) {
         setCourseInfo(tempCourseInfo);
 
         //do something to get studentList from testInfo.testId
-        setStudentList(tempStudentList);
+        //setStudentList(tempStudentList);
 
-        request(token, history,"GET", '/get-all-student-in-test?testId=\'' + param.id + '\'', (res) => {
-            console.log(res)
-        })
+        //request(token, history,"GET", '/get-all-student-in-test?testId=\'' + param.id + '\'', (res) => {
+            //console.log(res)
+        //})
 
         /* let students = await authGet(dispatch, token, '/get-all-student-in-test?testId=\'' + param.id + '\'');
         console.log(students) */
@@ -189,8 +190,6 @@ export default function QuizTestDetail(props) {
 
     return (
         <div>
-            QuizTestDetail
-            {param.id}
             <Card>
                 <CardContent style={{padding: '8% 5% 5% 5%'}}> 
                     <Grid
@@ -285,7 +284,7 @@ export default function QuizTestDetail(props) {
                     </Tabs>
                     
                     <TabPanel value={tab} index={0} dir={theme.direction}>
-                        Thí sinh
+                        <QuizTestStudentList testId={param.id} />
                     </TabPanel>
                     <TabPanel value={tab} index={1} dir={theme.direction}>
                         Thí sinh đăng ký
