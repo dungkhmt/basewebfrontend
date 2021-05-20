@@ -131,6 +131,7 @@ export default function QuizTestJoinRequest(props) {
                     if(result >= 0) {
                         let temp = studentList.filter( (el) => !acceptList.includes(el.userLoginId) );
                         setStudentList(temp);
+                        count = 0;
                     }
 
                 }, 

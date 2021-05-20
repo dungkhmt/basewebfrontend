@@ -131,6 +131,7 @@ export default function QuizTestStudentList(props) {
                     if(result >= 0) {
                         let temp = studentList.filter( (el) => !rejectList.includes(el.userLoginId) );
                         setStudentList(temp);
+                        count = 0;
                     }
 
                 }, 
