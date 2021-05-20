@@ -61,18 +61,27 @@ const styles = {
 };
 
 const tempTestInfo = {
-    'testId': 'DTS01',
+    /* 'testId': 'DTS01',
     'testName': 'Đề thi số 01',
     'scheduleDatetime': '2021-05-14T21:56:52.668',
     'duration': 90,
     'courseId': 'courseId',
-    'classId': '123456'
+    'classId': '123456' */
+    'testId': '0',
+    'testName': '0',
+    'scheduleDatetime': '0',
+    'duration': 0,
+    'courseId': '0',
+    'classId': '0'
 };
 
 const tempCourseInfo = {
-    'id': 'IT3011',
+    /* 'id': 'IT3011',
     'courseName': 'Cấu trúc dữ liệu và giải thuật',
-    'credit': '3'
+    'credit': '3' */
+    'id': '0',
+    'courseName': '0',
+    'credit': '0'
 }
 
 /* const tempStudentList = [
@@ -139,7 +148,6 @@ export default function QuizTestDetail(props) {
     const dispatch = useDispatch();
     const token = useSelector(state => state.auth.token);
 
-    //const [studentList, setStudentList] = useState([]);
     const [testInfo, setTestInfo] = useState([]);
     const [courseInfo, setCourseInfo] = useState([]);
 
@@ -156,6 +164,15 @@ export default function QuizTestDetail(props) {
 
     async function getQuizTestDetail() {
         //do something to get test info from param.id
+        let re = await authGet(dispatch, token, '/get-quiz-test?testId=' + param.id);
+
+        tempTestInfo.testId = re.testId;
+        tempTestInfo.classId = re.classId;
+        tempTestInfo.courseId = re.courseId;
+        tempTestInfo.duration = re.duration;
+        tempTestInfo.scheduleDatetime = re.scheduleDatetime;
+        tempTestInfo.testName = re.testName;
+
         tempTestInfo.scheduleDatetime = tempTestInfo.scheduleDatetime.replace('T', ' ');
         let index = tempTestInfo.scheduleDatetime.indexOf('.');
         if(index != -1)
@@ -165,17 +182,16 @@ export default function QuizTestDetail(props) {
         setTestInfo(tempTestInfo);
 
         //do something to get course info from testInfo.courseId
+        /* request(token, history, "get", `/edu/class/${re.classId}`, (res) => {
+            tempCourseInfo.id = res.data.courseId;
+            tempCourseInfo.courseName = res.data.name;
+        }); */
+
+        let re2 = await authGet(dispatch, token, `/edu/class/${re.classId}`);
+        tempCourseInfo.id = re2.courseId;
+        tempCourseInfo.courseName = re2.name;
+
         setCourseInfo(tempCourseInfo);
-
-        //do something to get studentList from testInfo.testId
-        //setStudentList(tempStudentList);
-
-        //request(token, history,"GET", '/get-all-student-in-test?testId=\'' + param.id + '\'', (res) => {
-            //console.log(res)
-        //})
-
-        /* let students = await authGet(dispatch, token, '/get-all-student-in-test?testId=\'' + param.id + '\'');
-        console.log(students) */
         
     }
 

@@ -96,8 +96,6 @@ export default function QuizTestStudentList(props) {
 
     async function getStudentList() {
         request(token, history,"GET", '/get-all-student-in-test?testId=\'' + testId + '\'', (res) => {
-            //console.log(res)
-            //setStudentList(res.data);
             let temp = [];
             res.data.map((elm, index) => {
                 temp.push({ userLoginId : elm.userLoginId, fullName: elm.fullName, email: elm.email, selected: false });
@@ -105,6 +103,36 @@ export default function QuizTestStudentList(props) {
             setStudentList(temp);
         })
         count = 0;
+    }
+
+    const handleRejectStudent = (e) => {
+        let rejectList = [];
+        studentList.map((v, i) => {
+            if(v.selected == true) {
+                rejectList.push(v.userLoginId);
+            }
+        })
+        
+
+        if(rejectList.length != 0) {
+            let result = -1;
+            let formData = new FormData();
+            formData.append("testId", testId);
+            formData.append("studentList", rejectList.join(';'));
+            request(token, history, "POST", "/reject-students-in-test", 
+                (res) => {
+                    result = res.data;
+
+                    if(result >= 0) {
+                        let temp = studentList.filter( (el) => !rejectList.includes(el.userLoginId) );
+                        setStudentList(temp);
+                    }
+
+                }, 
+                {}, 
+                formData
+            );
+        }
     }
 
     useEffect(() => {
@@ -151,8 +179,8 @@ export default function QuizTestStudentList(props) {
                                     <Button
                                         variant="contained"
                                         color="secondary"
-                                        onClick={() => { 
-                                            
+                                        onClick={(e) => { 
+                                            handleRejectStudent(e);
                                         }}
                                     >
                                         <Delete  style={{ color: 'white' }} fontSize='default' />
