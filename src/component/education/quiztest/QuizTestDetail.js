@@ -12,6 +12,7 @@ import { makeStyles, useTheme } from '@material-ui/core/styles';
 
 import PropTypes from 'prop-types';
 import QuizTestStudentList from "./QuizTestStudentList";
+import QuizTestJoinRequestList from "./QuizTestJoinRequestList";
 //import SwipeableViews from 'react-swipeable-views';
 
 
@@ -303,7 +304,7 @@ export default function QuizTestDetail(props) {
                         <QuizTestStudentList testId={param.id} />
                     </TabPanel>
                     <TabPanel value={tab} index={1} dir={theme.direction}>
-                        Thí sinh đăng ký
+                        <QuizTestJoinRequestList testId={param.id} />
                     </TabPanel>
                     <TabPanel value={tab} index={2} dir={theme.direction}>
                         Đề
