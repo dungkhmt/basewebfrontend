@@ -122,7 +122,22 @@ export default function QuizTestGroupList(props) {
     }
 
     const handleGenerateQuizGroup = (e) => {
-        alert("Thêm đề");
+        //alert("Thêm đề");
+        let datasend = {'quizTestId' : testId,'numberOfQuizTestGroups':1}
+        request(
+            token,
+            history,
+            "post",
+            "generate-quiz-test-group",
+            (res) => {
+                console.log(res);
+                alert("Thêm đề thành công");
+            },
+            { 401: () => {} },
+            datasend
+          );  
+        console.log(datasend)
+
     }
 
     const handleDeleteQuizGroup = (e) => {

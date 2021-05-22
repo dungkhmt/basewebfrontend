@@ -144,7 +144,7 @@ TabPanel.propTypes = {
 
 export default function QuizTestDetail(props) {
     let param = useParams();
-
+    let testId = param.id;
     const history = useHistory();
     //const classes = useStyles();
     const dispatch = useDispatch();
@@ -163,6 +163,41 @@ export default function QuizTestDetail(props) {
     const handleChangeIndex = (index) => {
         setTab(index);
     };
+
+    async function handleAssignStudents2QuizGroup(){
+        let datasend = {'quizTestId' : testId}
+        request(
+            token,
+            history,
+            "post",
+            "auto-assign-participants-2-quiz-test-group",
+            (res) => {
+                console.log(res);
+                alert('assign students to groups OK');
+            },
+            { 401: () => {} },
+            datasend
+          );  
+        console.log(datasend)
+    }
+    async function handleAssignQuestions2QuizGroup(){
+        let datasend = {'quizTestId' : testId,'numberQuestions':5}
+        request(
+            token,
+            history,
+            "post",
+            "auto-assign-question-2-quiz-group",
+            (res) => {
+                console.log(res);
+                alert('assign questions to groups OK');
+            },
+            { 401: () => {} },
+            datasend
+          );  
+        console.log(datasend)
+        
+    }
+
 
     async function getQuizTestDetail() {
         //do something to get test info from param.id
@@ -269,6 +304,25 @@ export default function QuizTestDetail(props) {
                     </Grid>
                     {lineBreak}
                     {lineBreak}
+                    
+                    <Button
+                                            variant="contained"
+                                            color="primary"
+                                            onClick={(e) => { 
+                                                handleAssignStudents2QuizGroup(e);
+                                            }}
+                                            style={{ color: 'white' }}
+                    >Phân đề cho SV</Button>
+                    
+                    <Button
+                                            variant="contained"
+                                            color="primary"
+                                            onClick={(e) => { 
+                                                handleAssignQuestions2QuizGroup(e);
+                                            }}
+                                            style={{ color: 'white' }}
+                    >Phân câu hỏi cho đề</Button>
+
                     <Tabs
                         value={tab}
                         onChange={handleChangeTab}
