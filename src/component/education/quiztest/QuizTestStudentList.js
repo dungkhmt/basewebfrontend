@@ -65,7 +65,7 @@ export default function QuizTestStudentList(props) {
             title: "Chọn",
             ...headerProperties,
             width: "10%",
-    
+            type: 'numeric',
             render: (rowData) => (
                 <Checkbox checked={rowData.selected} onChange={(e) => {
                     rowData.selected = e.target.checked; 
@@ -107,7 +107,7 @@ export default function QuizTestStudentList(props) {
     }
 
     const handleRejectStudent = (e) => {
-        if(!window.confirm('Bạn có chắc muốn loại bỏ các thí sinh này khỏi kỳ thi ???')) {
+        if(!window.confirm('Bạn có chắc muốn loại bỏ những thí sinh này khỏi kỳ thi ???')) {
             return;
         }
 

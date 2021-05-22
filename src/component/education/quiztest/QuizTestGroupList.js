@@ -11,18 +11,13 @@ import MaterialTable from "material-table";
 //import IconButton from '@material-ui/core/IconButton';
 import { withStyles, makeStyles, ThemeProvider, createMuiTheme } from '@material-ui/core/styles';
 import { green } from '@material-ui/core/colors';
-
+import AddCircleOutlineIcon from '@material-ui/icons/AddCircleOutline';
+import { Delete } from "@material-ui/icons";
 import CheckCircleOutlineIcon from '@material-ui/icons/CheckCircleOutline';
 
 const useStyles = makeStyles({
     table: {
         minWidth: 700,
-    },
-});
-
-const theme = createMuiTheme({
-    palette: {
-        primary: green,
     },
 });
 
@@ -37,7 +32,7 @@ const headerProperties = {
 
 let count = 0;
 
-export default function QuizTestJoinRequest(props) {
+export default function QuizTestGroupList(props) {
 
     const history = useHistory();
     const classes = useStyles();
@@ -47,26 +42,39 @@ export default function QuizTestJoinRequest(props) {
 
     const [selectedAll, setSelectedAll] = useState(false);
 
+    const theme = createMuiTheme({
+        palette: {
+            primary: green,
+        },
+    });
+
     const columns = [
         {
-            field: "userLoginId",
-            title: "MSSV",
+            field: "groupCode",
+            title: "Mã đề",
             ...headerProperties,
         },
         {
-            field: "fullName",
-            title: "Họ và tên",
+            field: "note",
+            title: "Ghi chú",
             ...headerProperties,
             width: "40%"
         },
         {
-            field: "email",
-            title: "Email",
-            ...headerProperties
+            field: "numStudent",
+            title: "Số sinh viên",
+            ...headerProperties,
+            type: 'numeric',
+        },
+        {
+            field: "numQuestion",
+            title: "Số câu hỏi",
+            ...headerProperties,
+            type: 'numeric',
         },
         {
             field: "selected",
-            title: "Chọn",
+            title: "    Chọn",
             ...headerProperties,
             width: "10%",
             type: 'numeric',
@@ -82,7 +90,7 @@ export default function QuizTestJoinRequest(props) {
                     {
                         count++;
                     }
-                    if(count == studentList.length)
+                    if(count == groupList.length)
                     {
                         setSelectedAll(true);
                     }
@@ -96,25 +104,37 @@ export default function QuizTestJoinRequest(props) {
 
     let testId = props.testId;
 
-    const [studentList, setStudentList] = useState([]);
+    const [groupList, setGroupList] = useState([]);
 
     async function getStudentList() {
-        request(token, history,"GET", '/get-all-student-in-test?testId=\'' + testId + '\'', (res) => {
+        request(token, history,"GET", '/get-test-groups-info?testId=' + testId, (res) => {
             let temp = [];
             res.data.map((elm, index) => {
-                if(elm.statusId == 'STATUS_REGISTERED')
-                    temp.push({ userLoginId : elm.userLoginId, fullName: elm.fullName, email: elm.email, selected: false });
+                temp.push({ groupCode : elm.groupCode, note: elm.note, 
+                    numStudent: elm.numStudent, numQuestion: elm.numQuestion,
+                    quizGroupId: elm.quizGroupId,
+                    selected: false });
             })
-            setStudentList(temp);
+            setGroupList(temp);
+            console.log(res.data);
         })
         count = 0;
     }
 
-    const handleAcceptStudent = (e) => {
+    const handleGenerateQuizGroup = (e) => {
+        alert("Thêm đề");
+    }
+
+    const handleDeleteQuizGroup = (e) => {
+
+        if(!window.confirm('Bạn có chắc muốn xóa những đề thi này không ???')) {
+            return;
+        }
+
         let acceptList = [];
-        studentList.map((v, i) => {
+        groupList.map((v, i) => {
             if(v.selected == true) {
-                acceptList.push(v.userLoginId);
+                acceptList.push(v.quizGroupId);
             }
         })
         
@@ -123,14 +143,14 @@ export default function QuizTestJoinRequest(props) {
             let result = -1;
             let formData = new FormData();
             formData.append("testId", testId);
-            formData.append("studentList", acceptList.join(';'));
-            request(token, history, "POST", "/accept-students-in-test", 
+            formData.append("quizTestGroupList", acceptList.join(';'));
+            request(token, history, "POST", "/delete-quiz-test-groups", 
                 (res) => {
                     result = res.data;
 
                     if(result >= 0) {
-                        let temp = studentList.filter( (el) => !acceptList.includes(el.userLoginId) );
-                        setStudentList(temp);
+                        let temp = groupList.filter( (el) => !acceptList.includes(el.userLoginId) );
+                        setGroupList(temp);
                         count = 0;
                     }
 
@@ -153,7 +173,7 @@ export default function QuizTestJoinRequest(props) {
             <MaterialTable
                 title=""
                 columns={columns}
-                data={studentList}
+                data={groupList}
                 //icons={tableIcons}
                 localization={{
                     header: {
@@ -180,21 +200,39 @@ export default function QuizTestJoinRequest(props) {
                 actions={[
                     {
                         icon: () => { 
-                            return <Tooltip title="Loại thí sinh khỏi kì thi" 
-                                        aria-label="Loại thí sinh khỏi kì thi" placement="top">
+                            return <Tooltip title="Thêm đề mới" 
+                                        aria-label="Thêm đề mới" placement="top">
                                     <ThemeProvider theme={theme} style={{color: 'white'}}>
                                         <Button
                                             variant="contained"
                                             color="primary"
                                             onClick={(e) => { 
-                                                handleAcceptStudent(e);
+                                                handleGenerateQuizGroup(e);
                                             }}
                                             style={{ color: 'white' }}
                                         >
-                                            <CheckCircleOutlineIcon  style={{ color: 'white' }} fontSize='default' />
-                                            &nbsp;&nbsp;&nbsp;Phê duyệt&nbsp;&nbsp;
+                                            <AddCircleOutlineIcon style={{ color: 'white' }} fontSize='default' />
+                                            &nbsp;&nbsp;&nbsp;Thêm đề&nbsp;&nbsp;
                                         </Button>
                                     </ThemeProvider>
+                                </Tooltip> 
+                        },
+                        isFreeAction: true,
+                    },
+                    {
+                        icon: () => { 
+                            return <Tooltip title="Xóa đề được chọn" 
+                                        aria-label="Xóa đề được chọn" placement="top">
+                                    <Button
+                                        variant="contained"
+                                        color="secondary"
+                                        onClick={(e) => { 
+                                            handleDeleteQuizGroup(e);
+                                        }}
+                                    >
+                                        <Delete  style={{ color: 'white' }} fontSize='default' />
+                                        &nbsp;&nbsp;&nbsp;Xóa&nbsp;&nbsp;
+                                    </Button>
                                 </Tooltip> 
                         },
                         isFreeAction: true,
@@ -208,10 +246,10 @@ export default function QuizTestJoinRequest(props) {
                                             let tempS = e.target.checked;
                                             setSelectedAll(e.target.checked);
 
-                                            if(tempS) count = studentList.length;
+                                            if(tempS) count = groupList.length;
                                             else count = 0;
 
-                                            studentList.map((value, index) => {
+                                            groupList.map((value, index) => {
                                                 value.selected = tempS;
                                             })
                                         }}/>
