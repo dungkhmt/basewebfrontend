@@ -14,6 +14,7 @@ import PropTypes from 'prop-types';
 import QuizTestStudentList from "./QuizTestStudentList";
 import QuizTestJoinRequestList from "./QuizTestJoinRequestList";
 import QuizTestGroupList from "./QuizTestGroupList";
+import QuizTestStudentListResult from "./QuizTestResultList";
 //import SwipeableViews from 'react-swipeable-views';
 
 
@@ -353,6 +354,7 @@ export default function QuizTestDetail(props) {
                         <Tab label="Phân đề cho thí sinh" {...a11yProps(3)} style={styles.tabStyle}/>
                         <Tab label="Đề chưa được phân" {...a11yProps(4)} style={styles.tabStyle}/>
                         <Tab label="Kết quả" {...a11yProps(5)} style={styles.tabStyle}/>
+                        <Tab label="Kết quả tổng quát" {...a11yProps(6)} style={styles.tabStyle}/>
                     </Tabs>
                     
                     <TabPanel value={tab} index={0} dir={theme.direction}>
@@ -371,7 +373,10 @@ export default function QuizTestDetail(props) {
                         Những đề chưa được phân
                     </TabPanel>
                     <TabPanel value={tab} index={5} dir={theme.direction}>
-                        Kết quả
+                     <QuizTestStudentListResult testId={param.id} isGeneral = {false} />
+                    </TabPanel>
+                    <TabPanel value={tab} index={6} dir={theme.direction}>
+                     <QuizTestStudentListResult testId={param.id} isGeneral = {true} />
                     </TabPanel>
                     
                 </CardContent>
