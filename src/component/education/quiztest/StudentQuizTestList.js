@@ -20,7 +20,7 @@ function StudentQuizList(){
 
     async function onRegisterClick(quizid){
         await registerQuiz(quizid)
-        getQuizList()
+        await getQuizList()
     }
     const  onClickQuizId = (quizid)=>{
         console.log('click ' + quizid)
