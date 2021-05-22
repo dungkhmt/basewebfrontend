@@ -361,6 +361,8 @@ export default function Home(props) {
     getChartBackLog();
     getVehicleDistance();
     getRevenueDateRecent();
+    //getStudentParticipation();
+    //getQuizParticipation();
     getStudentParticipation();
     getQuizParticipation();
   }, []);
