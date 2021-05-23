@@ -15,6 +15,8 @@ import QuizTestStudentList from "./QuizTestStudentList";
 import QuizTestJoinRequestList from "./QuizTestJoinRequestList";
 import QuizTestGroupList from "./QuizTestGroupList";
 import QuizTestStudentListResult from "./QuizTestResultList";
+import QuizTestGroupParticipants from "./QuizTestGroupParticipants";
+
 //import SwipeableViews from 'react-swipeable-views';
 
 
@@ -165,6 +167,10 @@ export default function QuizTestDetail(props) {
         setTab(index);
     };
 
+    function handleEditQuizTes(){
+        history.push('/edu/class/quiztest/edit/' + testId);
+    }
+
     async function handleAssignStudents2QuizGroup(){
         let datasend = {'quizTestId' : testId}
         request(
@@ -182,7 +188,7 @@ export default function QuizTestDetail(props) {
         console.log(datasend)
     }
     async function handleAssignQuestions2QuizGroup(){
-        let datasend = {'quizTestId' : testId,'numberQuestions':5}
+        let datasend = {'quizTestId' : testId,'numberQuestions':10}
         request(
             token,
             history,
@@ -310,6 +316,14 @@ export default function QuizTestDetail(props) {
                                             variant="contained"
                                             color="primary"
                                             onClick={(e) => { 
+                                                handleEditQuizTes(e);
+                                            }}
+                                            style={{ color: 'white' }}
+                    >Chỉnh sửa thông tin</Button>
+                    <Button
+                                            variant="contained"
+                                            color="primary"
+                                            onClick={(e) => { 
                                                 handleAssignStudents2QuizGroup(e);
                                             }}
                                             style={{ color: 'white' }}
@@ -367,7 +381,7 @@ export default function QuizTestDetail(props) {
                         <QuizTestGroupList testId={param.id} />
                     </TabPanel>
                     <TabPanel value={tab} index={3} dir={theme.direction}>
-                        Phân đề cho thí sinh
+                        <QuizTestGroupParticipants testId={param.id} />
                     </TabPanel>
                     <TabPanel value={tab} index={4} dir={theme.direction}>
                         Những đề chưa được phân
