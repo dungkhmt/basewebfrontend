@@ -50,9 +50,9 @@ function QuizTestGroupQuestionList(props) {
   const [data, setData] = useState([]);
   let testId = props.testId;
   const columns = [
-    { title: "Group Id", field: "quizGroupId" },
-    { title: "Group Code", field: "quizTestGroupCode" },
-    { title: "QuestionId", field: "questionId" },
+    { title: "Group Code", field: "groupCode" },
+    { title: "Quiz", field: "questionStatement" },
+    
   ];
 
   async function getQuizTestGroupQuestions() {
