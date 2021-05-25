@@ -5,7 +5,7 @@ import {  request } from "../../../api";
 import { makeStyles } from '@material-ui/core/styles';
 import Paper from '@material-ui/core/Paper';
 import Grid from '@material-ui/core/Grid';
-import Container from '@material-ui/core/Container'
+import Card from '@material-ui/core/Card'
 import Button from '@material-ui/core/Button';
 import Checkbox from '@material-ui/core/Checkbox';
 import Alert from '@material-ui/lab/Alert';
@@ -30,6 +30,7 @@ const useStyles = makeStyles((theme) => ({
     textAlign: "left",
     color: theme.palette.text.secondary,
     borderRadius: "20px",
+    background: "beige",
 },
 }));
 
@@ -40,7 +41,8 @@ export default function StudentQuizDetail() {
   const testQuizId =  history.location.state.testId;
   const [ListQuestions, setListQuestions] = useState([]);
   const [sucessRequest,setSucessRequest] = useState(false);
-  const [emptyRequest , setEmptyRequest] = useState(false);
+  const [errorRequest , setErrorRequest] = useState(false);
+  const [messageRequest , setMessageRequest] = useState(false);
   const [quizGroupTestDetail, setquizGroupTestDetail] = useState({});
   const classes = useStyles();
   const Checkboxclasses = useCheckBoxStyles();
@@ -80,6 +82,7 @@ export default function StudentQuizDetail() {
             }
     })
     let tmpOb = {
+        "testId" : testQuizId,
         "questionId" : quesId,
         "quizGroupId" : quizGroupTestDetail.quizGroupId,
         "chooseAnsIds" : listAns,
@@ -92,11 +95,18 @@ export default function StudentQuizDetail() {
         "/quiz-test-choose_answer-by-user",
         (res) => {
             console.log(res);
+            setMessageRequest("Đã lưu vào hệ thống!")
             setSucessRequest(true);
+            
         },
         { 400: () => {
-            setEmptyRequest(true);
-        } },
+            setMessageRequest("Không được để trống!")
+            setErrorRequest(true);},
+          406: ()=>{
+            setMessageRequest("Quá thời gian làm bài!")
+            setErrorRequest(true);
+          } 
+        },
         tmpOb,
       ); 
 
@@ -112,7 +122,7 @@ export default function StudentQuizDetail() {
     setSucessRequest(false);
   };
   const handleCloseError = () => {
-    setEmptyRequest(false);
+    setErrorRequest(false);
   };
   useEffect(() => {
     getQuestionList();
@@ -121,20 +131,18 @@ export default function StudentQuizDetail() {
 
   return (
   <div className={classes.root}>
-     <Container>
-
-
+     <Card style = {{ padding: "20px 20px 20px 20px"}}>
       <Snackbar open={sucessRequest} autoHideDuration={2000} onClose={handleCloseSucess}>
         <Alert variant="filled" severity="success">
-          Submit choice success!
+           {messageRequest}
         </Alert>
       </Snackbar>
-        <Snackbar open={emptyRequest} autoHideDuration={2000} onClose={handleCloseError}>
+        <Snackbar open={errorRequest} autoHideDuration={2000} onClose={handleCloseError}>
         <Alert variant="filled" severity="error">
-          Không được để trống
+          {messageRequest}
         </Alert>
       </Snackbar>
-     <div>
+     <div style = {{ padding : "0px 20px 20px 30px"}} >
          <div style = {{justifyContent:"space-between",display:"flex"}}>
          <h3>
             Quiz test:  {quizGroupTestDetail.testName}
@@ -148,18 +156,19 @@ export default function StudentQuizDetail() {
         Bắt đầu:  {quizGroupTestDetail.scheduleDatetime}
         </h4>
         <h4>
-        Thời gian:  {quizGroupTestDetail.duration/60}h 
+        Thời gian:  {quizGroupTestDetail.duration} phút
         </h4>
         
      </div>
      <Grid container spacing={3}>
-      
-        {ListQuestions.map((element, index) => {        
+     {(quizGroupTestDetail.quizGroupId != null)?
+      ( (ListQuestions !=null) ? 
+        (ListQuestions.map((element, index) => {        
            return (
             <Grid item xs={12} key={index}>
             <Paper className={classes.paper}>
                 <div className={classes.root}>
-                 <h4>Quiz{index}</h4> <p dangerouslySetInnerHTML = {{__html:element["statement"]}}/>            
+                 <h4>Quiz {index+1}</h4> <p dangerouslySetInnerHTML = {{__html:element["statement"]}}/>            
                  {element["quizChoiceAnswerList"].map((answer,ind)=>{
                     return (
                           <div key ={ind} style = {{display:"flex"}}  > 
@@ -184,9 +193,9 @@ export default function StudentQuizDetail() {
             </Paper>
         </Grid>
            ) 
-        })}
+        }) ) : <p style = {{justifyContent:"center"}}> Chưa có câu hỏi cho mã đề này</p>) : <p style = {{justifyContent:"center"}}> Chưa phát đề cho sinh viên </p>}
     </Grid>
-    </Container> 
+    </Card> 
   </div>);
 
 }

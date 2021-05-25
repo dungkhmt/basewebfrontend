@@ -8,17 +8,21 @@ import { authPost, authGet, authPostMultiPart, request } from "../../../api";
 import { useDispatch, useSelector } from "react-redux";
 import { useParams } from "react-router";
 import MaterialTable from "material-table";
-import {Link} from "react-router-dom";
-import AddIcon from '@material-ui/icons/Add';
 //import IconButton from '@material-ui/core/IconButton';
-import { withStyles, makeStyles, MuiThemeProvider } from '@material-ui/core/styles';
-import TableCell from '@material-ui/core/TableCell';
-import TableRow from '@material-ui/core/TableRow';
-import { Delete } from "@material-ui/icons";
+import { withStyles, makeStyles, ThemeProvider, createMuiTheme } from '@material-ui/core/styles';
+import { green } from '@material-ui/core/colors';
+
+import CheckCircleOutlineIcon from '@material-ui/icons/CheckCircleOutline';
 
 const useStyles = makeStyles({
     table: {
         minWidth: 700,
+    },
+});
+
+const theme = createMuiTheme({
+    palette: {
+        primary: green,
     },
 });
 
@@ -33,7 +37,7 @@ const headerProperties = {
 
 let count = 0;
 
-export default function QuizTestStudentList(props) {
+export default function QuizTestJoinRequest(props) {
 
     const history = useHistory();
     const classes = useStyles();
@@ -98,7 +102,7 @@ export default function QuizTestStudentList(props) {
         request(token, history,"GET", '/get-all-student-in-test?testId=\'' + testId + '\'', (res) => {
             let temp = [];
             res.data.map((elm, index) => {
-                if(elm.statusId == 'STATUS_APPROVED')
+                if(elm.statusId == 'STATUS_REGISTERED')
                     temp.push({ userLoginId : elm.userLoginId, fullName: elm.fullName, email: elm.email, selected: false });
             })
             setStudentList(temp);
@@ -106,30 +110,26 @@ export default function QuizTestStudentList(props) {
         count = 0;
     }
 
-    const handleRejectStudent = (e) => {
-        if(!window.confirm('Bạn có chắc muốn loại bỏ những thí sinh này khỏi kỳ thi ???')) {
-            return;
-        }
-
-        let rejectList = [];
+    const handleAcceptStudent = (e) => {
+        let acceptList = [];
         studentList.map((v, i) => {
             if(v.selected == true) {
-                rejectList.push(v.userLoginId);
+                acceptList.push(v.userLoginId);
             }
         })
         
 
-        if(rejectList.length != 0) {
+        if(acceptList.length != 0) {
             let result = -1;
             let formData = new FormData();
             formData.append("testId", testId);
-            formData.append("studentList", rejectList.join(';'));
-            request(token, history, "POST", "/reject-students-in-test", 
+            formData.append("studentList", acceptList.join(';'));
+            request(token, history, "POST", "/accept-students-in-test", 
                 (res) => {
                     result = res.data;
 
                     if(result >= 0) {
-                        let temp = studentList.filter( (el) => !rejectList.includes(el.userLoginId) );
+                        let temp = studentList.filter( (el) => !acceptList.includes(el.userLoginId) );
                         setStudentList(temp);
                         count = 0;
                     }
@@ -182,16 +182,19 @@ export default function QuizTestStudentList(props) {
                         icon: () => { 
                             return <Tooltip title="Loại thí sinh khỏi kì thi" 
                                         aria-label="Loại thí sinh khỏi kì thi" placement="top">
-                                    <Button
-                                        variant="contained"
-                                        color="secondary"
-                                        onClick={(e) => { 
-                                            handleRejectStudent(e);
-                                        }}
-                                    >
-                                        <Delete  style={{ color: 'white' }} fontSize='default' />
-                                        &nbsp;&nbsp;&nbsp;Loại&nbsp;&nbsp;
-                                    </Button>
+                                    <ThemeProvider theme={theme} style={{color: 'white'}}>
+                                        <Button
+                                            variant="contained"
+                                            color="primary"
+                                            onClick={(e) => { 
+                                                handleAcceptStudent(e);
+                                            }}
+                                            style={{ color: 'white' }}
+                                        >
+                                            <CheckCircleOutlineIcon  style={{ color: 'white' }} fontSize='default' />
+                                            &nbsp;&nbsp;&nbsp;Phê duyệt&nbsp;&nbsp;
+                                        </Button>
+                                    </ThemeProvider>
                                 </Tooltip> 
                         },
                         isFreeAction: true,

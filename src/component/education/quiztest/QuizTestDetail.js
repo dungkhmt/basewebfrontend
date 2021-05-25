@@ -24,6 +24,11 @@ import { makeStyles, useTheme } from "@material-ui/core/styles";
 
 import PropTypes from "prop-types";
 import QuizTestStudentList from "./QuizTestStudentList";
+import QuizTestJoinRequestList from "./QuizTestJoinRequestList";
+import QuizTestGroupList from "./QuizTestGroupList";
+import QuizTestStudentListResult from "./QuizTestResultList";
+import QuizTestGroupParticipants from "./QuizTestGroupParticipants";
+
 //import SwipeableViews from 'react-swipeable-views';
 
 const nextLine = <pre></pre>;
@@ -67,18 +72,27 @@ const styles = {
 };
 
 const tempTestInfo = {
-  testId: "DTS01",
-  testName: "Đề thi số 01",
-  scheduleDatetime: "2021-05-14T21:56:52.668",
-  duration: 90,
-  courseId: "courseId",
-  classId: "123456",
+  /* 'testId': 'DTS01',
+    'testName': 'Đề thi số 01',
+    'scheduleDatetime': '2021-05-14T21:56:52.668',
+    'duration': 90,
+    'courseId': 'courseId',
+    'classId': '123456' */
+  testId: "0",
+  testName: "0",
+  scheduleDatetime: "0",
+  duration: 0,
+  courseId: "0",
+  classId: "0",
 };
 
 const tempCourseInfo = {
-  id: "IT3011",
-  courseName: "Cấu trúc dữ liệu và giải thuật",
-  credit: "3",
+  /* 'id': 'IT3011',
+    'courseName': 'Cấu trúc dữ liệu và giải thuật',
+    'credit': '3' */
+  id: "0",
+  courseName: "0",
+  credit: "0",
 };
 
 /* const tempStudentList = [
@@ -137,15 +151,14 @@ TabPanel.propTypes = {
   value: PropTypes.any.isRequired,
 };
 
-export default function (props) {
+export default function QuizTestDetail(props) {
   let param = useParams();
-
+  let testId = param.id;
   const history = useHistory();
   //const classes = useStyles();
   const dispatch = useDispatch();
   const token = useSelector((state) => state.auth.token);
 
-  //const [studentList, setStudentList] = useState([]);
   const [testInfo, setTestInfo] = useState([]);
   const [courseInfo, setCourseInfo] = useState([]);
 
@@ -160,8 +173,58 @@ export default function (props) {
     setTab(index);
   };
 
+  function handleEditQuizTes() {
+    history.push("/edu/class/quiztest/edit/" + testId);
+  }
+
+  async function handleAssignStudents2QuizGroup() {
+    let datasend = { quizTestId: testId };
+    request(
+      token,
+      history,
+      "post",
+      "auto-assign-participants-2-quiz-test-group",
+      (res) => {
+        console.log(res);
+        alert("assign students to groups OK");
+      },
+      { 401: () => {} },
+      datasend
+    );
+    console.log(datasend);
+  }
+  async function handleAssignQuestions2QuizGroup() {
+    let datasend = { quizTestId: testId, numberQuestions: 10 };
+    request(
+      token,
+      history,
+      "post",
+      "auto-assign-question-2-quiz-group",
+      (res) => {
+        console.log(res);
+        alert("assign questions to groups OK");
+      },
+      { 401: () => {} },
+      datasend
+    );
+    console.log(datasend);
+  }
+
   async function getQuizTestDetail() {
     //do something to get test info from param.id
+    let re = await authGet(
+      dispatch,
+      token,
+      "/get-quiz-test?testId=" + param.id
+    );
+
+    tempTestInfo.testId = re.testId;
+    tempTestInfo.classId = re.classId;
+    tempTestInfo.courseId = re.courseId;
+    tempTestInfo.duration = re.duration;
+    tempTestInfo.scheduleDatetime = re.scheduleDatetime;
+    tempTestInfo.testName = re.testName;
+
     tempTestInfo.scheduleDatetime = tempTestInfo.scheduleDatetime.replace(
       "T",
       " "
@@ -176,17 +239,16 @@ export default function (props) {
     setTestInfo(tempTestInfo);
 
     //do something to get course info from testInfo.courseId
+    /* request(token, history, "get", `/edu/class/${re.classId}`, (res) => {
+            tempCourseInfo.id = res.data.courseId;
+            tempCourseInfo.courseName = res.data.name;
+        }); */
+
+    let re2 = await authGet(dispatch, token, `/edu/class/${re.classId}`);
+    tempCourseInfo.id = re2.courseId;
+    tempCourseInfo.courseName = re2.name;
+
     setCourseInfo(tempCourseInfo);
-
-    //do something to get studentList from testInfo.testId
-    //setStudentList(tempStudentList);
-
-    //request(token, history,"GET", '/get-all-student-in-test?testId=\'' + param.id + '\'', (res) => {
-    //console.log(res)
-    //})
-
-    /* let students = await authGet(dispatch, token, '/get-all-student-in-test?testId=\'' + param.id + '\'');
-        console.log(students) */
   }
 
   useEffect(() => {
@@ -259,6 +321,39 @@ export default function (props) {
           </Grid>
           {lineBreak}
           {lineBreak}
+
+          <Button
+            variant="contained"
+            color="primary"
+            onClick={(e) => {
+              handleEditQuizTes(e);
+            }}
+            style={{ color: "white" }}
+          >
+            Chỉnh sửa thông tin
+          </Button>
+          <Button
+            variant="contained"
+            color="primary"
+            onClick={(e) => {
+              handleAssignStudents2QuizGroup(e);
+            }}
+            style={{ color: "white" }}
+          >
+            Phân đề cho SV
+          </Button>
+
+          <Button
+            variant="contained"
+            color="primary"
+            onClick={(e) => {
+              handleAssignQuestions2QuizGroup(e);
+            }}
+            style={{ color: "white" }}
+          >
+            Phân câu hỏi cho đề
+          </Button>
+
           <Tabs
             value={tab}
             onChange={handleChangeTab}
@@ -303,25 +398,33 @@ export default function (props) {
               style={styles.tabStyle}
             />
             <Tab label="Kết quả" {...a11yProps(5)} style={styles.tabStyle} />
+            <Tab
+              label="Kết quả tổng quát"
+              {...a11yProps(6)}
+              style={styles.tabStyle}
+            />
           </Tabs>
 
           <TabPanel value={tab} index={0} dir={theme.direction}>
             <QuizTestStudentList testId={param.id} />
           </TabPanel>
           <TabPanel value={tab} index={1} dir={theme.direction}>
-            Thí sinh đăng ký
+            <QuizTestJoinRequestList testId={param.id} />
           </TabPanel>
           <TabPanel value={tab} index={2} dir={theme.direction}>
-            Đề
+            <QuizTestGroupList testId={param.id} />
           </TabPanel>
           <TabPanel value={tab} index={3} dir={theme.direction}>
-            Phân đề cho thí sinh
+            <QuizTestGroupParticipants testId={param.id} />
           </TabPanel>
           <TabPanel value={tab} index={4} dir={theme.direction}>
             Những đề chưa được phân
           </TabPanel>
           <TabPanel value={tab} index={5} dir={theme.direction}>
-            Kết quả
+            <QuizTestStudentListResult testId={param.id} isGeneral={false} />
+          </TabPanel>
+          <TabPanel value={tab} index={6} dir={theme.direction}>
+            <QuizTestStudentListResult testId={param.id} isGeneral={true} />
           </TabPanel>
         </CardContent>
       </Card>

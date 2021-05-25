@@ -56,6 +56,8 @@ import ProblemsOfProgrammingContestAndUser from "../component/education/programm
 import QuizTestList from "../component/education/quiztest/QuizTestList";
 import CreateQuizTest from "../component/education/quiztest/CreateQuizTest";
 import QuizTestDetail from "../component/education/quiztest/QuizTestDetail";
+import QuizTestEdit from "../component/education/quiztest/QuizTestEdit";
+
 
 import StudentQuizList from "../component/education/quiztest/StudentQuizTestList";
 import StudentQuizDetail from "../component/education/quiztest/StudentQuizDetail";
@@ -114,6 +116,7 @@ export default function EduRoute() {
         <Route component={QuizTestList} path={`${path}/class/quiztest/list`} />
         {/* Quiztest-002 */}
         <Route component={QuizTestDetail} path={`${path}/class/quiztest/detail/:id`} exact/>
+        <Route component={QuizTestEdit} path={`${path}/class/quiztest/edit/:id`} exact/>
         <Route component={CreateQuizTest} path={`${path}/class/quiztest/create-quiz-test`} />
         <Route component={StudentQuizList} path={`${path}/class/student/quiztest/list`} />
         <Route component={StudentQuizDetail} path={`${path}/class/student/quiztest/detail`} />

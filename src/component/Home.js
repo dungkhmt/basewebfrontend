@@ -139,6 +139,7 @@ export default function Home(props) {
         backgroundColor: "rgba(255,99,132,0.2)",
         borderColor: "rgba(255,99,132,1)",
         borderWidth: 1,
+        height: 300,
         hoverBackgroundColor: "rgba(255,99,132,0.4)",
         hoverBorderColor: "rgba(255,99,132,1)",
         data: totalParticipation,
@@ -363,7 +364,6 @@ export default function Home(props) {
     getRevenueDateRecent();
     //getStudentParticipation();
     //getQuizParticipation();
-    
     getStudentParticipation();
     getQuizParticipation();
   }, []);
@@ -371,13 +371,6 @@ export default function Home(props) {
   return (
     <div>
       <Grid container spacing={3}>
-        <Grid item xs={12}>
-          <Paper>
-            <Box className={classes.doughnutStyle}>
-              <Doughnut data={dataAllProject} options={taskCounterOption} />
-            </Box>
-          </Paper>
-        </Grid>
         <Grid item xs={6}>
           <h2>Thống kê học course</h2>
           <HorizontalBar data={dataStudentParticipation} />
@@ -385,6 +378,13 @@ export default function Home(props) {
         <Grid item xs={6}>
           <h2>Thống kê làm quiz</h2>
           <HorizontalBar data={dataQuizParticipation} />
+        </Grid>
+        <Grid item xs={12}>
+          <Paper>
+            <Box className={classes.doughnutStyle}>
+              <Doughnut data={dataAllProject} options={taskCounterOption} />
+            </Box>
+          </Paper>
         </Grid>
 
         <Grid item xs={6}>
