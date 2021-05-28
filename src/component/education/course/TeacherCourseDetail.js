@@ -5,6 +5,7 @@ import { useHistory } from "react-router-dom";
 import TeacherCourseChapterList from "./TeacherCourseChapterList";
 import TeacherCourseQuizList from "./TeacherCourseQuizList";
 import TeacherCourseTopicList from "./TeacherCourseTopicList";
+import TeacherViewCourseQuizList from "./TeacherViewCourseQuizList";
 
 function TeacherCourseDetail() {
   const params = useParams();
@@ -21,6 +22,7 @@ function TeacherCourseDetail() {
       <TeacherCourseChapterList courseId={courseId} />
       <TeacherCourseQuizList courseId={courseId} />
       <TeacherCourseTopicList courseId={courseId} />
+      <TeacherViewCourseQuizList courseId={courseId} />
     </>
   );
 }
