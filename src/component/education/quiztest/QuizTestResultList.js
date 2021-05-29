@@ -48,7 +48,7 @@ export default function QuizTestStudentListResult(props) {
         },
         {
             field: "groupId",
-            title: "Group ID",
+            title: "Group",
             ...headerProperties
         },
         {
@@ -71,7 +71,7 @@ export default function QuizTestStudentListResult(props) {
         },
         {
             field: "groupId",
-            title: "Group ID",
+            title: "Group",
             ...headerProperties
         },
         {

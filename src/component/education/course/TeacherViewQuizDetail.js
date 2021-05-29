@@ -84,7 +84,10 @@ export default function TeacherViewQuizDetail({ quizz, index }) {
     <div className={classes.wrapper}>
       <Box className={classes.quizzStatement}>
         <Typography component="span">{`Câu ${index + 1}.`}&nbsp;</Typography>
+        ({quizz.quizCourseTopic.quizCourseTopicName}:
+        {quizz.levelId})&nbsp;&nbsp;
         {parse(quizz.statement)}
+        
       </Box>
       <FormGroup row className={classes.answerWrapper}>
         {quizz.quizChoiceAnswerList.map((answer) => (

@@ -28,6 +28,7 @@ import QuizTestJoinRequestList from "./QuizTestJoinRequestList";
 import QuizTestGroupList from "./QuizTestGroupList";
 import QuizTestStudentListResult from "./QuizTestResultList";
 import QuizTestGroupParticipants from "./QuizTestGroupParticipants";
+import QuizListForAssignment from "./QuizListForAssignment";
 
 //import SwipeableViews from 'react-swipeable-views';
 
@@ -393,7 +394,7 @@ export default function QuizTestDetail(props) {
               style={styles.tabStyle}
             />
             <Tab
-              label="Đề chưa được phân"
+              label="DS quiz"
               {...a11yProps(4)}
               style={styles.tabStyle}
             />
@@ -418,7 +419,7 @@ export default function QuizTestDetail(props) {
             <QuizTestGroupParticipants testId={param.id} />
           </TabPanel>
           <TabPanel value={tab} index={4} dir={theme.direction}>
-            Những đề chưa được phân
+            <QuizListForAssignment testId = {param.id}/>
           </TabPanel>
           <TabPanel value={tab} index={5} dir={theme.direction}>
             <QuizTestStudentListResult testId={param.id} isGeneral={false} />
