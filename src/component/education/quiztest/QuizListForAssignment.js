@@ -31,9 +31,11 @@ function QuizListForAssignment({ testId }) {
   const token = useSelector((state) => state.auth.token);
   const history = useHistory();
 
-  const [quizzList, setQuizList] = useState([]);
+  const [quizList, setQuizList] = useState([]);
+  const [quizGroups, setQuizGroups] = useState();
   const [loading, setLoading] = useState(true);
 
+  //
   const getQuizListOfClass = () => {
     request(
       token,
@@ -53,8 +55,21 @@ function QuizListForAssignment({ testId }) {
     );
   };
 
+  const getQuizGroup = () => {
+    request(
+      token,
+      history,
+      "get",
+      `/get-test-groups-info?testId=${testId}`,
+      (res) => {
+        setQuizGroups(res.data);
+      }
+    );
+  };
+
   useEffect(() => {
     getQuizListOfClass();
+    getQuizGroup();
   }, []);
 
   return (
@@ -111,11 +126,13 @@ function QuizListForAssignment({ testId }) {
               />
             </Fragment>
           ) : (
-            quizzList.map((quizz, index) => (
+            quizList.map((quiz, index) => (
               <TeacherViewQuizDetail
-                key={quizz.questionId}
-                quizz={quizz}
+                key={quiz.questionId}
+                quiz={quiz}
                 index={index}
+                testId={testId}
+                quizGroups={quizGroups}
               />
             ))
           )}
