@@ -115,8 +115,8 @@ function TeacherViewCourseQuizList({ courseId }) {
           ) : (
             quizzList.map((quizz, index) => (
               <TeacherViewQuizDetail
-                key={quizz.questionId}
-                quizz={quizz}
+                
+                quiz={quizz}
                 index={index}
               />
             ))

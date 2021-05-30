@@ -90,9 +90,11 @@ const useStyles = makeStyles(() => ({
  * Describe a multiple-choice quiz.
  * @returns
  */
-export default function TeacherViewQuizDetail({
+export default function TeacherViewQuizDetailForAssignment({
   quiz,
-  index
+  index,
+  testId,
+  quizGroups,
 }) {
   const classes = useStyles();
   const token = useSelector((state) => state.auth.token);
@@ -112,20 +114,28 @@ export default function TeacherViewQuizDetail({
 
   const [open, setOpen] = useState(false);
 
-  function handleChangeStatus(){
-    //alert('change status ' + quizz.questionId);
+  //
+  const onOpenDialog = () => {
+    setOpen(true);
+  };
+
+  const onSelectGroup = (groupId) => {
+    handleClose();
     request(
       token,
       history,
-      "get",
-      "change-quiz-open-close-status/" + quiz.questionId,
-      (res) => {
-        console.log(res);
-        alert("change-quiz-open-close-status/ OK");
-      },
-      { 401: () => {} }
+      "post",
+      "/add-quizgroup-question-assignment",
+      (res) => {},
+      {},
+      { quizGroupId: groupId, questionId: quiz.questionId }
     );
-  }
+  };
+
+  const handleClose = () => {
+    setOpen(false);
+  };
+  
   return (
     <div className={classes.wrapper}>
       <Box className={classes.quizzStatement}>
@@ -134,6 +144,9 @@ export default function TeacherViewQuizDetail({
         {quiz.levelId}:{quiz.statusId})&nbsp;&nbsp;
         {parse(quiz.statement)}
       </Box>
+      <Button color="primary" onClick={onOpenDialog} className={classes.btn}>
+        Thêm vào đề
+      </Button>
 
       { /*<FormGroup row className={classes.answerWrapper}>
         {quiz.quizChoiceAnswerList.map((answer) => (
@@ -152,15 +165,48 @@ export default function TeacherViewQuizDetail({
           ))}
           </FormGroup>*/}
       
-      <Button
-        variant="contained"
-        color="primary"
-        onClick = {() => handleChangeStatus()}
-        >
-        Thay đổi trạng thái
-      </Button>
-      
 
+      {/* Dialogs */}
+      <CustomizedDialogs
+        open={open}
+        handleClose={handleClose}
+        title="Thêm câu hỏi vào đề"
+        content={
+          <>
+            <Typography color="textSecondary" gutterBottom>
+              Chọn một đề trong danh sách dưới đây.
+            </Typography>
+            <SimpleBar
+              style={{
+                height: "100%",
+                maxHeight: 400,
+                width: 330,
+                overflowX: "hidden",
+                overscrollBehaviorY: "none", // To prevent tag <main> be scrolled when menu's scrollbar reach end
+              }}
+            >
+              <List className={classes.bikeListDialog}>
+                {quizGroups
+                  ? quizGroups.map((group) => (
+                      <ListItem
+                        key={group.quizGroupId}
+                        button
+                        className={classes.listItem}
+                        onClick={() => onSelectGroup(group.quizGroupId)}
+                      >
+                        <ListItemIcon>
+                          <FcDocument size={24} />
+                        </ListItemIcon>
+                        <ListItemText primary={group.groupCode} />
+                      </ListItem>
+                    ))
+                  : null}
+              </List>
+            </SimpleBar>
+          </>
+        }
+        style={{ content: classes.dialogContent }}
+      />
     </div>
   );
 }

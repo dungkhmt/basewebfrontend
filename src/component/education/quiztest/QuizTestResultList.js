@@ -8,6 +8,7 @@ import MaterialTable from "material-table";
 //import IconButton from '@material-ui/core/IconButton';
 import { withStyles, makeStyles, MuiThemeProvider } from '@material-ui/core/styles';
 
+import ViewHistoryLogQuizGroupQuestionParticipationExecutionChoice from "./ViewHistoryLogQuizGroupQuestionParticipationExecutionChoice";
 
 const useStyles = makeStyles({
     table: {
@@ -168,6 +169,7 @@ export default function QuizTestStudentListResult(props) {
                     fontSize: 16
                 }}
             />
+        <ViewHistoryLogQuizGroupQuestionParticipationExecutionChoice testId = {testId}/>   
         </div>
     )
 }

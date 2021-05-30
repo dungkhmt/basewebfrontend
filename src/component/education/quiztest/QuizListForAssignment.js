@@ -5,7 +5,8 @@ import React, { Fragment, useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { useHistory } from "react-router";
 import { request } from "../../../api";
-import TeacherViewQuizDetail from "../course/TeacherViewQuizDetail";
+//import TeacherViewQuizDetail from "../course/TeacherViewQuizDetail";
+import TeacherViewQuizDetailForAssignment from "./TeacherViewQuizDetailForAssignment";
 
 const useStyles = makeStyles(() => ({
   titleContainer: {
@@ -127,7 +128,7 @@ function QuizListForAssignment({ testId }) {
             </Fragment>
           ) : (
             quizList.map((quiz, index) => (
-              <TeacherViewQuizDetail
+              <TeacherViewQuizDetailForAssignment
                 key={quiz.questionId}
                 quiz={quiz}
                 index={index}
