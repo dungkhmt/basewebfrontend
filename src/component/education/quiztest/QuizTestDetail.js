@@ -1,34 +1,26 @@
-import React, { useState, useEffect, useReducer } from "react";
-import { useHistory } from "react-router-dom";
-import { authPost, authGet, authPostMultiPart, request } from "../../../api";
-import { useDispatch, useSelector } from "react-redux";
-import { useParams } from "react-router";
-
 import {
+  Box,
   Button,
   Card,
-  CardActions,
   CardContent,
-  TextField,
-  Typography,
-  IconButton,
-  MenuItem,
-  Checkbox,
   Grid,
-  Tooltip,
   Tab,
   Tabs,
-  Box,
+  Typography,
 } from "@material-ui/core/";
-import { makeStyles, useTheme } from "@material-ui/core/styles";
-
+import { useTheme } from "@material-ui/core/styles";
 import PropTypes from "prop-types";
-import QuizTestStudentList from "./QuizTestStudentList";
-import QuizTestJoinRequestList from "./QuizTestJoinRequestList";
-import QuizTestGroupList from "./QuizTestGroupList";
-import QuizTestStudentListResult from "./QuizTestResultList";
-import QuizTestGroupParticipants from "./QuizTestGroupParticipants";
+import React, { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { useParams } from "react-router";
+import { useHistory } from "react-router-dom";
+import { authGet, request } from "../../../api";
 import QuizListForAssignment from "./QuizListForAssignment";
+import QuizTestGroupList from "./QuizTestGroupList";
+import QuizTestGroupParticipants from "./QuizTestGroupParticipants";
+import QuizTestJoinRequestList from "./QuizTestJoinRequestList";
+import QuizTestStudentListResult from "./QuizTestResultList";
+import QuizTestStudentList from "./QuizTestStudentList";
 
 //import SwipeableViews from 'react-swipeable-views';
 
@@ -393,11 +385,7 @@ export default function QuizTestDetail(props) {
               {...a11yProps(3)}
               style={styles.tabStyle}
             />
-            <Tab
-              label="DS quiz"
-              {...a11yProps(4)}
-              style={styles.tabStyle}
-            />
+            <Tab label="DS quiz" {...a11yProps(4)} style={styles.tabStyle} />
             <Tab label="Kết quả" {...a11yProps(5)} style={styles.tabStyle} />
             <Tab
               label="Kết quả tổng quát"
@@ -419,7 +407,7 @@ export default function QuizTestDetail(props) {
             <QuizTestGroupParticipants testId={param.id} />
           </TabPanel>
           <TabPanel value={tab} index={4} dir={theme.direction}>
-            <QuizListForAssignment testId = {param.id}/>
+            <QuizListForAssignment testId={param.id} />
           </TabPanel>
           <TabPanel value={tab} index={5} dir={theme.direction}>
             <QuizTestStudentListResult testId={param.id} isGeneral={false} />
