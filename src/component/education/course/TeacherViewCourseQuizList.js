@@ -40,7 +40,8 @@ function TeacherViewCourseQuizList({ courseId }) {
       token,
       history,
       "get",
-      `/get-unpublished-quiz-of-course/${courseId}`,
+      //`/get-unpublished-quiz-of-course/${courseId}`,
+      `/get-quiz-of-course/${courseId}`,
       (res) => {
         // console.log("getQuizListOfClass, res.data = ", res.data);
         setQuizList(res.data);

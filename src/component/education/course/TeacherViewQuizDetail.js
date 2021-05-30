@@ -1,4 +1,5 @@
-import { Box, Checkbox, Typography } from "@material-ui/core";
+import { Button, Box, Checkbox, Typography } from "@material-ui/core";
+
 import { green } from "@material-ui/core/colors";
 import FormControlLabel from "@material-ui/core/FormControlLabel";
 import FormGroup from "@material-ui/core/FormGroup";
@@ -7,7 +8,7 @@ import parse from "html-react-parser";
 import React, { useState } from "react";
 import { useSelector } from "react-redux";
 import { useHistory } from "react-router";
-//import { request } from "../../../../api";
+import { request } from "../../../api";
 
 const useStyles = makeStyles(() => ({
   testBtn: {
@@ -79,13 +80,26 @@ export default function TeacherViewQuizDetail({ quizz, index }) {
   const handleChange = (event) => {
     setChkState({ ...chkState, [event.target.name]: event.target.checked });
   };
-
+  function handleChangeStatus(){
+    //alert('change status ' + quizz.questionId);
+    request(
+      token,
+      history,
+      "get",
+      "change-quiz-open-close-status/" + quizz.questionId,
+      (res) => {
+        console.log(res);
+        alert("change-quiz-open-close-status/ OK");
+      },
+      { 401: () => {} }
+    );
+  }
   return (
     <div className={classes.wrapper}>
       <Box className={classes.quizzStatement}>
         <Typography component="span">{`Câu ${index + 1}.`}&nbsp;</Typography>
         ({quizz.quizCourseTopic.quizCourseTopicName}:
-        {quizz.levelId})&nbsp;&nbsp;
+        {quizz.levelId}:{quizz.statusId})&nbsp;&nbsp;
         {parse(quizz.statement)}
         
       </Box>
@@ -105,6 +119,13 @@ export default function TeacherViewQuizDetail({ quizz, index }) {
           />
         ))}
       </FormGroup>
+      <Button
+        variant="contained"
+        color="primary"
+        onClick = {() => handleChangeStatus()}
+        >
+        Thay đổi trạng thái
+      </Button>
     </div>
   );
 }
