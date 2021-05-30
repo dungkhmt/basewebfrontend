@@ -56,7 +56,7 @@ function SClassList() {
   };
   const columns = [
     {
-      field: "code",
+      field: "classCode",
       title: "Mã lớp",
       ...headerProperties,
     },

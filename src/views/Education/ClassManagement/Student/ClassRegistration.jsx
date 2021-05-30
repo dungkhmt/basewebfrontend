@@ -58,7 +58,7 @@ function ClassRegistration() {
   };
   const columns = [
     {
-      field: "code",
+      field: "classCode",
       title: "Mã lớp",
       ...headerProperties,
     },
@@ -121,6 +121,7 @@ function ClassRegistration() {
 
           setFilterParams({
             code: "",
+            classCode:"",
             courseId: "",
             courseName: "",
             classType: "",

@@ -41,7 +41,7 @@ function TClassList() {
   };
   const cols = [
     {
-      field: "code",
+      field: "classCode",
       title: "Mã lớp",
       ...headerProperties,
     },

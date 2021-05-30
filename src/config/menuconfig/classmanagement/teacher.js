@@ -3,7 +3,7 @@ export const eduTeachingManagement = {
   path: "",
   isPublic: false,
   icon: "GiTeacher",
-  text: "Quản lý giảng dạy",
+  text: "Giảng dạy",
   child: [
     {
       id: "MENU_EDUCATION_TEACHING_MANAGEMENT_TEACHER_VIEW_LIST_COURSE",

@@ -39,8 +39,9 @@ function ProgrammingContest(){
     
     return(
         <div>
-            <ContestTableForRegistration/>
             <ContestTableForSubmission/>
+            <ContestTableForRegistration/>
+            
             {/*
             <CardContent>
                 <MaterialTable

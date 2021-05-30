@@ -174,10 +174,14 @@ export default function ClassCreate(){
     const onClassIdChange = (event) => {
       setClassId(event.target.value);
       let classIdTemp = event.target.value;
+      /*
       if (classIdTemp === null || classIdTemp.trim() === "" || isNormalInteger(classIdTemp))
         setInvalidClassId(false);          
       else
         setInvalidClassId(true);      
+        */
+      // remove checking digits
+      setInvalidClassId(false);       
     }
     
     const onCourseIdChange = (event) => {

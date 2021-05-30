@@ -3,7 +3,7 @@ export const eduLearningManagement = {
   path: "",
   isPublic: false,
   icon: "LocalLibraryIcon",
-  text: "Quản lý học tập",
+  text: "Học tập",
   child: [
     {
       id: "MENU_EDUCATION_LEARNING_MANAGEMENT_STUDENT_REGISTER_CLASS",

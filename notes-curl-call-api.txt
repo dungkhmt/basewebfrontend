@@ -355,6 +355,10 @@ Submit program contest
 
 curl --header "Content-Type: multipart/form-data" -v POST http://localhost:8080/api/upload-program -u admin:sscm@123456 -F "file=@add.py"
 
+------------
+Class management
+
+$ curl --header "Content-Type: application/json" -v GET http://localhost:8080/api/update-edu-class-set-class-code -u admin:sscm@123456
  
 ------------
 MAINTENANCE
