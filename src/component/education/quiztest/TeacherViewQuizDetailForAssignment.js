@@ -1,20 +1,16 @@
 //import { Button, Box, Checkbox, Typography } from "@material-ui/core";
 
-import { green } from "@material-ui/core/colors";
-import FormControlLabel from "@material-ui/core/FormControlLabel";
-import FormGroup from "@material-ui/core/FormGroup";
-import { makeStyles, withStyles } from "@material-ui/core/styles";
 import {
   Box,
   Button,
   List,
-  Checkbox,
   ListItem,
   ListItemIcon,
   ListItemText,
   Typography,
 } from "@material-ui/core";
-import { grey } from "@material-ui/core/colors";
+import { blue, grey } from "@material-ui/core/colors";
+import { makeStyles } from "@material-ui/core/styles";
 //import { makeStyles } from "@material-ui/core/styles";
 import parse from "html-react-parser";
 import React, { useState } from "react";
@@ -24,8 +20,10 @@ import { useHistory } from "react-router";
 import SimpleBar from "simplebar-react";
 import { request } from "../../../api";
 import CustomizedDialogs from "../../../utils/CustomizedDialogs";
+import PrimaryButton from "./PrimaryButton";
+import TertiaryButton from "./TertiaryButton";
 
-const useStyles = makeStyles(() => ({
+export const style = (theme) => ({
   testBtn: {
     marginLeft: 40,
     marginTop: 32,
@@ -54,21 +52,33 @@ const useStyles = makeStyles(() => ({
       display: "inline",
     },
   },
-  bikeListDialog: {
+  list: {
     paddingBottom: 0,
     width: 330,
   },
-  dialogContent: { paddingBottom: 0 },
+  dialogContent: { paddingBottom: theme.spacing(1), width: 362 },
   listItem: {
-    borderRadius: 4,
+    borderRadius: 6,
     "&:hover": {
       backgroundColor: grey[200],
+    },
+    "&.Mui-selected": {
+      backgroundColor: blue[500],
+      color: theme.palette.getContrastText(blue[500]),
+      "&:hover": {
+        backgroundColor: blue[500],
+      },
     },
   },
   btn: {
     textTransform: "none",
   },
-}));
+  assignBtn: {
+    width: 120,
+  },
+  cancelBtn: { width: 60 },
+});
+const useStyles = makeStyles((theme) => style(theme));
 
 /**
  * Customized checkbox.
@@ -112,14 +122,16 @@ export default function TeacherViewQuizDetailForAssignment({
   //   return isChecked;
   // });
 
+  // Modals.
   const [open, setOpen] = useState(false);
+  const [selectedGroupId, setSelectedGroupId] = useState();
 
   //
   const onOpenDialog = () => {
     setOpen(true);
   };
 
-  const onSelectGroup = (groupId) => {
+  const onSelectGroup = () => {
     handleClose();
     request(
       token,
@@ -128,27 +140,31 @@ export default function TeacherViewQuizDetailForAssignment({
       "/add-quizgroup-question-assignment",
       (res) => {},
       {},
-      { quizGroupId: groupId, questionId: quiz.questionId }
+      { quizGroupId: selectedGroupId, questionId: quiz.questionId }
     );
+  };
+
+  const handleListItemClick = (event, groupId) => {
+    setSelectedGroupId(groupId);
   };
 
   const handleClose = () => {
     setOpen(false);
   };
-  
+
   return (
     <div className={classes.wrapper}>
       <Box className={classes.quizzStatement}>
-        <Typography component="span">{`Câu ${index + 1}.`}&nbsp;</Typography>
-        ({quiz.quizCourseTopic.quizCourseTopicName}:
-        {quiz.levelId}:{quiz.statusId})&nbsp;&nbsp;
+        <Typography component="span">{`Câu ${index + 1}.`}&nbsp;</Typography>(
+        {quiz.quizCourseTopic.quizCourseTopicName}:{quiz.levelId}:
+        {quiz.statusId})&nbsp;&nbsp;
         {parse(quiz.statement)}
       </Box>
       <Button color="primary" onClick={onOpenDialog} className={classes.btn}>
         Thêm vào đề
       </Button>
 
-      { /*<FormGroup row className={classes.answerWrapper}>
+      {/*<FormGroup row className={classes.answerWrapper}>
         {quiz.quizChoiceAnswerList.map((answer) => (
           <FormControlLabel
             key={answer.choiceAnswerId}
@@ -164,7 +180,6 @@ export default function TeacherViewQuizDetailForAssignment({
           />
           ))}
           </FormGroup>*/}
-      
 
       {/* Dialogs */}
       <CustomizedDialogs
@@ -185,14 +200,16 @@ export default function TeacherViewQuizDetailForAssignment({
                 overscrollBehaviorY: "none", // To prevent tag <main> be scrolled when menu's scrollbar reach end
               }}
             >
-              <List className={classes.bikeListDialog}>
+              <List className={classes.list}>
                 {quizGroups
                   ? quizGroups.map((group) => (
                       <ListItem
                         key={group.quizGroupId}
-                        button
                         className={classes.listItem}
-                        onClick={() => onSelectGroup(group.quizGroupId)}
+                        selected={selectedGroupId === group.quizGroupId}
+                        onClick={(event) =>
+                          handleListItemClick(event, group.quizGroupId)
+                        }
                       >
                         <ListItemIcon>
                           <FcDocument size={24} />
@@ -203,6 +220,19 @@ export default function TeacherViewQuizDetailForAssignment({
                   : null}
               </List>
             </SimpleBar>
+          </>
+        }
+        actions={
+          <>
+            <TertiaryButton className={classes.cancelBtn} onClick={handleClose}>
+              Huỷ
+            </TertiaryButton>
+            <PrimaryButton
+              className={classes.assignBtn}
+              onClick={onSelectGroup}
+            >
+              Thêm vào đề
+            </PrimaryButton>
           </>
         }
         style={{ content: classes.dialogContent }}

@@ -1,39 +1,33 @@
 import {
   Button,
-  Card,
-  CardActions,
-  CardContent,
-  TextField,
-  Typography,
-  IconButton,
-  MenuItem,
   Checkbox,
-  Grid,
+  List,
+  ListItem,
+  ListItemIcon,
+  ListItemText,
   Tooltip,
+  Typography,
 } from "@material-ui/core/";
-import React, { useState, useEffect, useReducer } from "react";
-import { useHistory } from "react-router-dom";
-import { authPost, authGet, authPostMultiPart, request } from "../../../api";
-import { useDispatch, useSelector } from "react-redux";
-import { useParams } from "react-router";
-import MaterialTable from "material-table";
-import { Link } from "react-router-dom";
-import AddIcon from "@material-ui/icons/Add";
-//import IconButton from '@material-ui/core/IconButton';
-import {
-  withStyles,
-  makeStyles,
-  MuiThemeProvider,
-} from "@material-ui/core/styles";
-import TableCell from "@material-ui/core/TableCell";
-import TableRow from "@material-ui/core/TableRow";
+import { makeStyles } from "@material-ui/core/styles";
 import { Delete } from "@material-ui/icons";
+import MaterialTable from "material-table";
+import React, { useEffect, useReducer, useState } from "react";
+import { FcDocument } from "react-icons/fc";
+import { useSelector } from "react-redux";
+import { useHistory } from "react-router-dom";
+import SimpleBar from "simplebar-react";
+import { request } from "../../../api";
+import CustomizedDialogs from "../../../utils/CustomizedDialogs";
+import PrimaryButton from "./PrimaryButton";
+import { style } from "./TeacherViewQuizDetailForAssignment";
+import TertiaryButton from "./TertiaryButton";
 
-const useStyles = makeStyles({
+const useStyles = makeStyles((theme) => ({
+  ...style(theme),
   table: {
     minWidth: 700,
   },
-});
+}));
 
 const headerProperties = {
   headerStyle: {
@@ -48,13 +42,35 @@ let count = 0;
 export default function QuizTestStudentList(props) {
   const history = useHistory();
   const classes = useStyles();
-  const dispatch = useDispatch();
   const token = useSelector((state) => state.auth.token);
+
+  //
+  const testId = props.testId;
   const [, forceUpdate] = useReducer((x) => x + 1, 0);
-
   const [selectedAll, setSelectedAll] = useState(false);
+  const [studentList, setStudentList] = useState([]);
 
-  const columns = [
+  // Modals.
+  const [open, setOpen] = useState(false);
+  const [quizGroups, setQuizGroups] = useState();
+  const [selectedGroupId, setSelectedGroupId] = useState();
+  const [std, setStd] = useState();
+
+  const onOpenDialog = (student) => {
+    setStd(student);
+    setOpen(true);
+  };
+
+  const handleListItemClick = (event, groupId) => {
+    setSelectedGroupId(groupId);
+  };
+
+  const handleClose = () => {
+    setOpen(false);
+  };
+
+  // Tables.
+  const cols = [
     {
       field: "userLoginId",
       title: "MSSV",
@@ -72,11 +88,11 @@ export default function QuizTestStudentList(props) {
       ...headerProperties,
       width: "40%",
       render: (rowData) =>
-        rowData["testGroup"] == "-" ? (
+        rowData["testGroup"] === "-" ? (
           <Button
             variant="contained"
             color="primary"
-            onClick={() => handleAssignGroup(rowData.userLoginId)}
+            onClick={() => onOpenDialog(rowData)}
           >
             Chọn đề
           </Button>
@@ -101,13 +117,13 @@ export default function QuizTestStudentList(props) {
           checked={rowData.selected}
           onChange={(e) => {
             rowData.selected = e.target.checked;
-            if (rowData.selected == false) {
+            if (rowData.selected === false) {
               count--;
               setSelectedAll(false);
             } else {
               count++;
             }
-            if (count == studentList.length) {
+            if (count === studentList.length) {
               setSelectedAll(true);
             }
             forceUpdate();
@@ -117,18 +133,40 @@ export default function QuizTestStudentList(props) {
     },
   ];
 
-  let testId = props.testId;
+  //
+  const getQuizGroup = () => {
+    request(
+      token,
+      history,
+      "get",
+      `/get-test-groups-info?testId=${testId}`,
+      (res) => {
+        setQuizGroups(res.data);
+      }
+    );
+  };
 
-  const [studentList, setStudentList] = useState([]);
+  const handleAssignGroup = () => {
+    handleClose();
 
-  function handleAssignGroup(userLoginId) {
-    alert(userLoginId);
-    //console.log("select group for " + userLoginId); thay bang alert thi msg box hien lien tuc
-    // bat popup cho phep user chon de tu list va bam "Chon", neu bam nut "Huy" thi tat Popup di
-    // call API /add-participant-to-quiz-test-group
-    
-  }
-  async function getStudentList() {
+    // if (selectedGroupId)
+    //   request(
+    //     token,
+    //     history,
+    //     "post",
+    //     "/add-participant-to-quiz-test-group",
+    //     (res) => {
+    //       // Update group for this student in table.
+    //     },
+    //     { studentId: std.userLoginId, groupId: selectedGroupId }
+    //   );
+
+    alert(
+      JSON.stringify({ studentId: std.userLoginId, groupId: selectedGroupId })
+    );
+  };
+
+  function getStudentList() {
     request(
       token,
       history,
@@ -137,7 +175,7 @@ export default function QuizTestStudentList(props) {
       (res) => {
         let temp = [];
         res.data.map((elm, index) => {
-          if (elm.statusId == "STATUS_APPROVED")
+          if (elm.statusId === "STATUS_APPROVED")
             temp.push({
               userLoginId: elm.userLoginId,
               fullName: elm.fullName,
@@ -163,12 +201,12 @@ export default function QuizTestStudentList(props) {
 
     let rejectList = [];
     studentList.map((v, i) => {
-      if (v.selected == true) {
+      if (v.selected === true) {
         rejectList.push(v.userLoginId);
       }
     });
 
-    if (rejectList.length != 0) {
+    if (rejectList.length !== 0) {
       let result = -1;
       let formData = new FormData();
       formData.append("testId", testId);
@@ -197,91 +235,149 @@ export default function QuizTestStudentList(props) {
 
   useEffect(() => {
     getStudentList();
-    return () => {};
+    getQuizGroup();
   }, []);
 
   return (
-    <div style={{ width: "105%", marginLeft: "-2.5%" }}>
-      <MaterialTable
-        title=""
-        columns={columns}
-        data={studentList}
-        //icons={tableIcons}
-        localization={{
-          header: {
-            actions: "",
-          },
-          body: {
-            emptyDataSourceMessage: "Không có bản ghi nào để hiển thị",
-            filterRow: {
-              filterTooltip: "Lọc",
+    <>
+      <div style={{ width: "105%", marginLeft: "-2.5%" }}>
+        <MaterialTable
+          title=""
+          columns={cols}
+          data={studentList}
+          //icons={tableIcons}
+          localization={{
+            header: {
+              actions: "",
             },
-          },
-        }}
-        options={{
-          search: true,
-          actionsColumnIndex: -1,
-          pageSize: 8,
-          tableLayout: "fixed",
-          //selection: true
-        }}
-        style={{
-          fontSize: 16,
-        }}
-        actions={[
-          {
-            icon: () => {
-              return (
-                <Tooltip
-                  title="Loại thí sinh khỏi kì thi"
-                  aria-label="Loại thí sinh khỏi kì thi"
-                  placement="top"
-                >
-                  <Button
-                    variant="contained"
-                    color="secondary"
-                    onClick={(e) => {
-                      handleRejectStudent(e);
-                    }}
+            body: {
+              emptyDataSourceMessage: "Không có bản ghi nào để hiển thị",
+              filterRow: {
+                filterTooltip: "Lọc",
+              },
+            },
+          }}
+          options={{
+            search: true,
+            actionsColumnIndex: -1,
+            pageSize: 8,
+            tableLayout: "fixed",
+          }}
+          style={{
+            fontSize: 16,
+          }}
+          actions={[
+            {
+              icon: () => {
+                return (
+                  <Tooltip
+                    title="Loại thí sinh khỏi kì thi"
+                    aria-label="Loại thí sinh khỏi kì thi"
+                    placement="top"
                   >
-                    <Delete style={{ color: "white" }} fontSize="default" />
-                    &nbsp;&nbsp;&nbsp;Loại&nbsp;&nbsp;
-                  </Button>
-                </Tooltip>
-              );
+                    <Button
+                      variant="contained"
+                      color="secondary"
+                      onClick={(e) => {
+                        handleRejectStudent(e);
+                      }}
+                    >
+                      <Delete style={{ color: "white" }} fontSize="default" />
+                      &nbsp;&nbsp;&nbsp;Loại&nbsp;&nbsp;
+                    </Button>
+                  </Tooltip>
+                );
+              },
+              isFreeAction: true,
             },
-            isFreeAction: true,
-          },
-          {
-            icon: () => {
-              return (
-                <Tooltip
-                  title="Chọn tất cả"
-                  aria-label="Chọn tất cả"
-                  placement="top"
-                >
-                  <Checkbox
-                    checked={selectedAll}
-                    onChange={(e) => {
-                      let tempS = e.target.checked;
-                      setSelectedAll(e.target.checked);
+            {
+              icon: () => {
+                return (
+                  <Tooltip
+                    title="Chọn tất cả"
+                    aria-label="Chọn tất cả"
+                    placement="top"
+                  >
+                    <Checkbox
+                      checked={selectedAll}
+                      onChange={(e) => {
+                        let tempS = e.target.checked;
+                        setSelectedAll(e.target.checked);
 
-                      if (tempS) count = studentList.length;
-                      else count = 0;
+                        if (tempS) count = studentList.length;
+                        else count = 0;
 
-                      studentList.map((value, index) => {
-                        value.selected = tempS;
-                      });
-                    }}
-                  />
-                  {/* <div>&nbsp;&nbsp;&nbsp;Chọn tất cả&nbsp;&nbsp;</div> */}
-                </Tooltip>
-              );
+                        studentList.map((value, index) => {
+                          value.selected = tempS;
+                        });
+                      }}
+                    />
+                    {/* <div>&nbsp;&nbsp;&nbsp;Chọn tất cả&nbsp;&nbsp;</div> */}
+                  </Tooltip>
+                );
+              },
+              isFreeAction: true,
             },
-            isFreeAction: true,
-          },
-        ]}
+          ]}
+        />
+      </div>
+
+      {/* Dialogs */}
+      <CustomizedDialogs
+        open={open}
+        handleClose={handleClose}
+        title="Phân đề"
+        content={
+          <>
+            <Typography color="textSecondary" gutterBottom>
+              Chọn một đề cho <b>{std?.fullName}</b> trong danh sách dưới đây.
+            </Typography>
+            <SimpleBar
+              style={{
+                height: "100%",
+                maxHeight: 400,
+                width: 330,
+                overflowX: "hidden",
+                overscrollBehaviorY: "none", // To prevent tag <main> be scrolled when menu's scrollbar reach end
+              }}
+            >
+              <List className={classes.list}>
+                {quizGroups
+                  ? quizGroups.map((group) => (
+                      <ListItem
+                        key={group.quizGroupId}
+                        className={classes.listItem}
+                        selected={selectedGroupId === group.quizGroupId}
+                        onClick={(event) =>
+                          handleListItemClick(event, group.quizGroupId)
+                        }
+                      >
+                        <ListItemIcon>
+                          <FcDocument size={24} />
+                        </ListItemIcon>
+                        <ListItemText primary={group.groupCode} />
+                      </ListItem>
+                    ))
+                  : null}
+              </List>
+            </SimpleBar>
+          </>
+        }
+        actions={
+          <>
+            <TertiaryButton className={classes.cancelBtn} onClick={handleClose}>
+              Huỷ
+            </TertiaryButton>
+            <PrimaryButton
+              className={classes.assignBtn}
+              onClick={handleAssignGroup}
+            >
+              Áp dụng
+            </PrimaryButton>
+          </>
+        }
+        style={{ content: classes.dialogContent }}
       />
-    </div>
+    </>
   );
 }
