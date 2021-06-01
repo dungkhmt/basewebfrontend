@@ -10,6 +10,7 @@ import {
 } from "@material-ui/core/";
 import { makeStyles } from "@material-ui/core/styles";
 import { Delete } from "@material-ui/icons";
+import * as _ from "lodash";
 import MaterialTable from "material-table";
 import React, { useEffect, useReducer, useState } from "react";
 import { FcDocument } from "react-icons/fc";
@@ -53,7 +54,7 @@ export default function QuizTestStudentList(props) {
   // Modals.
   const [open, setOpen] = useState(false);
   const [quizGroups, setQuizGroups] = useState();
-  const [selectedGroupId, setSelectedGroupId] = useState();
+  const [selectedGroup, setSelectedGroup] = useState();
   const [std, setStd] = useState();
 
   const onOpenDialog = (student) => {
@@ -61,8 +62,8 @@ export default function QuizTestStudentList(props) {
     setOpen(true);
   };
 
-  const handleListItemClick = (event, groupId) => {
-    setSelectedGroupId(groupId);
+  const handleListItemClick = (event, group) => {
+    setSelectedGroup(group);
   };
 
   const handleClose = () => {
@@ -149,21 +150,27 @@ export default function QuizTestStudentList(props) {
   const handleAssignGroup = () => {
     handleClose();
 
-    // if (selectedGroupId)
-    //   request(
-    //     token,
-    //     history,
-    //     "post",
-    //     "/add-participant-to-quiz-test-group",
-    //     (res) => {
-    //       // Update group for this student in table.
-    //     },
-    //     { studentId: std.userLoginId, groupId: selectedGroupId }
-    //   );
-
-    alert(
-      JSON.stringify({ studentId: std.userLoginId, groupId: selectedGroupId })
-    );
+    if (selectedGroup)
+      request(
+        token,
+        history,
+        "post",
+        "/add-participant-to-quiz-test-group",
+        (res) => {
+          // Update group for this student in table.
+          std.testGroup = selectedGroup.groupCode;
+          _.remove(
+            studentList,
+            (student) => student.userLoginId === std.userLoginId
+          );
+          setStudentList([std, ...studentList]);
+        },
+        {},
+        {
+          participantUserLoginId: std.userLoginId,
+          quizTestGroupId: selectedGroup.quizGroupId,
+        }
+      );
   };
 
   function getStudentList() {
@@ -347,10 +354,10 @@ export default function QuizTestStudentList(props) {
                       <ListItem
                         key={group.quizGroupId}
                         className={classes.listItem}
-                        selected={selectedGroupId === group.quizGroupId}
-                        onClick={(event) =>
-                          handleListItemClick(event, group.quizGroupId)
+                        selected={
+                          selectedGroup?.quizGroupId === group.quizGroupId
                         }
+                        onClick={(event) => handleListItemClick(event, group)}
                       >
                         <ListItemIcon>
                           <FcDocument size={24} />
