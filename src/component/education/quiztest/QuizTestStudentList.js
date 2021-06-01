@@ -76,7 +76,7 @@ export default function QuizTestStudentList(props) {
           <Button
             variant="contained"
             color="primary"
-            onClick={handleAssignGroup(rowData.userLoginId)}
+            onClick={() => handleAssignGroup(rowData.userLoginId)}
           >
             Chọn đề
           </Button>
@@ -122,7 +122,11 @@ export default function QuizTestStudentList(props) {
   const [studentList, setStudentList] = useState([]);
 
   function handleAssignGroup(userLoginId) {
-    console.log("select group for " + userLoginId);
+    alert(userLoginId);
+    //console.log("select group for " + userLoginId); thay bang alert thi msg box hien lien tuc
+    // bat popup cho phep user chon de tu list va bam "Chon", neu bam nut "Huy" thi tat Popup di
+    // call API /add-participant-to-quiz-test-group
+    
   }
   async function getStudentList() {
     request(
