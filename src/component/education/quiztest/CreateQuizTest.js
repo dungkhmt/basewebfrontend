@@ -77,7 +77,8 @@ const questionList = [
     questionID: "",
   },
   {
-    desc: "asdkasjdlaksjdlaksjd ajldjka lsdpiaops dakjs ldajsdj aqipour pe rqoer qald klanvlaksjd[iqpori[wer ",
+    desc:
+      "asdkasjdlaksjdlaksjd ajldjka lsdpiaops dakjs ldajsdj aqipour pe rqoer qald klanvlaksjd[iqpori[wer ",
     ans: [
       ["ans 1", true],
       ["ans 2", false],
@@ -97,7 +98,8 @@ const questionList = [
     questionID: "",
   },
   {
-    desc: "934267331140027631584353097282653335534382337833447427495835627332705111928881836050159\
+    desc:
+      "934267331140027631584353097282653335534382337833447427495835627332705111928881836050159\
 98809153133068051750737022122660506160462551451922361393320990081676590883686042637397276251780805820352\
 940173179689386638153898833678754624972661773135558718878205518933234942239373008835054962942826377385599\
 582202213330335123693752677691816825911416795078138349847751061762702325982312721627137173091072243398556\
@@ -428,7 +430,7 @@ function CreateQuizTest() {
               {listClassBelongCourse.map((option) => {
                 //console.log(option)
                 let displayStr =
-                  option.code + "     (" + option.classType + ")";
+                  option.classCode + "     (" + option.classType + ")";
                 return (
                   <MenuItem key={option.id} value={option.id}>
                     {displayStr}
