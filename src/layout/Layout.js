@@ -1,5 +1,4 @@
 import AppBar from "@material-ui/core/AppBar";
-import CssBaseline from "@material-ui/core/CssBaseline";
 import IconButton from "@material-ui/core/IconButton";
 import { makeStyles } from "@material-ui/core/styles";
 import Toolbar from "@material-ui/core/Toolbar";
@@ -9,13 +8,11 @@ import clsx from "clsx";
 import React, { useEffect, useState } from "react";
 import { connect } from "react-redux";
 import { getMenu, logout } from "../action";
-import { LayoutBreadcrumbs } from "./LayoutBreadcrumbs";
-import AccountButton from "./account/AccountButton";
-import SideBar from "./SideBar";
-import Back2Top from "../utils/Back2Top";
-import NotificationsIcon from "@material-ui/icons/Notifications";
-import Badge from "@material-ui/core/Badge";
 import bgImage from "../assets/img/sidebar-2.jpg";
+import Back2Top from "../utils/Back2Top";
+import AccountButton from "./account/AccountButton";
+import { LayoutBreadcrumbs } from "./LayoutBreadcrumbs";
+import SideBar from "./SideBar";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -113,7 +110,6 @@ function Layout(props) {
 
   return (
     <div className={classes.root}>
-      <CssBaseline />
       <AppBar
         elevation={0}
         position="fixed"
