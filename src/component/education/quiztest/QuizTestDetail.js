@@ -1,68 +1,24 @@
-import {
-  Box,
-  Button,
-  Card,
-  CardContent,
-  Grid,
-  Tab,
-  Tabs,
-  Typography,
-} from "@material-ui/core/";
-import { useTheme } from "@material-ui/core/styles";
+import { Box, Typography } from "@material-ui/core/";
+import { teal } from "@material-ui/core/colors";
+import { makeStyles, useTheme } from "@material-ui/core/styles";
+import { Skeleton } from "@material-ui/lab";
 import PropTypes from "prop-types";
 import React, { useEffect, useState } from "react";
+import { FcCalendar, FcClock } from "react-icons/fc";
 import { useDispatch, useSelector } from "react-redux";
 import { useParams } from "react-router";
-import { useHistory } from "react-router-dom";
+import { Link as RouterLink, useHistory } from "react-router-dom";
 import { authGet, request } from "../../../api";
+import { AntTab } from "./AntTab";
+import { AntTabs } from "./AntTabs";
+import PrimaryButton from "./PrimaryButton";
 import QuizListForAssignment from "./QuizListForAssignment";
 import QuizTestGroupList from "./QuizTestGroupList";
 import QuizTestGroupParticipants from "./QuizTestGroupParticipants";
 import QuizTestJoinRequestList from "./QuizTestJoinRequestList";
 import QuizTestStudentListResult from "./QuizTestResultList";
 import QuizTestStudentList from "./QuizTestStudentList";
-
-//import SwipeableViews from 'react-swipeable-views';
-
-const nextLine = <pre></pre>;
-
-const lineBreak = <pre style={{ userSelect: "none" }}> </pre>;
-
-const styles = {
-  label: {
-    fontSize: "20px",
-    fontWeight: "lighter",
-  },
-
-  descStyle: {
-    fontSize: "20px",
-    fontWeight: "lighter",
-  },
-
-  ansStyle: {
-    fontSize: "18px",
-    fontWeight: "lighter",
-    paddingTop: "15px",
-    paddingBottom: "30px",
-    paddingLeft: "30px",
-  },
-
-  subAnsStyle: {
-    fontSize: "18px",
-    fontWeight: "lighter",
-    paddingBottom: "10px",
-  },
-
-  tabStyle: {
-    //border: '1px solid',
-    borderStyle: "none solid none none",
-    borderWidth: "3px",
-    borderColor: "whitesmoke",
-    color: "black",
-    backgroundColor: "rgb(230, 230, 230)",
-    fontSize: 16,
-  },
-};
+import TertiaryButton from "./TertiaryButton";
 
 const tempTestInfo = {
   /* 'testId': 'DTS01',
@@ -111,6 +67,23 @@ const tempCourseInfo = {
     },
 ] */
 
+const useStyles = makeStyles((theme) => ({
+  btn: { width: 180, marginLeft: theme.spacing(1) },
+  courseName: { fontWeight: theme.typography.fontWeightMedium },
+  editBtn: {
+    margin: theme.spacing(2),
+    width: 100,
+    fontWeight: theme.typography.fontWeightRegular,
+  },
+  testName: { fontSize: "1.25rem", paddingTop: theme.spacing(1) },
+  time: {
+    paddingLeft: 6,
+    color: teal[800],
+    fontWeight: theme.typography.fontWeightBold,
+    fontSize: "1rem",
+  },
+}));
+
 function a11yProps(index) {
   return {
     id: `full-width-tab-${index}`,
@@ -144,31 +117,42 @@ TabPanel.propTypes = {
   value: PropTypes.any.isRequired,
 };
 
+const tabsLabel = [
+  "Thí sinh",
+  "Thí sinh đăng ký",
+  "Đề",
+  "Phân đề cho thí sinh",
+  "DS quiz",
+  "Kết quả",
+  "Kết quả tổng quát",
+];
+
 export default function QuizTestDetail(props) {
   let param = useParams();
   let testId = param.id;
   const history = useHistory();
-  //const classes = useStyles();
+  const classes = useStyles();
   const dispatch = useDispatch();
   const token = useSelector((state) => state.auth.token);
 
   const [testInfo, setTestInfo] = useState([]);
-  const [courseInfo, setCourseInfo] = useState([]);
+  const [courseInfo, setCourseInfo] = useState();
 
-  const [tab, setTab] = React.useState(0);
+  const [selectedTab, setSelectedTab] = useState(0);
   const theme = useTheme();
 
+  //
   const handleChangeTab = (event, newValue) => {
-    setTab(newValue);
+    setSelectedTab(newValue);
   };
 
   const handleChangeIndex = (index) => {
-    setTab(index);
+    setSelectedTab(index);
   };
 
-  function handleEditQuizTes() {
-    history.push("/edu/class/quiztest/edit/" + testId);
-  }
+  // function handleEditQuizTes() {
+  //   history.push("/edu/class/quiztest/edit/" + testId);
+  // }
 
   async function handleAssignStudents2QuizGroup() {
     let datasend = { quizTestId: testId };
@@ -246,177 +230,120 @@ export default function QuizTestDetail(props) {
 
   useEffect(() => {
     getQuizTestDetail();
-    return () => {};
   }, []);
 
-  return (
-    <div>
-      <Card>
-        <CardContent style={{ padding: "8% 5% 5% 5%" }}>
-          <Grid
-            container
-            direction="row"
-            justify="flex-start"
-            alignItems="center"
-          >
-            <Grid item xs={2}>
-              <div style={styles.label}>Tên kỳ thi:</div>
-            </Grid>
+  return courseInfo ? (
+    <>
+      <Typography
+        variant="h5"
+        className={classes.courseName}
+      >{`${courseInfo.courseName} (${courseInfo.id})`}</Typography>
+      <Typography
+        variant="subtitle1"
+        className={classes.testName}
+      >{`${testInfo.testName}`}</Typography>
 
-            <Grid item xs={3}>
-              <div style={styles.label}>
-                <strong>{testInfo.testName}</strong>
-              </div>
-            </Grid>
+      {/*  */}
+      <Box display="flex" alignItems="center" pt={2}>
+        {/*  */}
+        <FcClock size={24} />
+        <Typography
+          component="span"
+          className={classes.time}
+        >{`${testInfo.duration} phút`}</Typography>
 
-            <Grid item xs={7}>
-              <div style={styles.label}>
-                Môn học:&nbsp;
-                <strong>{courseInfo.id + " - " + courseInfo.courseName}</strong>
-              </div>
-            </Grid>
-          </Grid>
-          {nextLine}
-          <Grid
-            container
-            direction="row"
-            justify="flex-start"
-            alignItems="center"
-          >
-            <Grid item xs={2}>
-              <div style={styles.label}>Bắt đầu:</div>
-            </Grid>
+        {/*  */}
+        <FcCalendar size={24} style={{ marginLeft: 40 }} />
+        <Typography
+          component="span"
+          className={classes.time}
+        >{`${testInfo.scheduleDatetime}`}</Typography>
 
-            <Grid item xs={3}>
-              <div style={styles.label}>
-                <strong>{testInfo.scheduleDatetime}</strong>
-              </div>
-            </Grid>
+        <TertiaryButton
+          className={classes.editBtn}
+          component={RouterLink}
+          to={`/edu/class/quiztest/edit/${testId}`}
+        >
+          Chỉnh sửa
+        </TertiaryButton>
+      </Box>
 
-            <Grid item xs={7}></Grid>
-          </Grid>
-          {nextLine}
-          <Grid
-            container
-            direction="row"
-            justify="flex-start"
-            alignItems="center"
-          >
-            <Grid item xs={2}>
-              <div style={styles.label}>Thời gian làm bài:</div>
-            </Grid>
+      <br />
+      <br />
 
-            <Grid item xs={3}>
-              <div style={styles.label}>
-                <strong>{testInfo.duration}&nbsp;phút</strong>
-              </div>
-            </Grid>
-          </Grid>
-          {lineBreak}
-          {lineBreak}
+      <Box display="flex" justifyContent="flex-end">
+        <PrimaryButton
+          className={classes.btn}
+          onClick={(e) => {
+            handleAssignStudents2QuizGroup(e);
+          }}
+        >
+          Phân đề cho SV
+        </PrimaryButton>
 
-          <Button
-            variant="contained"
-            color="primary"
-            onClick={(e) => {
-              handleEditQuizTes(e);
-            }}
-            style={{ color: "white" }}
-          >
-            Chỉnh sửa thông tin
-          </Button>
-          <Button
-            variant="contained"
-            color="primary"
-            onClick={(e) => {
-              handleAssignStudents2QuizGroup(e);
-            }}
-            style={{ color: "white" }}
-          >
-            Phân đề cho SV
-          </Button>
+        <PrimaryButton
+          className={classes.btn}
+          onClick={(e) => {
+            handleAssignQuestions2QuizGroup(e);
+          }}
+        >
+          Phân câu hỏi cho đề
+        </PrimaryButton>
+      </Box>
 
-          <Button
-            variant="contained"
-            color="primary"
-            onClick={(e) => {
-              handleAssignQuestions2QuizGroup(e);
-            }}
-            style={{ color: "white" }}
-          >
-            Phân câu hỏi cho đề
-          </Button>
+      <br />
 
-          <Tabs
-            value={tab}
-            onChange={handleChangeTab}
-            indicatorColor="primary"
-            textColor="primary"
-            variant="standard"
-            aria-label="full width tabs example"
-            //variant="scrollable"
-            scrollButtons="auto"
-            style={{
-              //backgroundColor: 'rgb(240, 240, 240)',
-              borderWidth: "1px",
-              borderLeftStyle: "solid",
-              borderColor: styles.tabStyle.borderColor,
-              marginLeft: "-1px",
+      <AntTabs
+        value={selectedTab}
+        onChange={handleChangeTab}
+        aria-label="ant example"
+        scrollButtons="auto"
+      >
+        {tabsLabel.map((label, idx) => (
+          <AntTab label={label} {...a11yProps(idx)} />
+        ))}
+      </AntTabs>
 
-              //backgroundColor: 'rgb(25, 118, 210)'
-            }}
-          >
-            <Tab label="Thí sinh" {...a11yProps(0)} style={styles.tabStyle} />
-            <Tab
-              label="Thí sinh đăng ký"
-              {...a11yProps(1)}
-              style={styles.tabStyle}
-            />
-            <Tab
-              label="Đề"
-              {...a11yProps(2)}
-              style={{
-                ...styles.tabStyle,
-                minWidth: 135,
-              }}
-            />
-            <Tab
-              label="Phân đề cho thí sinh"
-              {...a11yProps(3)}
-              style={styles.tabStyle}
-            />
-            <Tab label="DS quiz" {...a11yProps(4)} style={styles.tabStyle} />
-            <Tab label="Kết quả" {...a11yProps(5)} style={styles.tabStyle} />
-            <Tab
-              label="Kết quả tổng quát"
-              {...a11yProps(6)}
-              style={styles.tabStyle}
-            />
-          </Tabs>
+      <TabPanel value={selectedTab} index={0} dir={theme.direction}>
+        <QuizTestStudentList testId={param.id} />
+      </TabPanel>
+      <TabPanel value={selectedTab} index={1} dir={theme.direction}>
+        <QuizTestJoinRequestList testId={param.id} />
+      </TabPanel>
+      <TabPanel value={selectedTab} index={2} dir={theme.direction}>
+        <QuizTestGroupList testId={param.id} />
+      </TabPanel>
+      <TabPanel value={selectedTab} index={3} dir={theme.direction}>
+        <QuizTestGroupParticipants testId={param.id} />
+      </TabPanel>
+      <TabPanel value={selectedTab} index={4} dir={theme.direction}>
+        <QuizListForAssignment testId={param.id} />
+      </TabPanel>
+      <TabPanel value={selectedTab} index={5} dir={theme.direction}>
+        <QuizTestStudentListResult testId={param.id} isGeneral={false} />
+      </TabPanel>
+      <TabPanel value={selectedTab} index={6} dir={theme.direction}>
+        <QuizTestStudentListResult testId={param.id} isGeneral={true} />
+      </TabPanel>
+    </>
+  ) : (
+    // Loading screen
+    <>
+      <Typography variant="h5" className={classes.courseName}>
+        <Skeleton width={400} variant="rect" animation="wave" />
+      </Typography>
+      <Typography variant="subtitle1" className={classes.testName}>
+        <Skeleton width={200} variant="rect" animation="wave" />
+      </Typography>
 
-          <TabPanel value={tab} index={0} dir={theme.direction}>
-            <QuizTestStudentList testId={param.id} />
-          </TabPanel>
-          <TabPanel value={tab} index={1} dir={theme.direction}>
-            <QuizTestJoinRequestList testId={param.id} />
-          </TabPanel>
-          <TabPanel value={tab} index={2} dir={theme.direction}>
-            <QuizTestGroupList testId={param.id} />
-          </TabPanel>
-          <TabPanel value={tab} index={3} dir={theme.direction}>
-            <QuizTestGroupParticipants testId={param.id} />
-          </TabPanel>
-          <TabPanel value={tab} index={4} dir={theme.direction}>
-            <QuizListForAssignment testId={param.id} />
-          </TabPanel>
-          <TabPanel value={tab} index={5} dir={theme.direction}>
-            <QuizTestStudentListResult testId={param.id} isGeneral={false} />
-          </TabPanel>
-          <TabPanel value={tab} index={6} dir={theme.direction}>
-            <QuizTestStudentListResult testId={param.id} isGeneral={true} />
-          </TabPanel>
-        </CardContent>
-      </Card>
-    </div>
+      {/*  */}
+      <Box display="flex" alignItems="center" pt={2}>
+        {/*  */}
+        <Skeleton width={24} height={24} variant="circle" animation="wave" />
+        <Typography component="span" className={classes.time}>
+          <Skeleton width={80} variant="rect" animation="wave" />
+        </Typography>
+      </Box>
+    </>
   );
 }
