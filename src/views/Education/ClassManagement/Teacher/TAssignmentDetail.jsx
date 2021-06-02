@@ -1,41 +1,38 @@
-import React, { useRef, useEffect, useState, Fragment } from "react";
 import {
+  Avatar,
+  Box,
+  Button,
   Card,
   CardContent,
-  Button,
-  Typography,
   CardHeader,
-  Paper,
-  Grid,
-  Box,
   Divider,
-  CircularProgress,
-  Avatar,
+  Grid,
+  Paper,
+  Typography,
 } from "@material-ui/core";
-import MaterialTable from "material-table";
-import { MuiThemeProvider } from "@material-ui/core/styles";
-import { useHistory, useParams } from "react-router";
-import { makeStyles } from "@material-ui/core/styles";
-import PeopleAltRoundedIcon from "@material-ui/icons/PeopleAltRounded";
-import { BiDetail } from "react-icons/bi";
-import { CountdownCircleTimer } from "react-countdown-circle-timer";
-import { FcDownload } from "react-icons/fc";
-import EditIcon from "@material-ui/icons/Edit";
-import { useSelector } from "react-redux";
-import { request } from "../../../../api";
 import { green } from "@material-ui/core/colors";
-import { API_URL } from "../../../../config/config";
+import { makeStyles, MuiThemeProvider } from "@material-ui/core/styles";
+import PeopleAltRoundedIcon from "@material-ui/icons/PeopleAltRounded";
 import parse from "html-react-parser";
+import MaterialTable from "material-table";
+import React, { Fragment, useEffect, useRef, useState } from "react";
+import { CountdownCircleTimer } from "react-countdown-circle-timer";
+import { BiDetail } from "react-icons/bi";
+import { FcDownload } from "react-icons/fc";
+import { useSelector } from "react-redux";
+import { useHistory, useParams } from "react-router";
+import { request } from "../../../../api";
+import CustomizedDialogs from "../../../../component/dialog/CustomizedDialogs";
+import NegativeButton from "../../../../component/education/classmanagement/NegativeButton";
+import NegativeDialogButton from "../../../../component/education/classmanagement/NegativeDialogButton";
+import PositiveButton from "../../../../component/education/classmanagement/PositiveButton";
+import { API_URL } from "../../../../config/config";
+import displayTime from "../../../../utils/DateTimeUtils";
 import changePageSize, {
   localization,
   tableIcons,
 } from "../../../../utils/MaterialTableUtils";
-import displayTime from "../../../../utils/DateTimeUtils";
-import PositiveButton from "../../../../component/education/classmanagement/PositiveButton";
-import NegativeDialogButton from "../../../../component/education/classmanagement/NegativeDialogButton";
-import NegativeButton from "../../../../component/education/classmanagement/NegativeButton";
 import { errorNoti } from "../../../../utils/Notification";
-import CustomizedDialogs from "../../../../utils/CustomizedDialogs";
 
 const useStyles = makeStyles((theme) => ({
   card: {

@@ -18,10 +18,11 @@ import { useSelector } from "react-redux";
 import { useHistory } from "react-router-dom";
 import SimpleBar from "simplebar-react";
 import { request } from "../../../api";
-import CustomizedDialogs from "../../../utils/CustomizedDialogs";
-import PrimaryButton from "./PrimaryButton";
+import PrimaryButton from "../../button/PrimaryButton";
+import TertiaryButton from "../../button/TertiaryButton";
+import CustomizedDialogs from "../../dialog/CustomizedDialogs";
+import ErrorDialog from "../../dialog/ErrorDialog";
 import { style } from "./TeacherViewQuizDetailForAssignment";
-import TertiaryButton from "./TertiaryButton";
 
 const useStyles = makeStyles((theme) => ({
   ...style(theme),
@@ -53,6 +54,7 @@ export default function QuizTestStudentList(props) {
 
   // Modals.
   const [open, setOpen] = useState(false);
+  const [error, setError] = useState(true);
   const [quizGroups, setQuizGroups] = useState();
   const [selectedGroup, setSelectedGroup] = useState();
   const [std, setStd] = useState();
@@ -165,7 +167,7 @@ export default function QuizTestStudentList(props) {
           );
           setStudentList([std, ...studentList]);
         },
-        {},
+        { rest: () => setError(true) },
         {
           participantUserLoginId: std.userLoginId,
           quizTestGroupId: selectedGroup.quizGroupId,
@@ -385,6 +387,7 @@ export default function QuizTestStudentList(props) {
         }
         style={{ content: classes.dialogContent }}
       />
+      <ErrorDialog open={error} />
     </>
   );
 }

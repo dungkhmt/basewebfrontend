@@ -9,16 +9,16 @@ import { useDispatch, useSelector } from "react-redux";
 import { useParams } from "react-router";
 import { Link as RouterLink, useHistory } from "react-router-dom";
 import { authGet, request } from "../../../api";
+import PrimaryButton from "../../button/PrimaryButton";
+import TertiaryButton from "../../button/TertiaryButton";
 import { AntTab } from "./AntTab";
 import { AntTabs } from "./AntTabs";
-import PrimaryButton from "./PrimaryButton";
 import QuizListForAssignment from "./QuizListForAssignment";
 import QuizTestGroupList from "./QuizTestGroupList";
 import QuizTestGroupParticipants from "./QuizTestGroupParticipants";
 import QuizTestJoinRequestList from "./QuizTestJoinRequestList";
 import QuizTestStudentListResult from "./QuizTestResultList";
 import QuizTestStudentList from "./QuizTestStudentList";
-import TertiaryButton from "./TertiaryButton";
 
 const tempTestInfo = {
   /* 'testId': 'DTS01',

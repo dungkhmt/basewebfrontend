@@ -1,29 +1,14 @@
 //import { Button, Box, Checkbox, Typography } from "@material-ui/core";
 
-import { green } from "@material-ui/core/colors";
-import FormControlLabel from "@material-ui/core/FormControlLabel";
-import FormGroup from "@material-ui/core/FormGroup";
-import { makeStyles, withStyles } from "@material-ui/core/styles";
-import {
-  Box,
-  Button,
-  List,
-  Checkbox,
-  ListItem,
-  ListItemIcon,
-  ListItemText,
-  Typography,
-} from "@material-ui/core";
+import { Box, Button, Typography } from "@material-ui/core";
 import { grey } from "@material-ui/core/colors";
+import { makeStyles } from "@material-ui/core/styles";
 //import { makeStyles } from "@material-ui/core/styles";
 import parse from "html-react-parser";
 import React, { useState } from "react";
-import { FcDocument } from "react-icons/fc";
 import { useSelector } from "react-redux";
 import { useHistory } from "react-router";
-import SimpleBar from "simplebar-react";
 import { request } from "../../../api";
-import CustomizedDialogs from "../../../utils/CustomizedDialogs";
 
 const useStyles = makeStyles(() => ({
   testBtn: {
@@ -90,10 +75,7 @@ const useStyles = makeStyles(() => ({
  * Describe a multiple-choice quiz.
  * @returns
  */
-export default function TeacherViewQuizDetail({
-  quiz,
-  index
-}) {
+export default function TeacherViewQuizDetail({ quiz, index }) {
   const classes = useStyles();
   const token = useSelector((state) => state.auth.token);
   const history = useHistory();
@@ -112,7 +94,7 @@ export default function TeacherViewQuizDetail({
 
   const [open, setOpen] = useState(false);
 
-  function handleChangeStatus(){
+  function handleChangeStatus() {
     //alert('change status ' + quizz.questionId);
     request(
       token,
@@ -129,13 +111,13 @@ export default function TeacherViewQuizDetail({
   return (
     <div className={classes.wrapper}>
       <Box className={classes.quizzStatement}>
-        <Typography component="span">{`Câu ${index + 1}.`}&nbsp;</Typography>
-        ({quiz.quizCourseTopic.quizCourseTopicName}:
-        {quiz.levelId}:{quiz.statusId})&nbsp;&nbsp;
+        <Typography component="span">{`Câu ${index + 1}.`}&nbsp;</Typography>(
+        {quiz.quizCourseTopic.quizCourseTopicName}:{quiz.levelId}:
+        {quiz.statusId})&nbsp;&nbsp;
         {parse(quiz.statement)}
       </Box>
 
-      { /*<FormGroup row className={classes.answerWrapper}>
+      {/*<FormGroup row className={classes.answerWrapper}>
         {quiz.quizChoiceAnswerList.map((answer) => (
           <FormControlLabel
             key={answer.choiceAnswerId}
@@ -151,16 +133,14 @@ export default function TeacherViewQuizDetail({
           />
           ))}
           </FormGroup>*/}
-      
+
       <Button
         variant="contained"
         color="primary"
-        onClick = {() => handleChangeStatus()}
-        >
+        onClick={() => handleChangeStatus()}
+      >
         Thay đổi trạng thái
       </Button>
-      
-
     </div>
   );
 }

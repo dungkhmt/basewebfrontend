@@ -1,7 +1,3 @@
-import React, { useEffect } from "react";
-import Button from "@material-ui/core/Button";
-import { useHistory } from "react-router-dom";
-import { Controller, useForm } from "react-hook-form";
 import {
   Box,
   CardMedia,
@@ -17,22 +13,24 @@ import {
   TextField,
   Typography,
 } from "@material-ui/core";
+import Button from "@material-ui/core/Button";
+import { green } from "@material-ui/core/colors";
 import {
   createMuiTheme,
   makeStyles,
   ThemeProvider,
 } from "@material-ui/core/styles";
-import { motion } from "framer-motion";
-import _ from "lodash";
-import { request } from "../../api";
-import { useState } from "react";
-import { errorNoti } from "../../utils/Notification";
-import { useSelector } from "react-redux";
 import Visibility from "@material-ui/icons/Visibility";
 import VisibilityOff from "@material-ui/icons/VisibilityOff";
-import CustomizedDialogs from "../../utils/CustomizedDialogs";
-import { green } from "@material-ui/core/colors";
+import { motion } from "framer-motion";
+import React, { useEffect, useState } from "react";
+import { Controller, useForm } from "react-hook-form";
+import { useSelector } from "react-redux";
+import { useHistory } from "react-router-dom";
+import { request } from "../../api";
+import CustomizedDialogs from "../../component/dialog/CustomizedDialogs";
 import PositiveButton from "../../component/education/classmanagement/PositiveButton";
+import { errorNoti } from "../../utils/Notification";
 
 const theme = createMuiTheme({
   overrides: {
@@ -504,7 +502,8 @@ export default function NewRegister() {
                           "Vui lòng sử dụng email không vượt quá 100 kí tự",
                       },
                       pattern: {
-                        value: /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/,
+                        value:
+                          /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/,
                         message: "Email không hợp lệ",
                       },
                     })}
