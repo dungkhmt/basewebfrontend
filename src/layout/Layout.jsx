@@ -22,57 +22,12 @@ const useStyles = makeStyles((theme) => ({
   },
   appBar: {
     zIndex: theme.zIndex.drawer + 1,
-    transition: theme.transitions.create(["width", "margin"], {
-      easing: theme.transitions.easing.sharp,
-      duration: theme.transitions.duration.leavingScreen,
-    }),
-    // backgroundColor: "white",
-  },
-  // appBarShift: {
-  //   marginLeft: drawerWidth,
-  //   width: `calc(100% - ${drawerWidth}px)`,
-  //   transition: theme.transitions.create(["width", "margin"], {
-  //     easing: theme.transitions.easing.sharp,
-  //     duration: theme.transitions.duration.enteringScreen,
-  //   }),
-  // },
-  // appBarTitle: {
-  //   marginLeft: theme.spacing(2),
-  //   transition: theme.transitions.create(["width", "margin"], {
-  //     easing: theme.transitions.easing.sharp,
-  //     duration: theme.transitions.duration.enteringScreen,
-  //   }),
-  // },
-  toolbar: {
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "flex-end",
-    padding: theme.spacing(0, 1),
-    ...theme.mixins.toolbar,
-  },
-  // hideButton: {
-  //   marginLeft: drawerWidth / 2 - theme.spacing(6),
-  // },
-  content: {
-    flexGrow: 1,
-    padding: theme.spacing(3),
-    // transition: theme.transitions.create("margin", {
+    boxShadow: theme.shadows[1],
+    // transition: theme.transitions.create(["width", "margin"], {
     //   easing: theme.transitions.easing.sharp,
     //   duration: theme.transitions.duration.leavingScreen,
     // }),
-    // marginLeft: -drawerWidth,
   },
-  // contentShift: {
-  //   transition: theme.transitions.create("margin", {
-  //     easing: theme.transitions.easing.easeOut,
-  //     duration: theme.transitions.duration.enteringScreen,
-  //   }),
-  //   marginLeft: 0,
-  // },
-  // largeIcon: {
-  //   width: 50,
-  //   height: 50,
-  // },
   menuButton: {
     marginRight: 24,
   },
@@ -93,6 +48,52 @@ const useStyles = makeStyles((theme) => ({
   grow: {
     flexGrow: 1,
   },
+  toolbar: {
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "flex-end",
+    padding: theme.spacing(0, 1),
+    ...theme.mixins.toolbar,
+  },
+  content: {
+    flexGrow: 1,
+    padding: theme.spacing(3),
+    // transition: theme.transitions.create("margin", {
+    //   easing: theme.transitions.easing.sharp,
+    //   duration: theme.transitions.duration.leavingScreen,
+    // }),
+    // marginLeft: -drawerWidth,
+  },
+  // appBarShift: {
+  //   marginLeft: drawerWidth,
+  //   width: `calc(100% - ${drawerWidth}px)`,
+  //   transition: theme.transitions.create(["width", "margin"], {
+  //     easing: theme.transitions.easing.sharp,
+  //     duration: theme.transitions.duration.enteringScreen,
+  //   }),
+  // },
+  // appBarTitle: {
+  //   marginLeft: theme.spacing(2),
+  //   transition: theme.transitions.create(["width", "margin"], {
+  //     easing: theme.transitions.easing.sharp,
+  //     duration: theme.transitions.duration.enteringScreen,
+  //   }),
+  // },
+  // hideButton: {
+  //   marginLeft: drawerWidth / 2 - theme.spacing(6),
+  // },
+
+  // contentShift: {
+  //   transition: theme.transitions.create("margin", {
+  //     easing: theme.transitions.easing.easeOut,
+  //     duration: theme.transitions.duration.enteringScreen,
+  //   }),
+  //   marginLeft: 0,
+  // },
+  // largeIcon: {
+  //   width: 50,
+  //   height: 50,
+  // },
 }));
 
 function Layout(props) {
@@ -116,7 +117,7 @@ function Layout(props) {
       <AppBar
         elevation={0}
         position="fixed"
-        color="default"
+        color="inherit"
         className={clsx(classes.appBar, {
           // [classes.appBarShift]: open,
         })}
