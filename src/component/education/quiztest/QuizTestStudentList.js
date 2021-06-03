@@ -54,7 +54,7 @@ export default function QuizTestStudentList(props) {
 
   // Modals.
   const [open, setOpen] = useState(false);
-  const [error, setError] = useState(true);
+  const [error, setError] = useState(false);
   const [quizGroups, setQuizGroups] = useState();
   const [selectedGroup, setSelectedGroup] = useState();
   const [std, setStd] = useState();
