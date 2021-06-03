@@ -1,32 +1,14 @@
-import {
-  Button,
-  Card,
-  CardActions,
-  CardContent,
-  TextField,
-  Typography,
-  IconButton,
-  MenuItem,
-  Checkbox,
-  Grid,
-  Tooltip,
-} from "@material-ui/core/";
-import React, { useState, useEffect, useReducer } from "react";
-import { useHistory } from "react-router-dom";
-import { authPost, authGet, authPostMultiPart } from "../../../api";
-import { useDispatch, useSelector } from "react-redux";
-import { useParams } from "react-router";
-import MaterialTable from "material-table";
-import { Link } from "react-router-dom";
-import AddIcon from "@material-ui/icons/Add";
+import { Button, Tooltip } from "@material-ui/core/";
 //import IconButton from '@material-ui/core/IconButton';
-import {
-  withStyles,
-  makeStyles,
-  MuiThemeProvider,
-} from "@material-ui/core/styles";
+import { makeStyles, withStyles } from "@material-ui/core/styles";
 import TableCell from "@material-ui/core/TableCell";
 import TableRow from "@material-ui/core/TableRow";
+import AddIcon from "@material-ui/icons/Add";
+import MaterialTable from "material-table";
+import React, { useEffect, useReducer, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { Link, useHistory } from "react-router-dom";
+import { authGet } from "../../../api";
 
 const nextLine = <pre></pre>;
 
@@ -88,7 +70,7 @@ const useStyles = makeStyles({
 
 const headerProperties = {
   headerStyle: {
-    fontSize: 16,
+    fontSize: 14,
     backgroundColor: "rgb(63, 81, 181)",
     color: "white",
   },
@@ -105,6 +87,11 @@ const columns = [
         }}
         style={{
           textDecoration: "none",
+          whiteSpace: "pre-wrap" /* css-3 */,
+          whiteSpace: "-moz-pre-wrap" /* Mozilla, since 1999 */,
+          whiteSpace: "-pre-wrap" /* Opera 4-6 */,
+          whiteSpace: "-o-pre-wrap" /* Opera 7 */,
+          wordWrap: "break-word" /* Internet Explorer 5.5+ */,
         }}
       >
         {rowData.testId}
@@ -116,7 +103,6 @@ const columns = [
     field: "testName",
     title: "Tên kỳ thi",
     ...headerProperties,
-    width: "40%",
   },
   {
     field: "classId",
@@ -149,7 +135,10 @@ const columns = [
   {
     field: "duration",
     title: "Thời lượng",
-    ...headerProperties,
+    cellStyle: {
+      textAlign: "right",
+    },
+    headerStyle: { ...headerProperties.headerStyle, textAlign: "right" },
   },
 ];
 
@@ -208,10 +197,8 @@ function QuizTestList() {
     }; */
 
   return (
-    //<MuiThemeProvider theme>
-    <Card>
-      <CardContent>
-        {/* <Grid container spacing={5} justify='flex-end' direction="row">
+    <>
+      {/* <Grid container spacing={5} justify='flex-end' direction="row">
                     <Tooltip title="Thêm mới một đề thi" aria-label="Thêm mới một đề thi" placement="top">
                         <Button
                             variant="contained"
@@ -225,61 +212,60 @@ function QuizTestList() {
                         </Button>
                     </Tooltip>
             </Grid> */}
-        {nextLine}
-        <MaterialTable
-          title="Danh sách kỳ thi"
-          columns={columns}
-          data={quizTestList}
-          //icons={tableIcons}
-          localization={{
-            header: {
-              actions: "",
+      {nextLine}
+      <MaterialTable
+        title="Danh sách kỳ thi"
+        columns={columns}
+        data={quizTestList}
+        //icons={tableIcons}
+        localization={{
+          header: {
+            actions: "",
+          },
+          body: {
+            emptyDataSourceMessage: "Không có bản ghi nào để hiển thị",
+            filterRow: {
+              filterTooltip: "Lọc",
             },
-            body: {
-              emptyDataSourceMessage: "Không có bản ghi nào để hiển thị",
-              filterRow: {
-                filterTooltip: "Lọc",
-              },
-            },
-          }}
-          options={{
-            search: true,
-            actionsColumnIndex: -1,
-            pageSize: 8,
-            tableLayout: "fixed",
-          }}
-          style={{
-            fontSize: 16,
-          }}
-          actions={[
-            {
-              icon: () => {
-                return (
-                  <Tooltip
-                    title="Thêm mới một kỳ thi"
-                    aria-label="Thêm mới một kỳ thi"
-                    placement="top"
+          },
+        }}
+        options={{
+          search: true,
+          sorting: false,
+          actionsColumnIndex: -1,
+          pageSize: 8,
+          tableLayout: "fixed",
+        }}
+        style={{
+          fontSize: 14,
+        }}
+        actions={[
+          {
+            icon: () => {
+              return (
+                <Tooltip
+                  title="Thêm mới một kỳ thi"
+                  aria-label="Thêm mới một kỳ thi"
+                  placement="top"
+                >
+                  <Button
+                    variant="contained"
+                    color="primary"
+                    onClick={() => {
+                      history.push("create-quiz-test");
+                    }}
                   >
-                    <Button
-                      variant="contained"
-                      color="primary"
-                      onClick={() => {
-                        history.push("create-quiz-test");
-                      }}
-                    >
-                      <AddIcon style={{ color: "white" }} fontSize="default" />
-                      &nbsp;&nbsp;&nbsp;Thêm mới&nbsp;&nbsp;
-                    </Button>
-                  </Tooltip>
-                );
-              },
-              isFreeAction: true,
+                    <AddIcon style={{ color: "white" }} fontSize="default" />
+                    &nbsp;&nbsp;&nbsp;Thêm mới&nbsp;&nbsp;
+                  </Button>
+                </Tooltip>
+              );
             },
-          ]}
-        />
-      </CardContent>
-    </Card>
-    //</MuiThemeProvider>
+            isFreeAction: true,
+          },
+        ]}
+      />
+    </>
   );
 }
 
