@@ -11,7 +11,6 @@ import {
 } from "@material-ui/core";
 import { blue, grey } from "@material-ui/core/colors";
 import { makeStyles } from "@material-ui/core/styles";
-//import { makeStyles } from "@material-ui/core/styles";
 import parse from "html-react-parser";
 import React, { useState } from "react";
 import { FcDocument } from "react-icons/fc";
@@ -19,9 +18,10 @@ import { useSelector } from "react-redux";
 import { useHistory } from "react-router";
 import SimpleBar from "simplebar-react";
 import { request } from "../../../api";
-import CustomizedDialogs from "../../../utils/CustomizedDialogs";
-import PrimaryButton from "./PrimaryButton";
-import TertiaryButton from "./TertiaryButton";
+import PrimaryButton from "../../button/PrimaryButton";
+import TertiaryButton from "../../button/TertiaryButton";
+import CustomizedDialogs from "../../dialog/CustomizedDialogs";
+import ErrorDialog from "../../dialog/ErrorDialog";
 
 export const style = (theme) => ({
   testBtn: {
@@ -124,6 +124,7 @@ export default function TeacherViewQuizDetailForAssignment({
 
   // Modals.
   const [open, setOpen] = useState(false);
+  const [error, setError] = useState(false);
   const [selectedGroupId, setSelectedGroupId] = useState();
 
   //
@@ -139,7 +140,7 @@ export default function TeacherViewQuizDetailForAssignment({
       "post",
       "/add-quizgroup-question-assignment",
       (res) => {},
-      {},
+      { rest: () => setError(true) },
       { quizGroupId: selectedGroupId, questionId: quiz.questionId }
     );
   };
@@ -242,6 +243,7 @@ export default function TeacherViewQuizDetailForAssignment({
         }
         style={{ content: classes.dialogContent }}
       />
+      <ErrorDialog open={error} />
     </div>
   );
 }

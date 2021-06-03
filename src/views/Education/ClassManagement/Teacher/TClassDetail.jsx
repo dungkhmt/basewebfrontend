@@ -35,18 +35,13 @@ import { useSelector } from "react-redux";
 import { useHistory, useParams } from "react-router";
 import { request } from "../../../../api";
 import { drawerWidth } from "../../../../assets/jss/material-dashboard-react";
+import CustomizedDialogs from "../../../../component/dialog/CustomizedDialogs";
 import AssignList from "../../../../component/education/classmanagement/AssignList";
 import NegativeButton from "../../../../component/education/classmanagement/NegativeButton";
 import PositiveButton from "../../../../component/education/classmanagement/PositiveButton";
 import { StyledBadge } from "../../../../component/education/classmanagement/StyledBadge";
 import TeacherViewLogUserCourseChapterMaterialList from "../../../../component/education/course/TeacherViewLogUserCourseChapterMaterialList";
 import TeacherViewLogUserQuizList from "../../../../component/education/course/TeacherViewLogUserQuizList";
-
-// import withAsynchScreenSecurity from "../../../../component/education/classmanagement/withAsynchScreenSecurity";
-
-import clsx from "clsx";
-
-import CustomizedDialogs from "../../../../utils/CustomizedDialogs";
 import displayTime from "../../../../utils/DateTimeUtils";
 import changePageSize, {
   localization,
@@ -177,9 +172,8 @@ function TClassDetail() {
   // Student Assignment
   const [assignmentList, setAssignmentList] = useState([]);
   const [studentAssignmentList, setStudentAssignmentList] = useState([]);
-  const [fetchedStudentAssignment, setFetchedStudentAssignment] = useState(
-    false
-  );
+  const [fetchedStudentAssignment, setFetchedStudentAssignment] =
+    useState(false);
   // Dialog.
   const [openDelStuDialog, setOpenDelStuDialog] = useState(false);
 
