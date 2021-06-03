@@ -160,7 +160,12 @@ export default function TeacherViewQuizDetailForAssignment({
         {quiz.statusId})&nbsp;&nbsp;
         {parse(quiz.statement)}
       </Box>
-      <Button color="primary" onClick={onOpenDialog} className={classes.btn}>
+      <Button
+        color="primary"
+        variant="contained"
+        onClick={onOpenDialog}
+        className={classes.btn}
+      >
         Thêm vào đề
       </Button>
 
