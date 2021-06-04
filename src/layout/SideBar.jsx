@@ -28,7 +28,9 @@ const useStyles = makeStyles((theme) => ({
   },
   drawerPaper: {
     border: "none",
-    borderTop: "none",
+    // boxShadow: `2px 0px 1px -1px rgb(0 0 0 / 20%),
+    //   1px 0px 1px 0px rgb(0 0 0 / 14%),
+    //   1px 0px 3px 0px rgb(0 0 0 / 12%)`,
   },
   drawer: {
     width: drawerWidth,
@@ -62,59 +64,57 @@ export default function SideBar(props) {
   const selectedMenu = useSelector((state) => state.menu.selectedFunction);
 
   return (
-    <div>
-      <Drawer
-        variant="permanent"
-        anchor="left"
-        open={open}
-        className={classNames(classes.drawer, {
+    <Drawer
+      variant="permanent"
+      anchor="left"
+      open={open}
+      className={classNames(classes.drawer, {
+        [classes.drawerOpen]: open,
+        [classes.drawerClose]: !open,
+      })}
+      classes={{
+        paper: classNames(classes.drawerPaper, {
+          [classes.drawerOpen]: open,
+          [classes.drawerClose]: !open,
+        }),
+      }}
+    >
+      <div
+        className={classNames(assetClasses.sidebarWrapper, {
           [classes.drawerOpen]: open,
           [classes.drawerClose]: !open,
         })}
-        classes={{
-          paper: classNames(classes.drawerPaper, {
-            [classes.drawerOpen]: open,
-            [classes.drawerClose]: !open,
-          }),
-        }}
       >
+        <SimpleBar
+          style={{
+            height: "100%",
+            overflowX: "hidden",
+            overscrollBehaviorY: "none", // To prevent tag <main> be scrolled when menu'scrollbar reach end
+          }}
+        >
+          <List>
+            {MENU_LIST.map((config) => (
+              <MenuItem
+                key={config.text}
+                config={config}
+                color={bgColor}
+                open={open}
+                selectedMenu={selectedMenu}
+              />
+            ))}
+          </List>
+        </SimpleBar>
+      </div>
+      {image !== undefined ? (
         <div
-          className={classNames(assetClasses.sidebarWrapper, {
+          className={classNames(assetClasses.background, {
             [classes.drawerOpen]: open,
             [classes.drawerClose]: !open,
           })}
-        >
-          <SimpleBar
-            style={{
-              height: "100%",
-              overflowX: "hidden",
-              overscrollBehaviorY: "none", // To prevent tag <main> be scrolled when menu'scrollbar reach end
-            }}
-          >
-            <List>
-              {MENU_LIST.map((config) => (
-                <MenuItem
-                  key={config.text}
-                  config={config}
-                  color={bgColor}
-                  open={open}
-                  selectedMenu={selectedMenu}
-                />
-              ))}
-            </List>
-          </SimpleBar>
-        </div>
-        {image !== undefined ? (
-          <div
-            className={classNames(assetClasses.background, {
-              [classes.drawerOpen]: open,
-              [classes.drawerClose]: !open,
-            })}
-            style={{ backgroundImage: "url(" + image + ")" }}
-          />
-        ) : null}
-      </Drawer>
-    </div>
+          style={{ backgroundImage: "url(" + image + ")" }}
+        />
+      ) : null}
+    </Drawer>
   );
 }
 

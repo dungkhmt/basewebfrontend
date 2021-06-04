@@ -68,7 +68,12 @@ export default function StudentQuizDetail() {
             console.log(tmpObj);
             setStateCheckBox(tmpObj);
         },
-        { 401: () => {} },
+        { 401: () => {} ,
+          406: ()=>{
+            setMessageRequest("Quá thời gian làm bài!")
+            setErrorRequest(true);
+          }
+        },
       );  
   }
 
@@ -137,7 +142,7 @@ export default function StudentQuizDetail() {
            {messageRequest}
         </Alert>
       </Snackbar>
-        <Snackbar open={errorRequest} autoHideDuration={2000} onClose={handleCloseError}>
+        <Snackbar open={errorRequest} autoHideDuration={8000} onClose={handleCloseError}>
         <Alert variant="filled" severity="error">
           {messageRequest}
         </Alert>

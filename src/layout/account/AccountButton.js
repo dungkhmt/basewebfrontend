@@ -1,15 +1,14 @@
 import { Avatar, IconButton } from "@material-ui/core";
-import React, { useEffect, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { authGet, request } from "../../api";
-import { AccountMenu } from "./AccountMenu";
 import makeStyles from "@material-ui/core/styles/makeStyles";
-import { useHistory } from "react-router";
-import { Fragment } from "react";
 import randomColor from "randomcolor";
+import React, { Fragment, useEffect, useState } from "react";
+import { useSelector } from "react-redux";
+import { useHistory } from "react-router";
+import { request } from "../../api";
+import { AccountMenu } from "./AccountMenu";
 
 const bgColor = randomColor({
-  luminosity: "light",
+  luminosity: "dark",
   hue: "random",
 });
 
@@ -62,7 +61,7 @@ export default function AccountButton(props) {
         onClick={handleProfileMenuOpen}
       >
         <Avatar className={classes.avatar}>
-          {name !== "" ? name.substring(0, 1) : ""}
+          {name !== "" ? name.substring(0, 1).toLocaleUpperCase() : ""}
         </Avatar>
       </IconButton>
       <AccountMenu

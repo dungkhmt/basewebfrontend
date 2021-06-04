@@ -1,13 +1,15 @@
 import AppBar from "@material-ui/core/AppBar";
 import IconButton from "@material-ui/core/IconButton";
 import { makeStyles } from "@material-ui/core/styles";
+import SvgIcon from "@material-ui/core/SvgIcon";
 import Toolbar from "@material-ui/core/Toolbar";
 import Typography from "@material-ui/core/Typography";
-import MenuIcon from "@material-ui/icons/Menu";
+import { default as MenuIcon } from "@material-ui/icons/Menu";
 import clsx from "clsx";
 import React, { useEffect, useState } from "react";
 import { connect } from "react-redux";
 import { getMenu, logout } from "../action";
+import { ReactComponent as Logo } from "../assets/icons/logo.svg";
 import bgImage from "../assets/img/sidebar-2.jpg";
 import Back2Top from "../utils/Back2Top";
 import AccountButton from "./account/AccountButton";
@@ -20,11 +22,47 @@ const useStyles = makeStyles((theme) => ({
   },
   appBar: {
     zIndex: theme.zIndex.drawer + 1,
-    transition: theme.transitions.create(["width", "margin"], {
-      easing: theme.transitions.easing.sharp,
-      duration: theme.transitions.duration.leavingScreen,
-    }),
-    // background: "white",
+    boxShadow: theme.shadows[1],
+    // transition: theme.transitions.create(["width", "margin"], {
+    //   easing: theme.transitions.easing.sharp,
+    //   duration: theme.transitions.duration.leavingScreen,
+    // }),
+  },
+  menuButton: {
+    marginRight: 24,
+  },
+  sectionDesktop: {
+    display: "none",
+    [theme.breakpoints.up("md")]: {
+      display: "flex",
+      alignItems: "center",
+    },
+  },
+  title: {
+    paddingLeft: 4,
+    display: "none",
+    [theme.breakpoints.up("sm")]: {
+      display: "block",
+    },
+  },
+  grow: {
+    flexGrow: 1,
+  },
+  toolbar: {
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "flex-end",
+    padding: theme.spacing(0, 1),
+    ...theme.mixins.toolbar,
+  },
+  content: {
+    flexGrow: 1,
+    padding: theme.spacing(3),
+    // transition: theme.transitions.create("margin", {
+    //   easing: theme.transitions.easing.sharp,
+    //   duration: theme.transitions.duration.leavingScreen,
+    // }),
+    // marginLeft: -drawerWidth,
   },
   // appBarShift: {
   //   marginLeft: drawerWidth,
@@ -41,25 +79,10 @@ const useStyles = makeStyles((theme) => ({
   //     duration: theme.transitions.duration.enteringScreen,
   //   }),
   // },
-  toolbar: {
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "flex-end",
-    padding: theme.spacing(0, 1),
-    ...theme.mixins.toolbar,
-  },
   // hideButton: {
   //   marginLeft: drawerWidth / 2 - theme.spacing(6),
   // },
-  content: {
-    flexGrow: 1,
-    padding: theme.spacing(3),
-    // transition: theme.transitions.create("margin", {
-    //   easing: theme.transitions.easing.sharp,
-    //   duration: theme.transitions.duration.leavingScreen,
-    // }),
-    // marginLeft: -drawerWidth,
-  },
+
   // contentShift: {
   //   transition: theme.transitions.create("margin", {
   //     easing: theme.transitions.easing.easeOut,
@@ -71,25 +94,6 @@ const useStyles = makeStyles((theme) => ({
   //   width: 50,
   //   height: 50,
   // },
-  menuButton: {
-    marginRight: 36,
-  },
-  sectionDesktop: {
-    display: "none",
-    [theme.breakpoints.up("md")]: {
-      display: "flex",
-      alignItems: "center",
-    },
-  },
-  title: {
-    display: "none",
-    [theme.breakpoints.up("sm")]: {
-      display: "block",
-    },
-  },
-  grow: {
-    flexGrow: 1,
-  },
 }));
 
 function Layout(props) {
@@ -113,6 +117,7 @@ function Layout(props) {
       <AppBar
         elevation={0}
         position="fixed"
+        color="inherit"
         className={clsx(classes.appBar, {
           // [classes.appBarShift]: open,
         })}
@@ -146,14 +151,12 @@ function Layout(props) {
           >
             <MenuIcon />
           </IconButton>
+          <SvgIcon fontSize="large">
+            <Logo width={20} height={20} x={2} y={2} />
+          </SvgIcon>
           {/* )} */}
-          <Typography
-            className={classes.title}
-            variant="h6"
-            style={{ color: "white" }}
-            noWrap
-          >
-            Hệ thống quản trị nghiệp vụ
+          <Typography className={classes.title} variant="h6" noWrap>
+            Open ERP
           </Typography>
 
           {/* use this div tag to push the icons to the right */}

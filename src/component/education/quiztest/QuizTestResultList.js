@@ -4,11 +4,19 @@ import { useHistory } from "react-router-dom";
 import { authPost, authGet, authPostMultiPart, request } from "../../../api";
 import { useDispatch, useSelector } from "react-redux";
 import MaterialTable from "material-table";
+import parse from "html-react-parser";
+import{exportResultListPdf} from "./TeacherQuizResultExportPDF.js"
+import ReactDOM from 'react-dom'
+import ReactExport from "react-data-export";
+
 
 //import IconButton from '@material-ui/core/IconButton';
 import { withStyles, makeStyles, MuiThemeProvider } from '@material-ui/core/styles';
 
 import ViewHistoryLogQuizGroupQuestionParticipationExecutionChoice from "./ViewHistoryLogQuizGroupQuestionParticipationExecutionChoice";
+
+const ExcelFile = ReactExport.ExcelFile;
+const ExcelSheet = ReactExport.ExcelFile.ExcelSheet;
 
 const useStyles = makeStyles({
     table: {
@@ -34,6 +42,78 @@ export default function QuizTestStudentListResult(props) {
     const dispatch = useDispatch();
     const token = useSelector(state => state.auth.token);
     const [, forceUpdate] = useReducer(x => x + 1, 0);
+    const [studentListResult, setStudentListResult] = useState([]);
+    const [resultExportPDFData, setResultExportPDFData] = useState([]);
+    const [fetchedResult, setfetchedResults] = useState(false);
+    let testId = props.testId;
+    let isGeneral = props.isGeneral;
+
+
+    const TableBorderStyle = "medium";
+    const TableHeaderStyle = {
+      style: {
+        font: { sz: "14", bold: true },
+        alignment: { vertical: "center", horizontal: "center" },
+        border: {
+          top: { style: TableBorderStyle },
+          bottom: { style: TableBorderStyle },
+          left: { style: TableBorderStyle },
+          right: { style: TableBorderStyle },
+        },
+      },
+    };
+    const TableCellStyle = {
+        style: {
+          font: { sz: "14" },
+          alignment: { vertical: "center", horizontal: "center" },
+          border: {
+            top: { style: TableBorderStyle },
+            bottom: { style: TableBorderStyle },
+            left: { style: TableBorderStyle },
+            right: { style: TableBorderStyle },
+          },
+        },
+      };
+    
+      const DataSet = [
+        {
+          columns: [
+            {
+              title: "Họ và tên",
+              ...TableHeaderStyle,
+              width: { wch: "50" },
+            },
+            {
+              title: "Nhóm",
+              ...TableHeaderStyle,
+              width: { wch: "35" },
+            },
+            {
+              title: "Điểm",
+              ...TableHeaderStyle,
+              width: { wch: "25" },
+            }
+          ],
+          data: !fetchedResult?[]:
+            studentListResult.map((student)=>{
+              return[
+                { 
+                  value: student.fullName, 
+                  ...TableCellStyle 
+                },
+                { 
+                  value: student.groupId, 
+                  ...TableCellStyle 
+                },
+                { 
+                  value: student.grade, 
+                  ...TableCellStyle 
+                }
+              ]
+            }),
+           
+        },
+      ];
 
     const columns = [
         {
@@ -82,16 +162,47 @@ export default function QuizTestStudentListResult(props) {
         },
     ]
 
-    let testId = props.testId;
-    let isGeneral = props.isGeneral;
 
-    const [studentListResult, setStudentListResult] = useState([]);
+
+
 
     async function getStudentListResultGeneral() {
         let input = {"testId" : testId};
         request(token, history,"Post", '/get-quiz-test-participation-execution-result', (res) => {
-            let temp = [];
+          console.log(res)
+          let dataPdf = [];
+          let objectPdf ={};
+            res.data.map((elm, index) => {
+               let question = {} 
+               question['content'] = elm.questionContent;
+               question['grade'] = elm.grade;
+               question['listAnswer'] = elm.quizChoiceAnswerList;
+               question['listchooseAns'] =  elm.chooseAnsIds
+                if(objectPdf[elm.participationUserLoginId]==null){     
+                     let userObj = {fullName : elm.participationFullName, groupId : elm.quizGroupId,listQuestion : [] , totalGrade: elm.grade  }
+                    objectPdf[elm.participationUserLoginId] = userObj; 
+                }else{
+                  objectPdf[elm.participationUserLoginId]['totalGrade'] += elm.grade;
+                }
+                objectPdf[elm.participationUserLoginId]["listQuestion"].push(question);
+            })
 
+          console.log(objectPdf)
+          Object.keys(objectPdf).map((ele,ind)=>{
+              dataPdf.push(objectPdf[ele]);
+          })
+          console.log(dataPdf)
+          dataPdf.sort(function(firstEl, secondEl){
+            if(firstEl.fullName === null || secondEl.fullName === null)   return -1;
+            if(firstEl.fullName.toLowerCase() <  secondEl.fullName.toLowerCase()) { return -1; }
+            if(firstEl.fullName.toLowerCase() >  secondEl.fullName.toLowerCase()) { return 1; }
+            return 0;
+          });
+          //after sort
+          console.log(dataPdf)
+          setResultExportPDFData(dataPdf);
+
+            let temp = [];
             let objectResult ={};
             res.data.map((elm, index) => {
                 
@@ -108,6 +219,7 @@ export default function QuizTestStudentListResult(props) {
 
             console.log(temp);
             setStudentListResult(temp);
+            setfetchedResults(true);
         },
         {},
         input
@@ -160,11 +272,51 @@ export default function QuizTestStudentListResult(props) {
                 }}
                 options={{
                     search: true,
-                    actionsColumnIndex: -1,
+                    actionsColumnIndex: 2,
                     pageSize: 8,
                     tableLayout: "fixed",
                     //selection: true
                 }}
+                actions={[
+                   ((studentListResult.length===0) || !(isGeneral)) ?null: 
+                    {
+                      icon: () => {
+                        return  <ExcelFile
+                                  filename={"Danh sách kết quả "+ testId}
+                                  element={
+                                    <img
+                                      alt="Xuất Excel"
+                                      src="/static/images/icons/excel_icon.png" 
+                                      style = {{width: "35px", height: "35px"}}                       
+                                    ></img>
+                                  }
+                                  >
+                                    <ExcelSheet
+                                      dataSet={DataSet}
+                                      name={"Danh sách kết quả " + testId}
+                                    />
+                                </ExcelFile>;
+                      },
+                      tooltip: "Xuất Excel",
+                      isFreeAction: true,
+                    },
+                    ((studentListResult.length===0) || !isGeneral)?null:
+                    {
+                      icon: () => {
+                        return  <img
+                                  alt="Xuất PDF"
+                                  src="/static/images/icons/pdf_icon.png" 
+                                  style = {{width: "35px", height: "35px"}}                       
+                                ></img>;
+                                
+                      },
+                      tooltip: "Xuất PDF",
+                      isFreeAction: true,
+                      onClick: () => {                
+                        exportResultListPdf(studentListResult,resultExportPDFData, testId);
+                      },
+                    }
+                  ]}
                 style={{
                     fontSize: 16
                 }}
