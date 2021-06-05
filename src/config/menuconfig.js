@@ -78,7 +78,7 @@ MENU_LIST.push(salereport);
 MENU_LIST.push(facilityreport);
 MENU_LIST.push(tmsreport);
 MENU_LIST.push(tmscontainer);
-// MENU_LIST.push(teachingassignment);
+MENU_LIST.push(teachingassignment);
 MENU_LIST.push(webcam);
 MENU_LIST.push(backlog);
 MENU_LIST.push(eduTeachingManagement);

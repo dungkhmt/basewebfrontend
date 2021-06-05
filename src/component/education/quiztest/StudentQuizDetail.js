@@ -28,9 +28,11 @@ const useStyles = makeStyles((theme) => ({
   paper: {
     padding: theme.spacing(2),
     textAlign: "left",
-    color: theme.palette.text.secondary,
+    //color: theme.palette.text.secondary,
+    color: "black",
     borderRadius: "20px",
-    background: "beige",
+    //background: "beige",
+    background: "#EBEDEF",
 },
 }));
 
