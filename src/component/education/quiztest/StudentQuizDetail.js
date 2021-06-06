@@ -106,7 +106,8 @@ export default function StudentQuizDetail() {
             setSucessRequest(true);
             
         },
-        { 400: () => {
+        { 
+          400: () => {
             setMessageRequest("Không được để trống!")
             setErrorRequest(true);},
           406: ()=>{
