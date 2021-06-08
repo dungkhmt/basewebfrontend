@@ -178,7 +178,7 @@ export default function QuizTestDetail(props) {
       "post",
       "auto-assign-question-2-quiz-group",
       (res) => {
-        console.log("assign questions to groups ",res);
+        console.log("assign questions to groups ", res);
         alert("assign questions to groups " + res.data);
       },
       { 401: () => {} },

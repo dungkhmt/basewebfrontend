@@ -61,7 +61,6 @@ function EditUser(props) {
 
   const [securityGroups, setSecurityGroups] = useState([]);
 
-
   const [isRequesting, setIsRequesting] = useState(false);
 
   function getSecurityGroups() {
@@ -87,41 +86,37 @@ function EditUser(props) {
     getSecurityGroups();
   }, []);
 
-  const handleChangePassword = event => {
+  const handleChangePassword = (event) => {
     setPassword(event.target.value);
   };
 
   const handleCancel = () => {
     history.push("/userlogin/list");
-  }
+  };
 
-
-  
   const handleSubmit = () => {
     const data = {
-      password:password
-    }; 
+      password: password,
+    };
     setIsRequesting(true);
-    authPost(dispatch, token, "/user/updatepassword3/" + partyId, data)
-      .then(
-        (res) => {
-          setIsRequesting(false);
-          if (res.status === 401) {
-            dispatch(failed());
-            throw Error("Unauthorized");
-          } else if (res.status === 200) {
-            return res.json();
-          }
-        },
-        (error) => {
-          console.log(error);
+    authPost(dispatch, token, "/user/updatepassword3/" + partyId, data).then(
+      (res) => {
+        setIsRequesting(false);
+        if (res.status === 401) {
+          dispatch(failed());
+          throw Error("Unauthorized");
+        } else if (res.status === 200) {
+          return res.json();
         }
-      )
-      setIsRequesting(true);
-        // /preventDefault();
-        history.push("/userlogin/list");
+      },
+      (error) => {
+        console.log(error);
+      }
+    );
+    setIsRequesting(true);
+    // /preventDefault();
+    history.push("/userlogin/list");
   };
-  
 
   return (
     <MuiPickersUtilsProvider utils={DateFnsUtils}>
@@ -132,21 +127,13 @@ function EditUser(props) {
           </Typography>
           <form className={classes.root} noValidate autoComplete="off">
             <div>
-
               <TextField
                 id="select-password"
                 label="Password"
                 value={password}
                 onChange={handleChangePassword}
-              >
-               
-              </TextField>
-             
+              ></TextField>
             </div>
-
-           
-
-
           </form>
         </CardContent>
         <CardActions>
@@ -163,12 +150,10 @@ function EditUser(props) {
             variant="contained"
             color="primary"
             onClick={handleCancel}
-            onChange = {handleCancel}
-            
+            onChange={handleCancel}
           >
             {isRequesting ? <CircularProgress /> : "Hủy"}
           </Button>
-
         </CardActions>
       </Card>
     </MuiPickersUtilsProvider>

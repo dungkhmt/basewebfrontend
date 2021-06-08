@@ -8,7 +8,6 @@ export default function TrailerFuncRoute() {
   return (
     <div>
       <Switch>
-
         <Route component={TrailerCreate} path={`${path}/create`} />
 
         <Route component={TrailerList} path={`${path}/list`} />

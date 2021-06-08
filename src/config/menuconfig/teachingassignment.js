@@ -53,6 +53,5 @@ export const teachingassignment = {
       text: "Tiến hành phân công",
       child: [],
     },
-
   ],
 };

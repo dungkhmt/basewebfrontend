@@ -112,17 +112,20 @@ function ProgramSubmissionTable() {
     );
     setProgramSubmissions(submissions);
   }
-async function handleSearch(){
-  
+  async function handleSearch() {
     let body = {
-       contestId: contestId,
-       problemId: problemId,
-        submittedByUserLoginId: userLoginId       
+      contestId: contestId,
+      problemId: problemId,
+      submittedByUserLoginId: userLoginId,
     };
-    let lst = await authPost(dispatch, token, '/search-program-submission',body);
+    let lst = await authPost(
+      dispatch,
+      token,
+      "/search-program-submission",
+      body
+    );
     setProgramSubmissions(lst);
-
-}
+  }
 
   useEffect(() => {
     getContestProgramSubmissionList();
@@ -131,36 +134,38 @@ async function handleSearch(){
   return (
     <Card>
       <CardContent>
-          <TextField
-								required
-								id="userLoginId"
-								label="user"
-								placeholder="Nhập ID user"
-								value={userLoginId}
-								onChange={(event) => {
-									setUserLoginId(event.target.value);
-								}}
-						/>
-            <br></br>
-          <TextField
-								required
-								id="problemId"
-								label="problem"
-								placeholder="Problem"
-								value={problemId}
-								onChange={(event) => {
-									setProblemId(event.target.value);
-								}}
-						/>
-            
-                <Button
-                    variant="contained"
-                    color="primary"
-                    style={{ marginLeft: "45px" }}
-                    onClick = {() => {
-                        handleSearch();
-                    }}
-                >Tìm</Button>
+        <TextField
+          required
+          id="userLoginId"
+          label="user"
+          placeholder="Nhập ID user"
+          value={userLoginId}
+          onChange={(event) => {
+            setUserLoginId(event.target.value);
+          }}
+        />
+        <br></br>
+        <TextField
+          required
+          id="problemId"
+          label="problem"
+          placeholder="Problem"
+          value={problemId}
+          onChange={(event) => {
+            setProblemId(event.target.value);
+          }}
+        />
+
+        <Button
+          variant="contained"
+          color="primary"
+          style={{ marginLeft: "45px" }}
+          onClick={() => {
+            handleSearch();
+          }}
+        >
+          Tìm
+        </Button>
 
         <MaterialTable
           title={"Danh sách Bài nộp"}

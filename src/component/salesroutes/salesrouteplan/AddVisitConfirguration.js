@@ -48,24 +48,18 @@ function AddVisitConfirguration(props) {
     }),
   });
 
-  const {
-    control,
-    handleSubmit,
-    errors,
-    setValue,
-    watch,
-    clearError,
-  } = useForm({
-    defaultValues: {
-      salesman: "",
-      distributor: "",
-      retailOutlet: "",
-      frequency: "",
-      config: "",
-      startExecuteWeek: "",
-    },
-    validationSchema: schema,
-  });
+  const { control, handleSubmit, errors, setValue, watch, clearError } =
+    useForm({
+      defaultValues: {
+        salesman: "",
+        distributor: "",
+        retailOutlet: "",
+        frequency: "",
+        config: "",
+        startExecuteWeek: "",
+      },
+      validationSchema: schema,
+    });
 
   // Util
   const [loadingDistributor, setLoadingDistributors] = useState(false);

@@ -1,7 +1,13 @@
 import DateFnsUtils from "@date-io/date-fns";
 import {
-  Button, Card, CardActions, CardContent, TextField, Typography,
-  MenuItem, Checkbox, 
+  Button,
+  Card,
+  CardActions,
+  CardContent,
+  TextField,
+  Typography,
+  MenuItem,
+  Checkbox,
 } from "@material-ui/core/";
 import { makeStyles } from "@material-ui/core/styles";
 import {
@@ -13,19 +19,19 @@ import { useHistory } from "react-router-dom";
 import { authPost, authGet, authPostMultiPart } from "../../../api";
 import { useDispatch, useSelector } from "react-redux";
 import { DropzoneArea } from "material-ui-dropzone";
-import {
-  TASK_STATUS, TASK_PRIORITY, TASK_CATEGORY
-} from '../BacklogConfig';
+import { TASK_STATUS, TASK_PRIORITY, TASK_CATEGORY } from "../BacklogConfig";
 import randomColor from "randomcolor";
-import AlertDialog from '../AlertDialog';
-import UserItem from '../components/UserItem';
+import AlertDialog from "../AlertDialog";
+import UserItem from "../components/UserItem";
 
-const avtColor = [...Array(20)].map((value, index) => randomColor({ luminosity: "light", hue: "random", }));
+const avtColor = [...Array(20)].map((value, index) =>
+  randomColor({ luminosity: "light", hue: "random" })
+);
 
 const useStyles = makeStyles((theme) => ({
   root: {
-    display: 'flex',
-    flexWrap: 'wrap',
+    display: "flex",
+    flexWrap: "wrap",
     padding: theme.spacing(4),
     "& .MuiTextField-root": {
       margin: theme.spacing(1),
@@ -35,26 +41,31 @@ const useStyles = makeStyles((theme) => ({
   },
   dropZone: {
     //maxWidth: '600px',
-    height: '40px',
-  }
+    height: "40px",
+  },
 }));
 
 function checkEmpty(a) {
-  return a === undefined || a === null || a === '' || (Array.isArray(a) && a.length === 0);
+  return (
+    a === undefined ||
+    a === null ||
+    a === "" ||
+    (Array.isArray(a) && a.length === 0)
+  );
 }
 
 export default function CreateTask(props) {
   const dispatch = useDispatch();
-  const token = useSelector(state => state.auth.token);
+  const token = useSelector((state) => state.auth.token);
   const classes = useStyles();
-  const [taskName, setTaskName] = useState('');
-  const [taskDescription, setTaskDescription] = useState('');
+  const [taskName, setTaskName] = useState("");
+  const [taskDescription, setTaskDescription] = useState("");
   const [taskStatus, setTaskStatus] = useState(null);
   const [taskPriority, setTaskPriority] = useState(null);
   const [taskType, setTaskType] = useState(null);
   const [taskDueDate, setTaskDueDate] = useState(null);
   const [taskFromDate, setTaskFromDate] = useState(null);
-  const [taskAssignment, setTaskAssignment] = useState('');
+  const [taskAssignment, setTaskAssignment] = useState("");
   const [taskAssignable, setTaskAssignable] = useState([]);
   const [projectMember, setProjectMember] = useState([]);
   const [attachmentFiles, setAttachmentFiles] = useState([]);
@@ -75,13 +86,15 @@ export default function CreateTask(props) {
   }
 
   function getProjectMembers(backlogProjectId) {
-    authGet(dispatch, token, "/backlog/get-members-of-project/" + backlogProjectId).then(
-      res => {
-        if (res != null) {
-          setProjectMember(res);
-        }
+    authGet(
+      dispatch,
+      token,
+      "/backlog/get-members-of-project/" + backlogProjectId
+    ).then((res) => {
+      if (res != null) {
+        setProjectMember(res);
       }
-    )
+    });
   }
 
   function getTaskCategory() {
@@ -109,7 +122,7 @@ export default function CreateTask(props) {
 
   const handleCloseAlert = () => {
     setOpenAlert(false);
-  }
+  };
 
   const handleTaskAssignmentChange = (event) => {
     setTaskAssignment(event.target.value);
@@ -117,14 +130,14 @@ export default function CreateTask(props) {
     // else setTaskStatus(TASK_STATUS.DEFAULT_ID_NOT_ASSIGN);
 
     setTaskStatus(TASK_STATUS.DEFAULT_ID_NOT_ASSIGN);
-  }
+  };
 
   const handleTaskAssignableChange = (event) => {
     setTaskAssignable(event.target.value);
-  }
+  };
 
   async function handleSubmit() {
-    if (taskName === '') {
+    if (taskName === "") {
       setOpenAlert(true);
       return;
     }
@@ -138,11 +151,11 @@ export default function CreateTask(props) {
       priorityId: taskPriority,
       fromDate: taskFromDate,
       dueDate: taskDueDate,
-      attachmentPaths: attachmentFiles.map(e => e.name)
+      attachmentPaths: attachmentFiles.map((e) => e.name),
     };
     let assignmentInput = {
       assignedToPartyId: checkEmpty(taskAssignment) ? [] : [taskAssignment],
-      statusId: taskStatus
+      statusId: taskStatus,
     };
     let assignableInput = {
       assignedToPartyId: taskAssignable,
@@ -151,7 +164,7 @@ export default function CreateTask(props) {
       taskInput: taskInput,
       assignmentInput: assignmentInput,
       assignableInput: assignableInput,
-    }
+    };
     let formData = new FormData();
     formData.append("inputJson", JSON.stringify(body));
     for (const file of attachmentFiles) {
@@ -165,7 +178,7 @@ export default function CreateTask(props) {
 
   const handleAttachmentFiles = (files) => {
     setAttachmentFiles(files);
-  }
+  };
 
   return (
     <MuiPickersUtilsProvider utils={DateFnsUtils}>
@@ -206,7 +219,9 @@ export default function CreateTask(props) {
                 id="taskType"
                 select
                 label="Loại"
-                value={taskType === null || taskType === undefined ? '' : taskType}
+                value={
+                  taskType === null || taskType === undefined ? "" : taskType
+                }
                 onChange={(event) => {
                   setTaskType(event.target.value);
                 }}
@@ -223,7 +238,11 @@ export default function CreateTask(props) {
                 id="taskPriority"
                 select
                 label="Ưu tiên"
-                value={taskPriority === null || taskPriority === undefined ? '' : taskPriority}
+                value={
+                  taskPriority === null || taskPriority === undefined
+                    ? ""
+                    : taskPriority
+                }
                 onChange={(event) => {
                   setTaskPriority(event.target.value);
                 }}
@@ -239,7 +258,11 @@ export default function CreateTask(props) {
                 id="taskStatus"
                 select={true}
                 label="Trạng thái"
-                value={taskStatus === null || taskStatus === undefined ? '' : taskStatus}
+                value={
+                  taskStatus === null || taskStatus === undefined
+                    ? ""
+                    : taskStatus
+                }
                 onChange={(event) => {
                   setTaskStatus(event.target.value);
                 }}
@@ -261,7 +284,7 @@ export default function CreateTask(props) {
                 label="Từ ngày: "
                 value={taskFromDate}
                 className={classes.datePicker}
-                onChange={date => {
+                onChange={(date) => {
                   setTaskFromDate(date);
                 }}
               />
@@ -273,7 +296,7 @@ export default function CreateTask(props) {
                 label="Đến ngày: "
                 value={taskDueDate}
                 className={classes.datePicker}
-                onChange={date => {
+                onChange={(date) => {
                   setTaskDueDate(date);
                 }}
               />
@@ -286,12 +309,12 @@ export default function CreateTask(props) {
               SelectProps={{
                 multiple: false,
                 value: taskAssignment,
-                onChange: handleTaskAssignmentChange
+                onChange: handleTaskAssignmentChange,
               }}
               fullWidth
               label="Người thực hiện"
             >
-              <MenuItem key='' value=''>
+              <MenuItem key="" value="">
                 &nbsp;
               </MenuItem>
               {projectMember.map((item, index) => (
@@ -307,13 +330,23 @@ export default function CreateTask(props) {
             <TextField
               id="taskAssignable"
               select={true}
-              disabled={taskAssignment !== ''}
+              disabled={taskAssignment !== ""}
               SelectProps={{
                 multiple: true,
                 value: taskAssignable,
                 onChange: handleTaskAssignableChange,
-                renderValue: projectMember.length <= 0 ? () => { } : (taskAssignable) =>
-                  taskAssignable.map((x) => projectMember.find(member => member.partyId === x).userLoginId).join(", ")
+                renderValue:
+                  projectMember.length <= 0
+                    ? () => {}
+                    : (taskAssignable) =>
+                        taskAssignable
+                          .map(
+                            (x) =>
+                              projectMember.find(
+                                (member) => member.partyId === x
+                              ).userLoginId
+                          )
+                          .join(", "),
               }}
               fullWidth
               label="Người có thể thực hiện"
@@ -330,14 +363,14 @@ export default function CreateTask(props) {
               ))}
             </TextField>
             <br></br>
-            <Typography 
-              variant='subtitle1'
-              display='block'
-              style={{margin: '5px 0 0 7px', width: "100%"}}
+            <Typography
+              variant="subtitle1"
+              display="block"
+              style={{ margin: "5px 0 0 7px", width: "100%" }}
             >
               File đính kèm
             </Typography>
-            <DropzoneArea 
+            <DropzoneArea
               dropzoneClass={classes.dropZone}
               filesLimit={20}
               showPreviews={true}
@@ -345,15 +378,15 @@ export default function CreateTask(props) {
               useChipsForPreview
               dropzoneText="Kéo và thả tệp vào đây hoặc nhấn để chọn tệp"
               previewText="Xem trước:"
-              previewChipProps={
-                { variant: "outlined", color: "primary", size: "medium", }
-              }
+              previewChipProps={{
+                variant: "outlined",
+                color: "primary",
+                size: "medium",
+              }}
               getFileAddedMessage={(fileName) =>
                 `Tệp ${fileName} tải lên thành công`
               }
-              getFileRemovedMessage={(fileName) =>
-                `Tệp ${fileName} đã loại bỏ`
-              }
+              getFileRemovedMessage={(fileName) => `Tệp ${fileName} đã loại bỏ`}
               getFileLimitExceedMessage={(filesLimit) =>
                 `Vượt quá số lượng tệp tối đa được cho phép. Chỉ được phép tải lên tối đa ${filesLimit} tệp.`
               }
@@ -362,8 +395,7 @@ export default function CreateTask(props) {
                 autoHideDuration: 1800,
               }}
               onChange={(files) => handleAttachmentFiles(files)}
-            >
-            </DropzoneArea>
+            ></DropzoneArea>
           </form>
         </CardContent>
         <CardActions>
@@ -387,16 +419,18 @@ export default function CreateTask(props) {
       <AlertDialog
         open={openAlert}
         onClose={handleCloseAlert}
-        severity='warning'
+        severity="warning"
         title={"Vui lòng nhập đầy đủ thông tin cần thiết"}
-        content={"Một số thông tin yêu cầu cần phải được điền đầy đủ. Vui lòng kiểm tra lại."}
+        content={
+          "Một số thông tin yêu cầu cần phải được điền đầy đủ. Vui lòng kiểm tra lại."
+        }
         buttons={[
           {
             onClick: handleCloseAlert,
             color: "primary",
             autoFocus: true,
-            text: "OK"
-          }
+            text: "OK",
+          },
         ]}
       />
     </MuiPickersUtilsProvider>

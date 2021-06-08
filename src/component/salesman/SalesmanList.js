@@ -1,71 +1,75 @@
 import React from "react";
-import {tableIcons} from "../../utils/iconutil";
+import { tableIcons } from "../../utils/iconutil";
 import MaterialTable from "material-table";
-import {useDispatch, useSelector} from "react-redux";
-import {authGet} from "../../api";
+import { useDispatch, useSelector } from "react-redux";
+import { authGet } from "../../api";
 
-import {Link} from "react-router-dom";
-
+import { Link } from "react-router-dom";
 
 function SalesmanList(props) {
-
-  const token = useSelector(state => state.auth.token);
+  const token = useSelector((state) => state.auth.token);
   const dispatch = useDispatch();
-
 
   const columns = [
     {
       title: "Mã NVBH",
       field: "partyId",
-      render: rowData => <Link to={"/sales-group/salesman/" + rowData.partyId}>{rowData.partyId}</Link>
+      render: (rowData) => (
+        <Link to={"/sales-group/salesman/" + rowData.partyId}>
+          {rowData.partyId}
+        </Link>
+      ),
     },
-    {title: "Tên NVBH", field: "name"},
-    {title: "TK đăng nhập", field: "userName"}
-  ]
-
+    { title: "Tên NVBH", field: "name" },
+    { title: "TK đăng nhập", field: "userName" },
+  ];
 
   return (
-
     <div>
       <MaterialTable
         title="List Salemans"
         columns={columns}
         options={{
           filtering: true,
-          search: false
+          search: false,
         }}
-        data={query =>
+        data={(query) =>
           new Promise((resolve, reject) => {
             console.log(query);
             let sortParam = "";
             if (query.orderBy !== undefined) {
-              sortParam = "&sort=" + query.orderBy.field + ',' + query.orderDirection;
+              sortParam =
+                "&sort=" + query.orderBy.field + "," + query.orderDirection;
             }
             let filterParam = "";
             if (query.filters.length > 0) {
               let filter = query.filters;
-              filter.forEach(v => {
-                filterParam = v.column.field + "=" + v.value + "&"
-              })
-              filterParam = "&" + filterParam.substring(0, filterParam.length - 1);
+              filter.forEach((v) => {
+                filterParam = v.column.field + "=" + v.value + "&";
+              });
+              filterParam =
+                "&" + filterParam.substring(0, filterParam.length - 1);
             }
 
             authGet(
               dispatch,
               token,
-              "/get-list-salesman" + "?size=" + query.pageSize + "&page=" + query.page + sortParam + filterParam
+              "/get-list-salesman" +
+                "?size=" +
+                query.pageSize +
+                "&page=" +
+                query.page +
+                sortParam +
+                filterParam
             ).then(
-              res => {
-
+              (res) => {
                 resolve({
                   data: res.content,
                   page: res.number,
-                  totalCount: res.totalElements
-
+                  totalCount: res.totalElements,
                 });
-
               },
-              error => {
+              (error) => {
                 console.log("error");
               }
             );
@@ -77,10 +81,7 @@ function SalesmanList(props) {
         }}
       />
     </div>
-
   );
 }
 
 export default SalesmanList;
-
-

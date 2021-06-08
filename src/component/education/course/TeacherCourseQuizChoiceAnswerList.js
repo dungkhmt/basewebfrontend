@@ -49,10 +49,9 @@ function TeacherCourseQuizChoiceAnswerList(props) {
         <Typography>{parse(rowData.choiceAnswerContent)}</Typography>
       ),
     },
-    { title: "isCorrectAnswer", field: "isCorrectAnswer" }
+    { title: "isCorrectAnswer", field: "isCorrectAnswer" },
   ];
 
-  
   async function getChoiceAnswerList() {
     let lst = await authGet(
       dispatch,

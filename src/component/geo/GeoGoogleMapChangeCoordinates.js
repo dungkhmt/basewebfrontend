@@ -1,23 +1,21 @@
-import React, {useEffect, useState} from 'react';
-import {useParams} from "react-router-dom";
-import {useDispatch, useSelector} from "react-redux";
-import {authPost} from "../../api";
-import {failed} from "../../action";
+import React, { useEffect, useState } from "react";
+import { useParams } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import { authPost } from "../../api";
+import { failed } from "../../action";
 import Typography from "@material-ui/core/Typography";
-import {CircularProgress} from "@material-ui/core";
+import { CircularProgress } from "@material-ui/core";
 import TextField from "@material-ui/core/TextField";
-import {GoogleApiWrapper, Map, Marker} from 'google-maps-react';
+import { GoogleApiWrapper, Map, Marker } from "google-maps-react";
 import Grid from "@material-ui/core/Grid";
 import CardActions from "@material-ui/core/CardActions";
 import Button from "@material-ui/core/Button";
-
 
 //const [address, setAddress] = useState();
 //const [coordinates, setCoordinates] = useState();
 //const token = useSelector(state => state.auth.token);
 //const dispatch = useDispatch();
 //const { contactMechId } = useParams();
-
 
 /*
 return (
@@ -81,10 +79,9 @@ return (
 
  */
 
-
 function GeoGoogleMapChangeCoordinates(props) {
-  const {contactMechId} = useParams();
-  const token = useSelector(state => state.auth.token);
+  const { contactMechId } = useParams();
+  const token = useSelector((state) => state.auth.token);
   const dispatch = useDispatch();
   const [isRequesting, setIsRequesting] = useState(false);
   const [address, setAddress] = useState();
@@ -93,41 +90,41 @@ function GeoGoogleMapChangeCoordinates(props) {
   const [lat, setLat] = useState();
   const [lng, setLng] = useState();
 
-  const handleAddressChange = event => {
-    setAddress(event.target.value)
-  }
-
+  const handleAddressChange = (event) => {
+    setAddress(event.target.value);
+  };
 
   useEffect(() => {
-
-    authPost(dispatch, token, "/get-info-postal-to-display-in-map/" + contactMechId, {"statusId": null})
+    authPost(
+      dispatch,
+      token,
+      "/get-info-postal-to-display-in-map/" + contactMechId,
+      { statusId: null }
+    )
       .then(
-        res => {
+        (res) => {
           console.log(res);
           setIsRequesting(false);
 
           if (res.status === 401) {
             dispatch(failed());
-            throw Error("Unauthorized")
+            throw Error("Unauthorized");
           } else if (res.status === 200) {
             return res.json();
           }
         },
-        error => {
+        (error) => {
           console.log(error);
         }
       )
-      .then(
-        res => {
-          console.log('res', res);
-          setAddress(res.address);
-          setCoordinates(res.coordinates);
-          setLat(res.lat);
-          setLng(res.lng);
-
-        })
-  }, [])
-
+      .then((res) => {
+        console.log("res", res);
+        setAddress(res.address);
+        setCoordinates(res.coordinates);
+        setLat(res.lat);
+        setLng(res.lng);
+      });
+  }, []);
 
   const mapClicked = (mapProps, map, event) => {
     const lat = event.latLng.lat();
@@ -137,70 +134,65 @@ function GeoGoogleMapChangeCoordinates(props) {
     setLng(lng);
     setLat(lat);
     setCoordinates("" + lat + ", " + lng);
+  };
 
-  }
-
-  const handleSubmit = event => {
+  const handleSubmit = (event) => {
     const data = {
       address: address,
       lat: lat,
-      lng: lng
-    }
-    authPost(dispatch, token, "/geo-change-location-info-with-googlemap/" + contactMechId, data)
-      .then(
-        res => {
-          console.log(res);
-          setIsRequesting(false);
-          if (res.status === 401) {
-            dispatch(failed());
-            throw Error("Unauthorized");
-          } else if (res.status === 409) {
-            alert("Id exits!!");
-          } else if (res.status === 201) {
-            return res.json();
-          } else if (res.status === 208) {
-            alert('DUPLICTED');
-            return res.json();
-          }
-        },
-        error => {
-          console.log(error);
+      lng: lng,
+    };
+    authPost(
+      dispatch,
+      token,
+      "/geo-change-location-info-with-googlemap/" + contactMechId,
+      data
+    ).then(
+      (res) => {
+        console.log(res);
+        setIsRequesting(false);
+        if (res.status === 401) {
+          dispatch(failed());
+          throw Error("Unauthorized");
+        } else if (res.status === 409) {
+          alert("Id exits!!");
+        } else if (res.status === 201) {
+          return res.json();
+        } else if (res.status === 208) {
+          alert("DUPLICTED");
+          return res.json();
         }
-      )
+      },
+      (error) => {
+        console.log(error);
+      }
+    );
     event.preventDefault();
     window.location.reload();
-  }
+  };
 
   const style = {
-    width: '35%',
-    height: '50%'
-  }
+    width: "35%",
+    height: "50%",
+  };
   return (
     <div>
       <Grid container spacing={5}>
         <Grid item xs={5}>
-
-
           <Typography variant="h5" component="h2">
             Chỉnh sửa vị trí
           </Typography>
 
-
-          <br/>
-
+          <br />
 
           <Typography variant="h6" component="h2">
-            Mã địa chỉ: {'  '} {contactMechId}
+            Mã địa chỉ: {"  "} {contactMechId}
           </Typography>
 
+          <br />
+          <br />
 
-          <br/><br/>
-
-
-          <Typography variant="h6">
-            Địa chỉ: {' '}
-          </Typography>
-
+          <Typography variant="h6">Địa chỉ: </Typography>
 
           <TextField
             id="address"
@@ -208,17 +200,13 @@ function GeoGoogleMapChangeCoordinates(props) {
             required
             value={address}
             fullWidth
-          >
-          </TextField>
+          ></TextField>
 
+          <br />
+          <br />
+          <br />
 
-          <br/><br/><br/>
-
-
-          <Typography variant="h6">
-            Tọa độ: {' '} {coordinates}
-          </Typography>
-
+          <Typography variant="h6">Tọa độ: {coordinates}</Typography>
 
           <CardActions>
             <Button
@@ -227,11 +215,9 @@ function GeoGoogleMapChangeCoordinates(props) {
               color="primary"
               onClick={handleSubmit}
             >
-              {isRequesting ? <CircularProgress/> : "Lưu"}
+              {isRequesting ? <CircularProgress /> : "Lưu"}
             </Button>
           </CardActions>
-
-
         </Grid>
 
         <Grid item xs={6}>
@@ -250,30 +236,19 @@ function GeoGoogleMapChangeCoordinates(props) {
             onClick={mapClicked}
           >
             <Marker
-              title={'Geolocation'}
+              title={"Geolocation"}
               position={{
                 lat: lat,
                 lng: lng,
               }}
             />
-
-
           </Map>
         </Grid>
-
       </Grid>
-
     </div>
-
   );
-
 }
 
-
 export default GoogleApiWrapper({
-  apiKey: (process.env.REACT_APP_GOOGLE_MAP_API_KEY)
+  apiKey: process.env.REACT_APP_GOOGLE_MAP_API_KEY,
 })(GeoGoogleMapChangeCoordinates);
-
-
-
-

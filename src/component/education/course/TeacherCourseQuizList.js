@@ -16,16 +16,13 @@ import { useParams } from "react-router";
 import MaterialTable from "material-table";
 import { Link } from "react-router-dom";
 import AddIcon from "@material-ui/icons/Add";
-import {exportQuizsListPdf} from "./TeacherCourseQuizListExportPDF.js"
+import { exportQuizsListPdf } from "./TeacherCourseQuizListExportPDF.js";
 import { makeStyles } from "@material-ui/core/styles";
 import PositiveButton from "../classmanagement/PositiveButton";
-
 
 import ReactExport from "react-data-export";
 const ExcelFile = ReactExport.ExcelFile;
 const ExcelSheet = ReactExport.ExcelFile.ExcelSheet;
-
-
 
 const useStyles = makeStyles((theme) => ({
   card: {
@@ -98,34 +95,34 @@ function TeacherCourseQuizList(props) {
           title: "Created date",
           ...TableHeaderStyle,
           width: { wch: "40" },
-        }
+        },
       ],
-      data: !fetchedQuizs?[]:
-        quizs.map((quiz)=>{
-          return[
-            { 
-              value: quiz.questionId, 
-              ...TableCellStyle 
-            },
-            { 
-              value: quiz.levelId, 
-              ...TableCellStyle 
-            },
-            { 
-              value: quiz.statusId?quiz.statusId:"", 
-              ...TableCellStyle 
-            },
-            { 
-              value: quiz.quizCourseTopic.quizCourseTopicId, 
-              ...TableCellStyle 
-            },
-            { 
-              value: quiz.createdStamp?quiz.createdStamp:"", 
-              ...TableCellStyle 
-            }
-          ]
-        }),
-       
+      data: !fetchedQuizs
+        ? []
+        : quizs.map((quiz) => {
+            return [
+              {
+                value: quiz.questionId,
+                ...TableCellStyle,
+              },
+              {
+                value: quiz.levelId,
+                ...TableCellStyle,
+              },
+              {
+                value: quiz.statusId ? quiz.statusId : "",
+                ...TableCellStyle,
+              },
+              {
+                value: quiz.quizCourseTopic.quizCourseTopicId,
+                ...TableCellStyle,
+              },
+              {
+                value: quiz.createdStamp ? quiz.createdStamp : "",
+                ...TableCellStyle,
+              },
+            ];
+          }),
     },
   ];
   const columns = [
@@ -167,15 +164,17 @@ function TeacherCourseQuizList(props) {
     console.log("change status, return status = " + quiz);
     history.push("/edu/course/detail/" + courseId);
   };
-  
+
   async function getQuestionList() {
     //let lst = await authGet(dispatch, token, '/get-all-quiz-questions');
-    await authGet(dispatch, token, "/get-quiz-of-course/" + courseId).then((res)=>{
-      setfetchedQuizs(true);
-      if (res){
-        setQuizs(res);
+    await authGet(dispatch, token, "/get-quiz-of-course/" + courseId).then(
+      (res) => {
+        setfetchedQuizs(true);
+        if (res) {
+          setQuizs(res);
+        }
       }
-    });
+    );
   }
 
   useEffect(() => {
@@ -190,44 +189,49 @@ function TeacherCourseQuizList(props) {
           columns={columns}
           data={quizs}
           actions={[
-            quizs.length===0?null: 
-            {
-              icon: () => {
-                return  <ExcelFile
-                          filename={"Danh sách câu hỏi môn " + courseId}
-                          element={
-                            <img
-                              alt="Xuất Excel"
-                              src="/static/images/icons/excel_icon.png" 
-                              style = {{width: "35px", height: "35px"}}                       
-                            ></img>
-                          }
-                          >
-                            <ExcelSheet
-                              dataSet={DataSet}
-                              name={"Danh sách câu hỏi môn " + courseId}
-                            />
-                        </ExcelFile>;
-              },
-              tooltip: "Xuất Excel",
-              isFreeAction: true,
-            },
-            quizs.length===0?null:
-            {
-              icon: () => {
-                return  <img
-                          alt="Xuất PDF"
-                          src="/static/images/icons/pdf_icon.png" 
-                          style = {{width: "35px", height: "35px"}}                       
-                        ></img>;
-                        
-              },
-              tooltip: "Xuất PDF",
-              isFreeAction: true,
-              onClick: () => {                
-                exportQuizsListPdf(quizs, courseId);
-              },
-            },
+            quizs.length === 0
+              ? null
+              : {
+                  icon: () => {
+                    return (
+                      <ExcelFile
+                        filename={"Danh sách câu hỏi môn " + courseId}
+                        element={
+                          <img
+                            alt="Xuất Excel"
+                            src="/static/images/icons/excel_icon.png"
+                            style={{ width: "35px", height: "35px" }}
+                          ></img>
+                        }
+                      >
+                        <ExcelSheet
+                          dataSet={DataSet}
+                          name={"Danh sách câu hỏi môn " + courseId}
+                        />
+                      </ExcelFile>
+                    );
+                  },
+                  tooltip: "Xuất Excel",
+                  isFreeAction: true,
+                },
+            quizs.length === 0
+              ? null
+              : {
+                  icon: () => {
+                    return (
+                      <img
+                        alt="Xuất PDF"
+                        src="/static/images/icons/pdf_icon.png"
+                        style={{ width: "35px", height: "35px" }}
+                      ></img>
+                    );
+                  },
+                  tooltip: "Xuất PDF",
+                  isFreeAction: true,
+                  onClick: () => {
+                    exportQuizsListPdf(quizs, courseId);
+                  },
+                },
             {
               icon: () => {
                 return <AddIcon color="primary" fontSize="large" />;
@@ -237,7 +241,7 @@ function TeacherCourseQuizList(props) {
               onClick: () => {
                 history.push("quiz/create/" + courseId);
               },
-            }
+            },
           ]}
         />
       </CardContent>

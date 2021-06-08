@@ -2,7 +2,7 @@ import {
   LOGIN_FAILURE,
   LOGIN_REQUESTING,
   LOGIN_SUCCESS,
-  LOGOUT_SUCCESS
+  LOGOUT_SUCCESS,
 } from "../action/Auth";
 
 const auth = (

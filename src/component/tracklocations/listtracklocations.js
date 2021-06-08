@@ -1,14 +1,14 @@
-import React, {useEffect, useState} from "react";
-import Table from '@material-ui/core/Table';
-import TableBody from '@material-ui/core/TableBody';
-import TableCell from '@material-ui/core/TableCell';
-import TableContainer from '@material-ui/core/TableContainer';
-import TableHead from '@material-ui/core/TableHead';
-import TableRow from '@material-ui/core/TableRow';
-import Paper from '@material-ui/core/Paper';
-import {connect} from "react-redux";
-import {makeStyles} from '@material-ui/core/styles';
-import {API_URL} from "../../config/config";
+import React, { useEffect, useState } from "react";
+import Table from "@material-ui/core/Table";
+import TableBody from "@material-ui/core/TableBody";
+import TableCell from "@material-ui/core/TableCell";
+import TableContainer from "@material-ui/core/TableContainer";
+import TableHead from "@material-ui/core/TableHead";
+import TableRow from "@material-ui/core/TableRow";
+import Paper from "@material-ui/core/Paper";
+import { connect } from "react-redux";
+import { makeStyles } from "@material-ui/core/styles";
+import { API_URL } from "../../config/config";
 
 const useStyles = makeStyles({
   table: {
@@ -47,21 +47,20 @@ function ListTrackLocations(props) {
     headers.append("X-Auth-Token", props.token);
     fetch(`${API_URL}/get-track-locations`, {
       method: "GET",
-      headers: headers
+      headers: headers,
     })
-      .then(res => res.json())
+      .then((res) => res.json())
       .then(
-        res => {
+        (res) => {
           setData(res);
           console.log(res);
         },
-        error => {
+        (error) => {
           setData([]);
         }
       );
   }, [props.isUpdate]);
   return (
-
     <TableContainer component={Paper}>
       <Table className={classes.table} size="small" aria-label="a dense table">
         <TableHead>
@@ -72,29 +71,25 @@ function ListTrackLocations(props) {
           </TableRow>
         </TableHead>
         <TableBody>
-          {data.map(row => (
+          {data.map((row) => (
             <TableRow key={row.trackLocationId}>
               <TableCell component="th" scope="row">
                 {row.partyId}
               </TableCell>
               <TableCell align="right">{row.location}</TableCell>
               <TableCell align="right">{row.timePoint}</TableCell>
-
             </TableRow>
           ))}
         </TableBody>
       </Table>
-
     </TableContainer>
-
-
   );
 }
 
-const mapStateToProps = state => ({
-  token: state.auth.token
+const mapStateToProps = (state) => ({
+  token: state.auth.token,
 });
 
-const mapDispatchToProps = dispatch => ({});
+const mapDispatchToProps = (dispatch) => ({});
 
 export default connect(mapStateToProps, mapDispatchToProps)(ListTrackLocations);

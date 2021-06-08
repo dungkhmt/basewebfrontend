@@ -1,11 +1,10 @@
-import React, {useEffect, useState} from "react";
+import React, { useEffect, useState } from "react";
 import CircularProgress from "@material-ui/core/CircularProgress";
-import {HorizontalBar} from "react-chartjs-2";
-
+import { HorizontalBar } from "react-chartjs-2";
 
 function getRandomColor() {
-  const letters = '0123456789ABCDEF';
-  let color = '#';
+  const letters = "0123456789ABCDEF";
+  let color = "#";
   for (let i = 0; i < 6; i++) {
     color += letters[Math.floor(Math.random() * 16)];
   }
@@ -18,17 +17,19 @@ function convertHex(hex, opacity) {
   let g = parseInt(hex.substring(2, 4), 16);
   let b = parseInt(hex.substring(4, 6), 16);
 
-  return 'rgba(' + r + ',' + g + ',' + b + ',' + opacity + ')';
+  return "rgba(" + r + "," + g + "," + b + "," + opacity + ")";
 }
 
 export function HorizontalBarChart(props) {
   const {
-    data = [{
-      label: '',
-      value: 0,
-    }],
+    data = [
+      {
+        label: "",
+        value: 0,
+      },
+    ],
     datasetLabel = null,
-    bodyWidth = 1
+    bodyWidth = 1,
   } = props;
 
   const [chartData, setChartData] = useState({});
@@ -44,18 +45,18 @@ export function HorizontalBarChart(props) {
       borderColors.push(convertHex(color, 1));
     }
     console.log(backgroundColors);
-    setChartData(
-      {
-        labels: data.map(e => e['label']),
-        datasets: [{
-          data: data.map(e => e['value']),
+    setChartData({
+      labels: data.map((e) => e["label"]),
+      datasets: [
+        {
+          data: data.map((e) => e["value"]),
           label: datasetLabel,
           backgroundColor: backgroundColors,
           borderColor: borderColors,
-          borderWidth: bodyWidth
-        }]
-      }
-    );
+          borderWidth: bodyWidth,
+        },
+      ],
+    });
     if (data.length > 0) {
       setHasData(true);
     } else {
@@ -69,25 +70,30 @@ export function HorizontalBarChart(props) {
 
   const options = {
     scales: {
-      xAxes: [{
-        ticks: {
-          beginAtZero: true
-        }
-      }]
+      xAxes: [
+        {
+          ticks: {
+            beginAtZero: true,
+          },
+        },
+      ],
     },
     maintainAspectRatio: false,
-    responsive: true
+    responsive: true,
   };
 
   function getPixel() {
-    return ((chartData && chartData['labels']) ? (chartData['labels'].length * 27) : 300) + 'px';
+    return (
+      (chartData && chartData["labels"]
+        ? chartData["labels"].length * 27
+        : 300) + "px"
+    );
   }
 
   return (
-    <div style={{height: getPixel()}}>
-      {!hasData ? <CircularProgress color={"secondary"}/> : ''}
-      <HorizontalBar data={chartData} options={options}/>
+    <div style={{ height: getPixel() }}>
+      {!hasData ? <CircularProgress color={"secondary"} /> : ""}
+      <HorizontalBar data={chartData} options={options} />
     </div>
   );
 }
-

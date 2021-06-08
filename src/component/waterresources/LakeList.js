@@ -1,38 +1,39 @@
-import React, {useEffect, useState} from "react";
+import React, { useEffect, useState } from "react";
 import MaterialTable from "material-table";
-import {useDispatch, useSelector} from "react-redux";
-import {API_URL} from "../../config/config";
-import {Link} from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import { API_URL } from "../../config/config";
+import { Link } from "react-router-dom";
 function LakeList(props) {
-
   const dispatch = useDispatch();
-  const token = useSelector(state => state.auth.token);
+  const token = useSelector((state) => state.auth.token);
 
   const [lakes, setLakes] = useState([]);
 
   const columns = [
-    {  
-        field: 'lakeId', 
-        title: 'Mã hồ đập',
-        render: rowData => (
-            <Link to={'/lake/info/' + rowData['lakeId']}>{rowData['lakeId']}</Link>)
+    {
+      field: "lakeId",
+      title: "Mã hồ đập",
+      render: (rowData) => (
+        <Link to={"/lake/info/" + rowData["lakeId"]}>{rowData["lakeId"]}</Link>
+      ),
     },
     {
-        field: 'lakeName', 
-        title: 'Tên hồ đập'
-    }
+      field: "lakeName",
+      title: "Tên hồ đập",
+    },
   ];
   const requestOptionsGet = {
-    method: 'GET',
-    headers: {'Content-Type': 'application/json', "X-Auth-Token": token}
+    method: "GET",
+    headers: { "Content-Type": "application/json", "X-Auth-Token": token },
   };
 
   function getLakeList() {
     //console.log("getDepartmentList....");
-    fetch(API_URL + '/get-lakes-owned-by-userlogin', requestOptionsGet)
-      .then(response => response.json())
-      .then(response => {
-        /*
+    fetch(API_URL + "/get-lakes-owned-by-userlogin", requestOptionsGet)
+      .then((response) => response.json())
+      .then(
+        (response) => {
+          /*
         console.log(response);
         let arr = [];
         response.forEach(d => {
@@ -40,12 +41,12 @@ function LakeList(props) {
         });
         setLakes(arr);
         */
-        //console.log('getDepartmentList = ',departments);
-        setLakes(response);
-      },
-      error => {
-        setLakes([]);
-      }
+          //console.log('getDepartmentList = ',departments);
+          setLakes(response);
+        },
+        (error) => {
+          setLakes([]);
+        }
       );
   }
 
@@ -56,12 +57,12 @@ function LakeList(props) {
   return (
     <div>
       <MaterialTable
-        options={{search: true}} title={"Danh sách hồ đập"}
+        options={{ search: true }}
+        title={"Danh sách hồ đập"}
         columns={columns}
         data={lakes}
       />
     </div>
-
   );
 }
 

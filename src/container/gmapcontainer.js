@@ -7,10 +7,9 @@ export default function GMapContainer() {
       id="myMap"
       height="95vh"
       options={{
-        center: {lat: 10.46, lng: 106.4},
-        zoom: 8
+        center: { lat: 10.46, lng: 106.4 },
+        zoom: 8,
       }}
-
     />
   );
 }

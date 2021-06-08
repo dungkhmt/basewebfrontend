@@ -1,20 +1,20 @@
-import React from 'react';
-import PropTypes from 'prop-types';
-import MaskedInput from 'react-text-mask';
-import NumberFormat from 'react-number-format';
-import {makeStyles} from '@material-ui/core/styles';
-import TextField from '@material-ui/core/TextField';
+import React from "react";
+import PropTypes from "prop-types";
+import MaskedInput from "react-text-mask";
+import NumberFormat from "react-number-format";
+import { makeStyles } from "@material-ui/core/styles";
+import TextField from "@material-ui/core/TextField";
 
 const useStyles = makeStyles((theme) => ({
   root: {
-    '& > *': {
+    "& > *": {
       margin: theme.spacing(1),
     },
   },
 }));
 
 function TextMaskCustom(props) {
-  const {inputRef, ...other} = props;
+  const { inputRef, ...other } = props;
 
   return (
     <MaskedInput
@@ -22,8 +22,23 @@ function TextMaskCustom(props) {
       ref={(ref) => {
         inputRef(ref ? ref.inputElement : null);
       }}
-      mask={['(', /[1-9]/, /\d/, /\d/, ')', ' ', /\d/, /\d/, /\d/, '-', /\d/, /\d/, /\d/, /\d/]}
-      placeholderChar={'\u2000'}
+      mask={[
+        "(",
+        /[1-9]/,
+        /\d/,
+        /\d/,
+        ")",
+        " ",
+        /\d/,
+        /\d/,
+        /\d/,
+        "-",
+        /\d/,
+        /\d/,
+        /\d/,
+        /\d/,
+      ]}
+      placeholderChar={"\u2000"}
       showMask
     />
   );
@@ -34,7 +49,7 @@ TextMaskCustom.propTypes = {
 };
 
 export function NumberFormatCustom(props) {
-  const {inputRef, onChange, ...other} = props;
+  const { inputRef, onChange, ...other } = props;
 
   return (
     <NumberFormat

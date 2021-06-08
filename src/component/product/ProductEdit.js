@@ -1,8 +1,7 @@
-import React, {useState} from "react";
-import {useDispatch, useSelector} from "react-redux";
-import {Link, useParams} from "react-router-dom";
-import {Button} from "@material-ui/core";
-
+import React, { useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { Link, useParams } from "react-router-dom";
+import { Button } from "@material-ui/core";
 
 function arrayBufferToBase64(buffer) {
   var binary = "";
@@ -14,7 +13,7 @@ function arrayBufferToBase64(buffer) {
 }
 
 function ProductEdit(props) {
-  const {productId} = useParams();
+  const { productId } = useParams();
   const token = useSelector((state) => state.auth.token);
   const dispatch = useDispatch();
   const [data, setData] = useState({});
@@ -32,7 +31,6 @@ function ProductEdit(props) {
   //     );
 
   //   }, []);
-
 
   // useEffect(() => {
   //   let alFetch = [];
@@ -59,22 +57,14 @@ function ProductEdit(props) {
   //   });
   // }, [data]);
 
-
   return (
     <div>
       <Link to={"/product-group/set-product-primary-img/" + productId}>
-        <Button
-          variant="contained"
-          color="primary"
-        >
+        <Button variant="contained" color="primary">
           Thay đổi ảnh hiển thị
         </Button>
       </Link>
-
-
     </div>
-
-
   );
 }
 

@@ -2,12 +2,7 @@ import React, { useState, useEffect } from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import { useSelector, useDispatch } from "react-redux";
 import { authPost, authGet } from "../../api";
-import {
-  Card,
-  Typography,
-  Button,
-  CardContent,
-} from "@material-ui/core";
+import { Card, Typography, Button, CardContent } from "@material-ui/core";
 import { API_URL } from "../../config/config";
 import CircularProgress from "@material-ui/core/CircularProgress";
 import MaterialTable from "material-table";
@@ -107,7 +102,7 @@ export default function BCASolver(props) {
   const executeAssignment = (event) => {
     if (semester === null) {
       return;
-    } 
+    }
     setProgressing(true);
     fetch(API_URL + "/edu/execute-class-teacher-assignment/" + semester, {
       method: "GET",

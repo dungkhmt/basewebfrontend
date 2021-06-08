@@ -1,12 +1,22 @@
-import React from 'react';
+import React from "react";
 import {
-  ListItem, ListItemAvatar, Avatar, ListItemText, ListItemSecondaryAction
+  ListItem,
+  ListItemAvatar,
+  Avatar,
+  ListItemText,
+  ListItemSecondaryAction,
 } from "@material-ui/core";
 import { makeStyles, withStyles } from "@material-ui/core/styles";
 
 const getFullName = (user) => {
-  return user.person ? user.person.firstName + " " + user.person.middleName + " " + user.person.lastName : ""
-}
+  return user.person
+    ? user.person.firstName +
+        " " +
+        user.person.middleName +
+        " " +
+        user.person.lastName
+    : "";
+};
 
 const useStyles = makeStyles((theme) => ({
   avatar: {
@@ -18,8 +28,14 @@ const useStyles = makeStyles((theme) => ({
 export default function UserItem(props) {
   const classes = useStyles();
 
-  let { user, secondaryAction, avatarClass, avatarColor, 
-    primaryTypographyProps, secondaryTypographyProps } = props;
+  let {
+    user,
+    secondaryAction,
+    avatarClass,
+    avatarColor,
+    primaryTypographyProps,
+    secondaryTypographyProps,
+  } = props;
 
   if (avatarClass == null) {
     avatarClass = classes.avatar;
@@ -29,7 +45,9 @@ export default function UserItem(props) {
     <ListItem key={user.userLoginId} ContainerComponent="div">
       <ListItemAvatar>
         <Avatar className={avatarClass} style={{ background: avatarColor }}>
-          {(user.person && user.person.lastName && user.person.lastName !== "") ? user.person.lastName.substring(0, 1) : ""}
+          {user.person && user.person.lastName && user.person.lastName !== ""
+            ? user.person.lastName.substring(0, 1)
+            : ""}
         </Avatar>
       </ListItemAvatar>
       <ListItemText
@@ -39,9 +57,7 @@ export default function UserItem(props) {
         primaryTypographyProps={primaryTypographyProps}
         secondaryTypographyProps={secondaryTypographyProps}
       />
-      <ListItemSecondaryAction>
-        {secondaryAction}
-      </ListItemSecondaryAction>
-    </ListItem >
-  )
+      <ListItemSecondaryAction>{secondaryAction}</ListItemSecondaryAction>
+    </ListItem>
+  );
 }

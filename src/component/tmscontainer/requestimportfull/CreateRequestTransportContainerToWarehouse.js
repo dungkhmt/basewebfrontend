@@ -1,39 +1,38 @@
-import React, {useEffect, useState} from 'react';
-import {useDispatch, useSelector} from "react-redux";
-import {makeStyles} from "@material-ui/core/styles";
-import {authGet, authPost} from "../../../api";
-import {failed} from "../../../action";
-import {MuiPickersUtilsProvider} from "@material-ui/pickers";
+import React, { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { makeStyles } from "@material-ui/core/styles";
+import { authGet, authPost } from "../../../api";
+import { failed } from "../../../action";
+import { MuiPickersUtilsProvider } from "@material-ui/pickers";
 import DateFnsUtils from "@date-io/date-fns";
-import {CardContent, CircularProgress} from "@material-ui/core";
+import { CardContent, CircularProgress } from "@material-ui/core";
 import Typography from "@material-ui/core/Typography";
 import Card from "@material-ui/core/Card";
 import MenuItem from "@material-ui/core/MenuItem";
 import TextField from "@material-ui/core/TextField";
-import DateTimePicker from 'react-datetime-picker';
+import DateTimePicker from "react-datetime-picker";
 import CardActions from "@material-ui/core/CardActions";
-import {Link} from "react-router-dom";
+import { Link } from "react-router-dom";
 import Button from "@material-ui/core/Button";
-import NumberFormat from 'react-number-format';
+import NumberFormat from "react-number-format";
 
-
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles((theme) => ({
   root: {
     padding: theme.spacing(4),
     "& .MuiTextField-root": {
       margin: theme.spacing(1),
-      width: 200
-    }
+      width: 200,
+    },
   },
   formControl: {
     margin: theme.spacing(1),
     minWidth: 120,
-    maxWidth: 300
-  }
+    maxWidth: 300,
+  },
 }));
 
 function CreateRequestTransportContainerToWarehouse() {
-  const token = useSelector(state => state.auth.token);
+  const token = useSelector((state) => state.auth.token);
   const dispatch = useDispatch();
   const classes = useStyles();
   const [customer, setCustomer] = useState();
@@ -51,8 +50,7 @@ function CreateRequestTransportContainerToWarehouse() {
   const [port, setPort] = useState();
   const [portList, setPortList] = useState([]);
 
-
-  const handleSubmit = event => {
+  const handleSubmit = (event) => {
     const data = {
       customerId: customer,
       facilityId: facility,
@@ -61,155 +59,144 @@ function CreateRequestTransportContainerToWarehouse() {
       earlyDate: earlyDate,
       lateDate: lateDate,
       trailer: trailer,
-      portId: port
-    }
+      portId: port,
+    };
     setIsRequesting(true);
-    authPost(dispatch, token, "/create-request-import-full", data)
+    authPost(dispatch, token, "/create-request-import-full", data).then(
+      (res) => {
+        console.log(res);
+        setIsRequesting(false);
+        if (res.status === 401) {
+          dispatch(failed());
+          throw Error("Unauthorized");
+        } else if (res.status === 409) {
+          alert("Id exits!!");
+        } else if (res.status === 201) {
+          return res.json();
+        }
+      },
+      (error) => {
+        console.log(error);
+      }
+    );
+  };
+
+  const handlePortChange = (event) => {
+    setPort(event.target.value);
+  };
+
+  const handleTrailerChange = (event) => {
+    setTrailer(event.target.value);
+  };
+
+  const handleEarlyDateChange = (date) => {
+    setEarlyDate(date);
+    //console.log("earlydate", event.target.value);
+  };
+
+  const handleLateDateChange = (date) => {
+    setLateDate(date);
+  };
+
+  const handleContainerTypeChange = (event) => {
+    setContainerType(event.target.value);
+  };
+
+  const handleNumberContainerChange = (event) => {
+    console.log("number", event.target.value);
+    setNumberContainer(event.target.value);
+  };
+
+  const handleCustomerChange = (event) => {
+    setCustomer(event.target.value);
+  };
+
+  const handleFacilityChange = (event) => {
+    setFacility(event.target.value);
+  };
+
+  useEffect(() => {
+    authPost(dispatch, token, "/get-list-customer", { statusId: null })
+      //authPost(dispatch,token,"/get-list-retail-outlet",{"statusId":null})
       .then(
-        res => {
-          console.log(res);
+        (res) => {
+          //console.log("GOT retail-outlet",res);
           setIsRequesting(false);
           if (res.status === 401) {
             dispatch(failed());
             throw Error("Unauthorized");
-          } else if (res.status === 409) {
-            alert("Id exits!!");
-          } else if (res.status === 201) {
+          } else if (res.status === 200) {
             return res.json();
           }
         },
-        error => {
+        (error) => {
           console.log(error);
         }
-      );
+      )
+      .then((res) => {
+        console.log("res1 ", res);
+        setListCustomer(res.lists);
+      });
 
+    authGet(dispatch, token, "/get-list-container-type").then(
+      (res) => {
+        console.log(res);
+        setIsRequesting(false);
 
-  }
+        if (res.status === 401) {
+          dispatch(failed());
+          throw Error("Unauthorized");
+        } else if (res.status === 200) {
+          return res.json();
+        }
+        setContContainerTypeList(res.contContainerTypes);
+      },
+      (error) => {
+        console.log(error);
+      }
+    );
 
-
-  const handlePortChange = event => {
-    setPort(event.target.value);
-  }
-
-  const handleTrailerChange = event => {
-    setTrailer(event.target.value);
-  }
-
-  const handleEarlyDateChange = date => {
-    setEarlyDate(date);
-    //console.log("earlydate", event.target.value);
-  }
-
-  const handleLateDateChange = date => {
-    setLateDate(date);
-  }
-
-  const handleContainerTypeChange = event => {
-    setContainerType(event.target.value);
-  }
-
-  const handleNumberContainerChange = event => {
-    console.log("number", event.target.value);
-    setNumberContainer(event.target.value);
-  }
-
-  const handleCustomerChange = event => {
-    setCustomer(event.target.value);
-  }
-
-  const handleFacilityChange = event => {
-    setFacility(event.target.value);
-  }
-
-
-  useEffect(() => {
-    authPost(dispatch, token, "/get-list-customer", {"statusId": null})
+    authPost(dispatch, token, "/get-list-facility", { statusId: null })
       //authPost(dispatch,token,"/get-list-retail-outlet",{"statusId":null})
       .then(
-        res => {
+        (res) => {
           //console.log("GOT retail-outlet",res);
           setIsRequesting(false);
           if (res.status === 401) {
             dispatch(failed());
-            throw Error("Unauthorized")
+            throw Error("Unauthorized");
           } else if (res.status === 200) {
             return res.json();
           }
         },
-        error => {
+        (error) => {
           console.log(error);
         }
       )
-      .then(
-        res => {
-          console.log("res1 ", res);
-          setListCustomer(res.lists);
-        });
+      .then((res) => {
+        console.log("res2 ", res.facilities);
+        setListFacility(res.facilities);
+      });
 
-    authGet(dispatch, token, "/get-list-container-type")
-      .then(
-        res => {
-          console.log(res);
-          setIsRequesting(false);
+    authGet(dispatch, token, "/get-list-cont-port").then(
+      (res) => {
+        console.log("sssssss");
+        console.log(res);
+        setIsRequesting(false);
 
-          if (res.status === 401) {
-            dispatch(failed());
-            throw Error("Unauthorized")
-          } else if (res.status === 200) {
-            return res.json();
-          }
-          setContContainerTypeList(res.contContainerTypes);
-        },
-        error => {
-          console.log(error);
+        if (res.status === 401) {
+          dispatch(failed());
+          throw Error("Unauthorized");
+        } else if (res.status === 200) {
+          return res.json();
         }
-      );
-
-    authPost(dispatch, token, "/get-list-facility", {"statusId": null})
-      //authPost(dispatch,token,"/get-list-retail-outlet",{"statusId":null})
-      .then(
-        res => {
-          //console.log("GOT retail-outlet",res);
-          setIsRequesting(false);
-          if (res.status === 401) {
-            dispatch(failed());
-            throw Error("Unauthorized")
-          } else if (res.status === 200) {
-            return res.json();
-          }
-        },
-        error => {
-          console.log(error);
-        }
-      )
-      .then(
-        res => {
-          console.log("res2 ", res.facilities);
-          setListFacility(res.facilities);
-        });
-
-    authGet(dispatch, token, "/get-list-cont-port")
-      .then(
-        res => {
-          console.log("sssssss");
-          console.log(res);
-          setIsRequesting(false);
-
-          if (res.status === 401) {
-            dispatch(failed());
-            throw Error("Unauthorized")
-          } else if (res.status === 200) {
-            return res.json();
-          }
-          setPortList(res.list);
-
-        },
-        error => {
-          console.log(error);
-        }
-      );
+        setPortList(res.list);
+      },
+      (error) => {
+        console.log(error);
+      }
+    );
   }, []);
-
 
   return (
     <div>
@@ -223,61 +210,38 @@ function CreateRequestTransportContainerToWarehouse() {
             <form className={classes.root} noValidate autoComplete="off">
               <Typography variant="h6" component="h4">
                 Chọn khách hàng:
-                <TextField
-                  select
-                  required
-                  onChange={handleCustomerChange}
-
-                >
-                  {listCustomer.map(c => (
-                    <MenuItem
-                      key={c.partyId}
-                      value={c.partyId}
-                    >
+                <TextField select required onChange={handleCustomerChange}>
+                  {listCustomer.map((c) => (
+                    <MenuItem key={c.partyId} value={c.partyId}>
                       {c.customerName}
                     </MenuItem>
                   ))}
                 </TextField>
               </Typography>
-              <br/>
+              <br />
               <Typography variant="h6" component="h4">
                 Chọn kho:
-                <TextField
-                  required
-                  select
-                  onChange={handleFacilityChange}
-                >
-                  {listFacility.map(c => (
-                    <MenuItem
-                      key={c.facilityId}
-                      value={c.facilityId}
-                    >
+                <TextField required select onChange={handleFacilityChange}>
+                  {listFacility.map((c) => (
+                    <MenuItem key={c.facilityId} value={c.facilityId}>
                       {c.facilityName}
                     </MenuItem>
                   ))}
                 </TextField>
               </Typography>
-              <br/>
+              <br />
 
               <Typography variant="h6" component="h4">
                 Chọn bến cảng:
-                <TextField
-                  required
-                  select
-                  onChange={handlePortChange}
-                >
-                  {portList.map(c => (
-                    <MenuItem
-                      key={c.portId}
-                      value={c.portId}
-                    >
+                <TextField required select onChange={handlePortChange}>
+                  {portList.map((c) => (
+                    <MenuItem key={c.portId} value={c.portId}>
                       {c.portName}
                     </MenuItem>
                   ))}
                 </TextField>
               </Typography>
-              <br/>
-
+              <br />
 
               <Typography variant="h6" component="h4">
                 Số container:
@@ -287,20 +251,13 @@ function CreateRequestTransportContainerToWarehouse() {
                   format="#### #### #### ####"
                   onChange={handleNumberContainerChange}
                 ></NumberFormat>
-
-
               </Typography>
 
-
-              <br/>
+              <br />
               <Typography variant="h6" component="h4">
                 Loại container:
-                <TextField
-                  required
-                  select
-                  onChange={handleContainerTypeChange}
-                >
-                  {contContainerTypeList.map(containerType => (
+                <TextField required select onChange={handleContainerTypeChange}>
+                  {contContainerTypeList.map((containerType) => (
                     <MenuItem
                       key={containerType.containerTypeId}
                       value={containerType.containerTypeId}
@@ -310,7 +267,7 @@ function CreateRequestTransportContainerToWarehouse() {
                   ))}
                 </TextField>
               </Typography>
-              <br/>
+              <br />
               <Typography variant="h6" component="h4">
                 Chọn ngày giờ sớm nhất: {"   "}
                 <DateTimePicker
@@ -319,7 +276,7 @@ function CreateRequestTransportContainerToWarehouse() {
                   required
                 />
               </Typography>
-              <br/>
+              <br />
               <Typography variant="h6" component="h4">
                 Chọn ngày giờ muộn nhất: {"   "}
                 <DateTimePicker
@@ -328,53 +285,45 @@ function CreateRequestTransportContainerToWarehouse() {
                   required
                 />
               </Typography>
-              <br/>
+              <br />
               <Typography variant="h6" component="h4">
                 Chọn rơ-mooc:
-                <TextField
-                  required
-                  select
-                  onChange={handleTrailerChange}
-                >
-                  {trailerList.map(c => (
-                    <MenuItem
-                      key={c}
-                      value={c}
-                    >
+                <TextField required select onChange={handleTrailerChange}>
+                  {trailerList.map((c) => (
+                    <MenuItem key={c} value={c}>
                       {c}
                     </MenuItem>
                   ))}
                 </TextField>
-
-
               </Typography>
 
-
-              <br/><br/><br/><br/><br/><br/>
-
-
+              <br />
+              <br />
+              <br />
+              <br />
+              <br />
+              <br />
             </form>
           </CardContent>
 
-
           <CardActions>
-            <Link to={"/transport-group/list-request-transport-container-to-warehouse"}>
+            <Link
+              to={
+                "/transport-group/list-request-transport-container-to-warehouse"
+              }
+            >
               <Button
                 disabled={isRequesting}
                 variant="contained"
                 color="primary"
                 onClick={handleSubmit}
               >
-                {isRequesting ? <CircularProgress/> : "Lưu"}
+                {isRequesting ? <CircularProgress /> : "Lưu"}
               </Button>
             </Link>
           </CardActions>
-
-
         </Card>
       </MuiPickersUtilsProvider>
-
-
     </div>
   );
 }

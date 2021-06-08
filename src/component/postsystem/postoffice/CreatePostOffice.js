@@ -22,8 +22,8 @@ function CreatePostOffice(props) {
     address: "",
   });
 
-  const [lat, setLat] = useState(21.02828)
-  const [lng, setLng] = useState(105.853882)
+  const [lat, setLat] = useState(21.02828);
+  const [lng, setLng] = useState(105.853882);
 
   const onChangeHandler = (props) => (event) => {
     setValues({ ...values, [props]: event.target.value });
@@ -32,8 +32,8 @@ function CreatePostOffice(props) {
   const mapClicked = (mapProps, map, event) => {
     const lat = event.latLng.lat();
     const lng = event.latLng.lng();
-    setLat(lat)
-    setLng(lng)
+    setLat(lat);
+    setLng(lng);
   };
 
   const onCancelHandler = (event) => {
@@ -46,7 +46,7 @@ function CreatePostOffice(props) {
     const lng = latLng.lng();
     setLat(lat);
     setLng(lng);
-  }
+  };
 
   const onSaveHandler = (event) => {
     if (
@@ -68,12 +68,11 @@ function CreatePostOffice(props) {
           "X-Auth-Token": token,
         },
         body: JSON.stringify({ ...values, latitude: lat, longitude: lng }),
-      })
-        .then(res => {
-          setIsRequesting(false);
-          alert("Đã lưu bưu cục " + values.postOfficeName);
-          history.push("/postoffice/list");
-        });
+      }).then((res) => {
+        setIsRequesting(false);
+        alert("Đã lưu bưu cục " + values.postOfficeName);
+        history.push("/postoffice/list");
+      });
     }
   };
 
@@ -175,7 +174,6 @@ function CreatePostOffice(props) {
             lng: lng,
           }}
           onClick={mapClicked}
-
         >
           <Marker
             position={{

@@ -114,11 +114,7 @@ function TeacherViewCourseQuizList({ courseId }) {
             </Fragment>
           ) : (
             quizzList.map((quizz, index) => (
-              <TeacherViewQuizDetail
-                
-                quiz={quizz}
-                index={index}
-              />
+              <TeacherViewQuizDetail quiz={quizz} index={index} />
             ))
           )}
         </div>

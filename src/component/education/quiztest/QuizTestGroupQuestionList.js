@@ -39,23 +39,27 @@ function QuizTestGroupQuestionList(props) {
       ),
     },
     {
-      title:"",
-      field:"",
+      title: "",
+      field: "",
       render: (rowData) => (
-        <Button 
+        <Button
           variant="contained"
           color="primary"
           style={{ marginLeft: "45px" }}
-          onClick = {() => handleRemove(rowData)}>
+          onClick={() => handleRemove(rowData)}
+        >
           Xoa
         </Button>
       ),
-    }
+    },
   ];
 
-  function handleRemove(rowData){
+  function handleRemove(rowData) {
     //alert('remove ' + rowData.quizGroupId + "," + rowData.questionId);
-    let datasend = { quizGroupId: rowData.quizGroupId, questionId: rowData.questionId };
+    let datasend = {
+      quizGroupId: rowData.quizGroupId,
+      questionId: rowData.questionId,
+    };
     request(
       token,
       history,
@@ -84,12 +88,11 @@ function QuizTestGroupQuestionList(props) {
     );
   }
 
-  function handleAddQuizGroupQuestion(){
-    // Display a popup form with 2 fields: 
+  function handleAddQuizGroupQuestion() {
+    // Display a popup form with 2 fields:
     // - list of quiz-group: call API: "/get-test-groups-info" (testId lay o tren)
     // - list of questions: call API: "/get-list-quiz-for-assignment-of-test/${testId}"
     // a button "Luu" -> call API: "/add-quizgroup-question-assignment"
-    
   }
 
   useEffect(() => {
@@ -114,9 +117,8 @@ function QuizTestGroupQuestionList(props) {
                 //history.push("quiz/create/");
                 handleAddQuizGroupQuestion();
               },
-            }
+            },
           ]}
-
         />
       </CardContent>
     </Card>

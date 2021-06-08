@@ -121,7 +121,7 @@ function ClassRegistration() {
 
           setFilterParams({
             code: "",
-            classCode:"",
+            classCode: "",
             courseId: "",
             courseName: "",
             classType: "",

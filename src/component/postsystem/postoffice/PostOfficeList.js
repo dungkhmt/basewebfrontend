@@ -21,9 +21,7 @@ import { API_URL } from "../../../config/config";
 import { Link } from "react-router-dom";
 import Upload from "../../../utils/Upload";
 import MaterialTable from "material-table";
-import {
-  localization
-} from '../../../utils/MaterialTableUtils';
+import { localization } from "../../../utils/MaterialTableUtils";
 import { authDelete } from "../../../api";
 import { errorNoti } from "../../../utils/Notification";
 import { useDispatch } from "react-redux";
@@ -31,8 +29,7 @@ import { useDispatch } from "react-redux";
 function errHandling(err) {
   if (err.message == "Unauthorized")
     errorNoti("Phiên làm việc đã kết thúc, vui lòng đăng nhập lại !", true);
-  else
-    errorNoti("Rất tiếc! Đã có lỗi xảy ra.", true);
+  else errorNoti("Rất tiếc! Đã có lỗi xảy ra.", true);
   console.trace(err);
 }
 const columns = [
@@ -43,16 +40,13 @@ const columns = [
   {
     title: "Chi tiết",
     render: (row) => {
-      return <Link
-        to={
-          "/geo/location/map/" +
-          row.postalAddress.contactMechId
-        }
-      >
-        Xem địa chỉ
-    </Link>
-    }
-  }
+      return (
+        <Link to={"/geo/location/map/" + row.postalAddress.contactMechId}>
+          Xem địa chỉ
+        </Link>
+      );
+    },
+  },
 ];
 
 const useStyles = makeStyles({
@@ -71,17 +65,20 @@ export default function PostOfficeList(props) {
   const [data, setData] = useState([]);
 
   const deletePostOffice = (postOffice) => {
-    authDelete(dispatch, token, "/delete-post-office/" + postOffice.postOfficeId)
-      .then(res => {
+    authDelete(
+      dispatch,
+      token,
+      "/delete-post-office/" + postOffice.postOfficeId
+    )
+      .then((res) => {
         const dataDelete = [...data];
         const index = postOffice.tableData.id;
         dataDelete.splice(index, 1);
         setData([...dataDelete]);
         alert("Đã xoá bưu cục " + postOffice.postOfficeId);
       })
-      .catch(err => errHandling(err));
-
-  }
+      .catch((err) => errHandling(err));
+  };
 
   useEffect(() => {
     fetch(API_URL + "/get-all-post-office", {
@@ -104,7 +101,10 @@ export default function PostOfficeList(props) {
       </Typography>
       <Button
         component={Link}
-        to={{ pathname: "/postoffice/viewallpostoffice", state: { data: data } }}
+        to={{
+          pathname: "/postoffice/viewallpostoffice",
+          state: { data: data },
+        }}
         variant="contained"
         color="primary"
         style={{ margin: 10, float: "right" }}
@@ -121,9 +121,9 @@ export default function PostOfficeList(props) {
         Thêm mới
       </Button>
       <Upload
-        url={'upload-post-office-list'}
+        url={"upload-post-office-list"}
         token={token}
-        buttonTitle={'Tải lên danh sách bưu cực'}
+        buttonTitle={"Tải lên danh sách bưu cực"}
         style={{ margin: 10, float: "right" }}
         handleSaveCallback={() => window.location.reload()}
       />
@@ -141,13 +141,12 @@ export default function PostOfficeList(props) {
         data={data}
         actions={[
           (postOffice) => ({
-            icon: 'delete',
-            tooltip: 'Xóa',
-            onClick: (event, postOffice) => deletePostOffice(postOffice)
-          })
+            icon: "delete",
+            tooltip: "Xóa",
+            onClick: (event, postOffice) => deletePostOffice(postOffice),
+          }),
         ]}
       />
     </Paper>
   );
 }
-

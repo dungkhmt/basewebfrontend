@@ -1,6 +1,6 @@
 import React from "react";
 
-export default function ImageItem({item, setSelectedImage, selectedImage}) {
+export default function ImageItem({ item, setSelectedImage, selectedImage }) {
   return (
     <div
       style={{
@@ -42,7 +42,7 @@ export default function ImageItem({item, setSelectedImage, selectedImage}) {
         }}
       >
         {/* thay cái này bằng icon V gì đó */}
-        <div style={{color: "white"}}>V</div>
+        <div style={{ color: "white" }}>V</div>
       </div>
     </div>
   );
