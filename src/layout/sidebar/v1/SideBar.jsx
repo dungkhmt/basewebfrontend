@@ -12,9 +12,6 @@ import { MENU_LIST } from "../../../config/menuconfig";
 import GroupMenuItem from "./GroupMenuItem";
 
 const useStyles = makeStyles((theme) => ({
-  root: {
-    display: "flex",
-  },
   menu: {
     paddingTop: theme.spacing(10),
   },
@@ -27,6 +24,7 @@ const useStyles = makeStyles((theme) => ({
   },
   drawerPaper: {
     width: drawerWidth,
+    flexShrink: 0,
     border: "none",
     // boxShadow: `2px 0px 1px -1px rgb(0 0 0 / 20%),
     //   1px 0px 1px 0px rgb(0 0 0 / 14%),
@@ -91,9 +89,9 @@ export default function SideBar(props) {
       {/* <div className={classNames(classes.sidebarWrapper)}> */}
       <SimpleBar
         style={{
-          marginTop: 75,
+          marginTop: 64,
           position: "relative",
-          height: "calc(100vh - 75px)",
+          height: "calc(100vh - 82px)",
           zIndex: "4",
           overflowX: "hidden",
           overscrollBehaviorY: "none", // To prevent tag <main> be scrolled when menu'scrollbar reach end
