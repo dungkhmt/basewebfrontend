@@ -54,16 +54,16 @@ const useStyles = makeStyles((theme) => ({
       duration: theme.transitions.duration.leavingScreen,
     }),
   },
-  sidebarWrapper: {
-    width: "100%",
-    paddingTop: 75,
-    position: "relative",
-    height: "100vh",
-    zIndex: "4",
-    // transitionDuration: ".2s, .2s, .35s",
-    // transitionProperty: "top, bottom, width",
-    // transitionTimingFunction: "linear, linear, ease",
-  },
+  // sidebarWrapper: {
+  //   // width: "100%",
+  //   paddingTop: 75,
+  //   position: "relative",
+  //   height: "100vh",
+  //   zIndex: "4",
+  //   // transitionDuration: ".2s, .2s, .35s",
+  //   // transitionProperty: "top, bottom, width",
+  //   // transitionTimingFunction: "linear, linear, ease",
+  // },
 }));
 
 export default function SideBar(props) {
@@ -88,23 +88,26 @@ export default function SideBar(props) {
         }),
       }}
     >
-      <div className={classNames(classes.sidebarWrapper)}>
-        <SimpleBar
-          style={{
-            height: "100%",
-            overflowX: "hidden",
-            overscrollBehaviorY: "none", // To prevent tag <main> be scrolled when menu'scrollbar reach end
-          }}
-        >
-          <nav>
-            <List>
-              {MENU_LIST.map((group) => (
-                <GroupMenuItem key={group.text} group={group} color={bgColor} />
-              ))}
-            </List>
-          </nav>
-        </SimpleBar>
-      </div>
+      {/* <div className={classNames(classes.sidebarWrapper)}> */}
+      <SimpleBar
+        style={{
+          marginTop: 75,
+          position: "relative",
+          height: "calc(100vh - 75px)",
+          zIndex: "4",
+          overflowX: "hidden",
+          overscrollBehaviorY: "none", // To prevent tag <main> be scrolled when menu'scrollbar reach end
+        }}
+      >
+        <nav>
+          <List>
+            {MENU_LIST.map((group) => (
+              <GroupMenuItem key={group.text} group={group} color={bgColor} />
+            ))}
+          </List>
+        </nav>
+      </SimpleBar>
+      {/* </div> */}
       {image && (
         <div
           className={assetClasses.background}
