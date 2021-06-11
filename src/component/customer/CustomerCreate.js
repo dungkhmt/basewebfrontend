@@ -1,37 +1,35 @@
-import {makeStyles} from "@material-ui/core/styles";
-import React, {useState} from "react";
-import {useDispatch, useSelector} from "react-redux";
-import {MuiPickersUtilsProvider} from "@material-ui/pickers";
+import { makeStyles } from "@material-ui/core/styles";
+import React, { useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { MuiPickersUtilsProvider } from "@material-ui/pickers";
 import DateFnsUtils from "@date-io/date-fns";
-import {CardContent, CircularProgress} from "@material-ui/core";
+import { CardContent, CircularProgress } from "@material-ui/core";
 import Typography from "@material-ui/core/Typography";
 import Card from "@material-ui/core/Card";
-import {authPost} from "../../api";
+import { authPost } from "../../api";
 import CardActions from "@material-ui/core/CardActions";
 import Button from "@material-ui/core/Button";
-import {textField} from "../../utils/FormUtils";
+import { textField } from "../../utils/FormUtils";
 import AlertDialog from "../../utils/AlertDialog";
-import {useHistory} from "react-router-dom";
+import { useHistory } from "react-router-dom";
 
-
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles((theme) => ({
   root: {
     padding: theme.spacing(4),
     "& .MuiTextField-root": {
       margin: theme.spacing(1),
-      width: 500
-    }
+      width: 500,
+    },
   },
   formControl: {
     margin: theme.spacing(1),
     minWidth: 120,
-    maxWidth: 300
-  }
+    maxWidth: 300,
+  },
 }));
 
-
 function CustomerCreate(props) {
-  const token = useSelector(state => state.auth.token);
+  const token = useSelector((state) => state.auth.token);
   const dispatch = useDispatch();
   const history = useHistory();
 
@@ -47,12 +45,12 @@ function CustomerCreate(props) {
   /*
    * BEGIN: Alert Dialog
    */
-  const [alertTitle, setAlertTitle] = useState('');
-  const [alertMessage, setAlertMessage] = useState('');
+  const [alertTitle, setAlertTitle] = useState("");
+  const [alertMessage, setAlertMessage] = useState("");
   const [openAlert, setOpenAlert] = useState(false);
   const [alertCallback, setAlertCallback] = useState({});
 
-  function showAlert(title = '', message = '', callback = {}) {
+  function showAlert(title = "", message = "", callback = {}) {
     setAlertTitle(title);
     setAlertMessage(message);
     setAlertCallback(callback);
@@ -86,7 +84,7 @@ function CustomerCreate(props) {
 
   function checkStringEmpty(fields) {
     for (let i = 0; i < fields.length; i++) {
-      if (!fields[i] || fields[i] === '') {
+      if (!fields[i] || fields[i] === "") {
         return false;
       }
     }
@@ -94,8 +92,16 @@ function CustomerCreate(props) {
   }
 
   const handleSubmit = async () => {
-    if (!checkStringEmpty([customerCode, customerName, address, latitude, longitude])) {
-      showAlert('Lỗi', 'Điền đầy đủ các trường và thử lại!');
+    if (
+      !checkStringEmpty([
+        customerCode,
+        customerName,
+        address,
+        latitude,
+        longitude,
+      ])
+    ) {
+      showAlert("Lỗi", "Điền đầy đủ các trường và thử lại!");
       return;
     }
     const data = {
@@ -103,16 +109,27 @@ function CustomerCreate(props) {
       customerName: customerName,
       address: address,
       latitude: latitude,
-      longitude: longitude
-    }
+      longitude: longitude,
+    };
     setIsRequesting(true);
-    let response = await authPost(dispatch, token, "/create-customer", data).then(r => r.json());
+    let response = await authPost(
+      dispatch,
+      token,
+      "/create-customer",
+      data
+    ).then((r) => r.json());
     setIsRequesting(false);
-    if (response && response['partyId']) {
-      showAlert('Thành công', 'Đã tạo thành công khách hàng có id = ' + response['partyId'],
-        ({OK: () => history.push('/customer/list')}));
+    if (response && response["partyId"]) {
+      showAlert(
+        "Thành công",
+        "Đã tạo thành công khách hàng có id = " + response["partyId"],
+        { OK: () => history.push("/customer/list") }
+      );
     } else {
-      showAlert('Lỗi', 'Có lỗi xảy ra, có thể mã khách hàng đã được tạo trước đó!');
+      showAlert(
+        "Lỗi",
+        "Có lỗi xảy ra, có thể mã khách hàng đã được tạo trước đó!"
+      );
     }
     // .then(
     //   res => {
@@ -134,8 +151,7 @@ function CustomerCreate(props) {
     // )
     // event.preventDefault();
     // window.location.reload();
-  }
-
+  };
 
   return (
     <div>
@@ -146,11 +162,35 @@ function CustomerCreate(props) {
               Create Customer
             </Typography>
             <form className={classes.root} noValidate autoComplete="off">
-              {textField('customerCode', 'Mã khách hàng', 'search', customerCode, setCustomerCode)}
-              {textField('customerName', 'Tên khách hàng', 'search', customerName, setCustomerName)}
-              {textField('address', 'Địa chỉ', 'search', address, setAddress)}
-              {textField('latitude', 'Kinh độ', 'search', latitude, setLatitude)}
-              {textField('longitude', 'Vĩ độ', 'search', longitude, setLongitude)}
+              {textField(
+                "customerCode",
+                "Mã khách hàng",
+                "search",
+                customerCode,
+                setCustomerCode
+              )}
+              {textField(
+                "customerName",
+                "Tên khách hàng",
+                "search",
+                customerName,
+                setCustomerName
+              )}
+              {textField("address", "Địa chỉ", "search", address, setAddress)}
+              {textField(
+                "latitude",
+                "Kinh độ",
+                "search",
+                latitude,
+                setLatitude
+              )}
+              {textField(
+                "longitude",
+                "Vĩ độ",
+                "search",
+                longitude,
+                setLongitude
+              )}
 
               {/*<TextField*/}
               {/*  id="customerCode"*/}
@@ -182,7 +222,6 @@ function CustomerCreate(props) {
 
               {/*</TextField>*/}
 
-
               {/*<TextField*/}
               {/*  id="latitude"*/}
               {/*  label="latitude"*/}
@@ -193,7 +232,6 @@ function CustomerCreate(props) {
 
               {/*</TextField>*/}
 
-
               {/*<TextField*/}
               {/*  id="longitude"*/}
               {/*  label="longitude"*/}
@@ -203,10 +241,8 @@ function CustomerCreate(props) {
               {/*>*/}
 
               {/*</TextField>*/}
-
             </form>
           </CardContent>
-
 
           <CardActions>
             <Button
@@ -215,7 +251,7 @@ function CustomerCreate(props) {
               color="primary"
               onClick={handleSubmit}
             >
-              {isRequesting ? <CircularProgress/> : "Lưu"}
+              {isRequesting ? <CircularProgress /> : "Lưu"}
             </Button>
           </CardActions>
         </Card>
@@ -229,9 +265,7 @@ function CustomerCreate(props) {
         afterShowCallback={alertCallback}
       />
     </div>
-  )
-
+  );
 }
-
 
 export default CustomerCreate;

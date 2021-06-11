@@ -1,19 +1,19 @@
 import "jspdf-autotable";
-import React, {useEffect, useState} from "react";
-import {useDispatch, useSelector} from "react-redux";
-import {Link} from "react-router-dom";
-import {authGet} from "../../api";
-import {Grid} from "@material-ui/core";
-import {makeStyles} from '@material-ui/core/styles';
-import Card from '@material-ui/core/Card';
-import CardHeader from '@material-ui/core/CardHeader';
-import CardContent from '@material-ui/core/CardContent';
-import Avatar from '@material-ui/core/Avatar';
-import IconButton from '@material-ui/core/IconButton';
-import Typography from '@material-ui/core/Typography';
-import {red} from '@material-ui/core/colors';
-import MoreVertIcon from '@material-ui/icons/MoreVert';
-import {Container} from '@material-ui/core/Container';
+import React, { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { Link } from "react-router-dom";
+import { authGet } from "../../api";
+import { Grid } from "@material-ui/core";
+import { makeStyles } from "@material-ui/core/styles";
+import Card from "@material-ui/core/Card";
+import CardHeader from "@material-ui/core/CardHeader";
+import CardContent from "@material-ui/core/CardContent";
+import Avatar from "@material-ui/core/Avatar";
+import IconButton from "@material-ui/core/IconButton";
+import Typography from "@material-ui/core/Typography";
+import { red } from "@material-ui/core/colors";
+import MoreVertIcon from "@material-ui/icons/MoreVert";
+import { Container } from "@material-ui/core/Container";
 import TablePagination from "@material-ui/core/TablePagination";
 
 function arrayBufferToBase64(buffer) {
@@ -29,21 +29,21 @@ function arrayBufferToBase64(buffer) {
 const useStyles = makeStyles((theme) => ({
   root: {
     maxWidth: 345,
-    maxHeight: 345
+    maxHeight: 345,
   },
   media: {
     height: 0,
-    paddingTop: '56.25%', // 16:9
+    paddingTop: "56.25%", // 16:9
   },
   expand: {
-    transform: 'rotate(0deg)',
-    marginLeft: 'auto',
-    transition: theme.transitions.create('transform', {
+    transform: "rotate(0deg)",
+    marginLeft: "auto",
+    transition: theme.transitions.create("transform", {
       duration: theme.transitions.duration.shortest,
     }),
   },
   expandOpen: {
-    transform: 'rotate(180deg)',
+    transform: "rotate(180deg)",
   },
   avatar: {
     backgroundColor: red[500],
@@ -67,19 +67,17 @@ function ProductList(props) {
     authGet(
       dispatch,
       token,
-      "/get-list-product-with-define-page?size=" + pageSize + "&page=" + page)
-      .then(
-        response => {
-          setProductList(response.content);
-          setTotalElements(response['totalElements'])
+      "/get-list-product-with-define-page?size=" + pageSize + "&page=" + page
+    ).then((response) => {
+      setProductList(response.content);
+      setTotalElements(response["totalElements"]);
 
-          // if (res.totalElements % pageSize !== 0) {
-          // setTotalPage(Math.floor(res.totalElements / pageSize));
-          // } else {
-          // setTotalPage(Math.floor(res.totalElements / pageSize - 1));
-          // }
-        }
-      )
+      // if (res.totalElements % pageSize !== 0) {
+      // setTotalPage(Math.floor(res.totalElements / pageSize));
+      // } else {
+      // setTotalPage(Math.floor(res.totalElements / pageSize - 1));
+      // }
+    });
   }, [page, pageSize]);
 
   // const handlePageSizeChange = event => {
@@ -111,7 +109,6 @@ function ProductList(props) {
 
   return (
     <div>
-
       <Grid container spacing={12}>
         {productList.map((p) => (
           <Grid item xs={3}>
@@ -125,25 +122,20 @@ function ProductList(props) {
                   }
                   action={
                     <IconButton aria-label="settings">
-                      <MoreVertIcon/>
+                      <MoreVertIcon />
                     </IconButton>
                   }
                   title={p.productName}
                   subheader={p.createdStamp}
-
                 />
-                <img src={p.avatar} width="100%" height="100%"/>
+                <img src={p.avatar} width="100%" height="100%" />
               </Link>
               <CardContent>
-                <Typography>
-                  {p.weight + " " + p.uomDescription}
-                </Typography>
+                <Typography>{p.weight + " " + p.uomDescription}</Typography>
               </CardContent>
             </Card>
           </Grid>
-
         ))}
-
       </Grid>
       <br></br>
 
@@ -153,7 +145,7 @@ function ProductList(props) {
         page={page}
         onChangePage={(e, p) => setPage(p)}
         rowsPerPage={pageSize}
-        onChangeRowsPerPage={e => {
+        onChangeRowsPerPage={(e) => {
           setPageSize(parseInt(e.target.value, 10));
           setPage(0);
         }}
@@ -241,7 +233,6 @@ function ProductList(props) {
       {/*  </Grid>*/}
 
       {/*</Grid>*/}
-
     </div>
 
     // <div>

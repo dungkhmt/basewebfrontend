@@ -1,21 +1,20 @@
-import React, {useEffect, useState} from 'react';
-import {useParams} from "react-router";
-import {authPost} from "../../api";
-import {failed} from "../../action";
-import {useDispatch, useSelector} from "react-redux";
+import React, { useEffect, useState } from "react";
+import { useParams } from "react-router";
+import { authPost } from "../../api";
+import { failed } from "../../action";
+import { useDispatch, useSelector } from "react-redux";
 import Grid from "@material-ui/core/Grid";
 import Typography from "@material-ui/core/Typography";
 import TextField from "@material-ui/core/TextField";
 import CardActions from "@material-ui/core/CardActions";
 import Button from "@material-ui/core/Button";
-import {CircularProgress} from "@material-ui/core";
-import {GoogleApiWrapper, Map, Marker} from "google-maps-react";
+import { CircularProgress } from "@material-ui/core";
+import { GoogleApiWrapper, Map, Marker } from "google-maps-react";
 import MenuItem from "@material-ui/core/MenuItem";
 
-
 function ChangeDistanceDetail(props) {
-  const {fromContactMechId, toContactMechId} = useParams();
-  const token = useSelector(state => state.auth.token);
+  const { fromContactMechId, toContactMechId } = useParams();
+  const token = useSelector((state) => state.auth.token);
   const dispatch = useDispatch();
   const [addressStart, setAddressStart] = useState();
   const [addressEnd, setAddressEnd] = useState();
@@ -31,32 +30,31 @@ function ChangeDistanceDetail(props) {
   const [enumIdList, setEnumIdList] = useState([]);
   const [isRequesting, setIsRequesting] = useState(false);
   const style = {
-    width: '40%',
-    height: '50%'
-  }
+    width: "40%",
+    height: "50%",
+  };
 
-  const handleDistanceChange = event => {
+  const handleDistanceChange = (event) => {
     setDistance(event.target.value);
-  }
+  };
 
-  const handleTravelTimeChange = event => {
+  const handleTravelTimeChange = (event) => {
     setTravelTime(event.target.value);
-  }
+  };
 
-  const handleTravelTimeTruckChange = event => {
+  const handleTravelTimeTruckChange = (event) => {
     setTravelTimeTruck(event.target.value);
-  }
+  };
 
-  const handleTravelTimeMotobikeChange = event => {
+  const handleTravelTimeMotobikeChange = (event) => {
     setTravelTimeMotobike(event.target.value);
-  }
+  };
 
-  const handleEnumIdChange = event => {
+  const handleEnumIdChange = (event) => {
     setEnumId(event.target.value);
-  }
+  };
 
-
-  const handleSubmit = event => {
+  const handleSubmit = (event) => {
     const data = {
       distance: distance,
       travelTime: travelTime,
@@ -65,173 +63,186 @@ function ChangeDistanceDetail(props) {
       enumId: enumId,
       fromContactMechId: fromContactMechId,
       toContactMechId: toContactMechId,
-    }
+    };
 
     console.log("data ", data);
     setIsRequesting(true);
-    authPost(dispatch, token, "/change-distance-travel-time-postal-address-info", data)
-      .then(
-        res => {
-          console.log(res);
-          setIsRequesting(false);
-          if (res.status === 401) {
-            dispatch(failed());
-            throw Error("Unauthorized");
-          } else if (res.status === 409) {
-            alert("Id exits!!");
-          } else if (res.status === 201) {
-            return res.json();
-          }
-        },
-        error => {
-          console.log(error);
+    authPost(
+      dispatch,
+      token,
+      "/change-distance-travel-time-postal-address-info",
+      data
+    ).then(
+      (res) => {
+        console.log(res);
+        setIsRequesting(false);
+        if (res.status === 401) {
+          dispatch(failed());
+          throw Error("Unauthorized");
+        } else if (res.status === 409) {
+          alert("Id exits!!");
+        } else if (res.status === 201) {
+          return res.json();
         }
-      )
+      },
+      (error) => {
+        console.log(error);
+      }
+    );
     event.preventDefault();
     window.location.reload();
-
-  }
-
+  };
 
   // get info from start position
   useEffect(() => {
-    authPost(dispatch, token, "/get-info-postal-to-display-in-map/" + fromContactMechId, {"statusId": null})
+    authPost(
+      dispatch,
+      token,
+      "/get-info-postal-to-display-in-map/" + fromContactMechId,
+      { statusId: null }
+    )
       .then(
-        res => {
+        (res) => {
           console.log(res);
           setIsRequesting(false);
 
           if (res.status === 401) {
             dispatch(failed());
-            throw Error("Unauthorized")
+            throw Error("Unauthorized");
           } else if (res.status === 200) {
             return res.json();
           }
         },
-        error => {
+        (error) => {
           console.log(error);
         }
       )
-      .then(
-        res => {
-          console.log("res start", res);
-          setAddressStart(res.address);
-          setLatStart(res.lat);
-          setLngStart(res.lng);
-        })
-  }, [])
-
+      .then((res) => {
+        console.log("res start", res);
+        setAddressStart(res.address);
+        setLatStart(res.lat);
+        setLngStart(res.lng);
+      });
+  }, []);
 
   //get info from end position
   useEffect(() => {
-    authPost(dispatch, token, "/get-info-postal-to-display-in-map/" + toContactMechId, {"statusId": null})
+    authPost(
+      dispatch,
+      token,
+      "/get-info-postal-to-display-in-map/" + toContactMechId,
+      { statusId: null }
+    )
       .then(
-        res => {
+        (res) => {
           console.log(res);
           setIsRequesting(false);
 
           if (res.status === 401) {
             dispatch(failed());
-            throw Error("Unauthorized")
+            throw Error("Unauthorized");
           } else if (res.status === 200) {
             return res.json();
           }
         },
-        error => {
+        (error) => {
           console.log(error);
-
         }
       )
-      .then(
-        res => {
-          console.log("res end", res);
-          setAddressEnd(res.address);
-          setLatEnd(res.lat);
-          setLngEnd(res.lng);
-        })
-  }, [])
+      .then((res) => {
+        console.log("res end", res);
+        setAddressEnd(res.address);
+        setLatEnd(res.lat);
+        setLngEnd(res.lng);
+      });
+  }, []);
 
   //get distance postal address info
   useEffect(() => {
-    authPost(dispatch, token, "/get-distance-postal-address-info-with-key/" + fromContactMechId + "/" + toContactMechId, {"statusId": null})
+    authPost(
+      dispatch,
+      token,
+      "/get-distance-postal-address-info-with-key/" +
+        fromContactMechId +
+        "/" +
+        toContactMechId,
+      { statusId: null }
+    )
       .then(
-        res => {
+        (res) => {
           console.log(res);
           setIsRequesting(false);
 
           if (res.status === 401) {
             dispatch(failed());
-            throw Error("Unauthorized")
+            throw Error("Unauthorized");
           } else if (res.status === 200) {
             return res.json();
           }
         },
-        error => {
+        (error) => {
           console.log(error);
-
         }
       )
-      .then(
-        res => {
-          console.log("res", res);
-          setTravelTimeMotobike(res.travelTimeMotobike);
-          setTravelTime(res.travelTime);
-          setTravelTimeTruck(res.travelTimeTruck);
-          setDistance(res.distance);
-          setEnumId(res.enumID);
-          console.log("enumID", res.enumID);
-          console.log()
-        })
-  }, [])
-
+      .then((res) => {
+        console.log("res", res);
+        setTravelTimeMotobike(res.travelTimeMotobike);
+        setTravelTime(res.travelTime);
+        setTravelTimeTruck(res.travelTimeTruck);
+        setDistance(res.distance);
+        setEnumId(res.enumID);
+        console.log("enumID", res.enumID);
+        console.log();
+      });
+  }, []);
 
   useEffect(() => {
-    authPost(dispatch, token, "/get-list-enumeration-distance-source", {"statusId": null})
+    authPost(dispatch, token, "/get-list-enumeration-distance-source", {
+      statusId: null,
+    })
       .then(
-        res => {
+        (res) => {
           console.log(res);
           setIsRequesting(false);
 
           if (res.status === 401) {
             dispatch(failed());
-            throw Error("Unauthorized")
+            throw Error("Unauthorized");
           } else if (res.status === 200) {
             return res.json();
           }
         },
-        error => {
+        (error) => {
           console.log(error);
-
         }
       )
-      .then(
-        res => {
-          setEnumIdList(res.enumerationList);
-        })
-  }, [])
-
+      .then((res) => {
+        setEnumIdList(res.enumerationList);
+      });
+  }, []);
 
   return (
     <div>
       <Grid container spacing={6}>
         <Grid item xs={6}>
-
-
           <Typography variant="h3" component="h6">
             Cập nhật thông tin khoảng cách
           </Typography>
 
-          <br/><br/>
+          <br />
+          <br />
           <Typography variant="h6" component="h3">
-            Địa chỉ đầu: {' '} {addressStart}
+            Địa chỉ đầu: {addressStart}
           </Typography>
 
-          <br/><br/>
+          <br />
+          <br />
           <Typography variant="h6" component="h3">
-            Địa chỉ cuối: {' '} {addressEnd}
+            Địa chỉ cuối: {addressEnd}
           </Typography>
 
-          <br/><br/>
+          <br />
+          <br />
           <Typography variant="h6" component="h3">
             Khoảng cách:
           </Typography>
@@ -240,10 +251,10 @@ function ChangeDistanceDetail(props) {
             onChange={handleDistanceChange}
             required
             value={distance}
-          >
-          </TextField>
+          ></TextField>
 
-          <br/><br/>
+          <br />
+          <br />
           <Typography variant="h6" component="h3">
             Thời gian di chuyển
           </Typography>
@@ -252,11 +263,10 @@ function ChangeDistanceDetail(props) {
             onChange={handleTravelTimeChange}
             required
             value={travelTime}
-          >
-          </TextField>
+          ></TextField>
 
-
-          <br/><br/>
+          <br />
+          <br />
           <Typography variant="h6" component="h3">
             Thời gian đi bằng xe máy
           </Typography>
@@ -265,10 +275,10 @@ function ChangeDistanceDetail(props) {
             onChange={handleTravelTimeMotobikeChange}
             required
             value={travelTimeMotobike}
-          >
-          </TextField>
+          ></TextField>
 
-          <br/><br/>
+          <br />
+          <br />
           <Typography variant="h6" component="h3">
             Thời gian đi bằng xe tải
           </Typography>
@@ -277,10 +287,10 @@ function ChangeDistanceDetail(props) {
             onChange={handleTravelTimeTruckChange}
             required
             value={travelTimeTruck}
-          >
-          </TextField>
+          ></TextField>
 
-          <br/><br/>
+          <br />
+          <br />
           <Typography variant="h6" component="h3">
             Nguồn
           </Typography>
@@ -291,16 +301,12 @@ function ChangeDistanceDetail(props) {
             value={enumId}
             label={enumId}
           >
-            {enumIdList.map(e => (
-              <MenuItem
-                key={e.enumId}
-                value={e.enumId}
-              >
+            {enumIdList.map((e) => (
+              <MenuItem key={e.enumId} value={e.enumId}>
                 {e.enumId}
               </MenuItem>
             ))}
           </TextField>
-
 
           <CardActions>
             <Button
@@ -309,11 +315,9 @@ function ChangeDistanceDetail(props) {
               color="primary"
               onClick={handleSubmit}
             >
-              {isRequesting ? <CircularProgress/> : "Lưu"}
+              {isRequesting ? <CircularProgress /> : "Lưu"}
             </Button>
           </CardActions>
-
-
         </Grid>
 
         <Grid item xs={6}>
@@ -323,16 +327,15 @@ function ChangeDistanceDetail(props) {
             style={style}
             initialCenter={{
               lat: (parseFloat(latStart) + parseFloat(latEnd)) / 2,
-              lng: (parseFloat(lngStart) + parseFloat(lngEnd)) / 2
+              lng: (parseFloat(lngStart) + parseFloat(lngEnd)) / 2,
             }}
             center={{
               lat: (parseFloat(latStart) + parseFloat(latEnd)) / 2,
-              lng: (parseFloat(lngStart) + parseFloat(lngEnd)) / 2
+              lng: (parseFloat(lngStart) + parseFloat(lngEnd)) / 2,
             }}
-
           >
             <Marker
-              title={'marker 1'}
+              title={"marker 1"}
               position={{
                 lat: latStart,
                 lng: lngStart,
@@ -340,26 +343,19 @@ function ChangeDistanceDetail(props) {
             />
 
             <Marker
-              title={'marker 2'}
+              title={"marker 2"}
               position={{
                 lat: latEnd,
                 lng: lngEnd,
               }}
             />
-
-
           </Map>
         </Grid>
-
       </Grid>
-
     </div>
-
   );
-
-
 }
 
 export default GoogleApiWrapper({
-  apiKey: (process.env.REACT_APP_GOOGLE_MAP_API_KEY)
+  apiKey: process.env.REACT_APP_GOOGLE_MAP_API_KEY,
 })(ChangeDistanceDetail);

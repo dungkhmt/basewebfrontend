@@ -1,13 +1,21 @@
-import {Button, Grid, IconButton, InputAdornment, Paper, TextField, Typography,} from "@material-ui/core";
+import {
+  Button,
+  Grid,
+  IconButton,
+  InputAdornment,
+  Paper,
+  TextField,
+  Typography,
+} from "@material-ui/core";
 import Dialog from "@material-ui/core/Dialog";
-import {makeStyles} from "@material-ui/core/styles";
+import { makeStyles } from "@material-ui/core/styles";
 import KeyboardArrowRightIcon from "@material-ui/icons/KeyboardArrowRight";
 import SearchRoundedIcon from "@material-ui/icons/SearchRounded";
 import MaterialTable from "material-table";
-import {default as React, useState} from "react";
-import {useDispatch, useSelector} from "react-redux";
-import {Link} from "react-router-dom";
-import {authGet} from "../../api";
+import { default as React, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { Link } from "react-router-dom";
+import { authGet } from "../../api";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -28,9 +36,8 @@ export default function InvoicePopup(props) {
   const token = useSelector((state) => state.auth.token);
 
   const [invoiceIdFilter, setInvoiceIdFilter] = useState("");
-  const [toPartyCustomerNameFilter, setToPartyCustomerNameFilter] = useState(
-    ""
-  );
+  const [toPartyCustomerNameFilter, setToPartyCustomerNameFilter] =
+    useState("");
   const handleInvoiceIdFilterChange = (event) => {
     setInvoiceIdFilter(event.target.value);
   };

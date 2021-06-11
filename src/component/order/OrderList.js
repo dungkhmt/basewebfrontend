@@ -1,17 +1,17 @@
-import React, {useState} from "react";
-import {tableIcons} from "../../utils/iconutil";
+import React, { useState } from "react";
+import { tableIcons } from "../../utils/iconutil";
 import MaterialTable from "material-table";
-import {connect, useDispatch, useSelector} from "react-redux";
-import {authGet} from "../../api";
+import { connect, useDispatch, useSelector } from "react-redux";
+import { authGet } from "../../api";
 //import { useHistory } from "react-router-dom";
 import Button from "@material-ui/core/Button";
 import CardActions from "@material-ui/core/CardActions";
-import {CircularProgress} from "@material-ui/core";
-import {Link, useHistory} from "react-router-dom";
+import { CircularProgress } from "@material-ui/core";
+import { Link, useHistory } from "react-router-dom";
 
 function OrderList(props) {
   const dispatch = useDispatch();
-  const token = useSelector(state => state.auth.token);
+  const token = useSelector((state) => state.auth.token);
   const history = useHistory();
 
   const [isRequesting, setIsRequesting] = useState(false);
@@ -19,18 +19,25 @@ function OrderList(props) {
     {
       title: "orderId",
       field: "orderId",
-      render: rowData => <Link to={"/orders/detail/" + rowData.orderId}>{rowData.orderId}</Link>
+      render: (rowData) => (
+        <Link to={"/orders/detail/" + rowData.orderId}>{rowData.orderId}</Link>
+      ),
     },
-    {title: "order date", field: "orderDate", defaultSort: "desc", type: "datetime"},
-    {title: "salesman", field: "salesmanName"},
-    {title: "customer", field: "customerName"},
-    {title: "vendor", field: "vendorName"},
-    {title: "Total", field: "total"}
+    {
+      title: "order date",
+      field: "orderDate",
+      defaultSort: "desc",
+      type: "datetime",
+    },
+    { title: "salesman", field: "salesmanName" },
+    { title: "customer", field: "customerName" },
+    { title: "vendor", field: "vendorName" },
+    { title: "Total", field: "total" },
   ];
 
   const handleSubmit = () => {
     history.push("/orders/create");
-  }
+  };
   return (
     <div>
       <CardActions>
@@ -40,7 +47,7 @@ function OrderList(props) {
           color="primary"
           onClick={handleSubmit}
         >
-          {isRequesting ? <CircularProgress/> : "Thêm mới"}
+          {isRequesting ? <CircularProgress /> : "Thêm mới"}
         </Button>
       </CardActions>
 
@@ -49,9 +56,9 @@ function OrderList(props) {
         columns={columns}
         options={{
           filtering: true,
-          search: false
+          search: false,
         }}
-        data={query =>
+        data={(query) =>
           new Promise((resolve, reject) => {
             console.log(query);
             let sortParam = "";
@@ -70,17 +77,23 @@ function OrderList(props) {
             authGet(
               dispatch,
               token,
-              "/orders" + "?size=" + query.pageSize + "&page=" + query.page + sortParam + filterParam
+              "/orders" +
+                "?size=" +
+                query.pageSize +
+                "&page=" +
+                query.page +
+                sortParam +
+                filterParam
             ).then(
-              res => {
+              (res) => {
                 console.log(res);
                 resolve({
                   data: res.content,
                   page: res.number,
-                  totalCount: res.totalElements
+                  totalCount: res.totalElements,
                 });
               },
-              error => {
+              (error) => {
                 console.log("error");
               }
             );
@@ -91,15 +104,14 @@ function OrderList(props) {
           console.log("select ", rowData);
         }}
       />
-
     </div>
   );
 }
 
-const mapStateToProps = state => ({
-  token: state.auth.token
+const mapStateToProps = (state) => ({
+  token: state.auth.token,
 });
 
-const mapDispatchToProps = dispatch => ({});
+const mapDispatchToProps = (dispatch) => ({});
 
 export default connect(mapStateToProps, mapDispatchToProps)(OrderList);

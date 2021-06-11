@@ -1,37 +1,35 @@
-import {makeStyles} from "@material-ui/core/styles";
-import React, {useState} from "react";
-import {useDispatch, useSelector} from "react-redux";
-import {useHistory} from "react-router-dom";
-import {MuiPickersUtilsProvider} from "@material-ui/pickers";
+import { makeStyles } from "@material-ui/core/styles";
+import React, { useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { useHistory } from "react-router-dom";
+import { MuiPickersUtilsProvider } from "@material-ui/pickers";
 import DateFnsUtils from "@date-io/date-fns";
-import {CardContent, CircularProgress} from "@material-ui/core";
+import { CardContent, CircularProgress } from "@material-ui/core";
 import Typography from "@material-ui/core/Typography";
 import Card from "@material-ui/core/Card";
 import TextField from "@material-ui/core/TextField";
-import {authPost} from "../../api";
-import {failed} from "../../action";
+import { authPost } from "../../api";
+import { failed } from "../../action";
 import CardActions from "@material-ui/core/CardActions";
 import Button from "@material-ui/core/Button";
 
-
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles((theme) => ({
   root: {
     padding: theme.spacing(4),
     "& .MuiTextField-root": {
       margin: theme.spacing(1),
-      width: 200
-    }
+      width: 200,
+    },
   },
   formControl: {
     margin: theme.spacing(1),
     minWidth: 120,
-    maxWidth: 300
-  }
+    maxWidth: 300,
+  },
 }));
 
-
 function DistributorCreate(props) {
-  const token = useSelector(state => state.auth.token);
+  const token = useSelector((state) => state.auth.token);
   const dispatch = useDispatch();
   const [distributorCode, setDistributorCode] = useState();
   const [distributorName, setDistributorName] = useState();
@@ -43,39 +41,38 @@ function DistributorCreate(props) {
   const classes = useStyles();
   const history = useHistory();
 
-  const handleDistributorCodeChange = event => {
+  const handleDistributorCodeChange = (event) => {
     setDistributorCode(event.target.value);
-  }
+  };
 
-  const handleDistributorNameChange = event => {
+  const handleDistributorNameChange = (event) => {
     setDistributorName(event.target.value);
-  }
+  };
 
-  const handleAddressChange = event => {
+  const handleAddressChange = (event) => {
     setAddress(event.target.value);
-  }
+  };
 
-  const handleLatitudeChange = event => {
+  const handleLatitudeChange = (event) => {
     setLatitude(event.target.value);
-  }
+  };
 
-  const handleLongitudeChange = event => {
+  const handleLongitudeChange = (event) => {
     setLongitude(event.target.value);
-  }
+  };
 
-
-  const handleSubmit = event => {
+  const handleSubmit = (event) => {
     const data = {
       distributorCode: distributorCode,
       distributorName: distributorName,
       address: address,
       latitude: latitude,
-      longitude: longitude
-    }
+      longitude: longitude,
+    };
     setIsRequesting(true);
     authPost(dispatch, token, "/create-distributor", data)
       .then(
-        res => {
+        (res) => {
           console.log(res);
           setIsRequesting(false);
           if (res.status === 401) {
@@ -87,17 +84,17 @@ function DistributorCreate(props) {
             return res.json();
           }
         },
-        error => {
+        (error) => {
           console.log(error);
         }
-      ).then(res => {
-      history.push("/distributor/list");
-    });
+      )
+      .then((res) => {
+        history.push("/distributor/list");
+      });
     event.preventDefault();
     //window.location.reload();
     //history.push("/distributor/list");
-  }
-
+  };
 
   return (
     <MuiPickersUtilsProvider utils={DateFnsUtils}>
@@ -113,9 +110,7 @@ function DistributorCreate(props) {
               onChange={handleDistributorCodeChange}
               required
               helperText="Mã nhà phân phối"
-            >
-
-            </TextField>
+            ></TextField>
 
             <TextField
               id="distributorName"
@@ -123,9 +118,7 @@ function DistributorCreate(props) {
               onChange={handleDistributorNameChange}
               required
               helperText="Tên nhà phân phối"
-            >
-
-            </TextField>
+            ></TextField>
 
             <TextField
               id="address"
@@ -133,10 +126,7 @@ function DistributorCreate(props) {
               onChange={handleAddressChange}
               required
               helperText="Địa chỉ"
-            >
-
-            </TextField>
-
+            ></TextField>
 
             <TextField
               id="latitude"
@@ -144,10 +134,7 @@ function DistributorCreate(props) {
               onChange={handleLatitudeChange}
               required
               helperText="latitude"
-            >
-
-            </TextField>
-
+            ></TextField>
 
             <TextField
               id="longitude"
@@ -155,13 +142,9 @@ function DistributorCreate(props) {
               onChange={handleLongitudeChange}
               required
               helperText="longitude"
-            >
-
-            </TextField>
-
+            ></TextField>
           </form>
         </CardContent>
-
 
         <CardActions>
           <Button
@@ -170,13 +153,12 @@ function DistributorCreate(props) {
             color="primary"
             onClick={handleSubmit}
           >
-            {isRequesting ? <CircularProgress/> : "Lưu"}
+            {isRequesting ? <CircularProgress /> : "Lưu"}
           </Button>
         </CardActions>
       </Card>
     </MuiPickersUtilsProvider>
-  )
-
+  );
 }
 
 export default DistributorCreate;

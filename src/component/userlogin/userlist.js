@@ -6,7 +6,7 @@ import { authGet } from "../../api";
 import { tableIcons } from "../../utils/iconutil";
 import withScreenSecurity from "../withScreenSecurity";
 import Button from "@material-ui/core/Button";
-import {useHistory} from "react-router-dom";
+import { useHistory } from "react-router-dom";
 
 function UserList() {
   const dispatch = useDispatch();
@@ -36,64 +36,62 @@ function UserList() {
   ];
   return (
     <div>
-    <MaterialTable
-      title="List Users"
-      columns={columns}
-      options={{
-        //filtering: true,
-        search: true,
-      }}
-      data={(query) =>
-        new Promise((resolve, reject) => {
-          console.log(query);
-          let sortParam = "";
-          if (query.orderBy !== undefined) {
-            sortParam =
-              "&sort=" + query.orderBy.field + "," + query.orderDirection;
-          }
-          let filterParam = "";
-          //if(query.filters.length>0){
-          //    let filter=query.filters;
-          //    filter.forEach(v=>{
-          //      filterParam=v.column.field+":"+v.value+","
-          //    })
-          //    filterParam="&filtering="+filterParam.substring(0,filterParam.length-1);
-          //}
-          filterParam = "&search=" + query.search;
-          authGet(
-            dispatch,
-            token,
-            "/users" +
-              "?size=" +
-              query.pageSize +
-              "&page=" +
-              query.page +
-              sortParam +
-              filterParam
-          ).then(
-            (res) => {
-              console.log(res);
-              if (res !== undefined && res !== null)
-                resolve({
-                  data: res.content,
-                  page: res.number,
-                  totalCount: res.totalElements,
-                });
-              else reject();
-            },
-            (error) => {
-              console.log("error");
-
-              reject();
+      <MaterialTable
+        title="List Users"
+        columns={columns}
+        options={{
+          //filtering: true,
+          search: true,
+        }}
+        data={(query) =>
+          new Promise((resolve, reject) => {
+            console.log(query);
+            let sortParam = "";
+            if (query.orderBy !== undefined) {
+              sortParam =
+                "&sort=" + query.orderBy.field + "," + query.orderDirection;
             }
-          );
-        })
-      }
-      icons={tableIcons}
-    />
+            let filterParam = "";
+            //if(query.filters.length>0){
+            //    let filter=query.filters;
+            //    filter.forEach(v=>{
+            //      filterParam=v.column.field+":"+v.value+","
+            //    })
+            //    filterParam="&filtering="+filterParam.substring(0,filterParam.length-1);
+            //}
+            filterParam = "&search=" + query.search;
+            authGet(
+              dispatch,
+              token,
+              "/users" +
+                "?size=" +
+                query.pageSize +
+                "&page=" +
+                query.page +
+                sortParam +
+                filterParam
+            ).then(
+              (res) => {
+                console.log(res);
+                if (res !== undefined && res !== null)
+                  resolve({
+                    data: res.content,
+                    page: res.number,
+                    totalCount: res.totalElements,
+                  });
+                else reject();
+              },
+              (error) => {
+                console.log("error");
+
+                reject();
+              }
+            );
+          })
+        }
+        icons={tableIcons}
+      />
     </div>
-
-
   );
 }
 const screenName = "SCREEN_USER_LIST";

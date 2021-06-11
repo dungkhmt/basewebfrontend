@@ -1,36 +1,36 @@
-import React, {useEffect, useState} from 'react';
-import {useDispatch, useSelector} from "react-redux";
-import {authPost} from "../../../api";
-import {failed} from "../../../action";
-import {CircularProgress} from "@material-ui/core";
+import React, { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { authPost } from "../../../api";
+import { failed } from "../../../action";
+import { CircularProgress } from "@material-ui/core";
 import Typography from "@material-ui/core/Typography";
 import TextField from "@material-ui/core/TextField";
 import CardActions from "@material-ui/core/CardActions";
 import Button from "@material-ui/core/Button";
-import {makeStyles} from "@material-ui/core/styles";
-import {Link} from "react-router-dom";
-import {GoogleApiWrapper, Map, Marker} from "google-maps-react";
+import { makeStyles } from "@material-ui/core/styles";
+import { Link } from "react-router-dom";
+import { GoogleApiWrapper, Map, Marker } from "google-maps-react";
 import Grid from "@material-ui/core/Grid";
-import Autocomplete from '@material-ui/lab/Autocomplete';
-import Geocoder from 'react-native-geocoding';
+import Autocomplete from "@material-ui/lab/Autocomplete";
+import Geocoder from "react-native-geocoding";
 
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles((theme) => ({
   root: {
     padding: theme.spacing(4),
     "& .MuiTextField-root": {
       margin: theme.spacing(1),
-      width: 200
-    }
+      width: 200,
+    },
   },
   formControl: {
     margin: theme.spacing(1),
     minWidth: 120,
-    maxWidth: 300
-  }
+    maxWidth: 300,
+  },
 }));
 
 function DeporTruckCreate(props) {
-  const token = useSelector(state => state.auth.token);
+  const token = useSelector((state) => state.auth.token);
   const dispatch = useDispatch();
   const [isRequesting, setIsRequesting] = useState(false);
   const [depotTruckId, setDepotTruckId] = useState();
@@ -47,17 +47,17 @@ function DeporTruckCreate(props) {
     getOptionLabel: (option) => option.address,
   };
 
-  const handleSuggestAddress = event => {
+  const handleSuggestAddress = (event) => {
     //console.log("handleSuggestAddress ",event.target.address);
     const data = {
       address: address,
-    }
+    };
     //console.log("handleSuggestAddress ",data.address);
     //console.log("api key ",""+process.env.REACT_APP_GOOGLE_MAP_API_KEY);
     Geocoder.init(process.env.REACT_APP_GOOGLE_MAP_API_KEY);
 
     Geocoder.from(data.address)
-      .then(json => {
+      .then((json) => {
         var location = json.results[0].geometry.location;
 
         setLat(location.lat);
@@ -65,12 +65,9 @@ function DeporTruckCreate(props) {
 
         setCoordinates("" + location.lat + ", " + location.lng);
         setContactMechId(null);
-
       })
-      .catch(error => console.warn(error));
-
-  }
-
+      .catch((error) => console.warn(error));
+  };
 
   const checkAddressToChangeLatLng = (event, newValue) => {
     console.log("checkAddressToChangeLatLng", newValue);
@@ -83,52 +80,46 @@ function DeporTruckCreate(props) {
       setContactMechId(null);
     }
     console.log("contactMenchId check....", contactMechId);
+  };
 
-  }
-
-
-  const handleAddressChange = event => {
-    console.log("address", event.target.value)
-    setAddress(event.target.value)
+  const handleAddressChange = (event) => {
+    console.log("address", event.target.value);
+    setAddress(event.target.value);
     setContactMechId(null);
     console.log("contactMenchId handle....", contactMechId);
 
     const data = {
       address: event.target.value,
-    }
+    };
     authPost(dispatch, token, "/get-list-address-suggestion", data)
       .then(
-        res => {
+        (res) => {
           console.log(res);
           setIsRequesting(false);
           if (res.status === 401) {
             dispatch(failed());
-            throw Error("Unauthorized")
+            throw Error("Unauthorized");
           } else if (res.status === 200) {
             return res.json();
           }
         },
-        error => {
+        (error) => {
           console.log(error);
         }
       )
-      .then(
-        res => {
-          console.log('res', res.list);
-          setSuggestionList(res.list);
+      .then((res) => {
+        console.log("res", res.list);
+        setSuggestionList(res.list);
+      });
+  };
 
-        })
+  const handleDepotTruckIdChange = (event) => {
+    setDepotTruckId(event.target.value);
+  };
 
-  }
-
-
-  const handleDepotTruckIdChange = event => {
-    setDepotTruckId(event.target.value)
-  }
-
-  const handleDepotTruckNameChange = event => {
-    setDepotTruckName(event.target.value)
-  }
+  const handleDepotTruckNameChange = (event) => {
+    setDepotTruckName(event.target.value);
+  };
   const mapClicked = (mapProps, map, event) => {
     const lat = event.latLng.lat();
     const lng = event.latLng.lng();
@@ -137,72 +128,60 @@ function DeporTruckCreate(props) {
     setLng(lng);
     setLat(lat);
     setCoordinates("" + lat + ", " + lng);
-
-  }
+  };
 
   useEffect(() => {
-
-      navigator.geolocation.getCurrentPosition(position => {
-        setLat(position.coords.latitude)
-        setLng(position.coords.longitude)
-        setCoordinates(position.coords.latitude + ", " + position.coords.longitude)
-      })
-
-
-    }, []
-  )
-  const handleSubmit = event => {
+    navigator.geolocation.getCurrentPosition((position) => {
+      setLat(position.coords.latitude);
+      setLng(position.coords.longitude);
+      setCoordinates(
+        position.coords.latitude + ", " + position.coords.longitude
+      );
+    });
+  }, []);
+  const handleSubmit = (event) => {
     const data = {
       lat: lat,
       lng: lng,
       address: address,
       depotTruckId: depotTruckId,
       depotTruckName: depotTruckName,
-      contactMechId: contactMechId
-    }
+      contactMechId: contactMechId,
+    };
     setIsRequesting(true);
-    authPost(dispatch, token, "/create-depot-truck", data)
-      .then(
-        res => {
-          console.log(res);
-          setIsRequesting(false);
-          if (res.status === 401) {
-            dispatch(failed());
-            throw Error("Unauthorized");
-          } else if (res.status === 409) {
-            alert("Id exits!!");
-          } else if (res.status === 201) {
-            return res.json();
-          }
-        },
-        error => {
-          console.log(error);
+    authPost(dispatch, token, "/create-depot-truck", data).then(
+      (res) => {
+        console.log(res);
+        setIsRequesting(false);
+        if (res.status === 401) {
+          dispatch(failed());
+          throw Error("Unauthorized");
+        } else if (res.status === 409) {
+          alert("Id exits!!");
+        } else if (res.status === 201) {
+          return res.json();
         }
-      );
-
-  }
+      },
+      (error) => {
+        console.log(error);
+      }
+    );
+  };
   const style = {
-    width: '35%',
-    height: '50%'
-  }
+    width: "35%",
+    height: "50%",
+  };
   return (
     <div>
       <Grid container spacing={5}>
         <Grid item xs={5}>
-
-
           <Typography variant="h2" component="h2">
             Thêm mới bãi đầu kéo
           </Typography>
 
+          <br />
 
-          <br/>
-
-
-          <Typography variant="h6">
-            Mã bãi: {' '}
-          </Typography>
-
+          <Typography variant="h6">Mã bãi: </Typography>
 
           <TextField
             id="depotTruckId"
@@ -210,15 +189,11 @@ function DeporTruckCreate(props) {
             required
             value={depotTruckId}
             fullWidth
-          >
-          </TextField>
+          ></TextField>
 
-
-          <br/><br/>
-          <Typography variant="h6">
-            Tên bãi: {' '}
-          </Typography>
-
+          <br />
+          <br />
+          <Typography variant="h6">Tên bãi: </Typography>
 
           <TextField
             id="depotTruckName"
@@ -226,21 +201,17 @@ function DeporTruckCreate(props) {
             required
             value={depotTruckName}
             fullWidth
-          >
-          </TextField>
+          ></TextField>
 
+          <br />
+          <br />
 
-          <br/><br/>
-
-          <Typography variant="h6">
-            Địa chỉ: {' '}
-          </Typography>
-
+          <Typography variant="h6">Địa chỉ: </Typography>
 
           <Autocomplete
             {...defaultProps}
             debug
-            renderInput={(params) =>
+            renderInput={(params) => (
               <TextField
                 {...params}
                 margin="normal"
@@ -250,18 +221,15 @@ function DeporTruckCreate(props) {
                 value={address}
                 fullWidth
               />
-            }
+            )}
             onChange={checkAddressToChangeLatLng}
-
           />
 
+          <br />
+          <br />
+          <br />
 
-          <br/><br/><br/>
-
-          <Typography variant="h6">
-            Tọa độ: {' '} {coordinates}
-          </Typography>
-
+          <Typography variant="h6">Tọa độ: {coordinates}</Typography>
 
           <CardActions>
             <Button
@@ -271,7 +239,6 @@ function DeporTruckCreate(props) {
             >
               Gợi ý tọa độ
             </Button>
-
           </CardActions>
 
           <CardActions>
@@ -282,14 +249,10 @@ function DeporTruckCreate(props) {
                 color="primary"
                 onClick={handleSubmit}
               >
-                {isRequesting ? <CircularProgress/> : "Lưu"}
+                {isRequesting ? <CircularProgress /> : "Lưu"}
               </Button>
             </Link>
-
-
           </CardActions>
-
-
         </Grid>
 
         <Grid item xs={6}>
@@ -308,26 +271,19 @@ function DeporTruckCreate(props) {
             onClick={mapClicked}
           >
             <Marker
-              title={'Geolocation'}
+              title={"Geolocation"}
               position={{
                 lat: lat,
                 lng: lng,
               }}
             />
-
-
           </Map>
         </Grid>
-
       </Grid>
-
     </div>
-
   );
-
-
 }
 
 export default GoogleApiWrapper({
-  apiKey: (process.env.REACT_APP_GOOGLE_MAP_API_KEY)
+  apiKey: process.env.REACT_APP_GOOGLE_MAP_API_KEY,
 })(DeporTruckCreate);

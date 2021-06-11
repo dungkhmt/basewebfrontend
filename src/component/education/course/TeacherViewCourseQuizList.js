@@ -43,7 +43,7 @@ function TeacherViewCourseQuizList({ courseId }) {
       //`/get-unpublished-quiz-of-course/${courseId}`,
       `/get-quiz-of-course/${courseId}`,
       (res) => {
-        // console.log("getQuizListOfClass, res.data = ", res.data);
+        console.log("getQuizListOfClass, res.data = ", res.data);
         setQuizList(res.data);
         setLoading(false);
       },
@@ -114,11 +114,7 @@ function TeacherViewCourseQuizList({ courseId }) {
             </Fragment>
           ) : (
             quizzList.map((quizz, index) => (
-              <TeacherViewQuizDetail
-                
-                quiz={quizz}
-                index={index}
-              />
+              <TeacherViewQuizDetail quiz={quizz} index={index} />
             ))
           )}
         </div>

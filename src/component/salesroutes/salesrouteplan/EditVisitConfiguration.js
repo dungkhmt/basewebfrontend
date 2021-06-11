@@ -43,21 +43,15 @@ function EditVisitConfirguration(props) {
     }),
   });
 
-  const {
-    control,
-    handleSubmit,
-    errors,
-    setValue,
-    watch,
-    clearError,
-  } = useForm({
-    defaultValues: {
-      frequency: data.visitFrequencyId,
-      config: data.salesRouteConfigId,
-      startExecuteWeek: data.startExecuteWeek,
-    },
-    validationSchema: schema,
-  });
+  const { control, handleSubmit, errors, setValue, watch, clearError } =
+    useForm({
+      defaultValues: {
+        frequency: data.visitFrequencyId,
+        config: data.salesRouteConfigId,
+        startExecuteWeek: data.startExecuteWeek,
+      },
+      validationSchema: schema,
+    });
 
   // Functions.
   const getVisitFrequencies = () => {

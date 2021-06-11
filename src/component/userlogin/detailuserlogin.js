@@ -3,7 +3,7 @@ import {
   CircularProgress,
   Dialog,
   DialogActions,
-  DialogTitle
+  DialogTitle,
 } from "@material-ui/core";
 import Card from "@material-ui/core/Card";
 import CardContent from "@material-ui/core/CardContent";
@@ -88,7 +88,6 @@ function UserDetail(props) {
           </DialogContentText>
         </DialogContent> */}
         <DialogActions>
-    
           <Button
             variant="contained"
             disabled={isWaiting}
@@ -111,8 +110,6 @@ function UserDetail(props) {
         <CardContent>
           <Typography variant="h5" component="h2" align="left">
             Detail User {data.userLoginId}
-
-        
             {canDelete ? (
               <DeleteUserButton
                 style={{ float: "right" }}
@@ -133,15 +130,16 @@ function UserDetail(props) {
             ) : (
               ""
             )}
-            <Button 
-            color={'primary'}
-            variant={'contained'}
-            style={{ float: "right" }}
-            onClick={() => history.push("/userlogin/" + partyId + "/updateDiectly")}>
-            Thay đổi Mật khẩu
+            <Button
+              color={"primary"}
+              variant={"contained"}
+              style={{ float: "right" }}
+              onClick={() =>
+                history.push("/userlogin/" + partyId + "/updateDiectly")
+              }
+            >
+              Thay đổi Mật khẩu
             </Button>
-
-          
           </Typography>
           <form className={classes.root} noValidate autoComplete="off">
             <div>
@@ -201,7 +199,6 @@ function UserDetail(props) {
                   readOnly: true,
                 }}
               />
-    
             </div>
           </form>
         </CardContent>

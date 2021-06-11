@@ -162,8 +162,8 @@ export default function QuizTestDetail(props) {
       "post",
       "auto-assign-participants-2-quiz-test-group",
       (res) => {
-        console.log(res);
-        alert("assign students to groups OK");
+        console.log("assign students to groups ", res);
+        alert("assign students to groups " + res.data);
       },
       { 401: () => {} },
       datasend
@@ -178,8 +178,8 @@ export default function QuizTestDetail(props) {
       "post",
       "auto-assign-question-2-quiz-group",
       (res) => {
-        console.log(res);
-        alert("assign questions to groups OK");
+        console.log("assign questions to groups ", res);
+        alert("assign questions to groups " + res.data);
       },
       { 401: () => {} },
       datasend

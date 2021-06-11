@@ -1,19 +1,23 @@
-import React, {useState} from "react";
-import {DropzoneArea} from "material-ui-dropzone";
-import {Button} from "@material-ui/core";
+import React, { useState } from "react";
+import { DropzoneArea } from "material-ui-dropzone";
+import { Button } from "@material-ui/core";
 import Dialog from "@material-ui/core/Dialog";
 import DialogContent from "@material-ui/core/DialogContent";
 import DialogTitle from "@material-ui/core/DialogTitle";
 import Grid from "@material-ui/core/Grid";
 import CircularProgress from "@material-ui/core/CircularProgress";
-import {API_URL} from "../config/config";
+import { API_URL } from "../config/config";
 import CloudUploadIcon from "@material-ui/icons/CloudUpload";
 
 export default function Upload(props) {
-
   const {
-    url, token, buttonTitle, dispatch, handleSaveCallback = () => {
-    }, fullUrl, multipleFile = false
+    url,
+    token,
+    buttonTitle,
+    dispatch,
+    handleSaveCallback = () => {},
+    fullUrl,
+    multipleFile = false,
   } = props;
 
   const [open, setOpen] = useState(false);
@@ -31,15 +35,17 @@ export default function Upload(props) {
         data.append(`files[]`, files[i]);
       }
     } else {
-      data.append('file', files[0]);
+      data.append("file", files[0]);
     }
-    Promise.all([uploadFile(url, data, fullUrl)]).then(([response]) => {
-      setWaiting(false);
-      handleSaveCallback(response);
-    }).catch(error => {
-      console.log(error);
-      alert('Upload thất bại: ' + error);
-    });
+    Promise.all([uploadFile(url, data, fullUrl)])
+      .then(([response]) => {
+        setWaiting(false);
+        handleSaveCallback(response);
+      })
+      .catch((error) => {
+        console.log(error);
+        alert("Upload thất bại: " + error);
+      });
   }
 
   function handleClose() {
@@ -52,13 +58,22 @@ export default function Upload(props) {
 
   return (
     <div>
-      {waiting ? <CircularProgress color={'secondary'}/> :
-        <Button color={'primary'} variant={'contained'} startIcon={<CloudUploadIcon/>}
-                onClick={handleOpen}>{buttonTitle}</Button>}
+      {waiting ? (
+        <CircularProgress color={"secondary"} />
+      ) : (
+        <Button
+          color={"primary"}
+          variant={"contained"}
+          startIcon={<CloudUploadIcon />}
+          onClick={handleOpen}
+        >
+          {buttonTitle}
+        </Button>
+      )}
 
       <Dialog
         fullWidth={true}
-        maxWidth={'sm'}
+        maxWidth={"sm"}
         open={open}
         onClose={handleClose}
       >
@@ -67,7 +82,7 @@ export default function Upload(props) {
           <Grid xs container>
             <DropzoneArea
               open={open}
-              onChange={files => setFiles(files)}
+              onChange={(files) => setFiles(files)}
               filesLimit={multipleFile ? 999 : 1}
               acceptedFiles={[""]}
               // acceptedFiles={["application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"]}
@@ -91,17 +106,16 @@ export default function Upload(props) {
   function uploadFile(url, file, fullUrl) {
     let fields;
     fields = {
-      method: 'POST',
+      method: "POST",
       headers: {
-        "X-Auth-Token": token
+        "X-Auth-Token": token,
       },
-      body: file
+      body: file,
     };
     if (fullUrl) {
-      return fetch(fullUrl, fields).then(res => res.json());
+      return fetch(fullUrl, fields).then((res) => res.json());
     } else {
-      return fetch(`${API_URL}/${url}`, fields).then(res => res.json());
+      return fetch(`${API_URL}/${url}`, fields).then((res) => res.json());
     }
   }
 }
-

@@ -1,16 +1,16 @@
-import React, {useEffect, useState} from "react";
-import {connect} from "react-redux";
+import React, { useEffect, useState } from "react";
+import { connect } from "react-redux";
 import TableContainer from "@material-ui/core/TableContainer";
 import Table from "@material-ui/core/Table";
-import {makeStyles} from "@material-ui/core/styles";
-import TableBody from '@material-ui/core/TableBody';
-import TableCell from '@material-ui/core/TableCell';
-import TableHead from '@material-ui/core/TableHead';
-import TableRow from '@material-ui/core/TableRow';
-import Paper from '@material-ui/core/Paper';
-import Button from '@material-ui/core/Button';
-import {API_URL} from "../../config/config";
-import {useHistory} from "react-router-dom";
+import { makeStyles } from "@material-ui/core/styles";
+import TableBody from "@material-ui/core/TableBody";
+import TableCell from "@material-ui/core/TableCell";
+import TableHead from "@material-ui/core/TableHead";
+import TableRow from "@material-ui/core/TableRow";
+import Paper from "@material-ui/core/Paper";
+import Button from "@material-ui/core/Button";
+import { API_URL } from "../../config/config";
+import { useHistory } from "react-router-dom";
 
 const useStyles = makeStyles({
   table: {
@@ -26,8 +26,7 @@ function ListUserLogins(props) {
   const viewDetailUserLogin = (username) => {
     //alert('viewDetailUserLogin');
     history.push("/userlogin/detail/" + username); // truyen tham so
-
-  }
+  };
   useEffect(() => {
     console.log("ListUserLogin , useEffect");
     console.log(props.isUpdate);
@@ -38,14 +37,14 @@ function ListUserLogins(props) {
     headers.append("X-Auth-Token", props.token);
     fetch(`${API_URL}/get-list-user-logins`, {
       method: "GET",
-      headers: headers
+      headers: headers,
     })
-      .then(res => res.json())
+      .then((res) => res.json())
       .then(
-        res => {
+        (res) => {
           setData(res);
         },
-        error => {
+        (error) => {
           setData([]);
         }
       );
@@ -62,15 +61,21 @@ function ListUserLogins(props) {
           </TableRow>
         </TableHead>
         <TableBody>
-          {data.map(row => (
+          {data.map((row) => (
             <TableRow key={row.userName}>
               <TableCell component="th" scope="row">
                 {row.partyId}
               </TableCell>
-              <TableCell align="right"><a href="/tracklocations/list">{row.userName}</a></TableCell>
+              <TableCell align="right">
+                <a href="/tracklocations/list">{row.userName}</a>
+              </TableCell>
               <TableCell align="right">{row.partyId}</TableCell>
               <TableCell align="right">
-                <Button variant="contained" color="secondary" onClick={() => viewDetailUserLogin(row.userName)}>
+                <Button
+                  variant="contained"
+                  color="secondary"
+                  onClick={() => viewDetailUserLogin(row.userName)}
+                >
                   Chi tiết
                 </Button>
               </TableCell>
@@ -82,10 +87,10 @@ function ListUserLogins(props) {
   );
 }
 
-const mapStateToProps = state => ({
-  token: state.auth.token
+const mapStateToProps = (state) => ({
+  token: state.auth.token,
 });
 
-const mapDispatchToProps = dispatch => ({});
+const mapDispatchToProps = (dispatch) => ({});
 
 export default connect(mapStateToProps, mapDispatchToProps)(ListUserLogins);

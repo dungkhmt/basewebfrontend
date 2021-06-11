@@ -7,44 +7,41 @@ export const LOGOUT_SUCCESS = "LOGOUT_SUCCESS";
 export const LOGIN_FAILURE = "LOGIN_FAILURE";
 export const ERROR = "ERROR";
 
-
 export const logout = () => {
   return (dispatch, getState) => {
     dispatch(requesting()); // create a action
     const headers = new Headers();
-
 
     headers.append("Content-Type", "application/json");
     headers.append("X-Auth-Token", getState().auth.token);
 
     fetch(`${API_URL}/logout`, {
       method: "GET",
-      headers: headers
+      headers: headers,
     })
-      .then(res => {
+      .then((res) => {
         if (res.ok) {
           dispatch(logoutsuccess());
         }
         return res.json();
       })
       .then(
-        res => {
+        (res) => {
           // if (res.status === "SUCCESS") {
           //     dispatch(success());
           // } else{
           //     dispatch(failed());
           // }
         },
-        error => {
+        (error) => {
           dispatch(failed());
         }
       );
   };
-
-}
+};
 
 export const login = (username, password) => {
-  return dispatch => {
+  return (dispatch) => {
     dispatch(requesting()); // create a action
 
     const headers = new Headers();
@@ -57,9 +54,9 @@ export const login = (username, password) => {
     headers.append("Content-Type", "application/json");
     fetch(`${API_URL}/`, {
       method: "GET",
-      headers: headers
+      headers: headers,
     })
-      .then(res => {
+      .then((res) => {
         if (res.ok) {
           dispatch(success(res.headers.get("X-Auth-Token")));
         } else if (res.status === 401) {
@@ -69,22 +66,21 @@ export const login = (username, password) => {
         return res.json();
       })
       .then(
-        res => {
+        (res) => {
           // if (res.status === "SUCCESS") {
           //     dispatch(success());
           // } else{
           //     dispatch(failed());
           // }
         },
-        error => {
-        }
+        (error) => {}
       );
   };
 };
 
 const requesting = () => {
   return {
-    type: LOGIN_REQUESTING
+    type: LOGIN_REQUESTING,
   };
 };
 
@@ -92,28 +88,30 @@ export const failed = (errorState = false, errorMsg = null) => {
   return {
     type: LOGIN_FAILURE,
     errorState: errorState,
-    errorMsg: errorMsg
+    errorMsg: errorMsg,
   };
 };
-const success = token => {// token la tham so cua ham success
-  //function success(token){   
+const success = (token) => {
+  // token la tham so cua ham success
+  //function success(token){
   return {
     type: LOGIN_SUCCESS,
-    token: token
+    token: token,
   };
 };
-const logoutsuccess = token => {// token la tham so cua ham success
-  //function success(token){   
+const logoutsuccess = (token) => {
+  // token la tham so cua ham success
+  //function success(token){
   return {
-    type: LOGOUT_SUCCESS
+    type: LOGOUT_SUCCESS,
   };
 };
 
 export const error = (errorState = false, errorMsg = null) => {
-  console.log(errorMsg)
+  console.log(errorMsg);
   return {
     type: ERROR,
     errorState: errorState,
-    errorMsg: errorMsg
+    errorMsg: errorMsg,
   };
 };

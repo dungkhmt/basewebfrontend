@@ -1,32 +1,31 @@
-import React, {useEffect, useState} from "react";
+import React, { useEffect, useState } from "react";
 import MaterialTable from "material-table";
-import {useDispatch, useSelector} from "react-redux";
-import {API_URL} from "../../config/config";
+import { useDispatch, useSelector } from "react-redux";
+import { API_URL } from "../../config/config";
 
 function ListDepartment(props) {
-
   const dispatch = useDispatch();
-  const token = useSelector(state => state.auth.token);
+  const token = useSelector((state) => state.auth.token);
 
   const [departments, setDepartments] = useState([]);
 
   const columns = [
-    {field: 'departmentId', title: 'ID phòng ban'},
-    {field: 'departmentName', title: 'Tên phòng ban'}
+    { field: "departmentId", title: "ID phòng ban" },
+    { field: "departmentName", title: "Tên phòng ban" },
   ];
   const requestOptionsGet = {
-    method: 'GET',
-    headers: {'Content-Type': 'application/json', "X-Auth-Token": token}
+    method: "GET",
+    headers: { "Content-Type": "application/json", "X-Auth-Token": token },
   };
 
   function getDepartmentList() {
     //console.log("getDepartmentList....");
-    fetch(API_URL + '/get-all-departments', requestOptionsGet)
-      .then(response => response.json())
-      .then(response => {
+    fetch(API_URL + "/get-all-departments", requestOptionsGet)
+      .then((response) => response.json())
+      .then((response) => {
         console.log(response);
         let arr = [];
-        response.forEach(d => {
+        response.forEach((d) => {
           arr.push(d);
         });
         setDepartments(arr);
@@ -41,12 +40,12 @@ function ListDepartment(props) {
   return (
     <div>
       <MaterialTable
-        options={{search: true}} title={"Danh sách phòng ban"}
+        options={{ search: true }}
+        title={"Danh sách phòng ban"}
         columns={columns}
         data={departments}
       />
     </div>
-
   );
 }
 

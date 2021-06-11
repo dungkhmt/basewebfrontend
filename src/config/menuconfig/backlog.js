@@ -20,6 +20,6 @@ export const backlog = {
       icon: "StarBorder",
       text: "Tạo mới dự án",
       child: [],
-    }
+    },
   ],
 };

@@ -1,5 +1,5 @@
-import React, {useMemo, useState} from "react";
-import {useDropzone} from "react-dropzone";
+import React, { useMemo, useState } from "react";
+import { useDropzone } from "react-dropzone";
 
 const baseStyle = {
   flex: 1,
@@ -63,7 +63,7 @@ function StyledDropzone(props) {
 
   return (
     <div className="container">
-      <div {...getRootProps({style})}>
+      <div {...getRootProps({ style })}>
         <input {...getInputProps()} />
         <p>Drag 'n' drop some files here, or click to select files</p>
       </div>

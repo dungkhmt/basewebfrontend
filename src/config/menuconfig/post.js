@@ -92,6 +92,6 @@ export const post = {
       icon: "StarBorder",
       text: "Quản lý người vận chuyển",
       child: [],
-    }
+    },
   ],
 };

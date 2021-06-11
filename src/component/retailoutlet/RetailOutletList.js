@@ -1,40 +1,45 @@
-import React, {useEffect, useState} from "react";
-import {useDispatch, useSelector} from "react-redux";
-import {authGet} from "../../api";
+import React, { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { authGet } from "../../api";
 import MaterialTable from "material-table";
-import {tableIcons} from "../../utils/iconutil";
-import {API_URL} from "../../config/config";
-import {Link} from "react-router-dom";
+import { tableIcons } from "../../utils/iconutil";
+import { API_URL } from "../../config/config";
+import { Link } from "react-router-dom";
 
 function RetailOutletList(props) {
-  const token = useSelector(state => state.auth.token);
+  const token = useSelector((state) => state.auth.token);
   const dispatch = useDispatch();
 
   const [retailoutlets, setRetailoutlets] = useState([]);
 
   const columns = [
     {
-      field: 'partyId',
-      title: 'Party Id',
-      render: rowData => <Link to={'/retailoutlet/' + rowData['partyId']}>
-        {rowData['partyId']}
-      </Link>
+      field: "partyId",
+      title: "Party Id",
+      render: (rowData) => (
+        <Link to={"/retailoutlet/" + rowData["partyId"]}>
+          {rowData["partyId"]}
+        </Link>
+      ),
     },
-    {field: 'retailOutletCode', title: 'Mã Đại lí bán lẻ'},
-    {field: 'retailOutletName', title: 'Tên Đại lí bán lẻ'}
+    { field: "retailOutletCode", title: "Mã Đại lí bán lẻ" },
+    { field: "retailOutletName", title: "Tên Đại lí bán lẻ" },
   ];
   const requestOptionsGet = {
-    method: 'GET',
-    headers: {'Content-Type': 'application/json', "X-Auth-Token": token}
+    method: "GET",
+    headers: { "Content-Type": "application/json", "X-Auth-Token": token },
   };
 
   function getListRetailOutlets() {
-    fetch(API_URL + '/get-retail-outlets-of-user-login-salesman', requestOptionsGet)
-      .then(response => response.json())
-      .then(response => {
+    fetch(
+      API_URL + "/get-retail-outlets-of-user-login-salesman",
+      requestOptionsGet
+    )
+      .then((response) => response.json())
+      .then((response) => {
         console.log(response);
         let arr = [];
-        response.forEach(d => {
+        response.forEach((d) => {
           arr.push(d);
         });
         setRetailoutlets(arr);
@@ -49,45 +54,47 @@ function RetailOutletList(props) {
   return (
     <div>
       <MaterialTable
-        options={{search: false, filtering: false}}
+        options={{ search: false, filtering: false }}
         title={"Danh sách đại lí bán lẻ"}
         columns={columns}
-        data={query =>
+        data={(query) =>
           new Promise((resolve, reject) => {
             console.log(query);
             let sortParam = "";
             if (query.orderBy !== undefined) {
-              sortParam = "&sort=" + query.orderBy.field + ',' + query.orderDirection;
+              sortParam =
+                "&sort=" + query.orderBy.field + "," + query.orderDirection;
             }
             let filterParam = "";
             if (query.filters.length > 0) {
               let filter = query.filters;
-              filter.forEach(v => {
-                filterParam = v.column.field + "=" + v.value + "&"
-              })
-              filterParam = "&" + filterParam.substring(0, filterParam.length - 1);
+              filter.forEach((v) => {
+                filterParam = v.column.field + "=" + v.value + "&";
+              });
+              filterParam =
+                "&" + filterParam.substring(0, filterParam.length - 1);
             }
 
             authGet(
               dispatch,
               token,
               "/get-page-retail-outlets-of-user-login-salesman" +
-              "?size=" +
-              query.pageSize +
-              "&page=" +
-              query.page +
-              sortParam +
-              filterParam
+                "?size=" +
+                query.pageSize +
+                "&page=" +
+                query.page +
+                sortParam +
+                filterParam
             ).then(
-              res => {
+              (res) => {
                 console.log("res = ", res);
                 resolve({
                   data: res.content,
                   page: res.number,
-                  totalCount: res.totalElements
+                  totalCount: res.totalElements,
                 });
               },
-              error => {
+              (error) => {
                 console.log("error");
               }
             );

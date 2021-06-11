@@ -20,15 +20,35 @@ import { DialogContent } from "@material-ui/core";
 import { API_URL } from "../../../config/config";
 import { Link } from "react-router-dom";
 import Upload from "../../../utils/Upload";
-import Autocomplete from '@material-ui/lab/Autocomplete';
+import Autocomplete from "@material-ui/lab/Autocomplete";
 const columns = [
-  { label: "Mã số chuyến", id: "postOfficeFixedTripId", minWidth: 150, type: 'normal' },
-  { label: "Xuất phát", id: "postOfficeTrip.fromPostOffice.postOfficeName", minWidth: 200, type: 'normal' },
-  { label: "Điểm đến", id: "postOfficeTrip.toPostOffice.postOfficeName", minWidth: 150, type: 'normal' },
-  { label: "Từ ngày", id: "fromDate", minWidth: 150, type: 'date' },
-  { label: "Đến ngày", id: "thruDate", minWidth: 150, type: 'date' },
-  { label: "Giờ đi", id: "scheduleDepartureTime", minWidth: 50, type: 'normal' },
-  { label: "Chi tiết", id: "postalAddress", minWidth: 150, type: 'address' },
+  {
+    label: "Mã số chuyến",
+    id: "postOfficeFixedTripId",
+    minWidth: 150,
+    type: "normal",
+  },
+  {
+    label: "Xuất phát",
+    id: "postOfficeTrip.fromPostOffice.postOfficeName",
+    minWidth: 200,
+    type: "normal",
+  },
+  {
+    label: "Điểm đến",
+    id: "postOfficeTrip.toPostOffice.postOfficeName",
+    minWidth: 150,
+    type: "normal",
+  },
+  { label: "Từ ngày", id: "fromDate", minWidth: 150, type: "date" },
+  { label: "Đến ngày", id: "thruDate", minWidth: 150, type: "date" },
+  {
+    label: "Giờ đi",
+    id: "scheduleDepartureTime",
+    minWidth: 50,
+    type: "normal",
+  },
+  { label: "Chi tiết", id: "postalAddress", minWidth: 150, type: "address" },
 ];
 
 const useStyles = makeStyles({
@@ -44,7 +64,7 @@ function formatDate(date) {
   var day = "0" + date.getDate();
   var month = "0" + (date.getMonth() + 1);
   var year = date.getFullYear();
-  return day.substr(-2) + '-' + month.substr(-2) + '-' + year;
+  return day.substr(-2) + "-" + month.substr(-2) + "-" + year;
 }
 
 export default function TripList() {
@@ -64,7 +84,9 @@ export default function TripList() {
   };
 
   const deleteCallBack = (postOfficeFixedTripId) => {
-    setData(data.filter((item) => item.postOfficeFixedTripId != postOfficeFixedTripId));
+    setData(
+      data.filter((item) => item.postOfficeFixedTripId != postOfficeFixedTripId)
+    );
   };
 
   useEffect(() => {
@@ -88,7 +110,10 @@ export default function TripList() {
       </Typography>
       <Button
         component={Link}
-        to={{ pathname: "/postoffice/viewallpostoffice", state: { data: data } }}
+        to={{
+          pathname: "/postoffice/viewallpostoffice",
+          state: { data: data },
+        }}
         variant="contained"
         color="primary"
         style={{ margin: 10, float: "right" }}
@@ -105,9 +130,9 @@ export default function TripList() {
         Thêm mới
       </Button>
       <Upload
-        url={'upload-post-office-list'}
+        url={"upload-post-office-list"}
         token={token}
-        buttonTitle={'Tải lên danh sách bưu cực'}
+        buttonTitle={"Tải lên danh sách bưu cực"}
         style={{ margin: 10, float: "right" }}
         handleSaveCallback={() => window.location.reload()}
       />
@@ -137,12 +162,11 @@ export default function TripList() {
                       let value;
                       column.id.split(".").reduce((prev, cur) => {
                         if (prev) {
-                          return value = prev[cur];
+                          return (value = prev[cur]);
+                        } else {
+                          return (value = row[cur]);
                         }
-                        else {
-                          return value = row[cur];
-                        }
-                      }, undefined)
+                      }, undefined);
                       return (
                         <TableCell key={column.id} align={column.align}>
                           {column.type === "address" ? (
@@ -150,24 +174,22 @@ export default function TripList() {
                               to={{
                                 pathname: "/postoffice/tripinfo",
                                 state: {
-                                  value: row
-                                }
-                              }
-                              }
+                                  value: row,
+                                },
+                              }}
                             >
                               Xem địa chỉ
                             </Link>
-                          )
-                            : column.type === 'date' ? formatDate(new Date(value)) : value
-                          }
+                          ) : column.type === "date" ? (
+                            formatDate(new Date(value))
+                          ) : (
+                            value
+                          )}
                         </TableCell>
                       );
                     })}
                     <TableCell>
-                      <DeleteButton
-                        postTrip={row}
-                        callback={deleteCallBack}
-                      />
+                      <DeleteButton postTrip={row} callback={deleteCallBack} />
                     </TableCell>
                   </TableRow>
                 );
@@ -195,13 +217,16 @@ function DeleteButton(props) {
 
   const handleRemove = () => {
     setOpen(false);
-    fetch(API_URL + "/delete-post-trip/" + props.postTrip.postOfficeFixedTripId, {
-      method: "DELETE",
-      headers: {
-        "content-type": "application/json",
-        "X-Auth-Token": token,
-      },
-    });
+    fetch(
+      API_URL + "/delete-post-trip/" + props.postTrip.postOfficeFixedTripId,
+      {
+        method: "DELETE",
+        headers: {
+          "content-type": "application/json",
+          "X-Auth-Token": token,
+        },
+      }
+    );
     props.callback(props.postTrip.postOfficeFixedTripId);
   };
 

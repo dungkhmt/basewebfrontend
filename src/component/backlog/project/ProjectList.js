@@ -5,34 +5,46 @@ import { authGet } from "../../../api";
 import Grid from "@material-ui/core/Grid";
 import Button from "@material-ui/core/Button";
 import { useHistory } from "react-router-dom";
-import { CardContent, Tooltip, IconButton, BarChartIcon } from "@material-ui/core";
+import {
+  CardContent,
+  Tooltip,
+  IconButton,
+  BarChartIcon,
+} from "@material-ui/core";
 import Card from "@material-ui/core/Card";
-import AddIcon from '@material-ui/icons/Add';
+import AddIcon from "@material-ui/icons/Add";
 import { makeStyles } from "@material-ui/core/styles";
 import changePageSize, {
   localization,
   tableIcons,
-} from '../../../utils/MaterialTableUtils';
-import {
-  TABLE_STRIPED_ROW_COLOR
-} from '../BacklogConfig';
+} from "../../../utils/MaterialTableUtils";
+import { TABLE_STRIPED_ROW_COLOR } from "../BacklogConfig";
 
 export default function ProjectList() {
   const dispatch = useDispatch();
-  const token = useSelector(state => state.auth.token);
+  const token = useSelector((state) => state.auth.token);
   const history = useHistory();
 
   const columns = [
-    { title: 'ID dự án', field: 'backlogProjectId' },
-    { title: 'Mã dự án', field: 'backlogProjectCode' },
-    { title: 'Tên dự án', field: 'backlogProjectName' },
+    { title: "ID dự án", field: "backlogProjectId" },
+    { title: "Mã dự án", field: "backlogProjectCode" },
+    { title: "Tên dự án", field: "backlogProjectName" },
   ];
 
   let [projectList, setProjectList] = useState([]);
 
   async function getProjectList() {
-    projectList = await authGet(dispatch, token, '/backlog/get-all-project-by-user');
-    projectList.sort((a, b) => { return (a.backlogProjectCode > b.backlogProjectCode) - (a.backlogProjectCode < b.backlogProjectCode) });
+    projectList = await authGet(
+      dispatch,
+      token,
+      "/backlog/get-all-project-by-user"
+    );
+    projectList.sort((a, b) => {
+      return (
+        (a.backlogProjectCode > b.backlogProjectCode) -
+        (a.backlogProjectCode < b.backlogProjectCode)
+      );
+    });
     setProjectList(projectList);
   }
 
@@ -49,7 +61,14 @@ export default function ProjectList() {
           data={projectList}
           options={{
             search: false,
-            rowStyle: rowData => { return { backgroundColor: TABLE_STRIPED_ROW_COLOR[rowData.tableData.id % TABLE_STRIPED_ROW_COLOR.length] } },
+            rowStyle: (rowData) => {
+              return {
+                backgroundColor:
+                  TABLE_STRIPED_ROW_COLOR[
+                    rowData.tableData.id % TABLE_STRIPED_ROW_COLOR.length
+                  ],
+              };
+            },
           }}
           localization={localization}
           onRowClick={(event, rowData) => {
@@ -57,14 +76,18 @@ export default function ProjectList() {
           }}
           actions={[
             {
-              icon: () => { return <AddIcon color='primary' fontSize='large' /> },
-              tooltip: 'Thêm dự án mới',
+              icon: () => {
+                return <AddIcon color="primary" fontSize="large" />;
+              },
+              tooltip: "Thêm dự án mới",
               isFreeAction: true,
-              onClick: () => { history.push('/backlog/create-project') }
+              onClick: () => {
+                history.push("/backlog/create-project");
+              },
             },
           ]}
         />
       </CardContent>
-    </div >
+    </div>
   );
 }

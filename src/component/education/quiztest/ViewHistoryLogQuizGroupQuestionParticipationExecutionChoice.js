@@ -42,7 +42,8 @@ function ViewHistoryLogQuizGroupQuestionParticipationExecutionChoice(props) {
       token,
       history,
       "get",
-      "get-history-log-quiz_group_question_participation_execution_choice/" + testId,
+      "get-history-log-quiz_group_question_participation_execution_choice/" +
+        testId,
       (res) => {
         console.log(res);
         //alert('assign students to groups OK');
@@ -51,7 +52,6 @@ function ViewHistoryLogQuizGroupQuestionParticipationExecutionChoice(props) {
       { 401: () => {} }
     );
   }
-
 
   useEffect(() => {
     getHistoryLogQuizGroupQuestionParticipationExecutionChoice();
@@ -64,8 +64,6 @@ function ViewHistoryLogQuizGroupQuestionParticipationExecutionChoice(props) {
           title={"Lịch sử làm quiz"}
           columns={columns}
           data={data}
-          
-
         />
       </CardContent>
     </Card>

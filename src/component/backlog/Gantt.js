@@ -8,14 +8,14 @@ export default class GanttChart extends React.PureComponent {
     className: PropTypes.oneOfType([
       PropTypes.string,
       PropTypes.array,
-      PropTypes.object
+      PropTypes.object,
     ]),
-    style: PropTypes.shape({})
+    style: PropTypes.shape({}),
   };
 
   static defaultProps = {
     className: undefined,
-    style: undefined
+    style: undefined,
   };
 
   componentDidMount() {
@@ -24,7 +24,7 @@ export default class GanttChart extends React.PureComponent {
 
   componentDidUpdate(prevProps, prevState) {
     if (prevProps.config !== this.props.config) {
-      this.node.childNodes.forEach(child => child.remove()); // remove previous Gantt
+      this.node.childNodes.forEach((child) => child.remove()); // remove previous Gantt
       this.gantt = new Gantt(this.node, this.props.config);
     }
   }
@@ -38,7 +38,7 @@ export default class GanttChart extends React.PureComponent {
     const { className, style } = this.props;
     return (
       <div
-        ref={node => (this.node = node)}
+        ref={(node) => (this.node = node)}
         className={
           className
             ? `ibm-gantt-chart-react ${className}`

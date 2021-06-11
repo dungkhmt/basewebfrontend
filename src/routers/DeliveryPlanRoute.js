@@ -8,14 +8,8 @@ export default function DeliveryPlanRoute() {
   return (
     <div>
       <Switch>
-        <Route
-          component={DeliveryPlanCreate} 
-          path={`${path}/create`} 
-        />
-        <Route
-          component={DeliveryTripList} 
-          path={`${path}/:deliveryPlanId`} 
-        />
+        <Route component={DeliveryPlanCreate} path={`${path}/create`} />
+        <Route component={DeliveryTripList} path={`${path}/:deliveryPlanId`} />
       </Switch>
     </div>
   );

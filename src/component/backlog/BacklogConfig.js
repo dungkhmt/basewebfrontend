@@ -14,20 +14,17 @@ export const ChartColor = [
   "#673ab7",
   "#00bcd4",
   "#cddc39",
-  "#ff5722"
+  "#ff5722",
 ];
 
-export const TABLE_STRIPED_ROW_COLOR = [
-  '#f6f6f6',
-  '#ffffff'
-]
+export const TABLE_STRIPED_ROW_COLOR = ["#f6f6f6", "#ffffff"];
 
 export const COLOR = {
-  red: '#F44336',
-  orange: '#FF9800',
-  blue: '#2196F3',
-  green: '#4CAF50'
-}
+  red: "#F44336",
+  orange: "#FF9800",
+  blue: "#2196F3",
+  green: "#4CAF50",
+};
 
 // task status
 export const TASK_STATUS = {
@@ -59,7 +56,7 @@ export const TASK_STATUS = {
   ],
   DEFAULT_ID_ASSIGNED: "TASK_INPROGRESS",
   DEFAULT_ID_NOT_ASSIGN: "TASK_OPEN",
-}
+};
 
 // task priority
 export const TASK_PRIORITY = {
@@ -83,8 +80,8 @@ export const TASK_PRIORITY = {
       color: COLOR.green,
     },
   ],
-  DEFAULT_PRIORITY: "NORMAL"
-}
+  DEFAULT_PRIORITY: "NORMAL",
+};
 
 // task category
 export const TASK_CATEGORY = {
@@ -110,6 +107,5 @@ export const TASK_CATEGORY = {
       color: COLOR.green,
     },
   ],
-  DEFAULT_CATEGORY: "TASK"
-}
-
+  DEFAULT_CATEGORY: "TASK",
+};

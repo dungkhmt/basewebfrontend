@@ -1,10 +1,10 @@
-import React, {useEffect, useState} from "react";
+import React, { useEffect, useState } from "react";
 import SimpleMap from "./SimpleMap";
-import {useDispatch, useSelector} from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 
 function getRandomColor() {
-  const letters = '0123456789ABCDEF';
-  let color = '#';
+  const letters = "0123456789ABCDEF";
+  let color = "#";
   for (let i = 0; i < 6; i++) {
     color += letters[Math.floor(Math.random() * 16)];
   }
@@ -13,17 +13,17 @@ function getRandomColor() {
 
 export default function Directions(props) {
   const dispatch = useDispatch();
-  const token = useSelector(state => state.auth.token);
+  const token = useSelector((state) => state.auth.token);
 
   const {
-    routes,  // list of route: [ {post:{label,lat,lng,title}, items:[item:{lat,lng,label,title}]}]
-    settings = {color: 'random'}, // color: is 'random' or [] list color code
-    setTotalDistance = () => null
+    routes, // list of route: [ {post:{label,lat,lng,title}, items:[item:{lat,lng,label,title}]}]
+    settings = { color: "random" }, // color: is 'random' or [] list color code
+    setTotalDistance = () => null,
   } = props;
 
-  const [mapOption,] = useState({
-    center: {lat: 21.165837, lng: 105.659798},
-    zoom: 8
+  const [mapOption] = useState({
+    center: { lat: 21.165837, lng: 105.659798 },
+    zoom: 8,
   });
   const [state, rerender] = useState([]);
 
@@ -33,69 +33,79 @@ export default function Directions(props) {
 
   function getTotalDistance(legs) {
     let sum = 0;
-    legs.forEach(leg => sum += leg['distance']['value']);
+    legs.forEach((leg) => (sum += leg["distance"]["value"]));
     return sum;
   }
 
   function updateColor() {
     let colors;
-    if (settings['color'] === 'random') {
+    if (settings["color"] === "random") {
       colors = [];
       for (let i = 0; i < routes.length; ++i) {
         colors.push(getRandomColor());
       }
     } else {
-      colors = settings['color'];
+      colors = settings["color"];
     }
     let idx = 0;
-    routes.forEach(route => {
-      if (route['color']) {
+    routes.forEach((route) => {
+      if (route["color"]) {
         return;
       }
-      route['color'] = colors[idx];
+      route["color"] = colors[idx];
       ++idx;
     });
   }
 
   function updateMarker(map) {
     let bounds = new window.google.maps.LatLngBounds();
-    routes.forEach(route => {
-      let post = route['post'];
+    routes.forEach((route) => {
+      let post = route["post"];
       let postMarker = new window.google.maps.Marker({
-        position: {lat: parseFloat(post['lat']), lng: parseFloat(post['lng'])},
+        position: {
+          lat: parseFloat(post["lat"]),
+          lng: parseFloat(post["lng"]),
+        },
         map: map,
-        title: post['title'] ? post['title'] : '',
+        title: post["title"] ? post["title"] : "",
       });
       bounds.extend(postMarker.position);
 
-      let items = route['items'];
+      let items = route["items"];
       let itemId = 0;
-      items.forEach(item => {
-        if (!item['lat'] || !item['lng']) {
+      items.forEach((item) => {
+        if (!item["lat"] || !item["lng"]) {
           return;
         }
         let marker = new window.google.maps.Marker({
-          position: {lat: parseFloat(item['lat']), lng: parseFloat(item['lng'])},
+          position: {
+            lat: parseFloat(item["lat"]),
+            lng: parseFloat(item["lng"]),
+          },
           map: map,
-          title: item['title'] ? item['title'] : '',
+          title: item["title"] ? item["title"] : "",
           icon: {
-            url: "http://chart.googleapis.com/chart?chst=d_map_spin&chld=0.5|0|" +
-              route['color'].substring(1) +
+            url:
+              "http://chart.googleapis.com/chart?chst=d_map_spin&chld=0.5|0|" +
+              route["color"].substring(1) +
               "|1|_|.",
-            labelOrigin: new window.google.maps.Point(9, 9)
+            labelOrigin: new window.google.maps.Point(9, 9),
           },
           label: {
-            color: 'white',
-            text: itemId + ''
-          }
+            color: "white",
+            text: itemId + "",
+          },
         });
         itemId += 1;
         bounds.extend(marker.position);
-        if (item['infoWindow']) {
-          marker.addListener('click',
-            () => new window.google.maps.InfoWindow({content: item['infoWindow']}).open(map, marker));
+        if (item["infoWindow"]) {
+          marker.addListener("click", () =>
+            new window.google.maps.InfoWindow({
+              content: item["infoWindow"],
+            }).open(map, marker)
+          );
         }
-      })
+      });
     });
 
     map.fitBounds(bounds);
@@ -104,26 +114,35 @@ export default function Directions(props) {
   function updateDirection(map) {
     const directionsService = new window.google.maps.DirectionsService();
     routes.forEach((route, index) => {
-      let items = route['items'];
-      let post = route['post'];
-      let postLatLng = post['lat'] + ',' + post['lng'];
-      let routeColor = route['color'];
+      let items = route["items"];
+      let post = route["post"];
+      let postLatLng = post["lat"] + "," + post["lng"];
+      let routeColor = route["color"];
 
       const wayPoints = [];
-      items.forEach(item => wayPoints.push({location: item['lat'] + ',' + item['lng'], stopover: true}));
+      items.forEach((item) =>
+        wayPoints.push({
+          location: item["lat"] + "," + item["lng"],
+          stopover: true,
+        })
+      );
 
-      directionsService.route({
+      directionsService.route(
+        {
           origin: postLatLng,
           destination: postLatLng,
           waypoints: wayPoints,
           optimizeWaypoints: false,
           provideRouteAlternatives: true,
-          travelMode: 'DRIVING'
-        }, (response, status) => {
-          if (status === 'OK') {
+          travelMode: "DRIVING",
+        },
+        (response, status) => {
+          if (status === "OK") {
             const paths = [];
-            let legs = response['routes'][0]['legs'];
-            legs.forEach(leg => leg['steps'].forEach(step => paths.push(step['path'])));
+            let legs = response["routes"][0]["legs"];
+            legs.forEach((leg) =>
+              leg["steps"].forEach((step) => paths.push(step["path"]))
+            );
 
             setTotalDistance(getTotalDistance(legs));
 
@@ -132,14 +151,16 @@ export default function Directions(props) {
                 strokeColor: routeColor,
                 strokeOpacity: 0.8,
                 strokeWeight: 2,
-                icons: [{
-                  icon: {
-                    path: window.google.maps.SymbolPath.FORWARD_CLOSED_ARROW
+                icons: [
+                  {
+                    icon: {
+                      path: window.google.maps.SymbolPath.FORWARD_CLOSED_ARROW,
+                    },
+                    repeat: "80px",
+                    offset: "30%",
                   },
-                  repeat: '80px',
-                  offset: '30%'
-                }],
-                path: paths
+                ],
+                path: paths,
               },
               suppressMarkers: true,
               draggable: true,
@@ -148,7 +169,7 @@ export default function Directions(props) {
               routeIndex: index,
             });
           } else {
-            window.alert('Directions request failed due to ' + status);
+            window.alert("Directions request failed due to " + status);
           }
         }
       );
@@ -161,15 +182,17 @@ export default function Directions(props) {
     updateDirection(map);
   }
 
-  return <div>
-    {
-      <SimpleMap
-        id={'directions'}
-        height="80vh"
-        option={mapOption}
-        onMapLoad={update}
-        flag={state}
-      />
-    }
-  </div>;
+  return (
+    <div>
+      {
+        <SimpleMap
+          id={"directions"}
+          height="80vh"
+          option={mapOption}
+          onMapLoad={update}
+          flag={state}
+        />
+      }
+    </div>
+  );
 }

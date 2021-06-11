@@ -1,89 +1,96 @@
-import React, {useEffect, useState} from "react";
-import {useDispatch, useSelector} from "react-redux";
-import {useParams} from "react-router-dom";
-import {authGet, authPost} from "../../api";
-import {MenuItem, TextField} from "@material-ui/core";
+import React, { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { useParams } from "react-router-dom";
+import { authGet, authPost } from "../../api";
+import { MenuItem, TextField } from "@material-ui/core";
 import Toolbar from "@material-ui/core/Toolbar";
 import Card from "@material-ui/core/Card";
 import CardContent from "@material-ui/core/CardContent";
 
 import MaterialTable from "material-table";
-import {tableIcons} from "../../utils/iconutil";
+import { tableIcons } from "../../utils/iconutil";
 
 function DistributorDetail(props) {
-
   const token = useSelector((state) => state.auth.token);
   const dispatch = useDispatch();
-  const {partyId} = useParams();
+  const { partyId } = useParams();
   const [distributorDetail, setDistributorDetail] = useState({});
-  const [salesmanList, setSalesmanList] = useState([])
-  const [retailOutletList, setRetailOutletList] = useState([])
-  const [selectedRetailOutlet, setSelectedRetailOutlet] = useState({retailOutletName: ''})
-  const [selectedSalesman, setSelectedSalesman] = useState({userLoginId: ''})
+  const [salesmanList, setSalesmanList] = useState([]);
+  const [retailOutletList, setRetailOutletList] = useState([]);
+  const [selectedRetailOutlet, setSelectedRetailOutlet] = useState({
+    retailOutletName: "",
+  });
+  const [selectedSalesman, setSelectedSalesman] = useState({ userLoginId: "" });
 
   const requestGetOption = {
-    method: 'GET',
-    headers: {'Content-Type': 'application/json', 'X-Auth-Token': token},
-  }
+    method: "GET",
+    headers: { "Content-Type": "application/json", "X-Auth-Token": token },
+  };
 
   const columns = [
     {
       field: "retailOutletName",
       title: "Đại lý bán lẻ",
 
-      editComponent: () => (<TextField
-        id="retailOutletName"
-        select
-        value={selectedRetailOutlet.retailOutletName}
-        label="Đại lý bán lẻ"
-        onChange={e => setSelectedRetailOutlet({retailOutletName: e.target.value})}
-        style={{
-          minWidth: '12rem'
-        }}
-      >
-        {retailOutletList.map(retailOutlet => (
-          <MenuItem
-            key={retailOutlet.partyId}
-            value={retailOutlet.retailOutletName}
-          >
-            {retailOutlet.retailOutletName}
-          </MenuItem>
-        ))}
-      </TextField>)
+      editComponent: () => (
+        <TextField
+          id="retailOutletName"
+          select
+          value={selectedRetailOutlet.retailOutletName}
+          label="Đại lý bán lẻ"
+          onChange={(e) =>
+            setSelectedRetailOutlet({ retailOutletName: e.target.value })
+          }
+          style={{
+            minWidth: "12rem",
+          }}
+        >
+          {retailOutletList.map((retailOutlet) => (
+            <MenuItem
+              key={retailOutlet.partyId}
+              value={retailOutlet.retailOutletName}
+            >
+              {retailOutlet.retailOutletName}
+            </MenuItem>
+          ))}
+        </TextField>
+      ),
     },
     {
       field: "salesmanName",
       title: "Nhân viên bán hàng",
-      editComponent: () => (<TextField
-        id="salesmanName"
-        select
-        value={selectedSalesman.userLoginId}
-        label="Nhân viên bán hàng"
-        onChange={e => setSelectedSalesman({userLoginId: e.target.value})}
-        style={{
-          minWidth: '12rem'
-        }}
-      >
-        {salesmanList.map(salesman => (
-          <MenuItem
-            key={salesman.partySalesman.partyId}
-            value={salesman.userLoginId}
-          >
-            {salesman.userLoginId}
-          </MenuItem>
-        ))}
-      </TextField>)
+      editComponent: () => (
+        <TextField
+          id="salesmanName"
+          select
+          value={selectedSalesman.userLoginId}
+          label="Nhân viên bán hàng"
+          onChange={(e) => setSelectedSalesman({ userLoginId: e.target.value })}
+          style={{
+            minWidth: "12rem",
+          }}
+        >
+          {salesmanList.map((salesman) => (
+            <MenuItem
+              key={salesman.partySalesman.partyId}
+              value={salesman.userLoginId}
+            >
+              {salesman.userLoginId}
+            </MenuItem>
+          ))}
+        </TextField>
+      ),
     },
-  ]
+  ];
 
   function getDistributorDetail() {
     //let distributorDetail = authGet(dispatch, token, "/distributor/" + partyId);
     authGet(dispatch, token, "/distributor/" + partyId).then(
-      res => {
+      (res) => {
         setDistributorDetail(res);
         console.log("detail", res);
       },
-      error => {
+      (error) => {
         setDistributorDetail({});
       }
     );
@@ -91,27 +98,27 @@ function DistributorDetail(props) {
 
   const getSalesmanList = () => {
     authGet(dispatch, token, "/get-all-salesman").then(
-      res => {
+      (res) => {
         setSalesmanList(res);
         console.log("List of salesman", res);
       },
-      error => {
+      (error) => {
         setSalesmanList({});
       }
     );
-  }
+  };
 
   const getRetailOutletList = () => {
     authGet(dispatch, token, "/get-retail-outlet-candidates/" + partyId).then(
-      res => {
+      (res) => {
         setRetailOutletList(res);
         console.log("List of retail outlet", res);
       },
-      error => {
+      (error) => {
         setRetailOutletList();
       }
     );
-  }
+  };
 
   useEffect(() => {
     getDistributorDetail();
@@ -124,10 +131,18 @@ function DistributorDetail(props) {
       <Card>
         <CardContent>
           <Toolbar>
-            <div style={{padding: '0px 30px'}}>
-              <b>partyId: </b> {partyId} <p/>
-              <b>Tên NPP: </b> {distributorDetail === null ? '' : distributorDetail.distributorName} <p/>
-              <b>Mã NPP: </b> {distributorDetail === null ? '' : distributorDetail.distributorCode} <p/>
+            <div style={{ padding: "0px 30px" }}>
+              <b>partyId: </b> {partyId} <p />
+              <b>Tên NPP: </b>{" "}
+              {distributorDetail === null
+                ? ""
+                : distributorDetail.distributorName}{" "}
+              <p />
+              <b>Mã NPP: </b>{" "}
+              {distributorDetail === null
+                ? ""
+                : distributorDetail.distributorCode}{" "}
+              <p />
             </div>
           </Toolbar>
 
@@ -138,7 +153,7 @@ function DistributorDetail(props) {
             icons={tableIcons}
             options={{
               //filtering: true,
-              actionsColumnIndex: -1
+              actionsColumnIndex: -1,
             }}
             // components={{
             //     Toolbar: props => (
@@ -162,39 +177,52 @@ function DistributorDetail(props) {
             editable={{
               onRowAdd: (newData) =>
                 new Promise((resolve) => {
-                  const retailOutlet = retailOutletList.find(retailOutlet => retailOutlet.retailOutletName === selectedRetailOutlet.retailOutletName)
-                  const salesman = salesmanList.find(salesman => salesman.userLoginId === selectedSalesman.userLoginId)
+                  const retailOutlet = retailOutletList.find(
+                    (retailOutlet) =>
+                      retailOutlet.retailOutletName ===
+                      selectedRetailOutlet.retailOutletName
+                  );
+                  const salesman = salesmanList.find(
+                    (salesman) =>
+                      salesman.userLoginId === selectedSalesman.userLoginId
+                  );
 
                   const inputModel = {
                     partyRetailOutletId: retailOutlet.partyId,
                     partySalesmanId: salesman.partySalesman.partyId,
                     partyDistributorId: partyId,
-                  }
+                  };
 
-                  authPost(dispatch, token, "/add-retail-outlet-distributor-salesman", inputModel)
-                    .then(() => {
-                      getDistributorDetail()
-                      getRetailOutletList()
-                      setSelectedRetailOutlet({retailOutletName: ''})
-                      setSelectedSalesman({userLoginId: ''})
-                    })
-                  resolve()
+                  authPost(
+                    dispatch,
+                    token,
+                    "/add-retail-outlet-distributor-salesman",
+                    inputModel
+                  ).then(() => {
+                    getDistributorDetail();
+                    getRetailOutletList();
+                    setSelectedRetailOutlet({ retailOutletName: "" });
+                    setSelectedSalesman({ userLoginId: "" });
+                  });
+                  resolve();
                 }),
 
               onRowDelete: (oldData) =>
                 new Promise((resolve) => {
-                  fetch("http://localhost:8080/api/delete-retail-outlet-distributor-salesman/" + oldData.retailOutletSalesmanVendorId, requestGetOption)
-                    .then(() => {
-                      getDistributorDetail()
-                      getRetailOutletList()
-                    })
-                  resolve()
+                  fetch(
+                    "http://localhost:8080/api/delete-retail-outlet-distributor-salesman/" +
+                      oldData.retailOutletSalesmanVendorId,
+                    requestGetOption
+                  ).then(() => {
+                    getDistributorDetail();
+                    getRetailOutletList();
+                  });
+                  resolve();
                 }),
             }}
           />
         </CardContent>
       </Card>
-
     </div>
   );
 }

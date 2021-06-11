@@ -53,31 +53,5 @@ export const teachingassignment = {
       text: "Tiến hành phân công",
       child: [],
     },
-
-    {
-      id: "MENU_EDUCATION_ASSIGNMENT_EXECUTION",
-      path: "/edu/class/register",
-      isPublic: false,
-      icon: null,
-      text: "Đăng ký lớp",
-      child: [],
-    },
-    {
-      id: "MENU_EDUCATION_ASSIGNMENT_EXECUTION",
-      path: "/edu/student/class/list",
-      isPublic: false,
-      icon: null,
-      text: "Danh sách lớp",
-      child: [],
-    },
-    {
-      id: "MENU_EDUCATION_ASSIGNMENT_EXECUTION",
-      path: "/edu/teacher/class/list",
-      isPublic: false,
-      icon: null,
-      text: "DS lớp giảng viên",
-      child: [],
-    },
-    
   ],
 };

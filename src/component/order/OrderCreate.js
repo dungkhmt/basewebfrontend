@@ -3,35 +3,38 @@ import Button from "@material-ui/core/Button";
 import Card from "@material-ui/core/Card";
 import CardActions from "@material-ui/core/CardActions";
 import CardContent from "@material-ui/core/CardContent";
-import {makeStyles} from "@material-ui/core/styles";
+import { makeStyles } from "@material-ui/core/styles";
 import TextField from "@material-ui/core/TextField";
 import Typography from "@material-ui/core/Typography";
 import MenuItem from "@material-ui/core/MenuItem";
 import MaterialTable from "material-table";
-import {failed} from "../../action/Auth";
-import {authPost} from "../../api";
-import React, {useEffect, useState} from "react";
-import {KeyboardDatePicker, MuiPickersUtilsProvider} from "@material-ui/pickers";
+import { failed } from "../../action/Auth";
+import { authPost } from "../../api";
+import React, { useEffect, useState } from "react";
+import {
+  KeyboardDatePicker,
+  MuiPickersUtilsProvider,
+} from "@material-ui/pickers";
 
-import {useHistory} from "react-router-dom";
+import { useHistory } from "react-router-dom";
 
-import {useDispatch, useSelector} from "react-redux";
-import {CircularProgress} from "@material-ui/core";
-import {NumberFormatCustom} from "../../utils/NumberFormatTextField";
+import { useDispatch, useSelector } from "react-redux";
+import { CircularProgress } from "@material-ui/core";
+import { NumberFormatCustom } from "../../utils/NumberFormatTextField";
 
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles((theme) => ({
   root: {
     padding: theme.spacing(4),
     "& .MuiTextField-root": {
       margin: theme.spacing(1),
-      width: 200
-    }
+      width: 200,
+    },
   },
   formControl: {
     margin: theme.spacing(1),
     minWidth: 120,
-    maxWidth: 300
-  }
+    maxWidth: 300,
+  },
 }));
 const ITEM_HEIGHT = 48;
 const ITEM_PADDING_TOP = 8;
@@ -39,13 +42,13 @@ const MenuProps = {
   PaperProps: {
     style: {
       maxHeight: ITEM_HEIGHT * 4.5 + ITEM_PADDING_TOP,
-      width: 250
-    }
-  }
+      width: 250,
+    },
+  },
 };
 
 function OrderCreate(props) {
-  const token = useSelector(state => state.auth.token);
+  const token = useSelector((state) => state.auth.token);
   const dispatch = useDispatch();
   const history = useHistory();
   const [salesman, setSalesman] = useState();
@@ -62,27 +65,26 @@ function OrderCreate(props) {
 
   const classes = useStyles();
 
-  const handleCustomerChange = event => {
+  const handleCustomerChange = (event) => {
     setCustomer(event.target.value);
   };
-  const handleSalesmanChange = event => {
+  const handleSalesmanChange = (event) => {
     setSalesman(event.target.value);
   };
-  const handleOrderDateChange = event => {
+  const handleOrderDateChange = (event) => {
     setOrderDate(event.target.value);
   };
 
-  const handleProductChange = event => {
+  const handleProductChange = (event) => {
     setProduct(event.target.value);
   };
-  const handleQuantityChange = event => {
+  const handleQuantityChange = (event) => {
     setQuantity(event.target.value);
   };
 
-
   const handleCancel = () => {
     //alert('Hủy');
-  }
+  };
   const handleAddProduct = () => {
     //alert('Thêm Sản Phẩm');
     // add (product, quantity) to products
@@ -90,78 +92,87 @@ function OrderCreate(props) {
     //products.push({productId:product, quantity:quantity});
     //console.log(products);
     let newArray = [...orderItems];
-    newArray.push({"productId": product['productId'], "productName": product['productName'], "quantity": quantity});
+    newArray.push({
+      productId: product["productId"],
+      productName: product["productName"],
+      quantity: quantity,
+    });
     setOrderItems(newArray);
-  }
+  };
 
-  const inputProd = {"statusId": null};
+  const inputProd = { statusId: null };
   useEffect(() => {
-    authPost(dispatch, token, "/get-list-product", inputProd).then(
-      res => {
-        console.log(res);
-        setIsRequesting(false);
-        if (res.status === 401) {
-          dispatch(failed());
-          throw Error("Unauthorized");
-
-        } else if (res.status === 200) {
-          return res.json();
+    authPost(dispatch, token, "/get-list-product", inputProd)
+      .then(
+        (res) => {
+          console.log(res);
+          setIsRequesting(false);
+          if (res.status === 401) {
+            dispatch(failed());
+            throw Error("Unauthorized");
+          } else if (res.status === 200) {
+            return res.json();
+          }
+        },
+        (error) => {
+          console.log(error);
         }
-      },
-      error => {
-        console.log(error);
-      }
-    ).then(res => {
-      console.log('got products', res);
-      setProducts(res.products);
-      console.log(products);
-    });
+      )
+      .then((res) => {
+        console.log("got products", res);
+        setProducts(res.products);
+        console.log(products);
+      });
   }, []);
 
   useEffect(() => {
-    authPost(dispatch, token, "/get-distributors-of-user-login", {"statusId": null}).then(
-      res => {
-        console.log(res);
-        setIsRequesting(false);
-        if (res.status === 401) {
-          dispatch(failed());
-          throw Error("Unauthorized");
-
-        } else if (res.status === 200) {
-          return res.json();
+    authPost(dispatch, token, "/get-distributors-of-user-login", {
+      statusId: null,
+    })
+      .then(
+        (res) => {
+          console.log(res);
+          setIsRequesting(false);
+          if (res.status === 401) {
+            dispatch(failed());
+            throw Error("Unauthorized");
+          } else if (res.status === 200) {
+            return res.json();
+          }
+        },
+        (error) => {
+          console.log(error);
         }
-      },
-      error => {
-        console.log(error);
-      }
-    ).then(res => {
-      console.log('got distributors ', res);
-      setDistributors(res);
-      console.log(distributors);
-    });
+      )
+      .then((res) => {
+        console.log("got distributors ", res);
+        setDistributors(res);
+        console.log(distributors);
+      });
   }, []);
 
   useEffect(() => {
-    authPost(dispatch, token, "/get-list-salesmans", {"statusId": null}).then(
-      res => {
-        console.log(res);
-        setIsRequesting(false);
-        if (res.status === 401) {
-          dispatch(failed());
-          throw Error("Unauthorized");
-
-        } else if (res.status === 200) {
-          return res.json();
+    authPost(dispatch, token, "/get-list-salesmans", { statusId: null })
+      .then(
+        (res) => {
+          console.log(res);
+          setIsRequesting(false);
+          if (res.status === 401) {
+            dispatch(failed());
+            throw Error("Unauthorized");
+          } else if (res.status === 200) {
+            return res.json();
+          }
+        },
+        (error) => {
+          console.log(error);
         }
-      },
-      error => {
-        console.log(error);
-      }
-    ).then(res => {
-      console.log('got salesman ', res);
-      setSalesmans(res);
-      console.log(salesmans);
-    });
+      )
+      .then((res) => {
+        console.log("got salesman ", res);
+        setSalesmans(res);
+        console.log(salesmans);
+      });
   }, []);
 
   const handleSubmit = () => {
@@ -169,32 +180,38 @@ function OrderCreate(props) {
       orderDate: orderDate,
       salesmanId: salesman,
       toCustomerId: customer,
-      orderItems: orderItems
+      orderItems: orderItems,
     };
     console.log("submit order, data = ", data);
 
     setIsRequesting(true);
-    authPost(dispatch, token, "/create-order-distributor-to-retail-outlet", data).then(
-      res => {
-        console.log(res);
-        setIsRequesting(false);
-        if (res.status === 401) {
-          dispatch(failed());
-          throw Error("Unauthorized");
-        } else if (res.status === 409) {
-          alert("User exits!!");
-        } else if (res.status === 201) {
-          return res.json();
+    authPost(
+      dispatch,
+      token,
+      "/create-order-distributor-to-retail-outlet",
+      data
+    )
+      .then(
+        (res) => {
+          console.log(res);
+          setIsRequesting(false);
+          if (res.status === 401) {
+            dispatch(failed());
+            throw Error("Unauthorized");
+          } else if (res.status === 409) {
+            alert("User exits!!");
+          } else if (res.status === 201) {
+            return res.json();
+          }
+        },
+        (error) => {
+          console.log(error);
         }
-      },
-      error => {
-        console.log(error);
-      }
-    ).then(res => {
-      history.push("/orders/list");
-    });
+      )
+      .then((res) => {
+        history.push("/orders/list");
+      });
   };
-
 
   return (
     <MuiPickersUtilsProvider utils={DateFnsUtils}>
@@ -205,7 +222,6 @@ function OrderCreate(props) {
           </Typography>
           <form className={classes.root} noValidate autoComplete="off">
             <div>
-
               <TextField
                 id="select-customer"
                 select
@@ -214,7 +230,7 @@ function OrderCreate(props) {
                 onChange={handleCustomerChange}
                 helperText="Select customer"
               >
-                {distributors.map(distributor => (
+                {distributors.map((distributor) => (
                   <MenuItem
                     key={distributor.partyId}
                     value={distributor.partyId}
@@ -232,20 +248,16 @@ function OrderCreate(props) {
                 onChange={handleSalesmanChange}
                 helperText="Select salesman"
               >
-                {salesmans.map(sm => (
-                  <MenuItem
-                    key={sm.userLoginId}
-                    value={sm.userLoginId}
-                  >
+                {salesmans.map((sm) => (
+                  <MenuItem key={sm.userLoginId} value={sm.userLoginId}>
                     {sm.partySalesman.person.lastName +
-                    ' ' +
-                    sm.partySalesman.person.middleName +
-                    ' ' +
-                    sm.partySalesman.person.firstName}
+                      " " +
+                      sm.partySalesman.person.middleName +
+                      " " +
+                      sm.partySalesman.person.firstName}
                   </MenuItem>
                 ))}
               </TextField>
-
 
               <KeyboardDatePicker
                 disableToolbar
@@ -257,7 +269,7 @@ function OrderCreate(props) {
                 value={orderDate}
                 onChange={handleOrderDateChange}
                 KeyboardButtonProps={{
-                  "aria-label": "change date"
+                  "aria-label": "change date",
                 }}
               />
             </div>
@@ -273,18 +285,11 @@ function OrderCreate(props) {
                     onChange={handleProductChange}
                     helperText="Select product"
                   >
-
-
-                    {products.map(product => (
-                      <MenuItem
-                        key={product}
-
-                        value={product}
-                      >
+                    {products.map((product) => (
+                      <MenuItem key={product} value={product}>
                         {product.productName}
                       </MenuItem>
                     ))}
-
                   </TextField>
 
                   <TextField
@@ -311,18 +316,14 @@ function OrderCreate(props) {
                 <MaterialTable
                   title="Danh sách sản phẩm"
                   columns={[
-                    {title: 'Mã SP', field: 'productId'},
-                    {title: 'Tên SP', field: 'productName'},
-                    {title: 'Số lượng', field: 'quantity'}
-
+                    { title: "Mã SP", field: "productId" },
+                    { title: "Tên SP", field: "productName" },
+                    { title: "Số lượng", field: "quantity" },
                   ]}
                   data={orderItems}
-
                 />
               </Card>
             </div>
-
-
           </form>
         </CardContent>
         <CardActions>
@@ -332,7 +333,7 @@ function OrderCreate(props) {
             color="primary"
             onClick={handleSubmit}
           >
-            {isRequesting ? <CircularProgress/> : "Lưu"}
+            {isRequesting ? <CircularProgress /> : "Lưu"}
           </Button>
           <Button
             disabled={isRequesting}
@@ -340,9 +341,8 @@ function OrderCreate(props) {
             color="primary"
             onClick={handleCancel}
           >
-            {isRequesting ? <CircularProgress/> : "Hủy"}
+            {isRequesting ? <CircularProgress /> : "Hủy"}
           </Button>
-
         </CardActions>
       </Card>
     </MuiPickersUtilsProvider>
