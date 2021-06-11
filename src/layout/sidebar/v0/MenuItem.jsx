@@ -11,9 +11,9 @@ import classNames from "classnames";
 import React, { Fragment, useState } from "react";
 import { connect } from "react-redux";
 import { NavLink } from "react-router-dom";
-import { whiteColor } from "../assets/jss/material-dashboard-react";
-import styles from "../assets/jss/material-dashboard-react/components/sidebarStyle";
-import { menuIconMap } from "../config/menuconfig";
+import { whiteColor } from "../../../assets/jss/material-dashboard-react";
+import styles from "../../../assets/jss/material-dashboard-react/components/sidebarStyle";
+import { menuIconMap } from "../../../config/menuconfig";
 
 const useStyles = makeStyles(() => ({
   firstOrderMenu: {
