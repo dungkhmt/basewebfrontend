@@ -14,7 +14,7 @@ import bgImage from "../assets/img/sidebar-2.jpg";
 import Back2Top from "../utils/Back2Top";
 import AccountButton from "./account/AccountButton";
 import { LayoutBreadcrumbs } from "./LayoutBreadcrumbs";
-import SideBar from "./SideBar";
+import SideBar from "./sidebar/v1/SideBar";
 
 const useStyles = makeStyles((theme) => ({
   root: {
