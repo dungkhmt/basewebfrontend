@@ -41,7 +41,7 @@ const taskCounterOpt = {
   maintainAspectRatio: false,
   title: {
     display: true,
-    text: "Thống kê tình trạng dự án",
+    text: "Backlog",
     fontSize: 20,
     lineHeight: 1.5,
   },
@@ -105,7 +105,7 @@ export default function Home(props) {
     labels: dateRevenue,
     datasets: [
       {
-        label: "Revenue",
+        label: "Rev.",
         backgroundColor: "rgba(255,99,132,0.2)",
         borderColor: "rgba(255,99,132,1)",
         borderWidth: 1,
@@ -120,7 +120,7 @@ export default function Home(props) {
     labels: vehicle,
     datasets: [
       {
-        label: "Distance of vehicle",
+        label: "Dis.",
         backgroundColor: "rgba(255,99,132,0.2)",
         borderColor: "rgba(255,99,132,1)",
         borderWidth: 1,
@@ -135,7 +135,7 @@ export default function Home(props) {
     labels: dateStudentParticipation,
     datasets: [
       {
-        label: "Participation",
+        label: "Part.",
         backgroundColor: "rgba(255,99,132,0.2)",
         borderColor: "rgba(255,99,132,1)",
         borderWidth: 1,
@@ -151,7 +151,7 @@ export default function Home(props) {
     labels: dateQuizParticipation,
     datasets: [
       {
-        label: "Quiz Participation",
+        label: "Quiz.",
         backgroundColor: "rgba(255,99,132,0.2)",
         borderColor: "rgba(255,99,132,1)",
         borderWidth: 1,
@@ -372,11 +372,11 @@ export default function Home(props) {
     <div>
       <Grid container spacing={3}>
         <Grid item xs={6}>
-          <h2>Thống kê học course</h2>
+          <h2>Cour.</h2>
           <HorizontalBar data={dataStudentParticipation} />
         </Grid>
         <Grid item xs={6}>
-          <h2>Thống kê làm quiz</h2>
+          <h2>Quiz.</h2>
           <HorizontalBar data={dataQuizParticipation} />
         </Grid>
         <Grid item xs={12}>
@@ -388,11 +388,11 @@ export default function Home(props) {
         </Grid>
 
         <Grid item xs={6}>
-          <h2>Thống kê doanh số</h2>
+          <h2>Rev.</h2>
           <HorizontalBar data={dataRevenue} />
         </Grid>
         <Grid item xs={6}>
-          <h2>Thống kê khoảng cách di chuyển các xe</h2>
+          <h2>Dis.</h2>
           <HorizontalBar data={dataVehicleDistance} />
         </Grid>
       </Grid>

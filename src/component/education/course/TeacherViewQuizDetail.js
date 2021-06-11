@@ -94,6 +94,10 @@ export default function TeacherViewQuizDetail({ quiz, index }) {
 
   const [open, setOpen] = useState(false);
 
+  function handleUpdateQuizQuestion() {
+    history.push("/edu/teacher/course/quiz/detail/" + quiz.questionId);
+  }
+
   function handleChangeStatus() {
     //alert('change status ' + quizz.questionId);
     request(
@@ -116,7 +120,6 @@ export default function TeacherViewQuizDetail({ quiz, index }) {
         {quiz.statusId})&nbsp;&nbsp;
         {parse(quiz.statement)}
       </Box>
-
       {/*<FormGroup row className={classes.answerWrapper}>
         {quiz.quizChoiceAnswerList.map((answer) => (
           <FormControlLabel
@@ -133,13 +136,20 @@ export default function TeacherViewQuizDetail({ quiz, index }) {
           />
           ))}
           </FormGroup>*/}
-
       <Button
         variant="contained"
         color="primary"
         onClick={() => handleChangeStatus()}
       >
         Thay đổi trạng thái
+      </Button>
+      &nbsp;&nbsp;
+      <Button
+        variant="contained"
+        color="primary"
+        onClick={() => handleUpdateQuizQuestion()}
+      >
+        Cập nhật
       </Button>
     </div>
   );
