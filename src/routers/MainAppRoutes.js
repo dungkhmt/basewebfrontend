@@ -1,12 +1,8 @@
-import React, { lazy, Suspense, useEffect } from "react";
-import { useDispatch } from "react-redux";
-import { Route, Switch, useLocation } from "react-router-dom";
-import { updateSelectedFuction } from "../action";
+import React, { lazy, Suspense } from "react";
+import { Route, Switch } from "react-router-dom";
 import PrivateRoute from "../common/PrivateRoute";
 import { Home } from "../component";
 import error from "../component/common/errornotfound";
-import Loading from "../component/common/Loading";
-import { mapPathMenu } from "../config/menuconfig";
 import { Layout } from "../layout";
 import BouncingBallsLoader from "../views/common/BouncingBallsLoader";
 import NotFound from "../views/errors/NotFound";
@@ -60,20 +56,23 @@ const BacklogRoute = lazy(() => import("./BacklogRoute"));
 const ScheduleRoute = lazy(() => import("./ScheduleRoute"));
 
 function MainAppRoute(props) {
-  const location = useLocation();
-  const dispatch = useDispatch();
+  // const location = useLocation();
+  // const dispatch = useDispatch();
 
-  useEffect(() => {
-    if (location.pathname === "/" || location.pathname === "") {
-      dispatch(updateSelectedFuction(null));
-    }
+  // /**
+  //  * This func has a bug, it only display properly when access menu in order, if access by random URL, it failed.
+  //  */
+  // useEffect(() => {
+  //   if (location.pathname === "/" || location.pathname === "") {
+  //     dispatch(updateSelectedFuction(null));
+  //   }
 
-    let selectedFunction = mapPathMenu.get(location.pathname);
+  //   let selectedFunction = mapPathMenu.get(location.pathname);
 
-    if (selectedFunction) {
-      dispatch(updateSelectedFuction(selectedFunction));
-    }
-  }, [location]);
+  //   if (selectedFunction) {
+  //     dispatch(updateSelectedFuction(selectedFunction));
+  //   }
+  // }, [location]);
 
   return (
     <Layout>
