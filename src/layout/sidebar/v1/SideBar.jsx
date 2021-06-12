@@ -91,7 +91,7 @@ export default function SideBar(props) {
         style={{
           marginTop: 64,
           position: "relative",
-          height: "calc(100vh - 82px)",
+          height: "100%",
           zIndex: "4",
           overflowX: "hidden",
           overscrollBehaviorY: "none", // To prevent tag <main> be scrolled when menu'scrollbar reach end
