@@ -6,10 +6,11 @@ import PropTypes from "prop-types";
 import React from "react";
 import SimpleBar from "simplebar-react";
 import "simplebar/dist/simplebar.min.css";
-import { drawerWidth } from "../../../assets/jss/material-dashboard-react";
 import styles from "../../../assets/jss/material-dashboard-react/components/sidebarStyle";
 import { MENU_LIST } from "../../../config/menuconfig";
 import GroupMenuItem from "./GroupMenuItem";
+
+export const drawerWidth = 300;
 
 const useStyles = makeStyles((theme) => ({
   menu: {
