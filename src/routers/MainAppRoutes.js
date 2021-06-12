@@ -1,10 +1,11 @@
+import { LinearProgress } from "@material-ui/core";
 import React, { lazy, Suspense } from "react";
 import { Route, Switch } from "react-router-dom";
 import PrivateRoute from "../common/PrivateRoute";
 import { Home } from "../component";
 import error from "../component/common/errornotfound";
 import { Layout } from "../layout";
-import BouncingBallsLoader from "../views/common/BouncingBallsLoader";
+import { drawerWidth } from "../layout/sidebar/v1/SideBar";
 import NotFound from "../views/errors/NotFound";
 
 const DepotContainerFuncRoute = lazy(() => import("./DepotContainerFuncRoute"));
@@ -76,7 +77,20 @@ function MainAppRoute(props) {
 
   return (
     <Layout>
-      <Suspense fallback={<BouncingBallsLoader />}>
+      <Suspense
+        fallback={
+          // <BouncingBallsLoader />
+          <LinearProgress
+            style={{
+              position: "absolute",
+              top: 0,
+              left: -drawerWidth,
+              width: "calc(100% + 300px)",
+              zIndex: 1202,
+            }}
+          />
+        }
+      >
         <Switch>
           <PrivateRoute component={Home} exact path="/" />
 
