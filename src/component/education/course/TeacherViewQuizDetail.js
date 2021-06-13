@@ -101,8 +101,8 @@ export default function TeacherViewQuizDetail({ quiz, index }) {
   function handleChangeStatus() {
     //alert('change status ' + quizz.questionId);
     request(
-      token,
-      history,
+      // token,
+      // history,
       "get",
       "change-quiz-open-close-status/" + quiz.questionId,
       (res) => {

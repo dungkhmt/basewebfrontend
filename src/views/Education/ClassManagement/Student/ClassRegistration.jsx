@@ -1,25 +1,23 @@
-import React, { useRef, useState, useEffect } from "react";
 import {
+  Avatar,
   Card,
   CardContent,
-  Typography,
-  Box,
   CardHeader,
   Paper,
-  Avatar,
+  Typography,
 } from "@material-ui/core";
+import { makeStyles, MuiThemeProvider } from "@material-ui/core/styles";
 import MaterialTable from "material-table";
-import { request } from "../../../../api";
-import { MuiThemeProvider } from "@material-ui/core/styles";
-import { makeStyles } from "@material-ui/core/styles";
-import { errorNoti, successNoti } from "../../../../utils/Notification";
+import React, { useEffect, useRef, useState } from "react";
 import { useSelector } from "react-redux";
 import { useHistory } from "react-router";
+import { request } from "../../../../api";
+import PositiveButton from "../../../../component/education/classmanagement/PositiveButton";
 import changePageSize, {
   localization,
   tableIcons,
 } from "../../../../utils/MaterialTableUtils";
-import PositiveButton from "../../../../component/education/classmanagement/PositiveButton";
+import { errorNoti, successNoti } from "../../../../utils/Notification";
 
 const useStyles = makeStyles((theme) => ({
   card: {
@@ -112,8 +110,8 @@ function ClassRegistration() {
       }
 
       request(
-        token,
-        history,
+        // token,
+        // history,
         "POST",
         `/edu/class?page=${query.page}&size=${query.pageSize}`,
         (res) => {
@@ -158,8 +156,8 @@ function ClassRegistration() {
     setRegisteredClasses(tmp);
 
     request(
-      token,
-      history,
+      // token,
+      // history,
       "POST",
       "/edu/class/register",
       () => {

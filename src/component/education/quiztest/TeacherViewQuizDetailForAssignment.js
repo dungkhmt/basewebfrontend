@@ -135,8 +135,8 @@ export default function TeacherViewQuizDetailForAssignment({
   const onSelectGroup = () => {
     handleClose();
     request(
-      token,
-      history,
+      // token,
+      // history,
       "post",
       "/add-quizgroup-question-assignment",
       (res) => {},

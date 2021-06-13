@@ -79,10 +79,15 @@ function TClassList() {
 
   // Functions.
   const getClasses = () => {
-    request(token, history, "get", "/edu/class/list/teacher", (res) => {
-      changePageSize(res.data.length, tableRef);
-      setData(res.data);
-    });
+    request(
+      // token, history,
+      "get",
+      "/edu/class/list/teacher",
+      (res) => {
+        changePageSize(res.data.length, tableRef);
+        setData(res.data);
+      }
+    );
   };
 
   useEffect(() => {

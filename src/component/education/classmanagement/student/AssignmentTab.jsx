@@ -76,8 +76,8 @@ function AssignmentTab({ classId }) {
 
   const getAssign = () => {
     request(
-      token,
-      history,
+      // token,
+      // history,
       "get",
       `/edu/class/${classId}/assignments/student`,
       (res) => {

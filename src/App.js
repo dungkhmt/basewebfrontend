@@ -1,9 +1,11 @@
 import { CssBaseline } from "@material-ui/core";
 import { createMuiTheme, MuiThemeProvider } from "@material-ui/core/styles";
 import React, { Component } from "react";
-import { BrowserRouter as Router } from "react-router-dom";
+import { Router } from "react-router-dom";
+// import { BrowserRouter as Router } from "react-router-dom";
 import { Slide, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import history from "./history.js";
 import Routes from "./Routes";
 
 const theme = createMuiTheme({
@@ -32,7 +34,8 @@ class App extends Component {
     return (
       <MuiThemeProvider theme={theme}>
         <CssBaseline />
-        <Router>
+        {/* <Router> */}
+        <Router history={history}>
           <Routes />
           <ToastContainer
             position="bottom-left"
@@ -48,6 +51,7 @@ class App extends Component {
             pauseOnHover
           />
         </Router>
+        {/* </Router> */}
       </MuiThemeProvider>
     );
   }

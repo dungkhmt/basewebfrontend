@@ -1,13 +1,13 @@
 import { Button, Card, CardContent, Typography } from "@material-ui/core/";
 //import IconButton from '@material-ui/core/IconButton';
 import { makeStyles } from "@material-ui/core/styles";
+import AddIcon from "@material-ui/icons/Add";
 import parse from "html-react-parser";
 import MaterialTable from "material-table";
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useHistory } from "react-router-dom";
 import { request } from "../../../api";
-import AddIcon from "@material-ui/icons/Add";
 const useStyles = makeStyles({
   table: {
     minWidth: 700,
@@ -61,8 +61,8 @@ function QuizTestGroupQuestionList(props) {
       questionId: rowData.questionId,
     };
     request(
-      token,
-      history,
+      // token,
+      // history,
       "post",
       "remove-quizgroup-question-assignment",
       (res) => {
@@ -75,8 +75,8 @@ function QuizTestGroupQuestionList(props) {
   }
   async function getQuizTestGroupQuestions() {
     request(
-      token,
-      history,
+      // token,
+      // history,
       "get",
       "get-quiz-group-question-assignment-of-test/" + testId,
       (res) => {

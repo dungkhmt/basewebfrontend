@@ -1,6 +1,8 @@
 import axios from "axios";
+import { store } from ".";
 import { failed } from "./action/Auth";
 import { API_URL } from "./config/config";
+import history from "./history";
 import { errorNoti, infoNoti } from "./utils/Notification";
 
 export const authPost = (dispatch, token, url, body) => {
@@ -188,10 +190,15 @@ const isFunction = (func) =>
     "function" === typeof func ||
     func instanceof Function);
 
+const axiosInstance = axios.create({
+  baseURL: API_URL,
+});
+
+// Alter defaults after instance has been created
+axiosInstance.defaults.headers.common["Content-Type"] = "application/json";
+
 /**
  * url, method, and data properties don't need to be specified in config.
- * @param {*} token
- * @param {*} history
  * @param {*} method
  * @param {*} url
  * @param {*} onSuccess
@@ -199,26 +206,22 @@ const isFunction = (func) =>
  * @param {*} data
  * @param {*} config
  */
-export const request = async (
-  token,
-  history,
+export async function request(
   method,
   url,
   successHandler,
   errorHandlers = {},
   data,
   config
-) => {
+) {
   try {
-    const res = await axios({
-      baseURL: API_URL,
+    const res = await axiosInstance.request({
       method: method.toLowerCase(),
       url: url,
       data: data,
       ...config,
       headers: {
-        "content-type": "application/json",
-        "X-Auth-Token": token,
+        "X-Auth-Token": store.getState().auth.token,
         ...config?.headers,
       },
     });
@@ -281,4 +284,4 @@ export const request = async (
     }
     console.log("Request config", e.config);
   }
-};
+}

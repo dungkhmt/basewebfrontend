@@ -1,32 +1,11 @@
-import {
-  Button,
-  Card,
-  CardActions,
-  CardContent,
-  TextField,
-  Typography,
-  IconButton,
-  MenuItem,
-  Checkbox,
-  Grid,
-  Tooltip,
-} from "@material-ui/core/";
-import React, { useState, useEffect, useReducer } from "react";
-import { useHistory } from "react-router-dom";
-import { authPost, authGet, authPostMultiPart, request } from "../../../api";
-import { useDispatch, useSelector } from "react-redux";
-import { useParams } from "react-router";
-import MaterialTable from "material-table";
+import { Card, CardContent } from "@material-ui/core/";
 //import IconButton from '@material-ui/core/IconButton';
-import {
-  withStyles,
-  makeStyles,
-  ThemeProvider,
-  createMuiTheme,
-} from "@material-ui/core/styles";
-import { green } from "@material-ui/core/colors";
-import AddCircleOutlineIcon from "@material-ui/icons/AddCircleOutline";
-import { Delete } from "@material-ui/icons";
+import { makeStyles } from "@material-ui/core/styles";
+import MaterialTable from "material-table";
+import React, { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { useHistory } from "react-router-dom";
+import { request } from "../../../api";
 
 const useStyles = makeStyles({
   table: {
@@ -58,8 +37,8 @@ function QuizTestGroupParticipants(props) {
 
   async function getQuizTestGroupParticipants() {
     request(
-      token,
-      history,
+      // token,
+      // history,
       "get",
       "get-all-quiz-test-group-participants/" + testId,
       (res) => {

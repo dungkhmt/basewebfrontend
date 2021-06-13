@@ -152,8 +152,8 @@ function SAssignmentDetail() {
   // Functions.
   const getAssignDetail = () => {
     request(
-      token,
-      history,
+      // token,
+      // history,
       "get",
       `/edu/assignment/${params.assignmentId}/student`,
       (res) => {
@@ -203,8 +203,8 @@ function SAssignmentDetail() {
       data.append("file", file);
 
       request(
-        token,
-        history,
+        // token,
+        // history,
         "post",
         `/edu/assignment/${params.assignmentId}/submission`,
         (res) => {

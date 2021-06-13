@@ -139,8 +139,8 @@ export default function QuizTestStudentList(props) {
   //
   const getQuizGroup = () => {
     request(
-      token,
-      history,
+      // token,
+      // history,
       "get",
       `/get-test-groups-info?testId=${testId}`,
       (res) => {
@@ -154,8 +154,8 @@ export default function QuizTestStudentList(props) {
 
     if (selectedGroup)
       request(
-        token,
-        history,
+        // token,
+        // history,
         "post",
         "/add-participant-to-quiz-test-group",
         (res) => {
@@ -177,8 +177,8 @@ export default function QuizTestStudentList(props) {
 
   function getStudentList() {
     request(
-      token,
-      history,
+      // token,
+      // history,
       "GET",
       "/get-all-student-in-test?testId='" + testId + "'",
       (res) => {
@@ -221,8 +221,8 @@ export default function QuizTestStudentList(props) {
       formData.append("testId", testId);
       formData.append("studentList", rejectList.join(";"));
       request(
-        token,
-        history,
+        // token,
+        // history,
         "POST",
         "/reject-students-in-test",
         (res) => {

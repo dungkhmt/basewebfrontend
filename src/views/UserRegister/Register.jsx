@@ -153,8 +153,8 @@ export default function NewRegister() {
   // Functions.
   const getRoles = () => {
     request(
-      token,
-      history,
+      // token,
+      // history,
       "get",
       "/roles",
       (res) => {
@@ -171,8 +171,8 @@ export default function NewRegister() {
   const onSubmit = (data) => {
     setLoading(true);
     request(
-      token,
-      history,
+      // token,
+      // history,
       "post",
       "/user/register",
       () => {

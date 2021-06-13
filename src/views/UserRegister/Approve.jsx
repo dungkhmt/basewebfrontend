@@ -1,26 +1,25 @@
-import React, { useRef, useState, useEffect } from "react";
 import {
+  Avatar,
   Card,
   CardContent,
-  Typography,
   CardHeader,
-  Paper,
-  Avatar,
   Link,
+  Paper,
+  Typography,
 } from "@material-ui/core";
+import { makeStyles, MuiThemeProvider } from "@material-ui/core/styles";
 import MaterialTable from "material-table";
-import { request } from "../../api";
-import { MuiThemeProvider } from "@material-ui/core/styles";
-import { makeStyles } from "@material-ui/core/styles";
+import React, { useEffect, useRef, useState } from "react";
 import { FcApproval } from "react-icons/fc";
-import { errorNoti } from "../../utils/Notification";
 import { useSelector } from "react-redux";
 import { useHistory } from "react-router";
+import { request } from "../../api";
 import RegistrationDetail from "../../component/userregister/RegistrationDetail";
 import changePageSize, {
   localization,
   tableIcons,
 } from "../../utils/MaterialTableUtils";
+import { errorNoti } from "../../utils/Notification";
 
 const useStyles = makeStyles((theme) => ({
   card: {
@@ -78,41 +77,46 @@ function NewApprove() {
 
   // Functions.
   const getData = () => {
-    request(token, history, "get", `/user/registration-list`, (res) => {
-      let registrations;
-      let roles = {};
+    request(
+      // token, history,
+      "get",
+      `/user/registration-list`,
+      (res) => {
+        let registrations;
+        let roles = {};
 
-      res.data.roles.forEach((role) => {
-        roles[role.id] = role.name;
-      });
+        res.data.roles.forEach((role) => {
+          roles[role.id] = role.name;
+        });
 
-      // Convert registered roles from string to array.
-      registrations = res.data.regists.map((regist) => {
-        return {
-          ...regist,
-          roleIds: regist.roles.split(","),
-          roleNames: regist.roles
-            .split(",")
-            .map((id) => roles[id])
-            .join(", "),
-        };
-      });
+        // Convert registered roles from string to array.
+        registrations = res.data.regists.map((regist) => {
+          return {
+            ...regist,
+            roleIds: regist.roles.split(","),
+            roleNames: regist.roles
+              .split(",")
+              .map((id) => roles[id])
+              .join(", "),
+          };
+        });
 
-      changePageSize(registrations.length, tableRef);
-      setRegistrations(registrations);
-      setRolesArr(
-        res.data.roles.sort((firstRole, secondRole) =>
-          firstRole.name.localeCompare(secondRole.name)
-        )
-      );
-      setRolesMap(roles);
-    });
+        changePageSize(registrations.length, tableRef);
+        setRegistrations(registrations);
+        setRolesArr(
+          res.data.roles.sort((firstRole, secondRole) =>
+            firstRole.name.localeCompare(secondRole.name)
+          )
+        );
+        setRolesMap(roles);
+      }
+    );
   };
 
   const handleApprove = (currRowChanged, userLoginId, assignedRoles) => {
     request(
-      token,
-      history,
+      // token,
+      // history,
       "post",
       `/user/approve-registration`,
       () => {

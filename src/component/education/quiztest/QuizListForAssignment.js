@@ -39,8 +39,8 @@ function QuizListForAssignment({ testId }) {
   //
   const getQuizListOfClass = () => {
     request(
-      token,
-      history,
+      // token,
+      // history,
       "get",
       `/get-list-quiz-for-assignment-of-test/${testId}`,
       (res) => {
@@ -58,8 +58,8 @@ function QuizListForAssignment({ testId }) {
 
   const getQuizGroup = () => {
     request(
-      token,
-      history,
+      // token,
+      // history,
       "get",
       `/get-test-groups-info?testId=${testId}`,
       (res) => {

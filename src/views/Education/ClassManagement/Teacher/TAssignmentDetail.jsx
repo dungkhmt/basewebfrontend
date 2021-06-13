@@ -178,8 +178,8 @@ function TAssignmentDetail() {
   // Functions.
   const getAssignDetail = () => {
     request(
-      token,
-      history,
+      // token,
+      // history,
       "get",
       `/edu/assignment/${params.assignmentId}/teacher`,
       (res) => {
@@ -263,8 +263,8 @@ function TAssignmentDetail() {
     setOpen(false);
 
     request(
-      token,
-      history,
+      // token,
+      // history,
       "delete",
       `/edu/assignment/${params.assignmentId}`,
       () => {

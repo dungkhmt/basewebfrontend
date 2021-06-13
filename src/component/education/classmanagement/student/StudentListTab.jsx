@@ -61,10 +61,15 @@ function StudentListTab({ classId }) {
   ];
 
   const getStudentsOfClass = () => {
-    request(token, history, "get", `/edu/class/${classId}/students`, (res) => {
-      changePageSize(res.data.length, studentTableRef);
-      setStudents(res.data);
-    });
+    request(
+      // token, history,
+      "get",
+      `/edu/class/${classId}/students`,
+      (res) => {
+        changePageSize(res.data.length, studentTableRef);
+        setStudents(res.data);
+      }
+    );
   };
 
   useEffect(() => {

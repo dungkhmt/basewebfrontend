@@ -1,32 +1,17 @@
-import {
-  Button,
-  Card,
-  CardActions,
-  CardContent,
-  TextField,
-  Typography,
-  IconButton,
-  MenuItem,
-  Checkbox,
-  Grid,
-  Tooltip,
-} from "@material-ui/core/";
-import React, { useState, useEffect, useReducer } from "react";
-import { useHistory } from "react-router-dom";
-import { authPost, authGet, authPostMultiPart, request } from "../../../api";
-import { useDispatch, useSelector } from "react-redux";
-import { useParams } from "react-router";
-import MaterialTable from "material-table";
+import { Button, Checkbox, Tooltip } from "@material-ui/core/";
+import { green } from "@material-ui/core/colors";
 //import IconButton from '@material-ui/core/IconButton';
 import {
-  withStyles,
+  createMuiTheme,
   makeStyles,
   ThemeProvider,
-  createMuiTheme,
 } from "@material-ui/core/styles";
-import { green } from "@material-ui/core/colors";
-
 import CheckCircleOutlineIcon from "@material-ui/icons/CheckCircleOutline";
+import MaterialTable from "material-table";
+import React, { useEffect, useReducer, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { useHistory } from "react-router-dom";
+import { request } from "../../../api";
 
 const useStyles = makeStyles({
   table: {
@@ -109,8 +94,8 @@ export default function QuizTestJoinRequest(props) {
 
   async function getStudentList() {
     request(
-      token,
-      history,
+      // token,
+      // history,
       "GET",
       "/get-all-student-in-test?testId='" + testId + "'",
       (res) => {
@@ -144,8 +129,8 @@ export default function QuizTestJoinRequest(props) {
       formData.append("testId", testId);
       formData.append("studentList", acceptList.join(";"));
       request(
-        token,
-        history,
+        // token,
+        // history,
         "POST",
         "/accept-students-in-test",
         (res) => {

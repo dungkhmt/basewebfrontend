@@ -1,13 +1,11 @@
-import { Button, Card, CardContent, Typography } from "@material-ui/core/";
+import { Card, CardContent } from "@material-ui/core/";
 //import IconButton from '@material-ui/core/IconButton';
 import { makeStyles } from "@material-ui/core/styles";
-import parse from "html-react-parser";
 import MaterialTable from "material-table";
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useHistory } from "react-router-dom";
 import { request } from "../../../api";
-import AddIcon from "@material-ui/icons/Add";
 const useStyles = makeStyles({
   table: {
     minWidth: 700,
@@ -39,8 +37,8 @@ function ViewHistoryLogQuizGroupQuestionParticipationExecutionChoice(props) {
 
   async function getHistoryLogQuizGroupQuestionParticipationExecutionChoice() {
     request(
-      token,
-      history,
+      // token,
+      // history,
       "get",
       "get-history-log-quiz_group_question_participation_execution_choice/" +
         testId,

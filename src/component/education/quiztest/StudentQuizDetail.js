@@ -1,15 +1,15 @@
+import Button from "@material-ui/core/Button";
+import Card from "@material-ui/core/Card";
+import Checkbox from "@material-ui/core/Checkbox";
+import Grid from "@material-ui/core/Grid";
+import Paper from "@material-ui/core/Paper";
+import Snackbar from "@material-ui/core/Snackbar";
+import { makeStyles } from "@material-ui/core/styles";
+import Alert from "@material-ui/lab/Alert";
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { Link, useHistory } from "react-router-dom";
+import { useHistory } from "react-router-dom";
 import { request } from "../../../api";
-import { makeStyles } from "@material-ui/core/styles";
-import Paper from "@material-ui/core/Paper";
-import Grid from "@material-ui/core/Grid";
-import Card from "@material-ui/core/Card";
-import Button from "@material-ui/core/Button";
-import Checkbox from "@material-ui/core/Checkbox";
-import Alert from "@material-ui/lab/Alert";
-import Snackbar from "@material-ui/core/Snackbar";
 
 const useCheckBoxStyles = makeStyles((theme) => ({
   root: {
@@ -51,8 +51,8 @@ export default function StudentQuizDetail() {
 
   async function getQuestionList() {
     request(
-      token,
-      history,
+      // token,
+      // history,
       "get",
       "/get-quiz-test-participation-group-question/" + testQuizId,
       (res) => {
@@ -102,8 +102,8 @@ export default function StudentQuizDetail() {
     };
     console.log(tmpOb);
     request(
-      token,
-      history,
+      // token,
+      // history,
       "post",
       "/quiz-test-choose_answer-by-user",
       (res) => {
