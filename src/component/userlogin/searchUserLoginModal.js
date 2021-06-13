@@ -27,115 +27,15 @@ const modalStyle = {
     }
 }
 
-const NotFound = (props) => {
-    return (
-        <Grid style={{ margin: "50px 0" }} container item xs={12} justify="center" alignContent="center" alignItems="center">
-            <h2 hidden={props.hidden} style={{ color: "#6f6f6f" }}>NO USER FOUND</h2>
-        </Grid>
-    )
-}
-
-const FoundUserDetails = (props) => {
-
-    let userLink = "userlogin/" + props.user.partyId
-
-    return (
-        <div style={{
-            padding: "30px 40px",
-            width: "100%"
-        }}>
-            <Grid style={{
-                padding: "10px 10px",
-                margin: 0,
-                width: "100%",
-                borderRadius: "5px",
-                boxShadow: '0px 3px 1px -2px rgb(0 0 0 / 20%), 0px 2px 2px 0px rgb(0 0 0 / 14%), 0px 1px 5px 0px rgb(0 0 0 / 12%)'
-            }} container spacing={2} alignItems="center">
-                <Grid item xs={3} style={{ fontWeight: "500" }}>
-                    User Name
-                </Grid>
-                <Grid item xs={9}>
-                    <Link to={"/userlogin/" + props.user.partyId}>{props.user.userLoginId}</Link>
-                </Grid>
-                <Grid item xs={3} style={{ fontWeight: "500" }}>
-                    Full Name
-                </Grid>
-                <Grid item xs={9}>
-                    {props.user.fullName}
-                </Grid>
-                <Grid item xs={3} style={{ fontWeight: "500" }}>
-                    Status
-                </Grid>
-                <Grid item xs={9}>
-                    {props.user.status}
-                </Grid>
-
-                <Grid item xs={3} style={{ fontWeight: "500" }}>
-                    Type
-                </Grid>
-                <Grid item xs={9}>
-                    {props.user.partyType}
-                </Grid>
-                <Grid item xs={3} style={{ fontWeight: "500" }}>
-                    Created Date
-                </Grid>
-                <Grid item xs={9}>
-                    {props.user.createdDate}
-                </Grid>
-
-                <Grid item xs={3} style={{ fontWeight: "500" }}>
-                    Party Code
-                </Grid>
-                <Grid item xs={9}>
-                    {props.user.partyCode}
-                </Grid>
-            </Grid>
-        </div>
-    )
-}
-
 function SearchUserLoginModal(props) {
 
     const dispatch = useDispatch();
 
-    const [found, setFound] = React.useState(false);
-
-    const [foundUser, setFoundUser] = React.useState({});
-
     const [searchField, setSearchField] = React.useState("");
-
-    const [isFirstTime, setIsFirstTime] = React.useState(true);
-
-    const token = useSelector((state) => state.auth.token);
 
     const handleFormSubmit = (event) => {
         event.preventDefault();
-        setIsFirstTime(false);
-        authGet(
-            dispatch,
-            token,
-            "/user" +
-            "?userId=" +
-            searchField
-        ).then(
-            (res) => {
-                console.log(res)
-                if (res.userLoginId === undefined || res.userLoginId === null) {
-                    setFound(false)
-                    setFoundUser({});
-                }
-                else {
-                    setFound(true)
-                    setFoundUser(res);
-                }
-            },
-            (error) => {
-                console.log("error");
-                setFound(false)
-                setFoundUser({});
-            }
-        );
-
+        props.onSearch(searchField);
     }
 
     const onInputChange = (event) => {
@@ -166,12 +66,6 @@ function SearchUserLoginModal(props) {
                             </Grid>
                         </Grid>
                     </form>
-                    {
-                        found === true
-                            ? <FoundUserDetails user={foundUser} />
-                            : <NotFound hidden={isFirstTime} />
-                    }
-
                 </div>
             </div>
         </Modal>

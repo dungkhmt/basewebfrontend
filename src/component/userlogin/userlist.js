@@ -1,5 +1,5 @@
 import MaterialTable, { MTableToolbar } from "material-table";
-import React from "react";
+import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 import { authGet } from "../../api";
@@ -9,10 +9,19 @@ import Button from "@material-ui/core/Button";
 import { useHistory } from "react-router-dom";
 import { GiWhiteBook } from "react-icons/gi";
 import SearchUserLoginModal from "./searchUserLoginModal";
+import { ContactSupportOutlined } from "@material-ui/icons";
 
 function UserList() {
 
+    const tableRef = React.createRef();
+
     const [open, setOpen] = React.useState(false);
+
+    const [searchString, setSearchString] = React.useState("");
+
+    useEffect(() => {
+        refreshTable();
+    }, [searchString]);
 
     const handleModalOpen = () => {
         setOpen(true);
@@ -22,6 +31,105 @@ function UserList() {
         setOpen(false);
     };
 
+    const customSearchHandle = (sString) => {
+        console.log(sString)
+        setSearchString(sString);
+        handleModalClose();
+    }
+
+    const fetchDefault = (query) => {
+        return new Promise((resolve, reject) => {
+            console.log(query);
+            let sortParam = "";
+            if (query.orderBy !== undefined) {
+                sortParam =
+                    "&sort=" + query.orderBy.field + "," + query.orderDirection;
+            }
+            let filterParam = "";
+            //if(query.filters.length>0){
+            //    let filter=query.filters;
+            //    filter.forEach(v=>{
+            //      filterParam=v.column.field+":"+v.value+","
+            //    })
+            //    filterParam="&filtering="+filterParam.substring(0,filterParam.length-1);
+            //}
+            filterParam = "&search=" + query.search;
+            authGet(
+                dispatch,
+                token,
+                "/users" +
+                "?size=" +
+                query.pageSize +
+                "&page=" +
+                query.page +
+                sortParam +
+                filterParam
+            ).then(
+                (res) => {
+                    console.log(res);
+                    if (res !== undefined && res !== null)
+                        resolve({
+                            data: res.content,
+                            page: res.number,
+                            totalCount: res.totalElements,
+                        });
+                    else reject();
+                },
+                (error) => {
+                    console.log("error");
+
+                    reject();
+                }
+            );
+        })
+    }
+
+    const fetchCustomSearch = (query, customSearchString) => {
+        return new Promise((resolve, reject) => {
+            console.log(query);
+
+            let searchParam = "&userLoginId=" + customSearchString;
+
+            authGet(
+                dispatch,
+                token,
+                "/users/search" +
+                "?size=" +
+                query.pageSize +
+                "&page=" +
+                query.page +
+                searchParam
+            ).then(
+                (res) => {
+                    console.log(res);
+                    if (res !== undefined && res !== null)
+                        resolve({
+                            data: res.content,
+                            page: res.number,
+                            totalCount: res.totalElements,
+                        });
+                    else reject();
+                },
+                (error) => {
+                    console.log(error);
+                    reject();
+                }
+            );
+        })
+    }
+
+    const fetchRouter = (query) => {
+        if (searchString === "") {
+            return fetchDefault(query);
+        }
+        else {
+            return fetchCustomSearch(query, searchString)
+        }
+    }
+
+    const refreshTable = () => {
+        return tableRef.current && tableRef.current.onQueryChange()
+    }
 
     const dispatch = useDispatch();
     const history = useHistory();
@@ -54,6 +162,7 @@ function UserList() {
             <MaterialTable
                 title="List Users"
                 columns={columns}
+                tableRef={tableRef}
                 options={{
                     //filtering: true,
                     search: true,
@@ -62,61 +171,24 @@ function UserList() {
                     Toolbar: props => (
                         <div style={{ position: "relative" }}>
                             <MTableToolbar {...props} />
-                            <div style={{ position: "absolute", top: "16px", right: "300px" }}>
+                            <div style={{ position: "absolute", top: "16px", right: "350px" }}>
                                 <Button onClick={handleModalOpen} color="primary">ID Search</Button>
                             </div>
                         </div>
                     ),
                 }}
-                data={(query) =>
-                    new Promise((resolve, reject) => {
-                        console.log(query);
-                        let sortParam = "";
-                        if (query.orderBy !== undefined) {
-                            sortParam =
-                                "&sort=" + query.orderBy.field + "," + query.orderDirection;
-                        }
-                        let filterParam = "";
-                        //if(query.filters.length>0){
-                        //    let filter=query.filters;
-                        //    filter.forEach(v=>{
-                        //      filterParam=v.column.field+":"+v.value+","
-                        //    })
-                        //    filterParam="&filtering="+filterParam.substring(0,filterParam.length-1);
-                        //}
-                        filterParam = "&search=" + query.search;
-                        authGet(
-                            dispatch,
-                            token,
-                            "/users" +
-                            "?size=" +
-                            query.pageSize +
-                            "&page=" +
-                            query.page +
-                            sortParam +
-                            filterParam
-                        ).then(
-                            (res) => {
-                                console.log(res);
-                                if (res !== undefined && res !== null)
-                                    resolve({
-                                        data: res.content,
-                                        page: res.number,
-                                        totalCount: res.totalElements,
-                                    });
-                                else reject();
-                            },
-                            (error) => {
-                                console.log("error");
-
-                                reject();
-                            }
-                        );
-                    })
-                }
+                data={fetchRouter}
                 icons={tableIcons}
+                actions={[
+                    {
+                        icon: 'refresh',
+                        tooltip: 'Refresh Data',
+                        isFreeAction: true,
+                        onClick: () => setSearchString("") && tableRef.current.onQueryChange(),
+                    }
+                ]}
             />
-            <SearchUserLoginModal open={open} onClose={handleModalClose}/>
+            <SearchUserLoginModal open={open} onClose={handleModalClose} onSearch={customSearchHandle} />
         </div>
     );
 }
