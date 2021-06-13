@@ -36,8 +36,8 @@ function QuizzTab({ classId }) {
 
   const getQuizListOfClass = () => {
     request(
-      token,
-      history,
+      // token,
+      // history,
       "get",
       `/get-published-quiz-of-class/${classId}`,
       (res) => {

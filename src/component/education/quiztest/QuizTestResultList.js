@@ -1,20 +1,12 @@
-import React, { useState, useEffect, useReducer } from "react";
-import { useHistory } from "react-router-dom";
-import { authPost, authGet, authPostMultiPart, request } from "../../../api";
-import { useDispatch, useSelector } from "react-redux";
-import MaterialTable from "material-table";
-import parse from "html-react-parser";
-import { exportResultListPdf } from "./TeacherQuizResultExportPDF.js";
-import ReactDOM from "react-dom";
-import ReactExport from "react-data-export";
-
 //import IconButton from '@material-ui/core/IconButton';
-import {
-  withStyles,
-  makeStyles,
-  MuiThemeProvider,
-} from "@material-ui/core/styles";
-
+import { makeStyles } from "@material-ui/core/styles";
+import MaterialTable from "material-table";
+import React, { useEffect, useReducer, useState } from "react";
+import ReactExport from "react-data-export";
+import { useDispatch, useSelector } from "react-redux";
+import { useHistory } from "react-router-dom";
+import { request } from "../../../api";
+import { exportResultListPdf } from "./TeacherQuizResultExportPDF.js";
 import ViewHistoryLogQuizGroupQuestionParticipationExecutionChoice from "./ViewHistoryLogQuizGroupQuestionParticipationExecutionChoice";
 
 const ExcelFile = ReactExport.ExcelFile;
@@ -164,8 +156,8 @@ export default function QuizTestStudentListResult(props) {
   async function getStudentListResultGeneral() {
     let input = { testId: testId };
     request(
-      token,
-      history,
+      // token,
+      // history,
       "Post",
       "/get-quiz-test-participation-execution-result",
       (res) => {
@@ -248,8 +240,8 @@ export default function QuizTestStudentListResult(props) {
   async function getStudentListResult() {
     let input = { testId: testId };
     request(
-      token,
-      history,
+      // token,
+      // history,
       "Post",
       "/get-quiz-test-participation-execution-result",
       (res) => {

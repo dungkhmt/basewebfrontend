@@ -93,8 +93,8 @@ export default function Quizz({ quizz, index }) {
 
     if (chooseAnsIds.length > 0) {
       request(
-        token,
-        history,
+        // token,
+        // history,
         "post",
         "/quiz-choose_answer",
         (res) => {

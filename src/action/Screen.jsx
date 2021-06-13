@@ -8,8 +8,8 @@ export const GET_SCREEN_SECURITY_INFORMATION_FAILURE =
 // For using in mapDispatchToPorps.
 export const getScrSecurInfo = (history) => (dispatch, getState) => {
   request(
-    getState().auth.token,
-    history,
+    // getState().auth.token,
+    // history,
     "get",
     `/screen-security`,
     (res) => {

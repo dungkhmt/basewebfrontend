@@ -5,7 +5,6 @@ import React, { Fragment, useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { useHistory } from "react-router";
 import { request } from "../../../api";
-
 import TeacherViewQuizDetail from "./TeacherViewQuizDetail";
 
 const useStyles = makeStyles(() => ({
@@ -37,8 +36,8 @@ function TeacherViewCourseQuizList({ courseId }) {
 
   const getQuizListOfClass = () => {
     request(
-      token,
-      history,
+      // token,
+      // history,
       "get",
       //`/get-unpublished-quiz-of-course/${courseId}`,
       `/get-quiz-of-course/${courseId}`,

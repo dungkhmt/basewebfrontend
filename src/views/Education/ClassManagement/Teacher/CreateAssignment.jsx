@@ -1,38 +1,35 @@
-import React, { useState, useEffect } from "react";
+import DateFnsUtils from "@date-io/date-fns";
 import {
+  Avatar,
   Card,
   CardContent,
-  Typography,
   CardHeader,
   Grid,
-  TextField,
-  Button,
-  InputAdornment,
   IconButton,
-  Avatar,
+  InputAdornment,
+  TextField,
+  Typography,
 } from "@material-ui/core";
 import { makeStyles, MuiThemeProvider } from "@material-ui/core/styles";
 import AddIcon from "@material-ui/icons/Add";
-import { useForm } from "react-hook-form";
-import { Editor } from "react-draft-wysiwyg";
-import "react-draft-wysiwyg/dist/react-draft-wysiwyg.css";
+import EditIcon from "@material-ui/icons/Edit";
+import { DateTimePicker, MuiPickersUtilsProvider } from "@material-ui/pickers";
+import { ContentState, convertToRaw, EditorState } from "draft-js";
 import draftToHtml from "draftjs-to-html";
 import htmlToDraft from "html-to-draftjs";
-import { ContentState, convertToRaw, EditorState } from "draft-js";
-import { useHistory, useParams } from "react-router";
-import { MuiPickersUtilsProvider, DateTimePicker } from "@material-ui/pickers";
-import DateFnsUtils from "@date-io/date-fns";
-import { FcCalendar } from "react-icons/fc";
-import useOnMount from "../../../../component/education/classmanagement/onMount";
 import _ from "lodash";
-import { request } from "../../../../api";
+import React, { useEffect, useState } from "react";
+import { Editor } from "react-draft-wysiwyg";
+import "react-draft-wysiwyg/dist/react-draft-wysiwyg.css";
+import { useForm } from "react-hook-form";
+import { FcCalendar } from "react-icons/fc";
 import { useSelector } from "react-redux";
-import { errorNoti } from "../../../../utils/Notification";
-import EditIcon from "@material-ui/icons/Edit";
+import { useHistory, useParams } from "react-router";
+import { request } from "../../../../api";
 import NegativeButton from "../../../../component/education/classmanagement/NegativeButton";
-import { DevTool } from "react-hook-form-devtools";
+import useOnMount from "../../../../component/education/classmanagement/onMount";
 import PositiveButton from "../../../../component/education/classmanagement/PositiveButton";
-import { useRef } from "react";
+import { errorNoti } from "../../../../utils/Notification";
 
 const useStyles = makeStyles((theme) => ({
   card: {
@@ -145,8 +142,8 @@ function CreateAssignment() {
   // Functions.
   const getData = () => {
     request(
-      token,
-      history,
+      // token,
+      // history,
       "get",
       `/edu/assignment/${params.assignmentId}/student`,
       (res) => {
@@ -297,8 +294,8 @@ function CreateAssignment() {
         subject != assignDetail.subject
       ) {
         request(
-          token,
-          history,
+          // token,
+          // history,
           "put",
           `/edu/assignment/${assignId}`,
           () => {
@@ -352,8 +349,8 @@ function CreateAssignment() {
       }
     } else {
       request(
-        token,
-        history,
+        // token,
+        // history,
         "post",
         "/edu/assignment",
         () => {

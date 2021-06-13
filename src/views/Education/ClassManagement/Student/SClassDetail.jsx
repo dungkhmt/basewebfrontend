@@ -161,16 +161,21 @@ function SClassDetail() {
 
   // Functions.
   const getClassDetail = () => {
-    request(token, history, "get", `/edu/class/${params.id}`, (res) => {
-      setClassDetail(res.data);
-    });
+    request(
+      // token, history,
+      "get",
+      `/edu/class/${params.id}`,
+      (res) => {
+        setClassDetail(res.data);
+      }
+    );
   };
 
   const getChapterListOfClass = () => {
     //request(token, history, "get", `/get-quiz-of-class/${params.id}`, (res) => {
     request(
-      token,
-      history,
+      // token,
+      // history,
       "get",
       `/edu/class/get-chapters-of-class/${params.id}`,
       (res) => {

@@ -1,21 +1,9 @@
-import {
-  Button,
-  Card,
-  CardActions,
-  CardContent,
-  TextField,
-  Typography,
-  MenuItem,
-  Checkbox,
-} from "@material-ui/core/";
-import React, { useState, useEffect } from "react";
-import { useHistory } from "react-router-dom";
-import { authPost, authGet, authPostMultiPart, request } from "../../../api";
-import { useDispatch, useSelector } from "react-redux";
-import { useParams } from "react-router";
+import { Card, CardContent } from "@material-ui/core/";
 import MaterialTable from "material-table";
-import { Link } from "react-router-dom";
-import AddIcon from "@material-ui/icons/Add";
+import React, { useEffect, useState } from "react";
+import { useSelector } from "react-redux";
+import { useHistory } from "react-router-dom";
+import { request } from "../../../api";
 
 function TeacherViewLogUserCourseChapterMaterialList(props) {
   const classId = props.classId;
@@ -32,8 +20,8 @@ function TeacherViewLogUserCourseChapterMaterialList(props) {
 
   const getLogs = () => {
     request(
-      token,
-      history,
+      // token,
+      // history,
       "get",
       `/edu/class/get-log-user-course-chapter-material/` + classId,
       (res) => {

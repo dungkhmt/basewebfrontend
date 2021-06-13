@@ -20,21 +20,6 @@ import QuizTestJoinRequestList from "./QuizTestJoinRequestList";
 import QuizTestStudentListResult from "./QuizTestResultList";
 import QuizTestStudentList from "./QuizTestStudentList";
 
-const tempTestInfo = {
-  /* 'testId': 'DTS01',
-    'testName': 'Đề thi số 01',
-    'scheduleDatetime': '2021-05-14T21:56:52.668',
-    'duration': 90,
-    'courseId': 'courseId',
-    'classId': '123456' */
-  testId: "0",
-  testName: "0",
-  scheduleDatetime: "0",
-  duration: 0,
-  courseId: "0",
-  classId: "0",
-};
-
 const tempCourseInfo = {
   /* 'id': 'IT3011',
     'courseName': 'Cấu trúc dữ liệu và giải thuật',
@@ -79,7 +64,7 @@ const useStyles = makeStyles((theme) => ({
   time: {
     paddingLeft: 6,
     color: teal[800],
-    fontWeight: theme.typography.fontWeightBold,
+    fontWeight: theme.typography.fontWeightMedium,
     fontSize: "1rem",
   },
 }));
@@ -127,6 +112,16 @@ const tabsLabel = [
   "Kết quả tổng quát",
 ];
 
+const weekDay = [
+  "Chủ nhật",
+  "Thứ hai",
+  "Thứ ba",
+  "Thứ tư",
+  "Thứ năm",
+  "Thứ sáu",
+  "Thứ bảy",
+];
+
 export default function QuizTestDetail(props) {
   let param = useParams();
   let testId = param.id;
@@ -157,8 +152,8 @@ export default function QuizTestDetail(props) {
   async function handleAssignStudents2QuizGroup() {
     let datasend = { quizTestId: testId };
     request(
-      token,
-      history,
+      // token,
+      // history,
       "post",
       "auto-assign-participants-2-quiz-test-group",
       (res) => {
@@ -173,8 +168,8 @@ export default function QuizTestDetail(props) {
   async function handleAssignQuestions2QuizGroup() {
     let datasend = { quizTestId: testId, numberQuestions: 10 };
     request(
-      token,
-      history,
+      // token,
+      // history,
       "post",
       "auto-assign-question-2-quiz-group",
       (res) => {
@@ -189,39 +184,39 @@ export default function QuizTestDetail(props) {
 
   async function getQuizTestDetail() {
     //do something to get test info from param.id
-    let re = await authGet(
+    let res = await authGet(
       dispatch,
       token,
       "/get-quiz-test?testId=" + param.id
     );
 
-    tempTestInfo.testId = re.testId;
-    tempTestInfo.classId = re.classId;
-    tempTestInfo.courseId = re.courseId;
-    tempTestInfo.duration = re.duration;
-    tempTestInfo.scheduleDatetime = re.scheduleDatetime;
-    tempTestInfo.testName = re.testName;
+    // Format scheduleDateTime.
+    const date = new Date(res.scheduleDatetime);
 
-    tempTestInfo.scheduleDatetime = tempTestInfo.scheduleDatetime.replace(
-      "T",
-      " "
-    );
-    let index = tempTestInfo.scheduleDatetime.indexOf(".");
-    if (index != -1)
-      tempTestInfo.scheduleDatetime = tempTestInfo.scheduleDatetime.substring(
-        0,
-        index
-      );
+    const scheduleDateTime = `${
+      weekDay[date.getDay()]
+    }, ${date.getDate()} tháng ${
+      date.getMonth() + 1
+    }, ${date.getFullYear()}, lúc ${date.getHours()}:${date.getMinutes()}`;
 
-    setTestInfo(tempTestInfo);
+    setTestInfo({
+      testId: res.testId,
+      classId: res.classId,
+      courseId: res.courseId,
+      duration: res.duration,
+      scheduleDateTime: scheduleDateTime,
+      testName: res.testName,
+    });
 
     //do something to get course info from testInfo.courseId
-    /* request(token, history, "get", `/edu/class/${re.classId}`, (res) => {
+    /* request(
+      // token, history, 
+      "get", `/edu/class/${re.classId}`, (res) => {
             tempCourseInfo.id = res.data.courseId;
             tempCourseInfo.courseName = res.data.name;
         }); */
 
-    let re2 = await authGet(dispatch, token, `/edu/class/${re.classId}`);
+    let re2 = await authGet(dispatch, token, `/edu/class/${res.classId}`);
     tempCourseInfo.id = re2.courseId;
     tempCourseInfo.courseName = re2.name;
 
@@ -257,7 +252,7 @@ export default function QuizTestDetail(props) {
         <Typography
           component="span"
           className={classes.time}
-        >{`${testInfo.scheduleDatetime}`}</Typography>
+        >{`${testInfo.scheduleDateTime}`}</Typography>
 
         <TertiaryButton
           className={classes.editBtn}

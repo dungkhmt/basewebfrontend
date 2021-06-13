@@ -1,33 +1,15 @@
-import React, { useState, useEffect, useReducer } from "react";
-import { useHistory } from "react-router-dom";
-import { authPost, authGet, authPostMultiPart, request } from "../../../api";
+import DateFnsUtils from "@date-io/date-fns";
+import { Button, Card, Grid, TextField } from "@material-ui/core/";
+import {
+  KeyboardDatePicker,
+  KeyboardTimePicker,
+  MuiPickersUtilsProvider,
+} from "@material-ui/pickers";
+import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useParams } from "react-router";
-
-import {
-  Button,
-  Card,
-  CardActions,
-  CardContent,
-  TextField,
-  Typography,
-  IconButton,
-  MenuItem,
-  Checkbox,
-  Grid,
-  Tooltip,
-  Tab,
-  Tabs,
-  Box,
-} from "@material-ui/core/";
-import { makeStyles, useTheme } from "@material-ui/core/styles";
-import {
-  MuiPickersUtilsProvider,
-  KeyboardTimePicker,
-  KeyboardDatePicker,
-} from "@material-ui/pickers";
-
-import DateFnsUtils from "@date-io/date-fns";
+import { useHistory } from "react-router-dom";
+import { request } from "../../../api";
 
 const styles = {
   label: {
@@ -75,8 +57,8 @@ function QuizTestEdit() {
 
   async function getQuizTestDetail() {
     request(
-      token,
-      history,
+      // token,
+      // history,
       "get",
       "get-quiz-test?testId=" + testId,
       (res) => {
@@ -97,8 +79,8 @@ function QuizTestEdit() {
       duration: duration,
     };
     request(
-      token,
-      history,
+      // token,
+      // history,
       "post",
       "update-quiz-test",
       (res) => {

@@ -1,16 +1,14 @@
-import React, { useState } from "react";
-import { useEffect } from "react";
-import { useDispatch, useSelector, shallowEqual } from "react-redux";
+import React, { useEffect, useState } from "react";
+import { shallowEqual, useDispatch, useSelector } from "react-redux";
 import { useHistory } from "react-router";
-import { request } from "../../../api";
-import Loading from "../../common/Loading";
-import NotAuthorized from "../../common/NotAuthorzied";
-import NotFound from "../../../views/errors/NotFound";
 import {
   getScrSecurInfoFailure,
   getScrSecurInfoSuccess,
 } from "../../../action/Screen";
+import { request } from "../../../api";
 import BouncingBallsLoader from "../../../views/common/BouncingBallsLoader";
+import NotFound from "../../../views/errors/NotFound";
+import NotAuthorized from "../../common/NotAuthorzied";
 
 function withAsynchScreenSecurity(SecuredScreen, id) {
   return function AsynchSecuredScreen(props) {
@@ -30,8 +28,8 @@ function withAsynchScreenSecurity(SecuredScreen, id) {
     // Functions.
     const getViewPermissions = () => {
       request(
-        token,
-        history,
+        // token,
+        // history,
         "get",
         `/screen-security`,
         (res) => {

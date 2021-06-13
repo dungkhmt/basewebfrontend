@@ -42,13 +42,18 @@ export default function AccountButton(props) {
     setAnchorEl(null);
   };
   useEffect(() => {
-    request(token, history, "get", "/my-account/", (res) => {
-      let data = res.data;
+    request(
+      // token, history,
+      "get",
+      "/my-account/",
+      (res) => {
+        let data = res.data;
 
-      setName(data.name);
-      setUserName(data.user);
-      setPartyId(data.partyId);
-    });
+        setName(data.name);
+        setUserName(data.user);
+        setPartyId(data.partyId);
+      }
+    );
   }, []);
 
   return (

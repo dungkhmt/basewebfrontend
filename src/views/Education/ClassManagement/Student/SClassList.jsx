@@ -1,23 +1,22 @@
-import React, { useRef, useEffect, useState } from "react";
 import {
+  Avatar,
+  Box,
   Card,
   CardContent,
-  Typography,
-  Box,
   CardHeader,
-  Paper,
   Chip,
-  Avatar,
+  Paper,
+  Typography,
 } from "@material-ui/core";
+import { makeStyles, MuiThemeProvider } from "@material-ui/core/styles";
 import MaterialTable from "material-table";
+import React, { useEffect, useRef, useState } from "react";
+import { FaListUl } from "react-icons/fa";
+import { FcApproval } from "react-icons/fc";
+import { GiSandsOfTime } from "react-icons/gi";
 import { useSelector } from "react-redux";
 import { useHistory } from "react-router";
 import { request } from "../../../../api";
-import { MuiThemeProvider } from "@material-ui/core/styles";
-import { FcApproval } from "react-icons/fc";
-import { makeStyles } from "@material-ui/core/styles";
-import { FaListUl } from "react-icons/fa";
-import { GiSandsOfTime } from "react-icons/gi";
 import changePageSize, {
   localization,
   tableIcons,
@@ -114,10 +113,15 @@ function SClassList() {
 
   // Functions.
   const getClasses = () => {
-    request(token, history, "get", "/edu/class/list/student", (res) => {
-      changePageSize(res.data.length, tableRef);
-      setData(res.data);
-    });
+    request(
+      // token, history,
+      "get",
+      "/edu/class/list/student",
+      (res) => {
+        changePageSize(res.data.length, tableRef);
+        setData(res.data);
+      }
+    );
   };
 
   useEffect(() => {

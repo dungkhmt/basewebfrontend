@@ -87,8 +87,9 @@ function a11yProps(index) {
 
 const useStyles = makeStyles((theme) => ({
   root: {
-    flexGrow: 1,
-    width: `calc(100vw - ${drawerWidth + theme.spacing(4) * 2}px)`,
+    // flexGrow: 1,
+    margin: "auto",
+    width: `calc(100vw - ${drawerWidth + theme.spacing(4) * 2 + 1}px)`,
     backgroundColor: theme.palette.background.paper,
   },
   card: {
@@ -345,17 +346,22 @@ function TClassDetail() {
 
   // Functions.
   const getClassDetail = () => {
-    request(token, history, "get", `/edu/class/${params.id}`, (res) => {
-      setClassDetail(res.data);
-      setFetchedClassDetail(!fetchedClassDetail);
-    });
+    request(
+      // token, history,
+      "get",
+      `/edu/class/${params.id}`,
+      (res) => {
+        setClassDetail(res.data);
+        setFetchedClassDetail(!fetchedClassDetail);
+      }
+    );
   };
 
   const getStudents = (type) => {
     if (type === "register") {
       request(
-        token,
-        history,
+        // token,
+        // history,
         "get",
         `/edu/class/${params.id}/registered-students`,
         (res) => {
@@ -366,8 +372,8 @@ function TClassDetail() {
       );
     } else {
       request(
-        token,
-        history,
+        // token,
+        // history,
         "get",
         `/edu/class/${params.id}/students`,
         (res) => {
@@ -381,8 +387,8 @@ function TClassDetail() {
 
   const getAssigns = () => {
     request(
-      token,
-      history,
+      // token,
+      // history,
       "get",
       `/edu/class/${params.id}/assignments/teacher`,
       (res) => {
@@ -426,8 +432,8 @@ function TClassDetail() {
   // Functions.
   const getStudentAssignment = () => {
     request(
-      token,
-      history,
+      // token,
+      // history,
       "get",
       `/edu/class/${params.id}/all-student-assignments/teacher`,
       (res) => {
@@ -456,8 +462,8 @@ function TClassDetail() {
     let id = stuWillBeDeleted.id;
 
     request(
-      token,
-      history,
+      // token,
+      // history,
       "put",
       "/edu/class/registration-status",
       (res) => {
@@ -485,8 +491,8 @@ function TClassDetail() {
 
   const onUpdateStatus = (type) => {
     request(
-      token,
-      history,
+      // token,
+      // history,
       "put",
       "/edu/class/registration-status",
       (res) => {

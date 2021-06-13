@@ -1,33 +1,18 @@
-import {
-  Button,
-  Card,
-  CardActions,
-  CardContent,
-  TextField,
-  Typography,
-  IconButton,
-  MenuItem,
-  Checkbox,
-  Grid,
-  Tooltip,
-} from "@material-ui/core/";
-import React, { useState, useEffect, useReducer } from "react";
-import { useHistory } from "react-router-dom";
-import { authPost, authGet, authPostMultiPart, request } from "../../../api";
-import { useDispatch, useSelector } from "react-redux";
-import { useParams } from "react-router";
-import MaterialTable from "material-table";
+import { Button, Checkbox, Tooltip } from "@material-ui/core/";
+import { green } from "@material-ui/core/colors";
 //import IconButton from '@material-ui/core/IconButton';
 import {
-  withStyles,
+  createMuiTheme,
   makeStyles,
   ThemeProvider,
-  createMuiTheme,
 } from "@material-ui/core/styles";
-import { green } from "@material-ui/core/colors";
-import AddCircleOutlineIcon from "@material-ui/icons/AddCircleOutline";
 import { Delete } from "@material-ui/icons";
-import CheckCircleOutlineIcon from "@material-ui/icons/CheckCircleOutline";
+import AddCircleOutlineIcon from "@material-ui/icons/AddCircleOutline";
+import MaterialTable from "material-table";
+import React, { useEffect, useReducer, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { useHistory } from "react-router-dom";
+import { request } from "../../../api";
 import QuizTestGroupQuestionList from "./QuizTestGroupQuestionList";
 
 const useStyles = makeStyles({
@@ -118,8 +103,8 @@ export default function QuizTestGroupList(props) {
 
   async function getStudentList() {
     request(
-      token,
-      history,
+      // token,
+      // history,
       "GET",
       "/get-test-groups-info?testId=" + testId,
       (res) => {
@@ -145,8 +130,8 @@ export default function QuizTestGroupList(props) {
     //alert("Thêm đề");
     let datasend = { quizTestId: testId, numberOfQuizTestGroups: 1 };
     request(
-      token,
-      history,
+      // token,
+      // history,
       "post",
       "generate-quiz-test-group",
       (res) => {
@@ -177,8 +162,8 @@ export default function QuizTestGroupList(props) {
       formData.append("testId", testId);
       formData.append("quizTestGroupList", acceptList.join(";"));
       request(
-        token,
-        history,
+        // token,
+        // history,
         "POST",
         "/delete-quiz-test-groups",
         (res) => {

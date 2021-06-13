@@ -1,21 +1,11 @@
 /* eslint-disable */
-import {
-  Button,
-  Card,
-  CardActions,
-  CardContent,
-  TextField,
-  Typography,
-  MenuItem,
-  Checkbox,
-} from "@material-ui/core/";
-import React, { useState, useEffect } from "react";
-import { useHistory } from "react-router-dom";
-import { authPost, request, authPostMultiPart } from "../../../api";
+import { Button, Card, CardContent } from "@material-ui/core/";
+import MaterialTable from "material-table";
+import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useParams } from "react-router";
-import MaterialTable from "material-table";
-import AddIcon from "@material-ui/icons/Add";
+import { useHistory } from "react-router-dom";
+import { request } from "../../../api";
 function StudentQuizList() {
   const params = useParams();
   const dispatch = useDispatch();
@@ -85,8 +75,8 @@ function StudentQuizList() {
 
   async function getQuizList() {
     request(
-      token,
-      history,
+      // token,
+      // history,
       "get",
       "/get-all-quiz-test-user",
       (res) => {
@@ -99,8 +89,8 @@ function StudentQuizList() {
   async function registerQuiz(quizId) {
     let datasend = { testQuizId: quizId };
     request(
-      token,
-      history,
+      // token,
+      // history,
       "post",
       "create-quiz-test-participation-register",
       (res) => {

@@ -178,18 +178,23 @@ function CreateQuizTest() {
   }
 
   async function getClassList() {
-    request(token, history, "get", "/edu/class/list/teacher", (res) => {
-      //console.log(res.data)
-      res.data.map((elm, index) => {
-        if (elm["courseId"] in classMap) {
-          classMap[elm["courseId"]].push(elm);
-        } else {
-          classMap[elm["courseId"]] = [elm];
-        }
-      });
+    request(
+      // token, history,
+      "get",
+      "/edu/class/list/teacher",
+      (res) => {
+        //console.log(res.data)
+        res.data.map((elm, index) => {
+          if (elm["courseId"] in classMap) {
+            classMap[elm["courseId"]].push(elm);
+          } else {
+            classMap[elm["courseId"]] = [elm];
+          }
+        });
 
-      //console.log(classMap)
-    });
+        //console.log(classMap)
+      }
+    );
   }
 
   useEffect(() => {

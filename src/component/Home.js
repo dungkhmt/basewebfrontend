@@ -164,8 +164,8 @@ export default function Home(props) {
 
   async function getStudentParticipation() {
     request(
-      token,
-      history,
+      // token,
+      // history,
       "post",
       "/get-class-participation-statistic",
       (res) => {
@@ -225,8 +225,8 @@ export default function Home(props) {
     //   }
     // );
     request(
-      token,
-      history,
+      // token,
+      // history,
       "post",
       "/get-quiz-participation-statistic",
       (res) => {
@@ -309,8 +309,8 @@ export default function Home(props) {
   }
   async function getChartBackLog() {
     request(
-      token,
-      history,
+      // token,
+      // history,
       "get",
       "/backlog/get-all-dash-board",
       (res) => {
