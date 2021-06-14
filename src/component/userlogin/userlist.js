@@ -1,15 +1,12 @@
+import Button from "@material-ui/core/Button";
 import MaterialTable, { MTableToolbar } from "material-table";
 import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { Link } from "react-router-dom";
+import { Link, useHistory } from "react-router-dom";
 import { authGet } from "../../api";
 import { tableIcons } from "../../utils/iconutil";
 import withScreenSecurity from "../withScreenSecurity";
-import Button from "@material-ui/core/Button";
-import { useHistory } from "react-router-dom";
-import { GiWhiteBook } from "react-icons/gi";
 import SearchUserLoginModal from "./searchUserLoginModal";
-import { ContactSupportOutlined } from "@material-ui/icons";
 
 function UserList() {
 
@@ -128,7 +125,16 @@ function UserList() {
     }
 
     const refreshTable = () => {
-        return tableRef.current && tableRef.current.onQueryChange()
+        console.log(tableRef);
+        tableRef.current.setState({
+            ...tableRef.current.state,
+            query: {
+                ...tableRef.current.state.query,
+                page: 0
+            }
+        },
+            tableRef.current.onChangePage()
+        );
     }
 
     const dispatch = useDispatch();
