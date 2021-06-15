@@ -40,7 +40,9 @@ if (
 }
 
 const rootReducer = (state, action) => {
+  // Clean store.
   if (action.type === LOGOUT_SUCCESS) {
+    // If the state given to a reducer is undefined, it will return the initial state.
     state = undefined;
   }
 
