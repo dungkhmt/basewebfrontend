@@ -8,6 +8,7 @@ import ListItemLink from "./ListItemLink";
 
 const infoColor = ["#00acc1", "#26c6da", "#00acc1", "#00d3ee"];
 export const whiteColor = "#FFF";
+export const blackColor = "#000";
 export const hexToRgb = (input) => {
   input = input + "";
   input = input.replace("#", "");
