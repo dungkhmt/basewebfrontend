@@ -8,7 +8,7 @@ import { default as MenuIcon } from "@material-ui/icons/Menu";
 import clsx from "clsx";
 import React, { useEffect, useState } from "react";
 import { connect, useSelector } from "react-redux";
-import { getMenu, logout } from "../action";
+import { getMenu } from "../action";
 import { ReactComponent as Logo } from "../assets/icons/logo.svg";
 import bgImage from "../assets/img/sidebar-2.jpg";
 import Back2Top from "../utils/Back2Top";
@@ -168,7 +168,7 @@ function Layout(props) {
                 <NotificationsIcon />
               </Badge>
             </IconButton> */}
-            {isAuthenticated && <AccountButton handleLogout={handleLogout} />}
+            {isAuthenticated && <AccountButton />}
           </div>
         </Toolbar>
       </AppBar>
@@ -193,7 +193,6 @@ const mapStateToProps = (state) => ({
 
 const mapDispatchToProps = (dispatch) => ({
   getMenu: () => dispatch(getMenu()),
-  processLogout: () => dispatch(logout()),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(Layout);

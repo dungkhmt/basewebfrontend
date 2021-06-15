@@ -1,9 +1,12 @@
 import { Divider, Menu, MenuItem } from "@material-ui/core";
 import React from "react";
+import { useDispatch } from "react-redux";
 import { useHistory } from "react-router-dom";
+import { logout } from "../../action";
 
 export function AccountMenu(props) {
   const history = useHistory();
+  const dispatch = useDispatch();
 
   const handlePasswordChange = () => {
     props.handleMenuClose();
@@ -14,6 +17,8 @@ export function AccountMenu(props) {
     props.handleMenuClose();
     history.push("/userlogin/" + props.partyId);
   };
+
+  const handleLogout = () => dispatch(logout());
 
   const isMenuOpen = Boolean(props.anchorEl);
 
@@ -28,15 +33,15 @@ export function AccountMenu(props) {
       transformOrigin={{ vertical: "top", horizontal: "right" }}
     >
       <MenuItem>
-        Name: {props.name} <br /> UserName: {props.userName}{" "}
+        Tên: {props.name} <br /> Tên người dùng: {props.userName}{" "}
       </MenuItem>
       <Divider />
-      <MenuItem onClick={props.handleClose}>Settings</MenuItem>
-      <MenuItem onClick={handleViewAccount}>My account</MenuItem>
+      {/* <MenuItem onClick={props.handleClose}>Settings</MenuItem> */}
+      <MenuItem onClick={handleViewAccount}>Tài khoản</MenuItem>
 
-      <MenuItem onClick={handlePasswordChange}>Change Password</MenuItem>
+      <MenuItem onClick={handlePasswordChange}>Đổi mật khẩu</MenuItem>
       <Divider />
-      <MenuItem onClick={props.handleLogout}>Logout</MenuItem>
+      <MenuItem onClick={handleLogout}>Đăng xuất</MenuItem>
     </Menu>
   );
 }
