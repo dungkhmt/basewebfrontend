@@ -52,7 +52,8 @@ export default function AccountButton(props) {
         setName(data.name);
         setUserName(data.user);
         setPartyId(data.partyId);
-      }
+      },
+      { 401: () => {} }
     );
   }, []);
 
