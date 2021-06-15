@@ -1,7 +1,9 @@
-import { ListItemText } from "@material-ui/core";
+import { Icon, ListItemText } from "@material-ui/core";
 import makeStyles from "@material-ui/core/styles/makeStyles";
 import clsx from "clsx";
 import React from "react";
+import { menuIconMap } from "../../../config/menuconfig";
+import { menuItemBaseStyle } from "./GroupMenuItem";
 import ListItemLink from "./ListItemLink";
 
 const infoColor = ["#00acc1", "#26c6da", "#00acc1", "#00d3ee"];
@@ -33,38 +35,28 @@ export const hexToRgb = (input) => {
 };
 
 const useStyles = makeStyles((theme) => ({
-  firstOrderMenu: {
+  selected: {
     color: whiteColor,
     "&.MuiListItem-button:hover": {
       backgroundColor: "rgba(200, 200, 200, 0.2)",
     },
   },
   whiteFont: {
-    color: whiteColor,
+    ...menuItemBaseStyle(theme).whiteFont,
   },
   menuItem: {
-    margin: "10px 15px 0 12px",
-    padding: "10px",
-    width: "auto",
-    minWidth: 50,
-    transition: "all 300ms linear",
-    borderRadius: "3px",
-    position: "relative",
-    backgroundColor: "transparent",
-    // lineHeight: "1.5em",
-    height: 40,
+    ...menuItemBaseStyle(theme).menuItem,
     textDecoration: "none",
+
     "&:hover,&:focus,&:visited,&": {
       color: whiteColor,
     },
   },
   menuItemText: {
-    fontWeight: theme.typography.fontWeightMedium,
-    margin: "0",
-    lineHeight: "30px",
-    fontSize: "14px",
-    color: whiteColor,
-    paddingLeft: 54,
+    ...menuItemBaseStyle(theme).menuItemText,
+  },
+  menuItemIcon: {
+    ...menuItemBaseStyle(theme).menuItemIcon,
   },
   blue: {
     backgroundColor: infoColor[0],
@@ -92,7 +84,7 @@ const useStyles = makeStyles((theme) => ({
 
 function MenuItem(props) {
   const classes = useStyles();
-  const { color, menuItem, selected, menu } = props;
+  const { color, menuItem, selected, menu, icon } = props;
 
   if (!menuItem.isPublic) {
     if (!menu?.has(menuItem.id)) return null;
@@ -105,12 +97,24 @@ function MenuItem(props) {
       to={process.env.PUBLIC_URL + menuItem.path}
       className={clsx(classes.menuItem, {
         [classes[color]]: selected,
-        [classes.firstOrderMenu]: !selected,
+        [classes.selected]: !selected,
       })}
+      style={{ height: icon ? "auto" : 40 }}
     >
+      {/* Icon */}
+      {icon && (
+        <Icon
+          className={clsx(classes.menuItemIcon, classes.whiteFont)}
+          style={{ paddingLeft: 3, marginRight: 30 }}
+        >
+          {menuIconMap.get(menuItem.icon)}
+        </Icon>
+      )}
+
       <ListItemText
         primary={menuItem.text}
         className={clsx(classes.menuItemText, classes.whiteFont)}
+        style={{ paddingLeft: icon ? 0 : 54 }}
         disableTypography={true}
       />
     </ListItemLink>

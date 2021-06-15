@@ -15,16 +15,20 @@ import { whiteColor } from "../../../assets/jss/material-dashboard-react";
 import { menuIconMap } from "../../../config/menuconfig";
 import MenuItem, { hexToRgb } from "./MenuItem";
 
-const useStyles = makeStyles((theme) => ({
-  firstOrderMenu: {
-    "&.MuiListItem-button": {
-      backgroundColor: "rgba(200, 200, 200, 0.2)",
-    },
-  },
-  iconExpand: { transform: "rotate(-180deg)", transition: "0.3s" },
-  iconCollapse: { transition: "0.3s" },
+export const menuItemBaseStyle = (theme) => ({
   whiteFont: {
     color: "#FFF",
+  },
+  menuItem: {
+    margin: "10px 15px 0 12px",
+    padding: "10px",
+    width: "auto",
+    minWidth: 50,
+    transition: "all 300ms linear",
+    borderRadius: "3px",
+    position: "relative",
+    backgroundColor: "transparent",
+    // lineHeight: "1.5em",
   },
   menuItemIcon: {
     width: "24px",
@@ -43,16 +47,27 @@ const useStyles = makeStyles((theme) => ({
     lineHeight: "30px",
     fontSize: "14px",
   },
+});
+
+const useStyles = makeStyles((theme) => ({
+  childSelected: {
+    "&.MuiListItem-button": {
+      backgroundColor: "rgba(200, 200, 200, 0.2)",
+    },
+  },
+  iconExpand: { transform: "rotate(-180deg)", transition: "0.3s" },
+  iconCollapse: { transition: "0.3s" },
+  whiteFont: {
+    ...menuItemBaseStyle(theme).whiteFont,
+  },
+  menuItemIcon: {
+    ...menuItemBaseStyle(theme).menuItemIcon,
+  },
+  menuItemText: {
+    ...menuItemBaseStyle(theme).menuItemText,
+  },
   menuItem: {
-    margin: "10px 15px 0 12px",
-    padding: "10px",
-    width: "auto",
-    minWidth: 50,
-    transition: "all 300ms linear",
-    borderRadius: "3px",
-    position: "relative",
-    backgroundColor: "transparent",
-    // lineHeight: "1.5em",
+    ...menuItemBaseStyle(theme).menuItem,
     color: whiteColor,
 
     "&.MuiListItem-button:hover": {
@@ -62,14 +77,16 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const activeRoute = (route) => {
-  if (route === "/" || route === "") return false;
-
-  return (
-    window.location.href.indexOf(
-      route,
-      process.env.REACT_APP_PUBLIC_URL.length
-    ) === process.env.REACT_APP_PUBLIC_URL.length
-  );
+  if (route === "/" || route === "") {
+    // access http://localhost:3000/ or http://localhost:3000, location is always http://localhost:3000/
+    return window.location.href === `${process.env.REACT_APP_PUBLIC_URL}/`;
+  } else
+    return (
+      window.location.href.indexOf(
+        route,
+        process.env.REACT_APP_PUBLIC_URL.length
+      ) === process.env.REACT_APP_PUBLIC_URL.length
+    );
 };
 
 function GroupMenuItem(props) {
@@ -105,56 +122,70 @@ function GroupMenuItem(props) {
     if (!menu?.has(group.id)) return null;
   }
 
-  return (
-    <li>
-      <ListItem
-        button
-        key={group.text}
-        className={classNames(classes.menuItem, {
-          [classes.firstOrderMenu]: hasChildSelected,
-        })}
-        onClick={() => setExpanded(!expanded)}
-      >
-        {/* Icon */}
-        <Icon
-          className={classNames(classes.menuItemIcon, classes.whiteFont)}
-          style={{ paddingLeft: 3, marginRight: 30 }}
-        >
-          {menuIconMap.get(group.icon)}
-        </Icon>
+  if (group.child?.length === 1) {
+    const childMenuItem = group.child[0];
 
-        {/* Label */}
-        <ListItemText
-          primary={group.text}
-          className={classNames(classes.menuItemText, classes.whiteFont)}
-          disableTypography={true}
-        />
-
-        <Icon
-          className={classNames(classes.menuItemIcon, classes.whiteFont, {
-            [classes.iconExpand]: expanded,
-            [classes.iconCollapse]: !expanded,
+    return (
+      <MenuItem
+        key={childMenuItem.text}
+        menuItem={childMenuItem}
+        color={color}
+        selected={selected[0]}
+        menu={menu}
+        icon
+      />
+    );
+  } else
+    return (
+      <li>
+        <ListItem
+          button
+          key={group.text}
+          className={classNames(classes.menuItem, {
+            [classes.childSelected]: hasChildSelected,
           })}
-          style={{ marginRight: 0, marginLeft: 6 }}
+          onClick={() => setExpanded(!expanded)}
         >
-          <ArrowDropDownIcon />
-        </Icon>
-      </ListItem>
-      <Collapse in={expanded} timeout="auto">
-        <List disablePadding>
-          {group.child.map((childMenuItem, index) => (
-            <MenuItem
-              key={childMenuItem.text}
-              menuItem={childMenuItem}
-              color={color}
-              selected={selected[index]}
-              menu={menu}
-            />
-          ))}
-        </List>
-      </Collapse>
-    </li>
-  );
+          {/* Icon */}
+          <Icon
+            className={classNames(classes.menuItemIcon, classes.whiteFont)}
+            style={{ paddingLeft: 3, marginRight: 30 }}
+          >
+            {menuIconMap.get(group.icon)}
+          </Icon>
+
+          {/* Label */}
+          <ListItemText
+            primary={group.text}
+            className={classNames(classes.menuItemText, classes.whiteFont)}
+            disableTypography={true}
+          />
+
+          <Icon
+            className={classNames(classes.menuItemIcon, classes.whiteFont, {
+              [classes.iconExpand]: expanded,
+              [classes.iconCollapse]: !expanded,
+            })}
+            style={{ marginRight: 0, marginLeft: 6 }}
+          >
+            <ArrowDropDownIcon />
+          </Icon>
+        </ListItem>
+        <Collapse in={expanded} timeout="auto">
+          <List disablePadding>
+            {group.child.map((childMenuItem, index) => (
+              <MenuItem
+                key={childMenuItem.text}
+                menuItem={childMenuItem}
+                color={color}
+                selected={selected[index]}
+                menu={menu}
+              />
+            ))}
+          </List>
+        </Collapse>
+      </li>
+    );
 }
 
 const mapStateToProps = (state) => ({
