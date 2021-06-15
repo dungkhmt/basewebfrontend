@@ -183,7 +183,7 @@ export default function Home(props) {
         setDateStudentParticipation(dates);
         setTotalParticipation(participations);
       },
-      {},
+      { 401: () => {} },
       {
         fromDate: "",
         thruDate: "",
@@ -244,7 +244,7 @@ export default function Home(props) {
         setDateQuizParticipation(dates);
         setTotalQuizParticipation(participations);
       },
-      {},
+      { 401: () => {} },
       { fromDate: "", thruDate: "" }
     );
   }
