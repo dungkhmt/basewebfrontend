@@ -1,14 +1,18 @@
+import { Box, Typography } from "@material-ui/core";
 import Drawer from "@material-ui/core/Drawer";
 import List from "@material-ui/core/List";
 import makeStyles from "@material-ui/core/styles/makeStyles";
 import classNames from "classnames";
 import PropTypes from "prop-types";
 import React from "react";
+import { useSelector } from "react-redux";
+import { Link as RouterLink } from "react-router-dom";
 import SimpleBar from "simplebar-react";
 import "simplebar/dist/simplebar.min.css";
-import styles from "../../../assets/jss/material-dashboard-react/components/sidebarStyle";
+import PrimaryButton from "../../../component/button/PrimaryButton";
 import { MENU_LIST } from "../../../config/menuconfig";
-import GroupMenuItem from "./GroupMenuItem";
+import GroupMenuItem, { menuItemBaseStyle } from "./GroupMenuItem";
+import { blackColor, whiteColor } from "./MenuItem";
 
 export const drawerWidth = 300;
 
@@ -53,6 +57,41 @@ const useStyles = makeStyles((theme) => ({
       duration: theme.transitions.duration.leavingScreen,
     }),
   },
+  signInText: {
+    ...menuItemBaseStyle(theme).menuItemText,
+    fontSize: "1rem",
+    whiteSpace: "break-spaces",
+    color: whiteColor,
+    textAlign: "center",
+    paddingBottom: 16,
+  },
+  signInContainer: {
+    width: drawerWidth - 20,
+    zIndex: theme.zIndex.drawer + 1,
+    paddingTop: theme.spacing(3),
+    paddingBottom: theme.spacing(6),
+  },
+  background: {
+    position: "absolute",
+    zIndex: "1",
+    height: "100%",
+    width: "100%",
+    display: "block",
+    top: "0",
+    left: "0",
+    backgroundSize: "cover",
+    backgroundPosition: "center center",
+    "&:after": {
+      position: "absolute",
+      zIndex: "3",
+      width: "100%",
+      height: "100%",
+      content: '""',
+      display: "block",
+      background: blackColor,
+      opacity: ".8",
+    },
+  },
   // sidebarWrapper: {
   //   // width: "100%",
   //   paddingTop: 75,
@@ -66,10 +105,9 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 export default function SideBar(props) {
-  const assetClasses = makeStyles(styles)();
   const classes = useStyles();
-
   const { open, image, color: bgColor } = props;
+  const isAuthenticated = useSelector((state) => state.auth.isAuthenticated);
 
   return (
     <Drawer
@@ -91,6 +129,7 @@ export default function SideBar(props) {
       <SimpleBar
         style={{
           marginTop: 64,
+          marginBottom: 16,
           position: "relative",
           height: "100%",
           zIndex: "4",
@@ -106,10 +145,32 @@ export default function SideBar(props) {
           </List>
         </nav>
       </SimpleBar>
+      {!isAuthenticated && (
+        <Box
+          className={classes.signInContainer}
+          display="flex"
+          flexDirection="column"
+          alignItems="center"
+          justifyContent="center"
+          ml="auto"
+          mr="auto"
+        >
+          <Typography className={classes.signInText}>
+            Đăng nhập ngay để sử dụng các tính năng dành riêng cho bạn
+          </Typography>
+          <PrimaryButton
+            component={RouterLink}
+            to="/login"
+            style={{ width: 160, borderRadius: 25 }}
+          >
+            Đăng nhập
+          </PrimaryButton>
+        </Box>
+      )}
       {/* </div> */}
       {image && (
         <div
-          className={assetClasses.background}
+          className={classes.background}
           style={{ backgroundImage: "url(" + image + ")" }}
         />
       )}
