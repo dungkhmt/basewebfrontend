@@ -156,7 +156,7 @@ export default function SideBar(props) {
           mr="auto"
         >
           <Typography className={classes.signInText}>
-            Đăng nhập ngay để sử dụng các tính năng dành riêng cho bạn
+            Đăng nhập ngay để sử dụng những tính năng dành riêng cho bạn
           </Typography>
           <PrimaryButton
             component={RouterLink}
