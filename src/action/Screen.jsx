@@ -19,6 +19,7 @@ export const getScrSecurInfo = (history) => (dispatch, getState) => {
       onError: (e) => {
         dispatch(getScrSecurInfoFailure());
       },
+      401: () => {},
       rest: (e) => {},
     }
   );

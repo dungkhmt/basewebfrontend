@@ -7,8 +7,8 @@ import Typography from "@material-ui/core/Typography";
 import { default as MenuIcon } from "@material-ui/icons/Menu";
 import clsx from "clsx";
 import React, { useEffect, useState } from "react";
-import { connect } from "react-redux";
-import { getMenu, logout } from "../action";
+import { connect, useSelector } from "react-redux";
+import { getMenu } from "../action";
 import { ReactComponent as Logo } from "../assets/icons/logo.svg";
 import bgImage from "../assets/img/sidebar-2.jpg";
 import Back2Top from "../utils/Back2Top";
@@ -99,6 +99,7 @@ const useStyles = makeStyles((theme) => ({
 function Layout(props) {
   const { children } = props;
   const classes = useStyles();
+  const isAuthenticated = useSelector((state) => state.auth.isAuthenticated);
 
   const [open, setOpen] = React.useState(true);
   const [image] = useState(bgImage);
@@ -167,7 +168,7 @@ function Layout(props) {
                 <NotificationsIcon />
               </Badge>
             </IconButton> */}
-            <AccountButton handleLogout={handleLogout} />
+            {isAuthenticated && <AccountButton />}
           </div>
         </Toolbar>
       </AppBar>
@@ -192,7 +193,6 @@ const mapStateToProps = (state) => ({
 
 const mapDispatchToProps = (dispatch) => ({
   getMenu: () => dispatch(getMenu()),
-  processLogout: () => dispatch(logout()),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(Layout);
