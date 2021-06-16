@@ -2,8 +2,6 @@ import { Avatar, IconButton } from "@material-ui/core";
 import makeStyles from "@material-ui/core/styles/makeStyles";
 import randomColor from "randomcolor";
 import React, { Fragment, useEffect, useState } from "react";
-import { useSelector } from "react-redux";
-import { useHistory } from "react-router";
 import { request } from "../../api";
 import { AccountMenu } from "./AccountMenu";
 
@@ -22,25 +20,23 @@ const useStyles = makeStyles((theme) => ({
 
 export default function AccountButton(props) {
   const classes = useStyles();
-  const token = useSelector((state) => state.auth.token);
-  const history = useHistory();
 
   //
-  const [name, setName] = useState("");
-  const [userName, setUserName] = useState("");
-  const [partyId, setPartyId] = useState("");
+  const [user, setUser] = useState({});
 
   //
   const [anchorEl, setAnchorEl] = React.useState(null);
   const menuId = "primary-search-account-menu";
 
+  //
   const handleProfileMenuOpen = (event) => {
     setAnchorEl(event.currentTarget);
   };
 
-  const handleMenuClose = () => {
+  const handleClose = () => {
     setAnchorEl(null);
   };
+
   useEffect(() => {
     request(
       // token, history,
@@ -49,9 +45,11 @@ export default function AccountButton(props) {
       (res) => {
         let data = res.data;
 
-        setName(data.name);
-        setUserName(data.user);
-        setPartyId(data.partyId);
+        setUser({
+          name: data.name,
+          userName: data.user,
+          partyId: data.partyId,
+        });
       },
       { 401: () => {} }
     );
@@ -67,17 +65,17 @@ export default function AccountButton(props) {
         onClick={handleProfileMenuOpen}
       >
         <Avatar className={classes.avatar}>
-          {name !== "" ? name.substring(0, 1).toLocaleUpperCase() : ""}
+          {user.name ? user.name.substring(0, 1).toLocaleUpperCase() : ""}
         </Avatar>
       </IconButton>
       <AccountMenu
+        avatarBgColor={bgColor}
         anchorEl={anchorEl}
+        name={user.name}
+        userName={user.userName}
+        partyId={user.partyId}
+        handleClose={handleClose}
         id={menuId}
-        handleMenuClose={handleMenuClose}
-        name={name}
-        userName={userName}
-        partyId={partyId}
-        handleLogout={props.handleLogout}
       />
     </Fragment>
   );
