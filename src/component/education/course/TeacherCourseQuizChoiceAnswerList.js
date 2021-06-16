@@ -4,23 +4,19 @@ import parse from "html-react-parser";
 import MaterialTable from "material-table";
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { useParams } from "react-router";
 import { Link, useHistory } from "react-router-dom";
 import { authGet } from "../../../api";
-import PositiveButton from "../classmanagement/PositiveButton";
-import { makeStyles } from "@material-ui/core/styles";
 
-const useStyles = makeStyles((theme) => ({
-  card: {
-    marginTop: theme.spacing(2),
-    borderRadius: "6px",
-  },
-  registrationBtn: {},
-}));
+// const useStyles = makeStyles((theme) => ({
+//   card: {
+//     marginTop: theme.spacing(2),
+//     borderRadius: "6px",
+//   },
+//   registrationBtn: {},
+// }));
 
 function TeacherCourseQuizChoiceAnswerList(props) {
-  const params = useParams();
-  const classes = useStyles();
+  // const classes = useStyles();
   const questionId = props.questionId;
   const dispatch = useDispatch();
   const token = useSelector((state) => state.auth.token);

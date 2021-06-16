@@ -52,7 +52,7 @@ import TClassList from "../views/Education/ClassManagement/Teacher/TClassList";
 import NotFound from "../views/errors/NotFound";
 
 export default function EduRoute() {
-  let { path, url } = useRouteMatch();
+  let { path } = useRouteMatch();
   return (
     <div>
       <Switch>

@@ -1,15 +1,13 @@
 import { CircularProgress, Grid, Paper } from "@material-ui/core";
 import Button from "@material-ui/core/Button";
-import MenuItem from "@material-ui/core/MenuItem";
 import { makeStyles } from "@material-ui/core/styles";
 import TextField from "@material-ui/core/TextField";
 import Typography from "@material-ui/core/Typography";
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useHistory } from "react-router-dom";
 import { failed } from "../../action";
-import { authPost, authPostMultiPart } from "../../api";
-import StyledDropzone from "../common/StyleDropDzone";
+import { authPost } from "../../api";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -53,44 +51,44 @@ export default function LakeCreate() {
   const [isRequesting, setIsRequesting] = useState(false);
   const classes = useStyles();
 
-  const handleLuuLuongXaLuKiemTraChange = (event) => {
-    setLuuLuongXaLuKiemTra(event.target.value);
-  };
-  const handleLuuLuongXaLuThietKeChange = (event) => {
-    setLuuLuongXaLuThietKe(event.target.value);
-  };
-  const handleDungTichChetChange = (event) => {
-    setDungTichChet(event.target.value);
-  };
+  // const handleLuuLuongXaLuKiemTraChange = (event) => {
+  //   setLuuLuongXaLuKiemTra(event.target.value);
+  // };
+  // const handleLuuLuongXaLuThietKeChange = (event) => {
+  //   setLuuLuongXaLuThietKe(event.target.value);
+  // };
+  // const handleDungTichChetChange = (event) => {
+  //   setDungTichChet(event.target.value);
+  // };
 
-  const handleDungTichHuuIchChange = (event) => {
-    setDungTichHuuIch(event.target.value);
-  };
+  // const handleDungTichHuuIchChange = (event) => {
+  //   setDungTichHuuIch(event.target.value);
+  // };
 
-  const handleDungTichToanBoChange = (event) => {
-    setDungTichToanBo(event.target.value);
-  };
+  // const handleDungTichToanBoChange = (event) => {
+  //   setDungTichToanBo(event.target.value);
+  // };
 
-  const handleMucNuocLuKiemTraChange = (event) => {
-    setMucNuocLuKiemTra(event.target.value);
-  };
-  const handleMucNuocLuThietKeChange = (event) => {
-    setMucNuocLuThietKe(event.target.value);
-  };
-  const handleMucNuocDangBinhThuongChange = (event) => {
-    setMucNuocDangBinhThuong(event.target.value);
-  };
+  // const handleMucNuocLuKiemTraChange = (event) => {
+  //   setMucNuocLuKiemTra(event.target.value);
+  // };
+  // const handleMucNuocLuThietKeChange = (event) => {
+  //   setMucNuocLuThietKe(event.target.value);
+  // };
+  // const handleMucNuocDangBinhThuongChange = (event) => {
+  //   setMucNuocDangBinhThuong(event.target.value);
+  // };
 
-  const handleDienTichTuoiChange = (event) => {
-    setDienTichTuoi(event.target.value);
-  };
-  const handleMucNuocChetChange = (event) => {
-    setMucNuocChet(event.target.value);
-  };
+  // const handleDienTichTuoiChange = (event) => {
+  //   setDienTichTuoi(event.target.value);
+  // };
+  // const handleMucNuocChetChange = (event) => {
+  //   setMucNuocChet(event.target.value);
+  // };
 
-  const handleMucDamBaoTuoiChange = (event) => {
-    setMucDamBaoTuoi(event.target.value);
-  };
+  // const handleMucDamBaoTuoiChange = (event) => {
+  //   setMucDamBaoTuoi(event.target.value);
+  // };
 
   const handleDienTichLuuVucChange = (event) => {
     setDienTichLuuVuc(event.target.value);

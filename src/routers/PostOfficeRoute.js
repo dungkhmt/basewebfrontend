@@ -1,27 +1,27 @@
 import React from "react";
 import { Route, Switch, useRouteMatch } from "react-router";
-import CreatePostOffice from "../component/postsystem/postoffice/CreatePostOffice";
-import PostOfficeList from "../component/postsystem/postoffice/PostOfficeList";
-import TripList from "../component/postsystem/posttrip/TripList";
-import PostUserList from "../component/postsystem/postuser/PostCustomerList";
-import PostShipOrderList from "../component/postsystem/postshiporder/PostShipOrderList";
-import CreatePostShipOrder from "../component/postsystem/postshiporder/CreatePostShipOrder";
-import ViewAllPostOffice from "../component/postsystem/postoffice/ViewAllPostOffice";
-import ViewAllPostShipOrder from "../component/postsystem/postshiporder/ViewAllPostShipOrder";
-import TripInfo from "../component/postsystem/posttrip/TripInfo";
-import CreateTrip from "../component/postsystem/posttrip/CreateTrip";
-import ExecuteTrip from "../component/postsystem/posttrip/ExecuteTrip";
-import PostOrderDetail from "../component/postsystem/postshiporder/PostOrderDetail";
 import PickAndDelivery from "../component/postsystem/planning/PickAndDelivery";
 import PickAndDeliveryDetail from "../component/postsystem/planning/PickAndDeliveryDetail";
 import ShipAndDelivery from "../component/postsystem/planning/ShipAndDelivery";
 import ShipAndDeliveryDetail from "../component/postsystem/planning/ShipAndDeliveryDetail";
+import CreatePostOffice from "../component/postsystem/postoffice/CreatePostOffice";
+import PostOfficeList from "../component/postsystem/postoffice/PostOfficeList";
+import ViewAllPostOffice from "../component/postsystem/postoffice/ViewAllPostOffice";
+import CreatePostShipOrder from "../component/postsystem/postshiporder/CreatePostShipOrder";
+import PostOrderDetail from "../component/postsystem/postshiporder/PostOrderDetail";
+import PostShipOrderList from "../component/postsystem/postshiporder/PostShipOrderList";
+import ViewAllPostShipOrder from "../component/postsystem/postshiporder/ViewAllPostShipOrder";
+import CreateTrip from "../component/postsystem/posttrip/CreateTrip";
+import ExecuteTrip from "../component/postsystem/posttrip/ExecuteTrip";
 import PostDriverExecuteTrip from "../component/postsystem/posttrip/PostDriverExecuteTrip";
+import TripInfo from "../component/postsystem/posttrip/TripInfo";
+import TripList from "../component/postsystem/posttrip/TripList";
 import ManagePostman from "../component/postsystem/postuser/ManagePostman";
+import PostUserList from "../component/postsystem/postuser/PostCustomerList";
 import PostDriverDetail from "../component/postsystem/postuser/PostDriverDetail";
 import PostmanOrderAssignmentDetail from "../component/postsystem/postuser/PostmanOrderAssignmentDetail";
 export default function PostOfficeRoute() {
-  let { path, url } = useRouteMatch();
+  let { path } = useRouteMatch();
   return (
     <div>
       <Switch>

@@ -4,7 +4,7 @@ import DeliveryPlanCreate from "../component/shipment/deliveryplan/DeliveryPlanC
 import DeliveryTripList from "../component/shipment/deliveryplan/deliverytrip/DeliveryTripList";
 
 export default function DeliveryPlanRoute() {
-  let { path, url } = useRouteMatch();
+  let { path } = useRouteMatch();
   return (
     <div>
       <Switch>

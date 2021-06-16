@@ -4,7 +4,7 @@ import TrackLocationList from "../component/tracklocations/tracklocationlist";
 import GMapContainer from "../container/gmapcontainer";
 
 export default function TrackLocationRoute() {
-  let { path, url } = useRouteMatch();
+  let { path } = useRouteMatch();
   return (
     <div>
       <Switch>

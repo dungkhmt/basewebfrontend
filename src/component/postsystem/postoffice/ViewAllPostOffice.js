@@ -1,18 +1,12 @@
-import React, { useEffect, useState } from "react";
-import { GoogleApiWrapper, Map, Marker } from "google-maps-react";
 import Grid from "@material-ui/core/Grid";
+import { GoogleApiWrapper, Map, Marker } from "google-maps-react";
+import React, { useEffect, useState } from "react";
 
 function ViewAllPostOffice(props) {
-  const [isRequesting, setIsRequesting] = useState(false);
-  const [address, setAddress] = useState();
-  const [coordinates, setCoordinates] = useState();
-
-  const [lat, setLat] = useState();
-  const [lng, setLng] = useState();
-
   const { data } = props.location.state;
   const bounds = new window.google.maps.LatLngBounds();
   const [map, setMap] = useState();
+
   useEffect(() => {
     if (map === undefined) return;
     map.props.children.forEach((child) => {

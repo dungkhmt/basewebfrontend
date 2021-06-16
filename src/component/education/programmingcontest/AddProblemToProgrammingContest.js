@@ -1,19 +1,10 @@
+import { MenuItem, TextField } from "@material-ui/core/";
+import Button from "@material-ui/core/Button";
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { API_URL } from "../../../config/config";
-import { Link } from "react-router-dom";
-import { authPost, authGet, authPostMultiPart } from "../../../api";
-import { useHistory } from "react-router-dom";
-import {
-  Card,
-  CardActions,
-  CardContent,
-  TextField,
-  Typography,
-  MenuItem,
-} from "@material-ui/core/";
-import Button from "@material-ui/core/Button";
 import { useParams } from "react-router";
+import { useHistory } from "react-router-dom";
+import { authGet, authPost } from "../../../api";
 
 function AddProblemToProgrammingContest() {
   const params = useParams();

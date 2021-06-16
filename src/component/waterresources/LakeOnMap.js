@@ -1,7 +1,7 @@
-import React, { Component, useState } from "react";
-import { Map, GoogleApiWrapper, InfoWindow, Marker } from "google-maps-react";
-import { Link, BrowserRouter as Router } from "react-router-dom";
+import { GoogleApiWrapper, InfoWindow, Map, Marker } from "google-maps-react";
+import React, { useState } from "react";
 import { useHistory } from "react-router";
+import { BrowserRouter as Router, Link } from "react-router-dom";
 const mapStyles = {
   width: "96.4%", // need fix
   height: "100%",

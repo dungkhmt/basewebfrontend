@@ -3,13 +3,11 @@ import axios from "axios";
 import MaterialTable from "material-table";
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { useParams } from "react-router";
 import { Link, useHistory } from "react-router-dom";
 import { authGet, authPost } from "../../../api";
 import { API_URL } from "../../../config/config";
 
 function ProgramSubmissionTable() {
-  const params = useParams();
   const dispatch = useDispatch();
   const token = useSelector((state) => state.auth.token);
   const history = useHistory();

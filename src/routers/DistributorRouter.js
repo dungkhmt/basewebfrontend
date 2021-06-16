@@ -5,7 +5,7 @@ import DistributorDetail from "../component/distributor/DistributorDetail";
 import DistributorList from "../component/distributor/DistributorList";
 
 export default function DistributorRoute() {
-  let { path, url } = useRouteMatch();
+  let { path } = useRouteMatch();
   return (
     <div>
       <Switch>

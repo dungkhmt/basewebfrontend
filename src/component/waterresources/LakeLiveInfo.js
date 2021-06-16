@@ -1,29 +1,15 @@
+import { Card, CardContent, CardHeader } from "@material-ui/core";
+import Button from "@material-ui/core/Button";
+import Grid from "@material-ui/core/Grid";
+import { makeStyles } from "@material-ui/core/styles";
+import Typography from "@material-ui/core/Typography";
+import { GoogleApiWrapper, Map, Marker } from "google-maps-react";
 import React, { useEffect, useState } from "react";
+import { Line } from "react-chartjs-2";
 import { useDispatch, useSelector } from "react-redux";
+import { useHistory, useParams } from "react-router-dom";
 import { authGet } from "../../api";
 import { API_URL } from "../../config/config";
-import {
-  Card,
-  CardContent,
-  CardHeader,
-  CircularProgress,
-} from "@material-ui/core";
-import Typography from "@material-ui/core/Typography";
-import TextField from "@material-ui/core/TextField";
-import CardActions from "@material-ui/core/CardActions";
-import Button from "@material-ui/core/Button";
-
-import { makeStyles } from "@material-ui/core/styles";
-import { Link } from "react-router-dom";
-import { Map, GoogleApiWrapper, InfoWindow, Marker } from "google-maps-react";
-import Grid from "@material-ui/core/Grid";
-import Autocomplete from "@material-ui/lab/Autocomplete";
-import Geocoder from "react-native-geocoding";
-import { useParams } from "react-router-dom";
-import MaterialTable from "material-table";
-import { tableIcons } from "../../utils/iconutil";
-import { Line } from "react-chartjs-2";
-import { useHistory } from "react-router-dom";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -51,7 +37,7 @@ function LakeLiveInfo(props) {
   const history = useHistory();
   const token = useSelector((state) => state.auth.token);
   const dispatch = useDispatch();
-  const [isRequesting, setIsRequesting] = useState(false);
+  // const [isRequesting, setIsRequesting] = useState(false);
 
   const classes = useStyles();
   const [lake, setLake] = useState({});
@@ -66,18 +52,18 @@ function LakeLiveInfo(props) {
     };*/
 
   // Table.
-  const columns = [
-    {
-      field: "attribute",
-      title: "Chỉ số",
-    },
-    {
-      field: "value",
-      title: "Giá trị",
-    },
-  ];
+  // const columns = [
+  //   {
+  //     field: "attribute",
+  //     title: "Chỉ số",
+  //   },
+  //   {
+  //     field: "value",
+  //     title: "Giá trị",
+  //   },
+  // ];
 
-  const [data, setData] = useState([]);
+  // const [data, setData] = useState([]);
   const [mucNuocLuKiemTraHistory, setMucNuocLuKiemTraHistory] = useState([]);
   const [luuLuongXaLuKiemTraHistory, setLuuLuongXaLuKiemTraHistory] = useState(
     []

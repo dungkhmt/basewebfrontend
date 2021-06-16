@@ -1,9 +1,6 @@
+import htmlToPdfmake from "html-to-pdfmake";
 import pdfMake from "pdfmake/build/pdfmake";
 import pdfFonts from "pdfmake/build/vfs_fonts";
-import htmlToPdfmake from "html-to-pdfmake";
-import parse from "html-react-parser";
-import { render } from "react-dom";
-import React from "react";
 pdfMake.vfs = pdfFonts.pdfMake.vfs;
 
 function header(testId) {

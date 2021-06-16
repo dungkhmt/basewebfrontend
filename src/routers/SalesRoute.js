@@ -4,7 +4,7 @@ import SalesmanAdd from "../component/salesman/SalesmanAdd";
 import SalesmanCreate from "../component/salesman/SalesmanCreate";
 
 export default function SalesRoute() {
-  let { path, url } = useRouteMatch();
+  let { path } = useRouteMatch();
   return (
     <div>
       <Switch>

@@ -1,23 +1,20 @@
 import {
   Button,
   Card,
-  CardActions,
   CardContent,
-  TextField,
-  Typography,
   MenuItem,
-  Checkbox,
+  TextField,
 } from "@material-ui/core/";
-import React, { useState, useEffect } from "react";
-import { useHistory } from "react-router-dom";
-import { authPost, authGet, authPostMultiPart } from "../../../api";
-import { useDispatch, useSelector } from "react-redux";
-import { useParams } from "react-router";
-import MaterialTable from "material-table";
-import { Editor } from "react-draft-wysiwyg";
 import { ContentState, convertToRaw, EditorState } from "draft-js";
 import draftToHtml from "draftjs-to-html";
 import htmlToDraft from "html-to-draftjs";
+import MaterialTable from "material-table";
+import React, { useEffect, useState } from "react";
+import { Editor } from "react-draft-wysiwyg";
+import { useDispatch, useSelector } from "react-redux";
+import { useParams } from "react-router";
+import { useHistory } from "react-router-dom";
+import { authGet, authPostMultiPart } from "../../../api";
 
 const editorStyle = {
   toolbar: {

@@ -5,7 +5,7 @@ import DepotTrailerGoogleMap from "../component/tmscontainer/depotTrailer/DepotT
 import DepotTrailerList from "../component/tmscontainer/depotTrailer/DepotTrailerList";
 
 export default function DepotTrailerFuncRoute() {
-  let { path, url } = useRouteMatch();
+  let { path } = useRouteMatch();
   return (
     <div>
       <Switch>

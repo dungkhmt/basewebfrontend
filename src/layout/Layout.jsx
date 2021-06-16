@@ -105,10 +105,6 @@ function Layout(props) {
   const [image] = useState(bgImage);
   const [color] = useState("blue");
 
-  const handleLogout = () => {
-    props.processLogout();
-  };
-
   useEffect(() => {
     if (props.isMenuGot === false) props.getMenu();
   }, []);

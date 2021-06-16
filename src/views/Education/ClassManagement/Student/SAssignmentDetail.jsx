@@ -8,7 +8,7 @@ import {
   Chip,
   Divider,
   Grid,
-  Typography,
+  Typography
 } from "@material-ui/core";
 import { makeStyles, MuiThemeProvider } from "@material-ui/core/styles";
 import parse from "html-react-parser";
@@ -85,15 +85,16 @@ const useStyles = makeStyles((theme) => ({
     // whiteSpace: "pre-wrap",
   },
 }));
-const editorStyle = {
-  toolbar: {
-    background: "#90caf9",
-  },
-  editor: {
-    border: "1px solid black",
-    minHeight: "300px",
-  },
-};
+
+// const editorStyle = {
+//   toolbar: {
+//     background: "#90caf9",
+//   },
+//   editor: {
+//     border: "1px solid black",
+//     minHeight: "300px",
+//   },
+// };
 
 const minuteSeconds = 60;
 const hourSeconds = 3600;

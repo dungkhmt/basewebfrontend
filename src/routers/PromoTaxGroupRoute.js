@@ -4,11 +4,11 @@ import { VoucherCreate } from "../component/promotax/VoucherCreate";
 import { VoucherDetail } from "../component/promotax/VoucherDetail";
 import { VoucherList } from "../component/promotax/VoucherList";
 import { VoucherRuleCreate } from "../component/promotax/VoucherRuleCreate";
-import { VoucherUpdate } from "../component/promotax/VoucherUpdate";
 import { VoucherRuleUpdate } from "../component/promotax/VoucherRuleUpdate";
+import { VoucherUpdate } from "../component/promotax/VoucherUpdate";
 
 export default function PromoTaxGroupRoute() {
-  let { path, url } = useRouteMatch();
+  let { path } = useRouteMatch();
   return (
     <div>
       <Switch>

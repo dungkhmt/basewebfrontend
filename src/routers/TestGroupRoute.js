@@ -3,7 +3,7 @@ import { Route, Switch, useRouteMatch } from "react-router";
 import NumberFormatTextField from "../utils/NumberFormatTextField";
 
 export default function TestGroupRoute() {
-  let { path, url } = useRouteMatch();
+  let { path } = useRouteMatch();
   return (
     <div>
       <Switch>

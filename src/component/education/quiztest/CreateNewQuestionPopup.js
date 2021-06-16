@@ -1,38 +1,15 @@
-import React, { useState, useEffect, useReducer } from "react";
-import { authPost, authGet, authPostMultiPart } from "../../../api";
-
-import {
-  Input,
-  TextField,
-  MenuItem,
-  Select,
-  InputLabel,
-  Card,
-  Grid,
-  Divider,
-  Button,
-  IconButton,
-  Tooltip,
-  Fab,
-  Box,
-  Chip,
-} from "@material-ui/core";
+import { Button, Card, Grid, TextField, Tooltip } from "@material-ui/core";
+import Checkbox from "@material-ui/core/Checkbox";
+import Dialog from "@material-ui/core/Dialog";
+import FormControlLabel from "@material-ui/core/FormControlLabel";
+import FormGroup from "@material-ui/core/FormGroup";
 import { makeStyles } from "@material-ui/core/styles";
 import CloseIcon from "@material-ui/icons/Close";
-import Dialog from "@material-ui/core/Dialog";
-import { ContentState, convertToRaw, EditorState } from "draft-js";
-import { Editor } from "react-draft-wysiwyg";
-
-import FormLabel from "@material-ui/core/FormLabel";
-import FormControl from "@material-ui/core/FormControl";
-import FormGroup from "@material-ui/core/FormGroup";
-import FormControlLabel from "@material-ui/core/FormControlLabel";
-import FormHelperText from "@material-ui/core/FormHelperText";
-import Checkbox from "@material-ui/core/Checkbox";
-import { CheckBox } from "@material-ui/icons";
 import DeleteIcon from "@material-ui/icons/Delete";
-
+import { convertToRaw, EditorState } from "draft-js";
 import DraftToHtml from "draftjs-to-html";
+import React, { useEffect, useReducer, useState } from "react";
+import { Editor } from "react-draft-wysiwyg";
 
 const useStyles = makeStyles((theme) => ({
   input: {

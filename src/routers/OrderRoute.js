@@ -5,7 +5,7 @@ import OrderCreate from "../component/order/OrderCreate";
 import OrderList from "../component/order/OrderList";
 
 export default function OrderRoute() {
-  let { path, url } = useRouteMatch();
+  let { path } = useRouteMatch();
   return (
     <div>
       <Switch>

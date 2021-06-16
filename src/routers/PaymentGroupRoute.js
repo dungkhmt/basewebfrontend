@@ -4,12 +4,12 @@ import {
   Payment,
   PaymentApplication,
 } from "../component/accounting/InvoiceDataTable";
-import { PaymentCreate } from "../component/accounting/PaymentCreate";
 import PaymentApplicationCreate from "../component/accounting/PaymentApplicationCreate";
+import { PaymentCreate } from "../component/accounting/PaymentCreate";
 import QuickInvoicePayment from "../component/accounting/QuickInvoicePayment";
 
 export default function PaymentGroupRoute() {
-  let { path, url } = useRouteMatch();
+  let { path } = useRouteMatch();
   return (
     <div>
       <Switch>

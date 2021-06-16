@@ -1,25 +1,23 @@
 import DateFnsUtils from "@date-io/date-fns";
+import { CircularProgress } from "@material-ui/core";
 import Button from "@material-ui/core/Button";
 import Card from "@material-ui/core/Card";
 import CardActions from "@material-ui/core/CardActions";
 import CardContent from "@material-ui/core/CardContent";
+import MenuItem from "@material-ui/core/MenuItem";
 import { makeStyles } from "@material-ui/core/styles";
 import TextField from "@material-ui/core/TextField";
 import Typography from "@material-ui/core/Typography";
-import MenuItem from "@material-ui/core/MenuItem";
-import MaterialTable from "material-table";
-import { failed } from "../../action/Auth";
-import { authPost } from "../../api";
-import React, { useEffect, useState } from "react";
 import {
   KeyboardDatePicker,
   MuiPickersUtilsProvider,
 } from "@material-ui/pickers";
-
-import { useHistory } from "react-router-dom";
-
+import MaterialTable from "material-table";
+import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { CircularProgress } from "@material-ui/core";
+import { useHistory } from "react-router-dom";
+import { failed } from "../../action/Auth";
+import { authPost } from "../../api";
 import { NumberFormatCustom } from "../../utils/NumberFormatTextField";
 
 const useStyles = makeStyles((theme) => ({
@@ -36,16 +34,17 @@ const useStyles = makeStyles((theme) => ({
     maxWidth: 300,
   },
 }));
-const ITEM_HEIGHT = 48;
-const ITEM_PADDING_TOP = 8;
-const MenuProps = {
-  PaperProps: {
-    style: {
-      maxHeight: ITEM_HEIGHT * 4.5 + ITEM_PADDING_TOP,
-      width: 250,
-    },
-  },
-};
+
+// const ITEM_HEIGHT = 48;
+// const ITEM_PADDING_TOP = 8;
+// const MenuProps = {
+//   PaperProps: {
+//     style: {
+//       maxHeight: ITEM_HEIGHT * 4.5 + ITEM_PADDING_TOP,
+//       width: 250,
+//     },
+//   },
+// };
 
 function OrderCreate(props) {
   const token = useSelector((state) => state.auth.token);
@@ -56,7 +55,6 @@ function OrderCreate(props) {
   const [product, setProduct] = useState();
   const [quantity, setQuantity] = useState();
   const [salesmans, setSalesmans] = useState([]);
-  const [distributor, setDistributor] = useState();
   const [distributors, setDistributors] = useState([]);
   const [products, setProducts] = useState([]);
   const [orderDate, setOrderDate] = useState(new Date());

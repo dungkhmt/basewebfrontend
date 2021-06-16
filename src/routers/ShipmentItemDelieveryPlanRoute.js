@@ -4,7 +4,7 @@ import ShipmentItemDeliveryPlanAdd from "../component/shipment/deliveryplan/ship
 import ShipmentItemDeliveryPlanList from "../component/shipment/deliveryplan/shipmentitem/ShipmentItemDeliveryPlanList";
 
 export default function ShipmentItemDeliveryPlanRoute() {
-  let { path, url } = useRouteMatch();
+  let { path } = useRouteMatch();
   return (
     <div>
       <Switch>

@@ -1,33 +1,31 @@
-import React, { useEffect, useState } from "react";
-import { makeStyles } from "@material-ui/core/styles";
-import Paper from "@material-ui/core/Paper";
-import Typography from "@material-ui/core/Typography";
-import { useDispatch, useSelector } from "react-redux";
-import { API_URL } from "../../../config/config";
-import { Link } from "react-router-dom";
+import DateFnsUtils from "@date-io/date-fns";
 import { Tooltip } from "@material-ui/core";
-import MaterialTable from "material-table";
-import { localization } from "../../../utils/MaterialTableUtils";
-import { authGet } from "../../../api";
-import { errorNoti } from "../../../utils/Notification";
+import { makeStyles } from "@material-ui/core/styles";
+import Typography from "@material-ui/core/Typography";
 import NotificationsIcon from "@material-ui/icons/Notifications";
 import NotificationsActiveIcon from "@material-ui/icons/NotificationsActive";
 import {
   KeyboardDatePicker,
-  MuiPickersUtilsProvider,
+  MuiPickersUtilsProvider
 } from "@material-ui/pickers";
-import DateFnsUtils from "@date-io/date-fns";
+import MaterialTable from "material-table";
+import React, { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { Link } from "react-router-dom";
+import { authGet } from "../../../api";
+import { localization } from "../../../utils/MaterialTableUtils";
+import { errorNoti } from "../../../utils/Notification";
 function errHandling(err) {
   if (err.message == "Unauthorized")
     errorNoti("Phiên làm việc đã kết thúc, vui lòng đăng nhập lại !", true);
   else errorNoti("Rất tiếc! Đã có lỗi xảy ra.", true);
   console.trace(err);
 }
-const columns = [
-  { label: "Mã bưu cục", id: "postOfficeId", minWidth: 150 },
-  { label: "Tên bưu cục", id: "postOfficeName", minWidth: 200 },
-  { label: "", id: "planning", minWidth: 150 },
-];
+// const columns = [
+//   { label: "Mã bưu cục", id: "postOfficeId", minWidth: 150 },
+//   { label: "Tên bưu cục", id: "postOfficeName", minWidth: 200 },
+//   { label: "", id: "planning", minWidth: 150 },
+// ];
 
 const columns1 = [
   { title: "Mã bưu cục", field: "postOfficeId" },
@@ -55,9 +53,9 @@ const columns1 = [
       true: "Có đơn cần xử lý",
       false: "Không có đơn",
     },
-    render: (row) => {
-      {
-        return row.status ? (
+    render: (row) => 
+      
+        row.status ? (
           <Tooltip title={"Có đơn cần xử lý"}>
             <NotificationsActiveIcon style={{ color: "red" }} />
           </Tooltip>
@@ -65,9 +63,9 @@ const columns1 = [
           <Tooltip title={"Hôm nay không có đơn nào"}>
             <NotificationsIcon />
           </Tooltip>
-        );
-      }
-    },
+        )
+      
+    
   },
 ];
 

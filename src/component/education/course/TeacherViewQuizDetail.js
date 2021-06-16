@@ -5,7 +5,7 @@ import { grey } from "@material-ui/core/colors";
 import { makeStyles } from "@material-ui/core/styles";
 //import { makeStyles } from "@material-ui/core/styles";
 import parse from "html-react-parser";
-import React, { useState } from "react";
+import React from "react";
 import { useSelector } from "react-redux";
 import { useHistory } from "react-router";
 import { request } from "../../../api";
@@ -91,8 +91,6 @@ export default function TeacherViewQuizDetail({ quiz, index }) {
 
   //   return isChecked;
   // });
-
-  const [open, setOpen] = useState(false);
 
   function handleUpdateQuizQuestion() {
     history.push("/edu/teacher/course/quiz/detail/" + quiz.questionId);

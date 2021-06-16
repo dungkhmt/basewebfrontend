@@ -1,28 +1,28 @@
-import React, { useEffect, useState } from "react";
 import {
+  AppBar,
+  Box,
+  Button,
   Dialog,
   DialogContent,
-  Typography,
-  Button,
-  AppBar,
-  Toolbar,
   IconButton,
-  Tabs,
-  Tab,
-  Box,
-  Select,
   MenuItem,
+  Select,
+  Tab,
+  Tabs,
+  Toolbar,
+  Typography,
 } from "@material-ui/core";
-import MaterialTable from "material-table";
-import { Bar } from "react-chartjs-2";
-import { localization } from "../../../utils/MaterialTableUtils";
-import { authPost } from "../../../api";
-import { TASK_STATUS } from "../BacklogConfig";
-import { useDispatch, useSelector } from "react-redux";
 import { makeStyles } from "@material-ui/core/styles";
 import CloseIcon from "@material-ui/icons/Close";
-import UserItem from "../components/UserItem";
 import "chartjs-plugin-datalabels";
+import MaterialTable from "material-table";
+import React, { useState } from "react";
+import { Bar } from "react-chartjs-2";
+import { useDispatch, useSelector } from "react-redux";
+import { authPost } from "../../../api";
+import { localization } from "../../../utils/MaterialTableUtils";
+import { TASK_STATUS } from "../BacklogConfig";
+import UserItem from "../components/UserItem";
 
 const useStyles = makeStyles((theme) => ({
   root: {

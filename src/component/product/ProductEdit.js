@@ -1,23 +1,20 @@
-import React, { useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { Link, useParams } from "react-router-dom";
 import { Button } from "@material-ui/core";
+import React from "react";
+import { Link, useParams } from "react-router-dom";
 
-function arrayBufferToBase64(buffer) {
-  var binary = "";
-  var bytes = [].slice.call(new Uint8Array(buffer));
+// function arrayBufferToBase64(buffer) {
+//   var binary = "";
+//   var bytes = [].slice.call(new Uint8Array(buffer));
 
-  bytes.forEach((b) => (binary += String.fromCharCode(b)));
+//   bytes.forEach((b) => (binary += String.fromCharCode(b)));
 
-  return window.btoa(binary);
-}
+//   return window.btoa(binary);
+// }
 
 function ProductEdit(props) {
   const { productId } = useParams();
-  const token = useSelector((state) => state.auth.token);
-  const dispatch = useDispatch();
-  const [data, setData] = useState({});
-  const [img, setImg] = useState([]);
+  
+  
 
   // useEffect(() => {
   //     authGet(dispatch, token, "/get-product-for-edit/" + productId).then(

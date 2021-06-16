@@ -1,29 +1,26 @@
+import { CircularProgress, DialogContent, Grid, Paper } from "@material-ui/core";
 import Button from "@material-ui/core/Button";
-import { makeStyles } from "@material-ui/core/styles";
-import TextField from "@material-ui/core/TextField";
-import Typography from "@material-ui/core/Typography";
-import MenuItem from "@material-ui/core/MenuItem";
-import { failed } from "../../../action/Auth";
-import React, { useEffect, useState } from "react";
-import { useHistory } from "react-router-dom";
-import { authPost, authGet } from "../../../api";
-import { useDispatch, useSelector } from "react-redux";
-import { CircularProgress, Grid, Paper } from "@material-ui/core";
-import { GoogleApiWrapper, Map, Marker } from "google-maps-react";
 import Dialog from "@material-ui/core/Dialog";
 import DialogActions from "@material-ui/core/DialogActions";
 import DialogTitle from "@material-ui/core/DialogTitle";
-import { DialogContent } from "@material-ui/core";
-import { API_URL } from "../../../config/config";
+import Icon from "@material-ui/core/Icon";
 import IconButton from "@material-ui/core/IconButton";
-import SearchIcon from "@material-ui/icons/Search";
-import TableContainer from "@material-ui/core/TableContainer";
-import TableHead from "@material-ui/core/TableHead";
+import MenuItem from "@material-ui/core/MenuItem";
+import { makeStyles } from "@material-ui/core/styles";
 import Table from "@material-ui/core/Table";
 import TableBody from "@material-ui/core/TableBody";
 import TableCell from "@material-ui/core/TableCell";
+import TableContainer from "@material-ui/core/TableContainer";
+import TableHead from "@material-ui/core/TableHead";
 import TableRow from "@material-ui/core/TableRow";
-import Icon from "@material-ui/core/Icon";
+import TextField from "@material-ui/core/TextField";
+import Typography from "@material-ui/core/Typography";
+import SearchIcon from "@material-ui/icons/Search";
+import { GoogleApiWrapper, Map, Marker } from "google-maps-react";
+import React, { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { useHistory } from "react-router-dom";
+import { authGet, authPost } from "../../../api";
 import { errorNoti } from "../../../utils/Notification";
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -78,16 +75,14 @@ function CreatePostShipOrder(props) {
     useState(false);
   const [isFromCustomerAddressChange, setIsFromCustomerAddressChange] =
     useState(false);
-  const [service, setService] = useState();
+  
   const [fromListening, setFromListening] = useState(false);
   const [toListening, setToListening] = useState(false);
   const handleCancelAlertDialog = () => {
     history.push("/postoffice/orderlist");
   };
 
-  const handleOpenAlertDialog = () => {
-    setOpenAlert(true);
-  };
+  
   const loadPackageTypeData = () => {
     authGet(dispatch, token, "/get-post-package-type")
       .then((res) => {

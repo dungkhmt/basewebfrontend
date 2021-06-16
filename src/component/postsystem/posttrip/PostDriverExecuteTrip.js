@@ -1,29 +1,28 @@
-import React, { useEffect, useState } from "react";
-import { makeStyles } from "@material-ui/core/styles";
-import Typography from "@material-ui/core/Typography";
+import DateFnsUtils from "@date-io/date-fns";
+import { DialogContent, Tooltip } from "@material-ui/core";
 import Button from "@material-ui/core/Button";
 import Dialog from "@material-ui/core/Dialog";
 import DialogActions from "@material-ui/core/DialogActions";
 import DialogTitle from "@material-ui/core/DialogTitle";
-import { DialogContent, Tooltip, IconButton } from "@material-ui/core";
+import { makeStyles } from "@material-ui/core/styles";
+import Typography from "@material-ui/core/Typography";
 import AlarmOnIcon from "@material-ui/icons/AlarmOn";
 import DoneIcon from "@material-ui/icons/Done";
-import PauseCircleOutlineIcon from "@material-ui/icons/PauseCircleOutline";
-import PlayArrowIcon from "@material-ui/icons/PlayArrow";
 import NotificationsIcon from "@material-ui/icons/Notifications";
 import NotificationsActiveIcon from "@material-ui/icons/NotificationsActive";
-import { authPost, authGet } from "../../../api";
+import PauseCircleOutlineIcon from "@material-ui/icons/PauseCircleOutline";
+import PlayArrowIcon from "@material-ui/icons/PlayArrow";
 import {
   KeyboardDatePicker,
   MuiPickersUtilsProvider,
-  KeyboardTimePicker,
 } from "@material-ui/pickers";
-import DateFnsUtils from "@date-io/date-fns";
 import MaterialTable from "material-table";
-import { localization } from "../../../utils/MaterialTableUtils";
+import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import { authGet, authPost } from "../../../api";
 import AlertDialog from "../../../utils/AlertDialog";
-import { errorNoti, infoNoti } from "../../../utils/Notification";
+import { localization } from "../../../utils/MaterialTableUtils";
+import { errorNoti } from "../../../utils/Notification";
 import BouncingBallsLoader from "../../../views/common/BouncingBallsLoader";
 function copyObj(obj) {
   return JSON.parse(JSON.stringify(obj));
@@ -37,36 +36,36 @@ const statusIcon = {
 const orderIcon = {
   default: <PlayArrowIcon />,
 };
-const columns = [
-  { label: "Mã số chuyến", id: "postOfficeFixedTripId", minWidth: 150 },
-  { label: "Xuất phát", id: "fromPostOffice.postOfficeName", minWidth: 200 },
-  { label: "Điểm đến", id: "toPostOffice.postOfficeName", minWidth: 150 },
-  { label: "Giờ chạy", id: "schedule_departure_time", minWidth: 150 },
-  {
-    label: "Trạng thái",
-    id: "status",
-    minWidth: 150,
-    icon: statusIcon,
-    type: "statusIcon",
-  },
-  /* trạng thái gồm: 
-      NULL: chưa bắt đàu
-      WAITING: chờ người tiếp nhận
-      EXECUTING: đã tiếp nhận
-      ARRIVED: đã đến
-    */
-  {
-    label: "Đơn hàng",
-    id: "order",
-    minWidth: 150,
-    icon: orderIcon,
-    type: "orderIcon",
-  },
-  /* trạng thái gồm: 
-      SIZE=0: KO CÓ ĐƠN
-      SIZE>0: CÓ ĐƠN
-    */
-];
+// const columns = [
+//   { label: "Mã số chuyến", id: "postOfficeFixedTripId", minWidth: 150 },
+//   { label: "Xuất phát", id: "fromPostOffice.postOfficeName", minWidth: 200 },
+//   { label: "Điểm đến", id: "toPostOffice.postOfficeName", minWidth: 150 },
+//   { label: "Giờ chạy", id: "schedule_departure_time", minWidth: 150 },
+//   {
+//     label: "Trạng thái",
+//     id: "status",
+//     minWidth: 150,
+//     icon: statusIcon,
+//     type: "statusIcon",
+//   },
+//   /* trạng thái gồm:
+//       NULL: chưa bắt đàu
+//       WAITING: chờ người tiếp nhận
+//       EXECUTING: đã tiếp nhận
+//       ARRIVED: đã đến
+//     */
+//   {
+//     label: "Đơn hàng",
+//     id: "order",
+//     minWidth: 150,
+//     icon: orderIcon,
+//     type: "orderIcon",
+//   },
+//   /* trạng thái gồm:
+//       SIZE=0: KO CÓ ĐƠN
+//       SIZE>0: CÓ ĐƠN
+//     */
+// ];
 
 const useStyles = makeStyles({
   root: {
@@ -96,8 +95,7 @@ function errHandling(err) {
 export default function PostDriverExecuteTrip() {
   const classes = useStyles();
   const token = useSelector((state) => state.auth.token);
-  const [page, setPage] = useState(0);
-  const [rowsPerPage, setRowsPerPage] = useState(10);
+
   const [data, setData] = useState([]);
   const [chooseDate, setChooseDate] = useState(new Date());
   const [tableRef, setTableRef] = useState();
@@ -107,7 +105,7 @@ export default function PostDriverExecuteTrip() {
   const [orderTableRef, setOrderTableRef] = useState();
   const [availableAssignment, setAvailableAssignment] = useState({});
   const [activeAssignments, setActiveAssignments] = useState({});
-  const [activePostTrip, setActivePostTrip] = useState();
+
   const [fixedTripExecutes, setFixedTripExecutes] = useState({});
   const [postDriverId, setPostDriverId] = useState();
   const [isRequesting, setRequesting] = useState(true);

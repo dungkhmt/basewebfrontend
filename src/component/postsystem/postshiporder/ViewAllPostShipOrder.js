@@ -1,26 +1,12 @@
-import React, { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
-import { useDispatch, useSelector } from "react-redux";
-import { authPost } from "../../../api";
-import { failed } from "../../../action";
-import Typography from "@material-ui/core/Typography";
-import { CircularProgress } from "@material-ui/core";
-import TextField from "@material-ui/core/TextField";
-import { GoogleApiWrapper, Map, Marker } from "google-maps-react";
 import Grid from "@material-ui/core/Grid";
-import CardActions from "@material-ui/core/CardActions";
-import Button from "@material-ui/core/Button";
+import { GoogleApiWrapper, Map, Marker } from "google-maps-react";
+import React, { useEffect, useState } from "react";
 
 function ViewAllPostOffice(props) {
-  const [address, setAddress] = useState();
   const [coordinates, setCoordinates] = useState();
 
   const [lat, setLat] = useState();
   const [lng, setLng] = useState();
-
-  const handleAddressChange = (event) => {
-    setAddress(event.target.value);
-  };
 
   const { data } = props.location.state;
   const bounds = new window.google.maps.LatLngBounds();

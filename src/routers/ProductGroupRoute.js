@@ -1,13 +1,13 @@
 import React from "react";
 import { Route, Switch, useRouteMatch } from "react-router";
 import AddProductImg from "../component/product/AddProductImg";
-import SetPrimaryImg from "../component/product/SetPrimaryImg";
 import ProductEdit from "../component/product/ProductEdit";
 import ProductPriceCreate from "../component/product/ProductPriceCreate";
+import SetPrimaryImg from "../component/product/SetPrimaryImg";
 import ProductPriceSupplier from "../component/supplier/ProductPriceSupplier";
 
 export default function ProductGroupRoute() {
-  let { path, url } = useRouteMatch();
+  let { path } = useRouteMatch();
   return (
     <div>
       <Switch>

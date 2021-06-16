@@ -1,12 +1,12 @@
-import React, { useEffect, useState } from "react";
-import MaterialTable from "material-table";
-import { useDispatch, useSelector } from "react-redux";
-import { API_URL } from "../../config/config";
-import { Link } from "react-router-dom";
 import { Button, Grid } from "@material-ui/core";
+import MaterialTable from "material-table";
+import React, { useEffect, useState } from "react";
+import { useSelector } from "react-redux";
+import { Link } from "react-router-dom";
+import { API_URL } from "../../config/config";
 import LakeOnMap from "./LakeOnMap";
+
 function LakeListAll(props) {
-  const dispatch = useDispatch();
   const token = useSelector((state) => state.auth.token);
   const [lakes, setLakes] = useState([]);
   const [nameButton, setNameButton] = useState("Xem trên bản đồ");

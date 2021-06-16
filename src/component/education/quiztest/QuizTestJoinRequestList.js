@@ -1,11 +1,6 @@
 import { Button, Checkbox, Tooltip } from "@material-ui/core/";
 import { green } from "@material-ui/core/colors";
-//import IconButton from '@material-ui/core/IconButton';
-import {
-  createMuiTheme,
-  makeStyles,
-  ThemeProvider,
-} from "@material-ui/core/styles";
+import { createMuiTheme, ThemeProvider } from "@material-ui/core/styles";
 import CheckCircleOutlineIcon from "@material-ui/icons/CheckCircleOutline";
 import MaterialTable from "material-table";
 import React, { useEffect, useReducer, useState } from "react";
@@ -13,11 +8,11 @@ import { useDispatch, useSelector } from "react-redux";
 import { useHistory } from "react-router-dom";
 import { request } from "../../../api";
 
-const useStyles = makeStyles({
-  table: {
-    minWidth: 700,
-  },
-});
+// const useStyles = makeStyles({
+//   table: {
+//     minWidth: 700,
+//   },
+// });
 
 const theme = createMuiTheme({
   palette: {
@@ -37,7 +32,7 @@ let count = 0;
 
 export default function QuizTestJoinRequest(props) {
   const history = useHistory();
-  const classes = useStyles();
+  // const classes = useStyles();
   const dispatch = useDispatch();
   const token = useSelector((state) => state.auth.token);
   const [, forceUpdate] = useReducer((x) => x + 1, 0);

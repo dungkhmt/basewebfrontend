@@ -1,10 +1,9 @@
-import React, { useEffect, useState } from "react";
 import MaterialTable from "material-table";
-import { useDispatch, useSelector } from "react-redux";
+import React, { useEffect, useState } from "react";
+import { useSelector } from "react-redux";
 import { API_URL } from "../../config/config";
 
 function ListDepartment(props) {
-  const dispatch = useDispatch();
   const token = useSelector((state) => state.auth.token);
 
   const [departments, setDepartments] = useState([]);

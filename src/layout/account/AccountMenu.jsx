@@ -122,7 +122,7 @@ export function AccountMenu(props) {
               <Avatar className={classes.avatarIcon}>
                 <AccountCircleRoundedIcon
                   style={{ color: "black" }}
-                  fontSize="medium"
+                  // fontSize="medium"
                 />
               </Avatar>
             </ListItemAvatar>
@@ -139,7 +139,7 @@ export function AccountMenu(props) {
               <Avatar className={classes.avatarIcon}>
                 <VpnKeyRoundedIcon
                   style={{ color: "black" }}
-                  fontSize="medium"
+                  // fontSize="medium"
                 />
               </Avatar>
             </ListItemAvatar>
@@ -158,7 +158,10 @@ export function AccountMenu(props) {
           <StyledMenuItem onClick={handleLogout}>
             <ListItemAvatar>
               <Avatar className={classes.avatarIcon}>
-                <ExitToAppIcon style={{ color: "black" }} fontSize="medium" />
+                <ExitToAppIcon
+                  style={{ color: "black" }}
+                  // fontSize="medium"
+                />
               </Avatar>
             </ListItemAvatar>
 

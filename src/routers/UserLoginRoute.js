@@ -3,12 +3,12 @@ import { Route, Switch, useRouteMatch } from "react-router";
 import UserCreate from "../component/userlogin/createuser";
 import UserDetail from "../component/userlogin/detailuserlogin";
 import EditUser from "../component/userlogin/edituserlogin";
-import UserList from "../component/userlogin/userlist";
 import Update from "../component/userlogin/updatepassword";
 import UpdateDirectly from "../component/userlogin/updatePassworDiectly";
+import UserList from "../component/userlogin/userlist";
 
 export default function UserLoginRoute() {
-  let { path, url } = useRouteMatch();
+  let { path } = useRouteMatch();
   return (
     <div>
       <Switch>

@@ -4,7 +4,7 @@ import VehicleDeliveryPlanAdd from "../component/shipment/deliveryplan/vehicle/V
 import VehicleDeliveryPlanList from "../component/shipment/deliveryplan/vehicle/VehicleDeliveryPlanList";
 
 export default function VehicleDeliveryPlanRoute() {
-  let { path, url } = useRouteMatch();
+  let { path } = useRouteMatch();
   return (
     <div>
       <Switch>

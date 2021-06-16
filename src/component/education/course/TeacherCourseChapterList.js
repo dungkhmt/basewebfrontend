@@ -1,22 +1,11 @@
-import {
-  Button,
-  Card,
-  CardActions,
-  CardContent,
-  TextField,
-  Typography,
-  MenuItem,
-  Checkbox,
-} from "@material-ui/core/";
-import React, { useState, useEffect } from "react";
-import { useHistory } from "react-router-dom";
-import { authPost, authGet, authPostMultiPart } from "../../../api";
-import { useDispatch, useSelector } from "react-redux";
-import { useParams } from "react-router";
-import MaterialTable from "material-table";
-import { Link } from "react-router-dom";
-import AddIcon from "@material-ui/icons/Add";
+import { Card, CardContent } from "@material-ui/core/";
 import { makeStyles } from "@material-ui/core/styles";
+import AddIcon from "@material-ui/icons/Add";
+import MaterialTable from "material-table";
+import React, { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { Link, useHistory } from "react-router-dom";
+import { authGet } from "../../../api";
 import PositiveButton from "../classmanagement/PositiveButton";
 
 const useStyles = makeStyles((theme) => ({
@@ -28,7 +17,6 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 function TeacherCourseChapterList(props) {
-  const params = useParams();
   const classes = useStyles();
   const courseId = props.courseId;
   const dispatch = useDispatch();

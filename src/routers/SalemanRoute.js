@@ -7,7 +7,7 @@ import AssignSalesman2Distributor from "../component/salesroutes/AssignSalesman2
 import AssignSalesman2RetailOutlet from "../component/salesroutes/AssignSalesman2RetailOutlet";
 
 export default function SalemanRoute() {
-  let { path, url } = useRouteMatch();
+  let { path } = useRouteMatch();
   return (
     <div>
       <Switch>

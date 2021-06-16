@@ -1,12 +1,12 @@
-import React from "react";
 import {
+  Avatar,
   ListItem,
   ListItemAvatar,
-  Avatar,
-  ListItemText,
   ListItemSecondaryAction,
+  ListItemText,
 } from "@material-ui/core";
-import { makeStyles, withStyles } from "@material-ui/core/styles";
+import { makeStyles } from "@material-ui/core/styles";
+import React from "react";
 
 const getFullName = (user) => {
   return user.person
