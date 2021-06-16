@@ -39,10 +39,10 @@ export const teachingassignment = {
     },
     {
       id: "MENU_EDUCATION_VIEW_LIST_ASSIGNMENT",
-      path: "/edu/assignment",
+      path: "/edu/class-teacher-assignment-plan/list",
       isPublic: false,
       icon: "StarBorder",
-      text: "DS phân công",
+      text: "DS kế hoạch phân công",
       child: [],
     },
     {
