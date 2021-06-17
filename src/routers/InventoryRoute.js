@@ -8,7 +8,7 @@ import InventoryOrderExportList from "../component/inventory/InventoryOrderExpor
 import InventoryOrderList from "../component/inventory/InventoryOrderList";
 
 export default function InventoryRoute() {
-  let { path, url } = useRouteMatch();
+  let { path } = useRouteMatch();
   return (
     <div>
       <Switch>

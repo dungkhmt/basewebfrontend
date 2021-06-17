@@ -26,7 +26,7 @@ export const authPost = (dispatch, token, url, body) => {
           } catch (err) {}
           throw Error();
         }
-        return null;
+        // return null;
       }
       return res.json();
     },
@@ -65,7 +65,7 @@ export const authPostMultiPart = (dispatch, token, url, body) => {
           } catch (err) {}
           throw Error();
         }
-        return null;
+        // return null;
       }
       return res.json();
     },
@@ -112,7 +112,7 @@ export const authGet = (dispatch, token, url) => {
           } catch (err) {}
           throw Error();
         }
-        return null;
+        // return null;
       }
       return res.json();
     },
@@ -142,7 +142,7 @@ export const authDelete = (dispatch, token, url, body) => {
           } catch (err) {}
           throw Error();
         }
-        return null;
+        // return null;
       }
       return res.json();
     },

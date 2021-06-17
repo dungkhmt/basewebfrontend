@@ -110,7 +110,6 @@ function CreateAssignment() {
     setValue,
     setError,
     clearError,
-    control,
   } = useForm({
     defaultValues: {
       name: "",

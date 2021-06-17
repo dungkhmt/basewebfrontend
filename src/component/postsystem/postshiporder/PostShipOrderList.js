@@ -1,20 +1,17 @@
-import React, { useEffect, useState } from "react";
-import { useDispatch } from "react-redux";
-import { makeStyles } from "@material-ui/core/styles";
-import Paper from "@material-ui/core/Paper";
-import Typography from "@material-ui/core/Typography";
-import { useSelector } from "react-redux";
+import DateFnsUtils from "@date-io/date-fns";
 import Button from "@material-ui/core/Button";
-import { API_URL } from "../../../config/config";
-import { Link } from "react-router-dom";
-import MaterialTable from "material-table";
-import { localization } from "../../../utils/MaterialTableUtils";
-import { authGet, authDelete } from "../../../api";
+import Paper from "@material-ui/core/Paper";
+import { makeStyles } from "@material-ui/core/styles";
 import {
   KeyboardDatePicker,
   MuiPickersUtilsProvider,
 } from "@material-ui/pickers";
-import DateFnsUtils from "@date-io/date-fns";
+import MaterialTable from "material-table";
+import React, { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { Link } from "react-router-dom";
+import { authDelete, authGet } from "../../../api";
+import { localization } from "../../../utils/MaterialTableUtils";
 import { errorNoti } from "../../../utils/Notification";
 import ConfirmDialog from "../ConfirmDialog";
 

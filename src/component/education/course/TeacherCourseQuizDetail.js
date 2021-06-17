@@ -5,6 +5,7 @@ import { useParams } from "react-router";
 import { useHistory } from "react-router-dom";
 import TeacherCourseQuizChoiceAnswerList from "./TeacherCourseQuizChoiceAnswerList";
 import TeacherCourseQuizContent from "./TeacherCourseQuizContent";
+
 function TeacherCourseQuizDetail() {
   const params = useParams();
   const questionId = params.questionId;

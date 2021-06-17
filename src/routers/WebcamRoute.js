@@ -4,7 +4,7 @@ import { WebcamRecorder } from "../component/webcam/WebcamRecorder";
 import { WebcamVideoList } from "../component/webcam/WebcamVideoList";
 
 export default function WebcamRoute() {
-  let { path, url } = useRouteMatch();
+  let { path } = useRouteMatch();
   return (
     <div>
       <Switch>

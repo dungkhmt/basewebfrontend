@@ -5,7 +5,7 @@ import RetailOutletDetail from "../component/retailoutlet/RetailOutletDetail";
 import RetailOutletList from "../component/retailoutlet/RetailOutletList";
 
 export default function RetailOutletRoute() {
-  let { path, url } = useRouteMatch();
+  let { path } = useRouteMatch();
   return (
     <div>
       <Switch>

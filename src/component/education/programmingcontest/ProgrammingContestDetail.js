@@ -1,23 +1,11 @@
-import DateFnsUtils from "@date-io/date-fns";
+import { Card } from "@material-ui/core/";
 import Button from "@material-ui/core/Button";
-import {
-  Card,
-  CardActions,
-  CardContent,
-  TextField,
-  Typography,
-} from "@material-ui/core/";
 import { makeStyles } from "@material-ui/core/styles";
-import { MuiPickersUtilsProvider } from "@material-ui/pickers";
-import React, { useState, useEffect } from "react";
-import { useHistory } from "react-router-dom";
-import { authPost, authGet } from "../../../api";
+import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import AlertDialog from "../../common/AlertDialog";
-import { Editor } from "react-draft-wysiwyg";
-import { ContentState, convertToRaw, EditorState } from "draft-js";
 import { useParams } from "react-router";
-import draftToHtml from "draftjs-to-html";
+import { useHistory } from "react-router-dom";
+import { authGet, authPost } from "../../../api";
 import ProblemsOfProgrammingContest from "./ProblemsOfProgrammingContest";
 import ProgrammingContestUserRegistrationTableApprove from "./ProgrammingContestUserRegistrationTableApproved";
 

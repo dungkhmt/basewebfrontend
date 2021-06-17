@@ -55,7 +55,7 @@ import ClassTeacherAssignmentPlanList from "../component/education/classteachera
 import NotFound from "../views/errors/NotFound";
 
 export default function EduRoute() {
-  let { path, url } = useRouteMatch();
+  let { path } = useRouteMatch();
   return (
     <div>
       <Switch>

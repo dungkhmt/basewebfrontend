@@ -51,16 +51,8 @@ function ProductCreate(props) {
     setType(event.target.value);
   };
 
-  const handleProductTypesChange = (event) => {
-    setProductTypes(event.target.value);
-  };
-
   const handleProductNameChange = (event) => {
     setProductName(event.target.value);
-  };
-
-  const handleUomsChange = (event) => {
-    setUoms(event.target.value);
   };
 
   const handleQuantityUomIdChange = (event) => {

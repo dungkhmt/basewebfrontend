@@ -4,7 +4,7 @@ import TrailerCreate from "../component/tmscontainer/trailer/TrailerCreate";
 import TrailerList from "../component/tmscontainer/trailer/TrailerList";
 
 export default function TrailerFuncRoute() {
-  let { path, url } = useRouteMatch();
+  let { path } = useRouteMatch();
   return (
     <div>
       <Switch>

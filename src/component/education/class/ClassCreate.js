@@ -1,28 +1,21 @@
 import DateFnsUtils from "@date-io/date-fns";
+import { CircularProgress } from "@material-ui/core";
 import Button from "@material-ui/core/Button";
 import Card from "@material-ui/core/Card";
 import CardActions from "@material-ui/core/CardActions";
 import CardContent from "@material-ui/core/CardContent";
+import MenuItem from "@material-ui/core/MenuItem";
 import { makeStyles } from "@material-ui/core/styles";
 import TextField from "@material-ui/core/TextField";
 import Typography from "@material-ui/core/Typography";
-import InputLabel from "@material-ui/core/InputLabel";
-import MenuItem from "@material-ui/core/MenuItem";
-import FormControl from "@material-ui/core/FormControl";
-import Select from "@material-ui/core/Select";
-import Input from "@material-ui/core/Input";
-
-import { failed } from "../../../action/Auth";
-import {
-  KeyboardDatePicker,
-  MuiPickersUtilsProvider,
-} from "@material-ui/pickers";
-import React, { useState, useEffect } from "react";
-import { useHistory } from "react-router-dom";
-import { authPost, authGet } from "../../../api";
+import { MuiPickersUtilsProvider } from "@material-ui/pickers";
+import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { CircularProgress } from "@material-ui/core";
+import { useHistory } from "react-router-dom";
+import { failed } from "../../../action/Auth";
+import { authPost } from "../../../api";
 import { API_URL } from "../../../config/config";
+
 const useStyles = makeStyles((theme) => ({
   root: {
     padding: theme.spacing(4),
@@ -49,7 +42,7 @@ export default function ClassCreate() {
   const [classType, setClassType] = useState(null);
   const [courseId, setCourseId] = useState(null);
   const [className, setClassName] = useState(null);
-  const [sessionId, setSessionId] = useState(null);
+
   const [departmentId, setDepartmentId] = useState(null);
   const [semesterId, setSemesterId] = useState(null);
 
@@ -79,15 +72,16 @@ export default function ClassCreate() {
   const [invalidCourseId, setInvalidCourseId] = useState(false);
   const [invalidClassId, setInvalidClassId] = useState(false);
   const [invalidRequirementField, setInvalidRequirementField] = useState(false);
-  function isNormalInteger(str) {
-    str = str.trim();
-    if (!str) {
-      return false;
-    }
-    str = str.replace(/^0+/, "") || "0";
-    var n = Math.floor(Number(str));
-    return n !== Infinity && String(n) === str && n >= 0;
-  }
+
+  // function isNormalInteger(str) {
+  //   str = str.trim();
+  //   if (!str) {
+  //     return false;
+  //   }
+  //   str = str.replace(/^0+/, "") || "0";
+  //   var n = Math.floor(Number(str));
+  //   return n !== Infinity && String(n) === str && n >= 0;
+  // }
 
   const getAllCourses = () => {
     fetch(API_URL + "/edu/class/get-all-courses", {
@@ -170,8 +164,8 @@ export default function ClassCreate() {
 
   const onClassIdChange = (event) => {
     setClassId(event.target.value);
-    let classIdTemp = event.target.value;
-    /*
+    /*let classIdTemp = event.target.value;
+    
       if (classIdTemp === null || classIdTemp.trim() === "" || isNormalInteger(classIdTemp))
         setInvalidClassId(false);          
       else
@@ -181,31 +175,32 @@ export default function ClassCreate() {
     setInvalidClassId(false);
   };
 
-  const onCourseIdChange = (event) => {
-    let id = event.target.value;
-    setCourseId(id);
+  // const onCourseIdChange = (event) => {
+  //   let id = event.target.value;
+  //   setCourseId(id);
 
-    if (id === "") {
-      setInvalidCourseId(false);
-      setClassName(null);
-      return;
-    }
+  //   if (id === "") {
+  //     setInvalidCourseId(false);
+  //     setClassName(null);
+  //     return;
+  //   }
 
-    let ok = false;
-    coursePool.forEach((course) => {
-      if (course.courseId === id) {
-        setClassName(course.courseName);
-        console.log(course.courseName);
-        ok = true;
-      }
-    });
-    if (!ok) {
-      setInvalidCourseId(true);
-      setClassName(null);
-    } else {
-      setInvalidCourseId(false);
-    }
-  };
+  //   let ok = false;
+  //   coursePool.forEach((course) => {
+  //     if (course.courseId === id) {
+  //       setClassName(course.courseName);
+  //       console.log(course.courseName);
+  //       ok = true;
+  //     }
+  //   });
+  //   if (!ok) {
+  //     setInvalidCourseId(true);
+  //     setClassName(null);
+  //   } else {
+  //     setInvalidCourseId(false);
+  //   }
+  // };
+
   const handleSubmit = () => {
     const data = {
       classCode: classId,

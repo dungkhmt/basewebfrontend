@@ -4,15 +4,15 @@ import {
   SaleReportByPartyCustomer,
   SaleReportByProduct,
 } from "../component/report/SaleReport";
-import SaleReportByDate from "../component/reportsales/SalesReportByDate";
 import {
   TransportReportByDriver,
   TransportReportByFacility,
   TransportReportByPartyCustomer,
 } from "../component/report/TransportReport";
+import SaleReportByDate from "../component/reportsales/SalesReportByDate";
 
 export default function ReportGroupRoute() {
-  let { path, url } = useRouteMatch();
+  let { path } = useRouteMatch();
   return (
     <div>
       <Switch>

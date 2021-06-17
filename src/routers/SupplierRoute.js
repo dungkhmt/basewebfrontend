@@ -4,7 +4,7 @@ import SupplierCreate from "../component/supplier/SupplierCreate";
 import SupplierList from "../component/supplier/SupplierList";
 
 export default function SupplierRoute() {
-  let { path, url } = useRouteMatch();
+  let { path } = useRouteMatch();
   return (
     <div>
       <Switch>

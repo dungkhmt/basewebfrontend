@@ -1,23 +1,23 @@
-import React, { useState, useEffect } from "react";
-import { useHistory, Redirect } from "react-router-dom";
-import { Doughnut } from "react-chartjs-2";
-import { authPost, authGet } from "../../../api";
-import { useDispatch, useSelector } from "react-redux";
 import {
-  Box,
-  Typography,
-  Grid,
   Avatar,
-  Paper,
+  Box,
+  Grid,
+  List,
   ListItem,
   ListItemAvatar,
   ListItemText,
-  List,
+  Paper,
+  Typography,
 } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
-import Gantt from "../Gantt";
 import "ibm-gantt-chart/dist/ibm-gantt-chart.css";
 import randomColor from "randomcolor";
+import React, { useEffect, useState } from "react";
+import { Doughnut } from "react-chartjs-2";
+import { useDispatch, useSelector } from "react-redux";
+import { Redirect, useHistory } from "react-router-dom";
+import { authGet } from "../../../api";
+import Gantt from "../Gantt";
 
 const avtColor = [...Array(20)].map((value, index) =>
   randomColor({ luminosity: "light", hue: "random" })
@@ -116,7 +116,7 @@ export default function ProjectDashboard(props) {
   const [ganttConfig, setGanttConfig] = useState({});
   const [isPermissive, setIsPermissive] = useState(true);
   const [project, setProject] = useState({});
-  const [taskList, setTaskList] = useState([]);
+
   const [projectMember, setProjectMember] = useState([]);
 
   function checkNull(a, ifNotNull = a, ifNull = "") {

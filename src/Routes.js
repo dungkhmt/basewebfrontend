@@ -1,10 +1,8 @@
 import React, { Suspense } from "react";
 import { Route, Switch } from "react-router-dom";
-import PrivateRoute from "./common/PrivateRoute";
-import Loading from "./component/common/Loading";
-import ChangePassword from "./component/userlogin/changepassword";
 import Register from "../src/views/UserRegister/Register";
-// import Register from "./component/userregister/Register";
+import PrivateRoute from "./common/PrivateRoute";
+import ChangePassword from "./component/userlogin/changepassword";
 import SignInContainer from "./container/SignInContainer";
 import { Layout } from "./layout";
 import MainAppRoute from "./routers/MainAppRoutes";

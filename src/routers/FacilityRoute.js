@@ -1,13 +1,13 @@
 import React from "react";
 import { Route, Switch, useRouteMatch } from "react-router";
-import { FacilityList } from "../component/inventory/FacilityList";
 import { FacilityCreate } from "../component/inventory/FacilityCreate";
 import { FacilityDetail } from "../component/inventory/FacilityDetail";
-import { SalesmanFacilityList } from "../component/inventory/SalesmanFacilityList";
+import { FacilityList } from "../component/inventory/FacilityList";
 import { SalesmanFacilityCreate } from "../component/inventory/SalesmanFacilityCreate";
+import { SalesmanFacilityList } from "../component/inventory/SalesmanFacilityList";
 
 export default function InventoryRoute() {
-  let { path, url } = useRouteMatch();
+  let { path } = useRouteMatch();
   return (
     <div>
       <Switch>

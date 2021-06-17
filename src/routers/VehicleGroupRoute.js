@@ -1,11 +1,11 @@
 import React from "react";
 import { Route, Switch, useRouteMatch } from "react-router";
-import VehicleList from "../component/shipment/vehicle/VehicleList";
-import VehicleDetail from "../component/shipment/vehicle/VehicleDetail";
 import VehicleNotInDeliveryTrips from "../component/shipment/deliveryplan/vehicle/VehicleNotInDeliveryTrips";
+import VehicleDetail from "../component/shipment/vehicle/VehicleDetail";
+import VehicleList from "../component/shipment/vehicle/VehicleList";
 
 export default function VehicleGroupRoute() {
-  let { path, url } = useRouteMatch();
+  let { path } = useRouteMatch();
   return (
     <div>
       <Switch>

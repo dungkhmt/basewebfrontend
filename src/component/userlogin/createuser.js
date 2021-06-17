@@ -117,10 +117,6 @@ function UserCreate(props) {
     setPartyCode(event.target.value);
   };
 
-  const handleChange = (event) => {
-    setRoles(event.target.value);
-  };
-
   const handleRoleChange = (event) => {
     // console.log(event.target);
     // const { options } = event.target;

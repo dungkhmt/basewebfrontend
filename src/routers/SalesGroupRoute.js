@@ -3,7 +3,7 @@ import { Route, Switch, useRouteMatch } from "react-router";
 import DetailSalesman from "../component/salesman/DetailSalesman";
 
 export default function SalesGroupRoute() {
-  let { path, url } = useRouteMatch();
+  let { path } = useRouteMatch();
   return (
     <div>
       <Switch>

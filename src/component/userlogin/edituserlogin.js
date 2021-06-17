@@ -1,3 +1,4 @@
+import DateFnsUtils from "@date-io/date-fns";
 import {
   Button,
   CardActions,
@@ -13,17 +14,16 @@ import CardContent from "@material-ui/core/CardContent";
 import { makeStyles } from "@material-ui/core/styles";
 import TextField from "@material-ui/core/TextField";
 import Typography from "@material-ui/core/Typography";
+import {
+  KeyboardDatePicker,
+  MuiPickersUtilsProvider,
+} from "@material-ui/pickers";
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useHistory, useParams } from "react-router-dom";
 import { failed } from "../../action";
 import { authGet, authPut } from "../../api";
-import {
-  KeyboardDatePicker,
-  MuiPickersUtilsProvider,
-} from "@material-ui/pickers";
 import { API_URL } from "../../config/config";
-import DateFnsUtils from "@date-io/date-fns";
 import withScreenSecurity from "../withScreenSecurity";
 
 const useStyles = makeStyles((theme) => ({
@@ -61,8 +61,7 @@ function EditUser(props) {
   const [middleName, setMiddleName] = useState();
   const [firstName, setFirstName] = useState();
   const [userName, setUserName] = useState();
-  const [password, setPassword] = useState();
-  const [gender, setGender] = useState();
+
   const [partyCode, setPartyCode] = useState();
   const [roles, setRoles] = useState([]);
   const [birthDate, setBirthDate] = useState(new Date());
@@ -106,12 +105,7 @@ function EditUser(props) {
   const handleFirstNameChange = (event) => {
     setFirstName(event.target.value);
   };
-  const handlePasswordChange = (event) => {
-    setPassword(event.target.value);
-  };
-  const handleGenderChange = (event) => {
-    setGender(event.target.value);
-  };
+
   const handlePartyCodeChange = (event) => {
     setPartyCode(event.target.value);
   };

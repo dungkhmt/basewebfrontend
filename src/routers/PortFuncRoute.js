@@ -5,7 +5,7 @@ import PortGoogleMap from "../component/tmscontainer/port/PortGoogleMap";
 import PortList from "../component/tmscontainer/port/PortList";
 
 export default function PortFuncRoute() {
-  let { path, url } = useRouteMatch();
+  let { path } = useRouteMatch();
   return (
     <div>
       <Switch>

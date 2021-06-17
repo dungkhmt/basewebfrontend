@@ -1,30 +1,16 @@
-import React, { useEffect, useState } from "react";
-import { makeStyles } from "@material-ui/core/styles";
-import Paper from "@material-ui/core/Paper";
-import Typography from "@material-ui/core/Typography";
-import TableContainer from "@material-ui/core/TableContainer";
-import TableHead from "@material-ui/core/TableHead";
-import Table from "@material-ui/core/Table";
-import TableBody from "@material-ui/core/TableBody";
-import TableCell from "@material-ui/core/TableCell";
-import TableRow from "@material-ui/core/TableRow";
-import TablePagination from "@material-ui/core/TablePagination";
-import { useSelector } from "react-redux";
-import IconButton from "@material-ui/core/IconButton";
-import DeleteIcon from "@material-ui/icons/Delete";
 import Button from "@material-ui/core/Button";
-import Dialog from "@material-ui/core/Dialog";
-import DialogActions from "@material-ui/core/DialogActions";
-import DialogTitle from "@material-ui/core/DialogTitle";
-import { DialogContent } from "@material-ui/core";
-import { API_URL } from "../../../config/config";
-import { Link } from "react-router-dom";
-import Upload from "../../../utils/Upload";
+import Paper from "@material-ui/core/Paper";
+import { makeStyles } from "@material-ui/core/styles";
+import Typography from "@material-ui/core/Typography";
 import MaterialTable from "material-table";
-import { localization } from "../../../utils/MaterialTableUtils";
+import React, { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { Link } from "react-router-dom";
 import { authDelete } from "../../../api";
+import { API_URL } from "../../../config/config";
+import { localization } from "../../../utils/MaterialTableUtils";
 import { errorNoti } from "../../../utils/Notification";
-import { useDispatch } from "react-redux";
+import Upload from "../../../utils/Upload";
 
 function errHandling(err) {
   if (err.message == "Unauthorized")

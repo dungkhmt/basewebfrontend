@@ -1,12 +1,12 @@
 import React from "react";
 import { Route, Switch, useRouteMatch } from "react-router";
-import ShipmentItemList from "../component/shipment/shipment/ShipmentItemList";
-import ShipmentItemCreate from "../component/shipment/shipment/ShipmentItemCreate";
-import ShipmentItemDeliveryTripDetailList from "../component/shipment/deliveryplan/shipmentitem/ShipmentItemDeliveryTripDetailList";
 import NotScheduledShipmentItem from "../component/shipment/deliveryplan/deliverytrip/NotScheduledShipmentItem";
+import ShipmentItemDeliveryTripDetailList from "../component/shipment/deliveryplan/shipmentitem/ShipmentItemDeliveryTripDetailList";
+import ShipmentItemCreate from "../component/shipment/shipment/ShipmentItemCreate";
+import ShipmentItemList from "../component/shipment/shipment/ShipmentItemList";
 
 export default function ShipmentGroupRoute() {
-  let { path, url } = useRouteMatch();
+  let { path } = useRouteMatch();
   return (
     <div>
       <Switch>

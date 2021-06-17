@@ -1,15 +1,13 @@
-import React, { useEffect, useRef, useState } from "react";
+import { Box, Card, CardContent } from "@material-ui/core";
 import Button from "@material-ui/core/Button";
-import MaterialTable, { MTableToolbar } from "material-table";
-import { Card, CardContent, Box } from "@material-ui/core";
 import { makeStyles, MuiThemeProvider } from "@material-ui/core/styles";
-import { useSelector, useDispatch } from "react-redux";
-import SaveIcon from "@material-ui/icons/Save";
 import CloudUploadIcon from "@material-ui/icons/CloudUpload";
-import { tableIcons } from "../../../utils/iconutil";
-import { authPost, authGet } from "../../../api";
+import MaterialTable, { MTableToolbar } from "material-table";
+import React, { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import { useHistory } from "react-router-dom";
-import UploadButton from "../UploadButton";
+import { authGet } from "../../../api";
+import { tableIcons } from "../../../utils/iconutil";
 
 const useStyles = makeStyles((theme) => ({
   button: {

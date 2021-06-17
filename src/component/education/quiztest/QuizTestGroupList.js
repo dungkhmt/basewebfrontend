@@ -1,25 +1,20 @@
 import { Button, Checkbox, Tooltip } from "@material-ui/core/";
 import { green } from "@material-ui/core/colors";
-//import IconButton from '@material-ui/core/IconButton';
-import {
-  createMuiTheme,
-  makeStyles,
-  ThemeProvider,
-} from "@material-ui/core/styles";
+import { createMuiTheme, ThemeProvider } from "@material-ui/core/styles";
 import { Delete } from "@material-ui/icons";
 import AddCircleOutlineIcon from "@material-ui/icons/AddCircleOutline";
 import MaterialTable from "material-table";
 import React, { useEffect, useReducer, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import { useSelector } from "react-redux";
 import { useHistory } from "react-router-dom";
 import { request } from "../../../api";
 import QuizTestGroupQuestionList from "./QuizTestGroupQuestionList";
 
-const useStyles = makeStyles({
-  table: {
-    minWidth: 700,
-  },
-});
+// const useStyles = makeStyles({
+//   table: {
+//     minWidth: 700,
+//   },
+// });
 
 const headerProperties = {
   headerStyle: {
@@ -33,8 +28,8 @@ let count = 0;
 
 export default function QuizTestGroupList(props) {
   const history = useHistory();
-  const classes = useStyles();
-  const dispatch = useDispatch();
+  // const classes = useStyles();
+
   const token = useSelector((state) => state.auth.token);
   const [, forceUpdate] = useReducer((x) => x + 1, 0);
 

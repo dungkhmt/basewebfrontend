@@ -5,7 +5,7 @@ import ListDepartment from "../component/departments/listdepartment";
 import Approve from "../views/UserRegister/Approve";
 
 export default function UserGroupRoute() {
-  let { path, url } = useRouteMatch();
+  let { path } = useRouteMatch();
   return (
     <div>
       <Switch>

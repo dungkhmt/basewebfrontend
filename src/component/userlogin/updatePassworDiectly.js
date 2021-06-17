@@ -1,29 +1,17 @@
-import {
-  Button,
-  CardActions,
-  CircularProgress,
-  FormControl,
-  Input,
-  InputLabel,
-  MenuItem,
-  Select,
-} from "@material-ui/core";
+import DateFnsUtils from "@date-io/date-fns";
+import { Button, CardActions, CircularProgress } from "@material-ui/core";
 import Card from "@material-ui/core/Card";
 import CardContent from "@material-ui/core/CardContent";
 import { makeStyles } from "@material-ui/core/styles";
 import TextField from "@material-ui/core/TextField";
 import Typography from "@material-ui/core/Typography";
+import { MuiPickersUtilsProvider } from "@material-ui/pickers";
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useHistory, useParams } from "react-router-dom";
 import { failed } from "../../action";
-import { authGet, authPost, authPut } from "../../api";
-import {
-  KeyboardDatePicker,
-  MuiPickersUtilsProvider,
-} from "@material-ui/pickers";
+import { authPost } from "../../api";
 import { API_URL } from "../../config/config";
-import DateFnsUtils from "@date-io/date-fns";
 import withScreenSecurity from "../withScreenSecurity";
 
 const useStyles = makeStyles((theme) => ({
@@ -40,16 +28,17 @@ const useStyles = makeStyles((theme) => ({
     maxWidth: 300,
   },
 }));
-const ITEM_HEIGHT = 48;
-const ITEM_PADDING_TOP = 8;
-const MenuProps = {
-  PaperProps: {
-    style: {
-      maxHeight: ITEM_HEIGHT * 4.5 + ITEM_PADDING_TOP,
-      width: 250,
-    },
-  },
-};
+
+// const ITEM_HEIGHT = 48;
+// const ITEM_PADDING_TOP = 8;
+// const MenuProps = {
+//   PaperProps: {
+//     style: {
+//       maxHeight: ITEM_HEIGHT * 4.5 + ITEM_PADDING_TOP,
+//       width: 250,
+//     },
+//   },
+// };
 
 function EditUser(props) {
   const history = useHistory();

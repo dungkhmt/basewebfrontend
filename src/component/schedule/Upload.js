@@ -1,7 +1,6 @@
 import { makeStyles } from "@material-ui/core/styles";
-import { DropzoneArea, DropzoneDialog } from "material-ui-dropzone";
-import React from "react";
-import { useState } from "react";
+import { DropzoneDialog } from "material-ui-dropzone";
+import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useHistory } from "react-router";
 import { API_URL } from "../../config/config";
@@ -18,7 +17,7 @@ function Upload(props) {
   const classes = useStyle();
   const history = useHistory();
 
-  const fileField = document.querySelector('input[type="file"]');
+  // const fileField = document.querySelector('input[type="file"]');
 
   const [isRequesting, setIsRequesting] = useState(true);
 

@@ -1,21 +1,11 @@
-import {
-  Button,
-  Card,
-  CardActions,
-  CardContent,
-  TextField,
-  Typography,
-  MenuItem,
-  Checkbox,
-} from "@material-ui/core/";
-import React, { useState, useEffect } from "react";
-import { useHistory } from "react-router-dom";
-import { authPost, authGet, authPostMultiPart } from "../../../api";
+import { Card, CardContent } from "@material-ui/core/";
+import AddIcon from "@material-ui/icons/Add";
+import MaterialTable from "material-table";
+import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useParams } from "react-router";
-import MaterialTable from "material-table";
-import { Link } from "react-router-dom";
-import AddIcon from "@material-ui/icons/Add";
+import { useHistory } from "react-router-dom";
+import { authGet } from "../../../api";
 
 function TeacherCourseTopicList(props) {
   const params = useParams();

@@ -1,24 +1,22 @@
 import DateFnsUtils from "@date-io/date-fns";
-import Button from "@material-ui/core/Button";
 import {
   Card,
   CardActions,
   CardContent,
+  MenuItem,
   TextField,
   Typography,
-  MenuItem,
 } from "@material-ui/core/";
+import Button from "@material-ui/core/Button";
 import { makeStyles } from "@material-ui/core/styles";
 import { MuiPickersUtilsProvider } from "@material-ui/pickers";
-import React, { useState, useEffect } from "react";
-import { useHistory } from "react-router-dom";
-import { authPost, authGet } from "../../../api";
+import { EditorState } from "draft-js";
+import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import { useHistory } from "react-router-dom";
+import { authGet, authPost } from "../../../api";
 import AlertDialog from "../../common/AlertDialog";
-import { Editor } from "react-draft-wysiwyg";
-import { ContentState, convertToRaw, EditorState } from "draft-js";
 
-import draftToHtml from "draftjs-to-html";
 const useStyles = makeStyles((theme) => ({
   root: {
     padding: theme.spacing(4),

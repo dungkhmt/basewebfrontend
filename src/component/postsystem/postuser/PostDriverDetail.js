@@ -1,19 +1,17 @@
-import React, { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
-import { useDispatch, useSelector } from "react-redux";
-import { GoogleApiWrapper, Map, Marker, Polyline } from "google-maps-react";
-import Grid from "@material-ui/core/Grid";
-import CardActions from "@material-ui/core/CardActions";
-import Button from "@material-ui/core/Button";
-import { authPost, authGet, authDelete } from "../../../api";
-import AlertDialog from "../../../utils/AlertDialog";
-import { errorNoti, infoNoti } from "../../../utils/Notification";
-import MaterialTable from "material-table";
-import { localization, tableIcons } from "../../../utils/MaterialTableUtils";
-import { makeStyles } from "@material-ui/core/styles";
 import Dialog from "@material-ui/core/Dialog";
 import DialogTitle from "@material-ui/core/DialogTitle";
+import Grid from "@material-ui/core/Grid";
 import Icon from "@material-ui/core/Icon";
+import { makeStyles } from "@material-ui/core/styles";
+import { GoogleApiWrapper, Map, Marker, Polyline } from "google-maps-react";
+import MaterialTable from "material-table";
+import React, { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { useParams } from "react-router-dom";
+import { authDelete, authGet, authPost } from "../../../api";
+import AlertDialog from "../../../utils/AlertDialog";
+import { localization, tableIcons } from "../../../utils/MaterialTableUtils";
+import { errorNoti } from "../../../utils/Notification";
 import ConfirmDialog from "../ConfirmDialog";
 
 function errHandling(err) {
@@ -86,10 +84,10 @@ const style = {
 function PostDriverDetail(props) {
   const classes = useStyles();
   const { postDriverId } = useParams();
-  const [postDriver, setPostDriver] = useState();
+
   const token = useSelector((state) => state.auth.token);
   const dispatch = useDispatch();
-  const [isRequesting, setIsRequesting] = useState(false);
+
   const [data, setData] = useState([]);
   const [map, setMap] = useState();
   const [tableRef, setTableRef] = useState();

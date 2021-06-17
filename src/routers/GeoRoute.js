@@ -7,7 +7,7 @@ import ListLocation from "../component/geo/ListLocation";
 import CreateContainer from "../component/tmscontainer/container/CreateContainer";
 
 export default function GeoRoute() {
-  let { path, url } = useRouteMatch();
+  let { path } = useRouteMatch();
   return (
     <div>
       <Switch>

@@ -1,28 +1,26 @@
 import DateFnsUtils from "@date-io/date-fns";
+import { CircularProgress } from "@material-ui/core";
 import Button from "@material-ui/core/Button";
 import Card from "@material-ui/core/Card";
 import CardActions from "@material-ui/core/CardActions";
 import CardContent from "@material-ui/core/CardContent";
+import FormControl from "@material-ui/core/FormControl";
+import Input from "@material-ui/core/Input";
+import InputLabel from "@material-ui/core/InputLabel";
+import MenuItem from "@material-ui/core/MenuItem";
+import Select from "@material-ui/core/Select";
 import { makeStyles } from "@material-ui/core/styles";
 import TextField from "@material-ui/core/TextField";
 import Typography from "@material-ui/core/Typography";
-import InputLabel from "@material-ui/core/InputLabel";
-import MenuItem from "@material-ui/core/MenuItem";
-import FormControl from "@material-ui/core/FormControl";
-import Select from "@material-ui/core/Select";
-import Input from "@material-ui/core/Input";
-
-import { failed } from "../../action/Auth";
 import {
   KeyboardDatePicker,
   MuiPickersUtilsProvider,
 } from "@material-ui/pickers";
 import React, { useState } from "react";
-import { useHistory } from "react-router-dom";
-import { authPost } from "../../api";
-
 import { useDispatch, useSelector } from "react-redux";
-import { CircularProgress } from "@material-ui/core";
+import { useHistory } from "react-router-dom";
+import { failed } from "../../action/Auth";
+import { authPost } from "../../api";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -89,10 +87,6 @@ function SalesmanCreate(props) {
   };
   const handlePartyCodeChange = (event) => {
     setPartyCode(event.target.value);
-  };
-
-  const handleChange = (event) => {
-    setRoles(event.target.value);
   };
 
   const handleRoleChange = (event) => {

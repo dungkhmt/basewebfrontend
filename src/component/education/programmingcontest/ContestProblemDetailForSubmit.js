@@ -1,21 +1,16 @@
 import {
   Button,
   Card,
-  CardActions,
   CardContent,
-  TextField,
-  Typography,
-  MenuItem,
-  Checkbox,
   CircularProgress,
 } from "@material-ui/core/";
-import React, { useState, useEffect } from "react";
-import { useHistory } from "react-router-dom";
-import { authPost, authGet, authPostMultiPart } from "../../../api";
+import parse from "html-react-parser";
+import MaterialTable, { MTableBody } from "material-table";
+import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useParams } from "react-router";
-import MaterialTable, { MTableBody } from "material-table";
-import parse from "html-react-parser";
+import { useHistory } from "react-router-dom";
+import { authGet, authPostMultiPart } from "../../../api";
 
 function ContestProblemDetailForSubmit(props) {
   const params = useParams();

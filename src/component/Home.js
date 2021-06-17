@@ -86,20 +86,20 @@ export default function Home(props) {
   const [dateQuizParticipation, setDateQuizParticipation] = useState([]);
   const [totalQuizParticipation, setTotalQuizParticipation] = useState([]);
 
-  const data = {
-    labels: ["January", "February", "March", "April", "May", "June", "July"],
-    datasets: [
-      {
-        label: "My First dataset",
-        backgroundColor: "rgba(255,99,132,0.2)",
-        borderColor: "rgba(255,99,132,1)",
-        borderWidth: 1,
-        hoverBackgroundColor: "rgba(255,99,132,0.4)",
-        hoverBorderColor: "rgba(255,99,132,1)",
-        data: [65, 59, 80, 81, 56, 55, 40],
-      },
-    ],
-  };
+  // const data = {
+  //   labels: ["January", "February", "March", "April", "May", "June", "July"],
+  //   datasets: [
+  //     {
+  //       label: "My First dataset",
+  //       backgroundColor: "rgba(255,99,132,0.2)",
+  //       borderColor: "rgba(255,99,132,1)",
+  //       borderWidth: 1,
+  //       hoverBackgroundColor: "rgba(255,99,132,0.4)",
+  //       hoverBorderColor: "rgba(255,99,132,1)",
+  //       data: [65, 59, 80, 81, 56, 55, 40],
+  //     },
+  //   ],
+  // };
 
   const dataRevenue = {
     labels: dateRevenue,
@@ -173,7 +173,7 @@ export default function Home(props) {
         let dates = [];
         let participations = [];
 
-        console.log("getStudentParticipation, lst = ", lst);
+        // console.log("getStudentParticipation, lst = ", lst);
 
         lst.forEach((r) => {
           dates.push(r.date);
@@ -234,7 +234,7 @@ export default function Home(props) {
         let dates = [];
         let participations = [];
 
-        console.log("getQuizParticipation, lst = ", lst);
+        // console.log("getQuizParticipation, lst = ", lst);
 
         lst.forEach((r) => {
           dates.push(r.date);
@@ -250,7 +250,7 @@ export default function Home(props) {
   }
 
   function getRevenueDateRecent() {
-    console.log("getRevenueDateRecent");
+    // console.log("getRevenueDateRecent");
     authPost(dispatch, token, "/report-date-based-revenue-recent", {
       nbDays: 15,
     })
@@ -277,7 +277,7 @@ export default function Home(props) {
   }
 
   function getVehicleDistance() {
-    console.log("getVehicleDistance");
+    // console.log("getVehicleDistance");
     authPost(dispatch, token, "/statistic-vehicle-distance", {
       fromDate: "",
       thruDate: "",

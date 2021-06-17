@@ -8,7 +8,7 @@ import {
 } from "../component/accounting/InvoiceDataTable";
 
 export default function InvoiceGroupRoute() {
-  let { path, url } = useRouteMatch();
+  let { path } = useRouteMatch();
   return (
     <div>
       <Switch>

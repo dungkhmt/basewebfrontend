@@ -9,6 +9,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { useParams } from "react-router";
 import { Link as RouterLink, useHistory } from "react-router-dom";
 import { authGet, request } from "../../../api";
+import { addZeroBefore } from "../../../utils/dateutils";
 import PrimaryButton from "../../button/PrimaryButton";
 import TertiaryButton from "../../button/TertiaryButton";
 import { AntTab } from "../../tab/AntTab";
@@ -192,12 +193,20 @@ export default function QuizTestDetail(props) {
 
     // Format scheduleDateTime.
     const date = new Date(res.scheduleDatetime);
+    const currentTime = new Date();
+    const year =
+      currentTime.getFullYear() === date.getFullYear()
+        ? ""
+        : ` ${date.getFullYear()},`;
 
     const scheduleDateTime = `${
       weekDay[date.getDay()]
-    }, ${date.getDate()} tháng ${
+    }, ${date.getDate()} Tháng ${
       date.getMonth() + 1
-    }, ${date.getFullYear()}, lúc ${date.getHours()}:${date.getMinutes()}`;
+    },${year} lúc ${addZeroBefore(date.getHours(), 2)}:${addZeroBefore(
+      date.getMinutes(),
+      2
+    )}`;
 
     setTestInfo({
       testId: res.testId,

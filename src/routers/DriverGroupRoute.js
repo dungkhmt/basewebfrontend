@@ -1,11 +1,11 @@
 import React from "react";
 import { Route, Switch, useRouteMatch } from "react-router";
+import DriverCreate from "../component/shipment/driver/DriverCreate";
 import DriverDetail from "../component/shipment/driver/DriverDetail";
 import DriverList from "../component/shipment/driver/DriverList";
-import DriverCreate from "../component/shipment/driver/DriverCreate";
 
 export default function DriverGroupRoute() {
-  let { path, url } = useRouteMatch();
+  let { path } = useRouteMatch();
   return (
     <div>
       <Switch>

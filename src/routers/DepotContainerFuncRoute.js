@@ -5,7 +5,7 @@ import DepotContainerGoogleMap from "../component/tmscontainer/depotContainer/De
 import DepotContainerList from "../component/tmscontainer/depotContainer/DepotContainerList";
 
 export default function DepotContainerFuncRoute() {
-  let { path, url } = useRouteMatch();
+  let { path } = useRouteMatch();
   return (
     <div>
       <Switch>

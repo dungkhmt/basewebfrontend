@@ -4,7 +4,7 @@ import PurchaseOrderCreate from "../component/order/PurchaseOrderCreate";
 import PurchaseOrderList from "../component/order/PurchaseOrderList";
 
 export default function PurchaseOrderRoute() {
-  let { path, url } = useRouteMatch();
+  let { path } = useRouteMatch();
   return (
     <div>
       <Switch>

@@ -1,27 +1,23 @@
-import React, { useState, useEffect } from "react";
+import {
+  Button,
+  Card,
+  CardContent,
+  CircularProgress,
+  MenuItem,
+  TextField,
+  Typography,
+} from "@material-ui/core";
 import { MuiThemeProvider } from "@material-ui/core/styles";
-import { axiosPost, axiosGet } from "../../../api";
-import { useDispatch, useSelector } from "react-redux";
-import { Save, Cancel } from "@material-ui/icons";
+import { Cancel, Save } from "@material-ui/icons";
+import React, { useEffect, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { DevTool } from "react-hook-form-devtools";
+import { useSelector } from "react-redux";
 import { useHistory } from "react-router";
 import { toast } from "react-toastify";
-import { IconContext } from "react-icons/lib/cjs";
-import { MdCancel } from "react-icons/md";
-import {
-  Box,
-  Menu,
-  CircularProgress,
-  Card,
-  MenuItem,
-  CardContent,
-  Typography,
-  TextField,
-  Button,
-} from "@material-ui/core";
-import { errorNoti } from "../../../utils/Notification";
 import { object, string } from "yup";
+import { axiosGet, axiosPost } from "../../../api";
+import { errorNoti } from "../../../utils/Notification";
 
 function AddVisitConfirguration(props) {
   const history = useHistory();

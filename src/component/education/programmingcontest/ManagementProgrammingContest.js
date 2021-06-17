@@ -1,30 +1,20 @@
-import React, { useEffect, useState } from "react";
-import MaterialTable from "material-table";
-import { useDispatch, useSelector } from "react-redux";
-import { API_URL } from "../../../config/config";
-import { Link } from "react-router-dom";
-import { authPost, authGet, authPostMultiPart } from "../../../api";
-import { useHistory } from "react-router-dom";
-import {
-  CardContent,
-  Tooltip,
-  IconButton,
-  BarChartIcon,
-} from "@material-ui/core";
-import AddIcon from "@material-ui/icons/Add";
-import ContestUserProblemTable from "./ContestUserProblemTable";
-import ProgramSubmissionTable from "./ProgramSubmissionTable";
-import ProgrammingContestUserRegistrationTable from "./ProgrammingContestUserRegistrationTable";
-
+import { CardContent } from "@material-ui/core";
 import AppBar from "@material-ui/core/AppBar";
-import Tabs from "@material-ui/core/Tabs";
-import Tab from "@material-ui/core/Tab";
-import Typography from "@material-ui/core/Typography";
 import Box from "@material-ui/core/Box";
+import Tab from "@material-ui/core/Tab";
+import Tabs from "@material-ui/core/Tabs";
+import Typography from "@material-ui/core/Typography";
+import AddIcon from "@material-ui/icons/Add";
+import MaterialTable from "material-table";
 import PropTypes from "prop-types";
-
+import React, { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { Link, useHistory } from "react-router-dom";
+import { authGet } from "../../../api";
 import ContestTable from "./ContestTable";
-import Player from "../../../utils/Player";
+import ContestUserProblemTable from "./ContestUserProblemTable";
+import ProgrammingContestUserRegistrationTable from "./ProgrammingContestUserRegistrationTable";
+import ProgramSubmissionTable from "./ProgramSubmissionTable";
 
 function TabPanel(props) {
   const { children, value, index, ...other } = props;

@@ -1,9 +1,8 @@
 //import IconButton from '@material-ui/core/IconButton';
-import { makeStyles } from "@material-ui/core/styles";
 import MaterialTable from "material-table";
 import React, { useEffect, useReducer, useState } from "react";
 import ReactExport from "react-data-export";
-import { useDispatch, useSelector } from "react-redux";
+import { useSelector } from "react-redux";
 import { useHistory } from "react-router-dom";
 import { request } from "../../../api";
 import { exportResultListPdf } from "./TeacherQuizResultExportPDF.js";
@@ -12,11 +11,11 @@ import ViewHistoryLogQuizGroupQuestionParticipationExecutionChoice from "./ViewH
 const ExcelFile = ReactExport.ExcelFile;
 const ExcelSheet = ReactExport.ExcelFile.ExcelSheet;
 
-const useStyles = makeStyles({
-  table: {
-    minWidth: 700,
-  },
-});
+// const useStyles = makeStyles({
+//   table: {
+//     minWidth: 700,
+//   },
+// });
 
 const headerProperties = {
   headerStyle: {
@@ -26,12 +25,12 @@ const headerProperties = {
   },
 };
 
-let count = 0;
+// let count = 0;
 
 export default function QuizTestStudentListResult(props) {
   const history = useHistory();
-  const classes = useStyles();
-  const dispatch = useDispatch();
+  // const classes = useStyles();
+
   const token = useSelector((state) => state.auth.token);
   const [, forceUpdate] = useReducer((x) => x + 1, 0);
   const [studentListResult, setStudentListResult] = useState([]);

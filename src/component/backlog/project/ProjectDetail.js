@@ -1,62 +1,40 @@
-import React, { useEffect, useRef, useState, useReducer } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import MaterialTable from "material-table";
-import { authPost, authGet, authPostMultiPart } from "../../../api";
-import { Redirect, useHistory } from "react-router-dom";
-import { toFormattedDateTime } from "../../../utils/dateutils";
 import {
-  Grid,
-  Button,
+  Box, Button,
   Card,
-  CardContent,
-  Icon,
-  TextField,
-  Tooltip,
-  IconButton,
-  Box,
-  Chip,
-  Typography,
-  TableContainer,
-  Table,
-  TableHead,
-  TableRow,
-  TableCell,
-  TableBody,
-  Paper,
-  FormControl,
-  InputLabel,
-  Select,
-  MenuItem,
-  Snackbar,
+  CardContent, Chip, FormControl, Grid, Icon, IconButton, InputLabel, MenuItem, Paper, Select, Snackbar, Table, TableBody, TableCell, TableContainer, TableHead,
+  TableRow, TextField,
+  Tooltip, Typography
 } from "@material-ui/core";
-import Alert from "@material-ui/lab/Alert";
+import Dialog from "@material-ui/core/Dialog";
 import { makeStyles, withStyles } from "@material-ui/core/styles";
 import AddBoxIcon from "@material-ui/icons/AddBox";
-import ListAltIcon from "@material-ui/icons/ListAlt";
-import PersonAddIcon from "@material-ui/icons/PersonAdd";
-import PeopleIcon from "@material-ui/icons/People";
-import BarChartIcon from "@material-ui/icons/BarChart";
 import ArrowBackIcon from "@material-ui/icons/ArrowBack";
-import EditIcon from "@material-ui/icons/Edit";
-import PlaylistAddCheckIcon from "@material-ui/icons/PlaylistAddCheck";
-import { API_URL } from "../../../config/config";
-import { localization } from "../../../utils/MaterialTableUtils";
-import {
-  TASK_STATUS,
-  TASK_PRIORITY,
-  TASK_CATEGORY,
-  TABLE_STRIPED_ROW_COLOR,
-  ChartColor,
-} from "../BacklogConfig";
-import AlertDialog from "../AlertDialog";
-import { HiLightBulb } from "react-icons/hi";
-import SuggestionResult from "../suggestion/SuggestionResult";
-import OverlayLoading from "../components/OverlayLoading";
-import { MemberList, AddMember } from "./Members";
-import UserItem from "../components/UserItem";
-
+import BarChartIcon from "@material-ui/icons/BarChart";
 import CloseIcon from "@material-ui/icons/Close";
-import Dialog from "@material-ui/core/Dialog";
+import EditIcon from "@material-ui/icons/Edit";
+import ListAltIcon from "@material-ui/icons/ListAlt";
+import PeopleIcon from "@material-ui/icons/People";
+import PersonAddIcon from "@material-ui/icons/PersonAdd";
+import PlaylistAddCheckIcon from "@material-ui/icons/PlaylistAddCheck";
+import Alert from "@material-ui/lab/Alert";
+import MaterialTable from "material-table";
+import React, { useEffect, useReducer, useRef, useState } from "react";
+import { HiLightBulb } from "react-icons/hi";
+import { useDispatch, useSelector } from "react-redux";
+import { Redirect, useHistory } from "react-router-dom";
+import { authGet, authPost, authPostMultiPart } from "../../../api";
+import { API_URL } from "../../../config/config";
+import { toFormattedDateTime } from "../../../utils/dateutils";
+import { localization } from "../../../utils/MaterialTableUtils";
+import AlertDialog from "../AlertDialog";
+import {
+  ChartColor, TABLE_STRIPED_ROW_COLOR, TASK_CATEGORY, TASK_PRIORITY, TASK_STATUS
+} from "../BacklogConfig";
+import OverlayLoading from "../components/OverlayLoading";
+import UserItem from "../components/UserItem";
+import SuggestionResult from "../suggestion/SuggestionResult";
+import { AddMember, MemberList } from "./Members";
+
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -234,7 +212,7 @@ export default function ProjectDetail(props) {
   const [taskListColumn, setTaskListColumn] = useState([
     {
       title: "Chủ đề",
-      field: "backlogTask.backlogTaskName",
+      field: "backlogTask.backlogTaskName", 
       defaultSort: "asc",
     },
     {

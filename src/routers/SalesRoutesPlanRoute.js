@@ -12,7 +12,7 @@ import Plan from "../component/salesroutes/salesrouteplan/Plan";
 import PlanPeriod from "../component/salesroutes/salesrouteplan/PlanPeriod";
 
 export default function SalesRoutesPlanRoute() {
-  let { path, url } = useRouteMatch();
+  let { path } = useRouteMatch();
   return (
     <div>
       <Switch>

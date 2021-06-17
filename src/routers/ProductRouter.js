@@ -5,7 +5,7 @@ import ProductCreate from "../component/product/ProductCreate";
 import ProductList from "../component/product/ProductList";
 
 export default function ProductRoute() {
-  let { path, url } = useRouteMatch();
+  let { path } = useRouteMatch();
   return (
     <div>
       <Switch>

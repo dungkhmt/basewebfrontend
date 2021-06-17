@@ -1,28 +1,27 @@
-import React, { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
-import { useDispatch, useSelector } from "react-redux";
-import { GoogleApiWrapper, Map, Marker, Polyline } from "google-maps-react";
+import DateFnsUtils from "@date-io/date-fns";
+import { Dialog, DialogContent, DialogTitle } from "@material-ui/core";
+import AppBar from "@material-ui/core/AppBar";
+import Button from "@material-ui/core/Button";
 import Grid from "@material-ui/core/Grid";
-import { authPost, authGet, authDelete } from "../../../api";
-import AlertDialog from "../../../utils/AlertDialog";
-import { errorNoti } from "../../../utils/Notification";
-import MaterialTable from "material-table";
-import { localization, tableIcons } from "../../../utils/MaterialTableUtils";
 import { makeStyles } from "@material-ui/core/styles";
-import ConfirmDialog from "../ConfirmDialog";
+import Tab from "@material-ui/core/Tab";
+import Tabs from "@material-ui/core/Tabs";
+import Typography from "@material-ui/core/Typography";
+import MoreHorizIcon from "@material-ui/icons/MoreHoriz";
 import {
   KeyboardDatePicker,
   MuiPickersUtilsProvider,
 } from "@material-ui/pickers";
-import DateFnsUtils from "@date-io/date-fns";
-import { Dialog, DialogTitle, DialogContent } from "@material-ui/core";
-import MoreHorizIcon from "@material-ui/icons/MoreHoriz";
+import { GoogleApiWrapper, Map, Marker, Polyline } from "google-maps-react";
+import MaterialTable from "material-table";
+import React, { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { authGet, authPost } from "../../../api";
+import AlertDialog from "../../../utils/AlertDialog";
+import { localization, tableIcons } from "../../../utils/MaterialTableUtils";
+import { errorNoti } from "../../../utils/Notification";
+import ConfirmDialog from "../ConfirmDialog";
 import TabPanel from "../TabPanel";
-import AppBar from "@material-ui/core/AppBar";
-import Tabs from "@material-ui/core/Tabs";
-import Tab from "@material-ui/core/Tab";
-import Button from "@material-ui/core/Button";
-import Typography from "@material-ui/core/Typography";
 function errHandling(err) {
   if (err.message == "Unauthorized")
     errorNoti("Phiên làm việc đã kết thúc, vui lòng đăng nhập lại !", true);
@@ -124,7 +123,7 @@ function PostmanOrderAssignmentDetail(props) {
   const token = useSelector((state) => state.auth.token);
   const dispatch = useDispatch();
   const [tabValue, setTabValue] = useState(0);
-  const [isRequesting, setIsRequesting] = useState(false);
+
   const [data, setData] = useState({
     pickAssignment: [],
     shipAssignment: [],
@@ -135,7 +134,7 @@ function PostmanOrderAssignmentDetail(props) {
   const [map, setMap] = useState();
   const [tableRef, setTableRef] = useState();
   const [open, setOpen] = useState(false);
-  const [postmanId, setPostmanId] = useState();
+
   const [fromDate, setFromDate] = useState(new Date());
   const [toDate, setToDate] = useState(new Date());
   const [postOffice, setPostOffice] = useState();

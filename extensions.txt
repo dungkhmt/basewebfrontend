@@ -1,0 +1,11 @@
+aaron-bond.better-comments
+dbaeumer.vscode-eslint
+donjayamanne.githistory
+dsznajder.es7-react-js-snippets
+esbenp.prettier-vscode
+mkxml.vscode-filesize
+mrrefactoring.polacode-fixed-edition
+oderwat.indent-rainbow
+PKief.material-icon-theme
+streetsidesoftware.code-spell-checker
+wayou.vscode-todo-highlight

@@ -11,14 +11,14 @@ import { useDispatch, useSelector } from "react-redux";
 import { useHistory } from "react-router-dom";
 import { request } from "../../../api";
 
-const useCheckBoxStyles = makeStyles((theme) => ({
-  root: {
-    display: "flex",
-  },
-  formControl: {
-    margin: theme.spacing(3),
-  },
-}));
+// const useCheckBoxStyles = makeStyles((theme) => ({
+//   root: {
+//     display: "flex",
+//   },
+//   formControl: {
+//     margin: theme.spacing(3),
+//   },
+// }));
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -46,7 +46,7 @@ export default function StudentQuizDetail() {
   const [messageRequest, setMessageRequest] = useState(false);
   const [quizGroupTestDetail, setquizGroupTestDetail] = useState({});
   const classes = useStyles();
-  const Checkboxclasses = useCheckBoxStyles();
+  // const Checkboxclasses = useCheckBoxStyles();
   const [stateCheckBox, setStateCheckBox] = useState({});
 
   async function getQuestionList() {

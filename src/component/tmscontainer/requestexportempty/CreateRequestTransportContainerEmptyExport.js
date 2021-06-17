@@ -1,20 +1,20 @@
-import React, { useEffect, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { makeStyles } from "@material-ui/core/styles";
-import { authGet, authPost } from "../../../api";
-import { failed } from "../../../action";
-import { MuiPickersUtilsProvider } from "@material-ui/pickers";
 import DateFnsUtils from "@date-io/date-fns";
 import { CardContent, CircularProgress } from "@material-ui/core";
-import Typography from "@material-ui/core/Typography";
-import Card from "@material-ui/core/Card";
-import MenuItem from "@material-ui/core/MenuItem";
-import TextField from "@material-ui/core/TextField";
-import DateTimePicker from "react-datetime-picker";
-import CardActions from "@material-ui/core/CardActions";
-import { Link } from "react-router-dom";
 import Button from "@material-ui/core/Button";
+import Card from "@material-ui/core/Card";
+import CardActions from "@material-ui/core/CardActions";
+import MenuItem from "@material-ui/core/MenuItem";
+import { makeStyles } from "@material-ui/core/styles";
+import TextField from "@material-ui/core/TextField";
+import Typography from "@material-ui/core/Typography";
+import { MuiPickersUtilsProvider } from "@material-ui/pickers";
+import React, { useEffect, useState } from "react";
+import DateTimePicker from "react-datetime-picker";
 import NumberFormat from "react-number-format";
+import { useDispatch, useSelector } from "react-redux";
+import { Link } from "react-router-dom";
+import { failed } from "../../../action";
+import { authGet, authPost } from "../../../api";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -47,7 +47,7 @@ function CreateRequestTransportContainerEmptyExport() {
   const [lateDate, setLateDate] = useState(new Date());
   const [trailer, setTrailer] = useState();
   const [trailerList, setTrailerList] = useState(["Y", "N"]);
-  const [port, setPort] = useState();
+
   const [portList, setPortList] = useState([]);
 
   const handleSubmit = (event) => {
