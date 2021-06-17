@@ -32,10 +32,24 @@ function ClassTeacherAssignmentPlanList() {
 
   const columns = [
     {
-      title: "PlanID",
-      field: "planId",
+      title: "Tên",
+      field: "planName",
       render: (rowData) => (
-        <Link to={"/edu/course/detail/" + rowData["id"]}>{rowData["id"]}</Link>
+        <Link
+          to={{
+            pathname: `/edu/class-teacher-assignment-plan/detail/${rowData.planId}`,
+          }}
+          style={{
+            textDecoration: "none",
+            whiteSpace: "pre-wrap" /* css-3 */,
+            whiteSpace: "-moz-pre-wrap" /* Mozilla, since 1999 */,
+            whiteSpace: "-pre-wrap" /* Opera 4-6 */,
+            whiteSpace: "-o-pre-wrap" /* Opera 7 */,
+            wordWrap: "break-word" /* Internet Explorer 5.5+ */,
+          }}
+        >
+          {rowData.planName}
+        </Link>
       ),
     },
     { title: "Tên Plan", field: "planName" },
@@ -57,13 +71,13 @@ function ClassTeacherAssignmentPlanList() {
 
   const handleModalOpen = () => {
     setOpen(true);
-};
+  };
 
-const handleModalClose = () => {
+  const handleModalClose = () => {
     setOpen(false);
-};
-async function createPlan(planName){
-  let datasend = { planName: planName };
+  };
+  async function createPlan(planName) {
+    let datasend = { planName: planName };
     request(
       // token,
       // history,
@@ -76,14 +90,14 @@ async function createPlan(planName){
       { 401: () => {} },
       datasend
     );
-}
-const customCreateHandle = (planName) => {
-        console.log(planName)
-        //setSearchString(sString);
-        alert('create plan ' + planName);
-        createPlan(planName);
-        handleModalClose();
-    }
+  }
+  const customCreateHandle = (planName) => {
+    console.log(planName);
+    //setSearchString(sString);
+    alert("create plan " + planName);
+    createPlan(planName);
+    handleModalClose();
+  };
 
   useEffect(() => {
     getClassTeacherAssignmentList();
@@ -91,24 +105,31 @@ const customCreateHandle = (planName) => {
 
   return (
     <Card>
-        <MaterialTable
-          title={"Danh sách bản kế hoach phân công"}
-          columns={columns}
-          data={plans}
-          
-          components={{
-            Toolbar: props => (
-                <div style={{ position: "relative" }}>
-                    <MTableToolbar {...props} />
-                    <div style={{ position: "absolute", top: "16px", right: "350px" }}>
-                        <Button onClick={handleModalOpen} color="primary">Thêm mới</Button>
-                    </div>
-                </div>
-            ),
+      <MaterialTable
+        title={"Danh sách bản kế hoach phân công"}
+        columns={columns}
+        data={plans}
+        components={{
+          Toolbar: (props) => (
+            <div style={{ position: "relative" }}>
+              <MTableToolbar {...props} />
+              <div
+                style={{ position: "absolute", top: "16px", right: "350px" }}
+              >
+                <Button onClick={handleModalOpen} color="primary">
+                  Thêm mới
+                </Button>
+              </div>
+            </div>
+          ),
         }}
-        />
-      
-      <CreateClassTeacherAssignmentPlanModal open={open} onClose={handleModalClose} onCreate={customCreateHandle}/>
+      />
+
+      <CreateClassTeacherAssignmentPlanModal
+        open={open}
+        onClose={handleModalClose}
+        onCreate={customCreateHandle}
+      />
     </Card>
   );
 }

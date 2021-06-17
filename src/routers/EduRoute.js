@@ -51,6 +51,7 @@ import TClassDetail from "../views/Education/ClassManagement/Teacher/TClassDetai
 import TClassList from "../views/Education/ClassManagement/Teacher/TClassList";
 
 import ClassTeacherAssignmentPlanList from "../component/education/classteacherassignment/ClassTeacherAssignmentPlanList";
+import ClassTeacherAssignmentPlanDetail from "../component/education/classteacherassignment/ClassTeacherAssignmentPlanDetail";
 
 import NotFound from "../views/errors/NotFound";
 
@@ -145,6 +146,10 @@ export default function EduRoute() {
         <Route
           component={ClassTeacherAssignmentPlanList}
           path={`${path}/class-teacher-assignment-plan/list`}
+        />
+        <Route
+          component={ClassTeacherAssignmentPlanDetail}
+          path={`${path}/class-teacher-assignment-plan/detail/:planId`}
         />
 
         <Route component={BCASolver} path={`${path}/solve`} />
