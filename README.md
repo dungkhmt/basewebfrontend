@@ -9,7 +9,7 @@
 ## Installation on Window
 
 Bạn cần có những thứ sau được cài đặt và cấu hình sẵn trước khi bắt đầu cài đặt project: [NodeJS](https://nodejs.org/en/), [Visual Studio Code](https://code.visualstudio.com/). Nếu chưa cài đặt, vui lòng xem hướng dẫn sau: 
-  * [Hướng dẫn cài đặt NodeJS](https://drive.google.com/file/d/1xhdd8rBQWeVe0koZb5ditL8kCWaJm-lM/view?usp=sharing)
+  * [Hướng dẫn cài đặt NodeJS]()
 
 ### Tài nguyên
 Ở thời điểm hiện tại, các công nghệ sử dụng đã phát hành các phiên bản mới với nhiều bổ sung, nâng cấp. Tuy nhiên, những nâng cấp đó không phải lúc nào cũng đảm bảo được tính
@@ -27,6 +27,7 @@ Khi đã sẵn sàng cho quá trình cài đặt project, thực hiện lần l�
 Sau lần chạy thành công đầu tiên, ở các lần chạy sau chỉ cần thực hiện bước 2
 
 ### 3. Cấu hình Visual Studio Code
+* Mở Visual Studio Code (nếu chưa mở)
 * Mở Git Bash tại thư mục project, chạy lệnh: `./vscode-extension-install.bash`
 * Trong Visual Studio Code, mở Command Palette bằng shotcut <b>CMD/CTRL + SHIFT + P</b>
 * Trong Command Palette, nhập vào <b>Open Settings</b> và chọn <b>Open Settings (JSON)</b>
