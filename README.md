@@ -28,7 +28,13 @@ Sau lần chạy thành công đầu tiên, ở các lần chạy sau chỉ cầ
 
 ### 3. Cấu hình Visual Studio Code
 * Mở Visual Studio Code (nếu chưa mở)
-* Mở Git Bash tại thư mục project, chạy lệnh: `./vscode-extension-install.bash`
+* Tuỳ chọn sử dụng một trong hai cách sau:
+  * Mở Git Bash tại thư mục project, chạy lệnh: `./vscode-extension-install.bash`
+  
+  * Mở Visual Studio Code PowerShell tại thư mục project, chạy lệnh:
+  ```
+  Get-Content extensions.txt | ForEach-Object {code --install-extension $_ --force}
+  ```
 * Trong Visual Studio Code, mở Command Palette bằng shotcut <b>CMD/CTRL + SHIFT + P</b>
 * Trong Command Palette, nhập vào <b>Open Settings</b> và chọn <b>Open Settings (JSON)</b>
 * Thêm các [cấu hình](https://drive.google.com/file/d/1QMVt9ZhpRbvikHA05sTEp4tg9ehwklCt/view?usp=sharing) sau vào file <b>settings.json</b>
