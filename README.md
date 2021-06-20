@@ -37,7 +37,8 @@ Sau lần chạy thành công đầu tiên, ở các lần chạy sau chỉ cầ
   ```
 * Trong Visual Studio Code, mở Command Palette bằng shotcut <b>CMD/CTRL + SHIFT + P</b>
 * Trong Command Palette, nhập vào <b>Open Settings</b> và chọn <b>Open Settings (JSON)</b>
-* Thêm các [cấu hình](https://drive.google.com/file/d/1QMVt9ZhpRbvikHA05sTEp4tg9ehwklCt/view?usp=sharing) sau vào file <b>settings.json</b>
+* Thêm các [cấu hình](https://drive.google.com/file/d/1QMVt9ZhpRbvikHA05sTEp4tg9ehwklCt/view?usp=sharing) sau vào file <b>settings.json</b> ở vị trí cuối file, điều này đảm bảo
+ghi đè các cấu hình tương ứng (nếu có) được định nghĩa trước đó
 
 ### 4. Tips cấu hình IDEs
 * [Tips cấu hình IDEs](https://drive.google.com/file/d/1fKf7MTXCSlk1VpL6iACoHWCvqeE6Ldgc/view?usp=sharing)
