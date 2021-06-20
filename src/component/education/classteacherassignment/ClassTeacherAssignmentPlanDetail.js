@@ -15,15 +15,12 @@ import TertiaryButton from "../../button/TertiaryButton";
 import { AntTab } from "../../tab/AntTab";
 import { AntTabs } from "../../tab/AntTabs";
 import ClassForAssignmentList from "./ClassForAssignmentList";
+import TeacherForAssignmentPlanList from "./TeacherForAssignmentPlanList";
+import TeacherCourseForAssignmentList from "./TeacherCourseForAssignmentList";
 
-const tempCourseInfo = {
-  /* 'id': 'IT3011',
-    'courseName': 'Cấu trúc dữ liệu và giải thuật',
-    'credit': '3' */
-  id: "0",
-  courseName: "0",
-  credit: "0",
-};
+import ClassTeacherAssignmentSolutionList from "./ClassTeacherAssignmentSolutionList";
+import TeacherCourseList from "./TeacherCourseList";
+import TeacherList from "./TeacherList";
 
 const useStyles = makeStyles((theme) => ({
   btn: { width: 180, marginLeft: theme.spacing(1) },
@@ -76,13 +73,12 @@ TabPanel.propTypes = {
 };
 
 const tabsLabel = [
-  "Thí sinh",
-  "Thí sinh đăng ký",
-  "Đề",
-  "Phân đề cho thí sinh",
-  "DS quiz",
-  "Kết quả",
-  "Kết quả tổng quát",
+  "DS lớp",
+  "DS giáo viên",
+  "DS giáo viên trong kế hoạch",
+  "DS giáo viên-môn",
+  "DS giáo viên-môn trong kế hoạch",
+  "Kết quả phân công",
 ];
 
 const weekDay = [
@@ -117,9 +113,22 @@ export default function ClassTeacherAssignmentPlanDetail(props) {
     setSelectedTab(index);
   };
 
-  // function handleEditQuizTes() {
-  //   history.push("/edu/class/quiztest/edit/" + testId);
-  // }
+  async function handleAssignTeacher2Class(){
+    let datasend = {planId: planId};
+    request(
+      // token,
+      // history,
+      "post",
+      "auto-assign-teacher-2-class",
+      (res) => {
+        
+        alert("assign teacher to class " + res.data);
+      },
+      { 401: () => {} },
+      datasend
+    );
+    console.log(datasend);
+  }
 
   async function getClassTeacherAssignmentPlanDetail() {
     let datasend = { planId: planId };
@@ -143,6 +152,19 @@ export default function ClassTeacherAssignmentPlanDetail(props) {
     <>
       <Typography variant="h5">{`${plan.planName}`}</Typography>
 
+      <Box display="flex" justifyContent="flex-end">
+        <PrimaryButton
+          className={classes.btn}
+          onClick={(e) => {
+            handleAssignTeacher2Class(e);
+          }}
+        >
+          Phân công
+        </PrimaryButton>
+
+        
+      </Box>
+
       <AntTabs
         value={selectedTab}
         onChange={handleChangeTab}
@@ -158,22 +180,21 @@ export default function ClassTeacherAssignmentPlanDetail(props) {
         <ClassForAssignmentList planId={planId} />
       </TabPanel>
       <TabPanel value={selectedTab} index={1} dir={theme.direction}>
-        Tab2
+        <TeacherList planId = {planId}/>
       </TabPanel>
       <TabPanel value={selectedTab} index={2} dir={theme.direction}>
-        Tab3
+        <TeacherForAssignmentPlanList planId = {planId}/>
       </TabPanel>
+
       <TabPanel value={selectedTab} index={3} dir={theme.direction}>
-        Tab4
+        <TeacherCourseList planId={planId} />
       </TabPanel>
       <TabPanel value={selectedTab} index={4} dir={theme.direction}>
-        Tab5
+        <TeacherCourseForAssignmentList planId={planId} />
       </TabPanel>
+
       <TabPanel value={selectedTab} index={5} dir={theme.direction}>
-        Tab6
-      </TabPanel>
-      <TabPanel value={selectedTab} index={6} dir={theme.direction}>
-        Tab7
+        <ClassTeacherAssignmentSolutionList planId = {planId}/>
       </TabPanel>
     </>
   ) : (
