@@ -4,25 +4,21 @@ import { makeStyles, useTheme } from "@material-ui/core/styles";
 import { Skeleton } from "@material-ui/lab";
 import PropTypes from "prop-types";
 import React, { useEffect, useState } from "react";
-import { FcCalendar, FcClock } from "react-icons/fc";
 import { useDispatch, useSelector } from "react-redux";
 import { useParams } from "react-router";
-import { Link as RouterLink, useHistory } from "react-router-dom";
-import { authGet, request } from "../../../api";
-import { addZeroBefore } from "../../../utils/dateutils";
+import { useHistory } from "react-router-dom";
+import { request } from "../../../api";
 import PrimaryButton from "../../button/PrimaryButton";
-import TertiaryButton from "../../button/TertiaryButton";
 import { AntTab } from "../../tab/AntTab";
 import { AntTabs } from "../../tab/AntTabs";
 import ClassForAssignmentList from "./ClassForAssignmentList";
-import TeacherForAssignmentPlanList from "./TeacherForAssignmentPlanList";
-import TeacherCourseForAssignmentList from "./TeacherCourseForAssignmentList";
-
-import NotAssignedClassInSolutionList from "./NotAssignedClassInSolutionList";
 import ClassTeacherAssignmentSolutionList from "./ClassTeacherAssignmentSolutionList";
-import TeacherCourseList from "./TeacherCourseList";
-import TeacherList from "./TeacherList";
+import NotAssignedClassInSolutionList from "./NotAssignedClassInSolutionList";
 import PairConflictTimetableClass from "./PairConflictTimetableClass";
+import TeacherCourseForAssignmentList from "./TeacherCourseForAssignmentList";
+import TeacherCourseList from "./TeacherCourseList";
+import TeacherForAssignmentPlanList from "./TeacherForAssignmentPlanList";
+import TeacherList from "./TeacherList";
 
 const useStyles = makeStyles((theme) => ({
   btn: { width: 180, marginLeft: theme.spacing(1) },
@@ -195,7 +191,10 @@ export default function ClassTeacherAssignmentPlanDetail(props) {
       </TabPanel>
 
       <TabPanel value={selectedTab} index={5} dir={theme.direction}>
-        <ClassTeacherAssignmentSolutionList planId={planId} />
+        <ClassTeacherAssignmentSolutionList
+          planId={planId}
+          planName={plan.planName}
+        />
       </TabPanel>
       <TabPanel value={selectedTab} index={6} dir={theme.direction}>
         <NotAssignedClassInSolutionList planId={planId} />
