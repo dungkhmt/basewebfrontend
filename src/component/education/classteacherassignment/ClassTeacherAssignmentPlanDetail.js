@@ -23,6 +23,7 @@ import ClassTeacherAssignmentSolutionList from "./ClassTeacherAssignmentSolution
 import TeacherCourseList from "./TeacherCourseList";
 import TeacherList from "./TeacherList";
 import PairConflictTimetableClass from "./PairConflictTimetableClass";
+import ClassesAssignToATeacherList from "./ClassesAssignToATeacherList";
 
 const useStyles = makeStyles((theme) => ({
   btn: { width: 180, marginLeft: theme.spacing(1) },
@@ -180,6 +181,7 @@ export default function ClassTeacherAssignmentPlanDetail(props) {
         <ClassForAssignmentList planId={planId} />
         <PairConflictTimetableClass planId={planId} />
       </TabPanel>
+
       <TabPanel value={selectedTab} index={1} dir={theme.direction}>
         <TeacherList planId={planId} />
       </TabPanel>
@@ -196,6 +198,7 @@ export default function ClassTeacherAssignmentPlanDetail(props) {
 
       <TabPanel value={selectedTab} index={5} dir={theme.direction}>
         <ClassTeacherAssignmentSolutionList planId={planId} />
+        <ClassesAssignToATeacherList planId={planId} />
       </TabPanel>
       <TabPanel value={selectedTab} index={6} dir={theme.direction}>
         <NotAssignedClassInSolutionList planId={planId} />
