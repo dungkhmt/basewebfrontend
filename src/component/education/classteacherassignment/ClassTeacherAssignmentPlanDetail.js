@@ -56,11 +56,7 @@ function TabPanel(props) {
       aria-labelledby={`full-width-tab-${index}`}
       {...other}
     >
-      {value === index && (
-        <Box p={3}>
-          <Typography>{children}</Typography>
-        </Box>
-      )}
+      {value === index && <Box p={3}>{children}</Box>}
     </div>
   );
 }
@@ -141,7 +137,7 @@ export default function ClassTeacherAssignmentPlanDetail(props) {
       },
       { 401: () => {} }
     );
-    console.log(datasend);
+    // console.log(datasend);
   }
   useEffect(() => {
     getClassTeacherAssignmentPlanDetail();
@@ -169,7 +165,7 @@ export default function ClassTeacherAssignmentPlanDetail(props) {
         scrollButtons="auto"
       >
         {tabsLabel.map((label, idx) => (
-          <AntTab label={label} {...a11yProps(idx)} />
+          <AntTab key={label} label={label} {...a11yProps(idx)} />
         ))}
       </AntTabs>
 
