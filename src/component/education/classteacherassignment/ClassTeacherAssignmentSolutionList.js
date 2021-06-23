@@ -1,13 +1,11 @@
 import { Button, Card } from "@material-ui/core/";
-import React, { useState, useEffect } from "react";
 import MaterialTable, { MTableToolbar } from "material-table";
-import { request } from "../../../api";
-import UploadExcelClassForTeacherAssignmentModel from "./UploadExcelClassForTeacherAssignmentModel";
-import { authGet, authPostMultiPart } from "../../../api";
+import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import { request } from "../../../api";
 
 function ClassTeacherAssignmentSolutionList(props) {
-  const planId = props.planId;
+  const { planId, planName } = props;
   const [classList, setClassList] = useState([]);
   const [open, setOpen] = React.useState(false);
   const [isProcessing, setIsProcessing] = useState(false);
@@ -72,15 +70,41 @@ function ClassTeacherAssignmentSolutionList(props) {
       datasend
     );
   }
+
+  const saveFile = (fileName, data) => {
+    let blob = new Blob([data]);
+
+    //IE11 support
+    if (window.navigator.msSaveOrOpenBlob) {
+      window.navigator.msSaveBlob(blob, fileName);
+    } else {
+      let link = window.document.createElement("a");
+
+      link.href = window.URL.createObjectURL(blob);
+      link.setAttribute("download", fileName);
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+
+      // other browsers
+      // Second approach but cannot specify saved name!
+      // let file = new File([data], fileName, { type: "application/zip" });
+      // let exportUrl = URL.createObjectURL(file);
+      // window.location.assign(exportUrl);
+      // URL.revokeObjectURL(exportUrl);
+    }
+  };
+
   function handleExportExcel() {
     request(
-      // token,
-      // history,
       "GET",
       "/export-excel-class-teacher-assignment-solution/" + planId,
       (res) => {
-        console.log("export excel");
-      }
+        saveFile(planName + ".xlsx", res.data);
+      },
+      {},
+      {},
+      { responseType: "arraybuffer" }
     );
   }
   useEffect(() => {
