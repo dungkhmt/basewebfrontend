@@ -18,6 +18,7 @@ import ClassForAssignmentList from "./ClassForAssignmentList";
 import TeacherForAssignmentPlanList from "./TeacherForAssignmentPlanList";
 import TeacherCourseForAssignmentList from "./TeacherCourseForAssignmentList";
 
+import NotAssignedClassInSolutionList from "./NotAssignedClassInSolutionList";
 import ClassTeacherAssignmentSolutionList from "./ClassTeacherAssignmentSolutionList";
 import TeacherCourseList from "./TeacherCourseList";
 import TeacherList from "./TeacherList";
@@ -80,6 +81,7 @@ const tabsLabel = [
   "DS giáo viên-môn",
   "DS giáo viên-môn trong kế hoạch",
   "Kết quả phân công",
+  "DS lớp chưa được phân công",
 ];
 
 const weekDay = [
@@ -114,15 +116,14 @@ export default function ClassTeacherAssignmentPlanDetail(props) {
     setSelectedTab(index);
   };
 
-  async function handleAssignTeacher2Class(){
-    let datasend = {planId: planId};
+  async function handleAssignTeacher2Class() {
+    let datasend = { planId: planId };
     request(
       // token,
       // history,
       "post",
       "auto-assign-teacher-2-class",
       (res) => {
-        
         alert("assign teacher to class " + res.data);
       },
       { 401: () => {} },
@@ -162,8 +163,6 @@ export default function ClassTeacherAssignmentPlanDetail(props) {
         >
           Phân công
         </PrimaryButton>
-
-        
       </Box>
 
       <AntTabs
@@ -179,13 +178,13 @@ export default function ClassTeacherAssignmentPlanDetail(props) {
 
       <TabPanel value={selectedTab} index={0} dir={theme.direction}>
         <ClassForAssignmentList planId={planId} />
-        <PairConflictTimetableClass planId = {planId}/>
+        <PairConflictTimetableClass planId={planId} />
       </TabPanel>
       <TabPanel value={selectedTab} index={1} dir={theme.direction}>
-        <TeacherList planId = {planId}/>
+        <TeacherList planId={planId} />
       </TabPanel>
       <TabPanel value={selectedTab} index={2} dir={theme.direction}>
-        <TeacherForAssignmentPlanList planId = {planId}/>
+        <TeacherForAssignmentPlanList planId={planId} />
       </TabPanel>
 
       <TabPanel value={selectedTab} index={3} dir={theme.direction}>
@@ -196,7 +195,10 @@ export default function ClassTeacherAssignmentPlanDetail(props) {
       </TabPanel>
 
       <TabPanel value={selectedTab} index={5} dir={theme.direction}>
-        <ClassTeacherAssignmentSolutionList planId = {planId}/>
+        <ClassTeacherAssignmentSolutionList planId={planId} />
+      </TabPanel>
+      <TabPanel value={selectedTab} index={6} dir={theme.direction}>
+        <NotAssignedClassInSolutionList planId={planId} />
       </TabPanel>
     </>
   ) : (
