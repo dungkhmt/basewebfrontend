@@ -11,6 +11,7 @@ import { request } from "../../../api";
 import PrimaryButton from "../../button/PrimaryButton";
 import { AntTab } from "../../tab/AntTab";
 import { AntTabs } from "../../tab/AntTabs";
+import ClassesAssignToATeacherList from "./ClassesAssignToATeacherList";
 import ClassForAssignmentList from "./ClassForAssignmentList";
 import ClassTeacherAssignmentSolutionList from "./ClassTeacherAssignmentSolutionList";
 import NotAssignedClassInSolutionList from "./NotAssignedClassInSolutionList";
@@ -176,6 +177,7 @@ export default function ClassTeacherAssignmentPlanDetail(props) {
         <ClassForAssignmentList planId={planId} />
         <PairConflictTimetableClass planId={planId} />
       </TabPanel>
+
       <TabPanel value={selectedTab} index={1} dir={theme.direction}>
         <TeacherList planId={planId} />
       </TabPanel>
@@ -195,6 +197,7 @@ export default function ClassTeacherAssignmentPlanDetail(props) {
           planId={planId}
           planName={plan.planName}
         />
+        <ClassesAssignToATeacherList planId={planId} />
       </TabPanel>
       <TabPanel value={selectedTab} index={6} dir={theme.direction}>
         <NotAssignedClassInSolutionList planId={planId} />
