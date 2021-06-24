@@ -8,6 +8,7 @@ import { useDispatch, useSelector } from "react-redux";
 import CheckCircleOutlineIcon from "@material-ui/icons/CheckCircleOutline";
 import { createMuiTheme, ThemeProvider } from "@material-ui/core/styles";
 import { green } from "@material-ui/core/colors";
+import UpdateTeacherForAssignmentModel from "./UpdateTeacherForAssignmentModel";
 
 const headerProperties = {
   headerStyle: {
@@ -26,6 +27,7 @@ let count = 0;
 function TeacherForAssignmentPlanList(props) {
   const planId = props.planId;
   const [teacherList, setTeacherList] = useState([]);
+  const [selectedTeacherId, setSelectedTeacherId] = useState(null);
   const [open, setOpen] = React.useState(false);
   const [isProcessing, setIsProcessing] = useState(false);
   const dispatch = useDispatch();
@@ -39,33 +41,26 @@ function TeacherForAssignmentPlanList(props) {
     { title: "Tên", field: "teacherName" },
     { title: "Max Hour Load", field: "maxHourLoad" },
     {
-      field: "selected",
-      title: "Chọn",
-      
-      width: "10%",
-      type: "numeric",
+      title: "",
       render: (rowData) => (
-        <Checkbox
-          checked={rowData.selected}
-          onChange={(e) => {
-            rowData.selected = e.target.checked;
-            if (rowData.selected == false) {
-              count--;
-              setSelectedAll(false);
-            } else {
-              count++;
-            }
-            if (count == teacherList.length) {
-              setSelectedAll(true);
-            }
-            forceUpdate();
+        <Button
+          variant="contained"
+          color="primary"
+          onClick={() => {
+            onUpdateTeacher(rowData["teacherId"]);
           }}
-        />
+        >
+          Update
+        </Button>
       ),
     },
-
   ];
 
+  function onUpdateTeacher(teacherId) {
+    //alert("suggest teacher for class " + classId);
+    setSelectedTeacherId(teacherId);
+    handleModalOpen();
+  }
   function uploadExcel(selectedFile, choice) {
     setIsProcessing(true);
 
@@ -76,7 +71,7 @@ function TeacherForAssignmentPlanList(props) {
     console.log("upload file " + selectedFile.name);
     let body = {
       planId: planId,
-      choice: choice      
+      choice: choice,
     };
     let formData = new FormData();
     formData.append("inputJson", JSON.stringify(body));
@@ -86,7 +81,7 @@ function TeacherForAssignmentPlanList(props) {
       .then((res) => {
         setIsProcessing(false);
         console.log("result submit = ", res);
-        
+
         //var f = document.getElementById("selected-upload-file");
         //f.value = null;
         //setSelectedFile(null);
@@ -96,11 +91,27 @@ function TeacherForAssignmentPlanList(props) {
         console.error(e);
       });
   }
-  const customUploadHandle = (selectedFile, choice) => {
+  const customUploadHandle = (hourLoad) => {
     //console.log(filename);
     //setSearchString(sString);
-    //alert("upload " + filename);
-    uploadExcel(selectedFile, choice);
+    let datasend = {
+      planId: planId,
+      teacherId: selectedTeacherId,
+      hourLoad: hourLoad,
+    };
+    request(
+      // token,
+      // history,
+      "post",
+      "update-teacher-for-assignment",
+      (res) => {
+        console.log(res);
+        alert("Cập nhật " + "  OK");
+      },
+      { 401: () => {} },
+      datasend
+    );
+
     handleModalClose();
   };
 
@@ -113,11 +124,11 @@ function TeacherForAssignmentPlanList(props) {
       (res) => {
         let temp = [];
         res.data.map((elm, index) => {
-            temp.push({
-              teacherId: elm.teacherId,
-              maxHourLoad: elm.maxHourLoad,
-              selected: false,
-            });
+          temp.push({
+            teacherId: elm.teacherId,
+            maxHourLoad: elm.maxHourLoad,
+            selected: false,
+          });
         });
         setTeacherList(temp);
 
@@ -138,7 +149,9 @@ function TeacherForAssignmentPlanList(props) {
     let acceptList = [];
     teacherList.map((v, i) => {
       if (v.selected == true) {
-        acceptList.push(JSON.stringify({teacherId:v.teacherId,maxHourLoad: 0}));
+        acceptList.push(
+          JSON.stringify({ teacherId: v.teacherId, maxHourLoad: 0 })
+        );
       }
     });
 
@@ -178,85 +191,13 @@ function TeacherForAssignmentPlanList(props) {
         title={"Danh sách giáo viên"}
         columns={columns}
         data={teacherList}
-        components={{
-          Toolbar: (props) => (
-            <div style={{ position: "relative" }}>
-              <MTableToolbar {...props} />
-              <div
-                style={{ position: "absolute", top: "16px", right: "350px" }}
-              >
-                <Button onClick={handleModalOpen} color="primary">
-                  Upload excel
-                </Button>
-              </div>
-            </div>
-          ),
-        }}
-        actions={[
-          {
-            icon: () => {
-              return (
-                <Tooltip
-                  title="Loại thí sinh khỏi kì thi"
-                  aria-label="Loại thí sinh khỏi kì thi"
-                  placement="top"
-                >
-                  <ThemeProvider theme={theme} style={{ color: "white" }}>
-                    <Button
-                      variant="contained"
-                      color="primary"
-                      onClick={(e) => {
-                        handleAddTeacherToAssignmentPlan(e);
-                      }}
-                      style={{ color: "white" }}
-                    >
-                      <CheckCircleOutlineIcon
-                        style={{ color: "white" }}
-                        fontSize="default"
-                      />
-                      &nbsp;&nbsp;&nbsp;Thêm&nbsp;&nbsp;
-                    </Button>
-                  </ThemeProvider>
-                </Tooltip>
-              );
-            },
-            isFreeAction: true,
-          },
-          {
-            icon: () => {
-              return (
-                <Tooltip
-                  title="Chọn tất cả"
-                  aria-label="Chọn tất cả"
-                  placement="top"
-                >
-                  <Checkbox
-                    checked={selectedAll}
-                    onChange={(e) => {
-                      //alert('checkAll = ' + selectedAll);
-                      let tempS = e.target.checked;
-                      setSelectedAll(e.target.checked);
-
-                      if (tempS) count = teacherList.length;
-                      else count = 0;
-
-                      teacherList.map((value, index) => {
-                        value.selected = tempS;
-                      });
-                    }}
-                  />
-                  {/* <div>&nbsp;&nbsp;&nbsp;Chọn tất cả&nbsp;&nbsp;</div> */}
-                </Tooltip>
-              );
-            },
-            isFreeAction: true,
-          },
-        ]}
       />
-      <UploadExcelTeacherCourseModel
+
+      <UpdateTeacherForAssignmentModel
         open={open}
         onClose={handleModalClose}
-        onUpload={customUploadHandle}
+        onUpdateInfo={customUploadHandle}
+        selectedTeacherId={selectedTeacherId}
       />
     </Card>
   );
