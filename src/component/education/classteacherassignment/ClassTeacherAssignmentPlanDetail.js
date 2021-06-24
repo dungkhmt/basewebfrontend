@@ -69,12 +69,12 @@ TabPanel.propTypes = {
 
 const tabsLabel = [
   "DS lớp",
-  "DS giáo viên",
-  "DS giáo viên trong kế hoạch",
-  "DS giáo viên-môn",
-  "DS giáo viên-môn trong kế hoạch",
+  "Giáo viên",
+  "Giáo viên trong KH",
+  "Giáo viên-môn",
+  "Giáo viên-môn trong KH",
   "Kết quả phân công",
-  "DS lớp chưa được phân công",
+  "Lớp chưa được phân công",
 ];
 
 const weekDay = [

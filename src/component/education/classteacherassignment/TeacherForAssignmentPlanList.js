@@ -54,6 +54,32 @@ function TeacherForAssignmentPlanList(props) {
         </Button>
       ),
     },
+    {
+      field: "selected",
+      title: "Chọn",
+      
+      width: "10%",
+      type: "numeric",
+      render: (rowData) => (
+        <Checkbox
+          checked={rowData.selected}
+          onChange={(e) => {
+            rowData.selected = e.target.checked;
+            if (rowData.selected == false) {
+              count--;
+              setSelectedAll(false);
+            } else {
+              count++;
+            }
+            if (count == teacherList.length) {
+              setSelectedAll(true);
+            }
+            forceUpdate();
+          }}
+        />
+      ),
+    },
+
   ];
 
   function onUpdateTeacher(teacherId) {
@@ -145,7 +171,7 @@ function TeacherForAssignmentPlanList(props) {
     setOpen(false);
   };
 
-  const handleAddTeacherToAssignmentPlan = (e) => {
+  const handleRemoveTeacherFromAssignmentPlan = (e) => {
     let acceptList = [];
     teacherList.map((v, i) => {
       if (v.selected == true) {
@@ -164,7 +190,7 @@ function TeacherForAssignmentPlanList(props) {
         // token,
         // history,
         "POST",
-        "/add-teacher-to-assign-plan",
+        "/remove-teacher-from-assign-plan",
         (res) => {
           result = res.data;
 
@@ -191,6 +217,67 @@ function TeacherForAssignmentPlanList(props) {
         title={"Danh sách giáo viên"}
         columns={columns}
         data={teacherList}
+        actions={[
+          {
+            icon: () => {
+              return (
+                <Tooltip
+                  title="Loại thí sinh khỏi kì thi"
+                  aria-label="Loại thí sinh khỏi kì thi"
+                  placement="top"
+                >
+                  <ThemeProvider theme={theme} style={{ color: "white" }}>
+                    <Button
+                      variant="contained"
+                      color="primary"
+                      onClick={(e) => {
+                        handleRemoveTeacherFromAssignmentPlan(e);
+                      }}
+                      style={{ color: "white" }}
+                    >
+                      <CheckCircleOutlineIcon
+                        style={{ color: "white" }}
+                        fontSize="default"
+                      />
+                      &nbsp;&nbsp;&nbsp;Loại bỏ&nbsp;&nbsp;
+                    </Button>
+                  </ThemeProvider>
+                </Tooltip>
+              );
+            },
+            isFreeAction: true,
+          },
+          {
+            icon: () => {
+              return (
+                <Tooltip
+                  title="Chọn tất cả"
+                  aria-label="Chọn tất cả"
+                  placement="top"
+                >
+                  <Checkbox
+                    checked={selectedAll}
+                    onChange={(e) => {
+                      //alert('checkAll = ' + selectedAll);
+                      let tempS = e.target.checked;
+                      setSelectedAll(e.target.checked);
+
+                      if (tempS) count = teacherList.length;
+                      else count = 0;
+
+                      teacherList.map((value, index) => {
+                        value.selected = tempS;
+                      });
+                    }}
+                  />
+                  {/* <div>&nbsp;&nbsp;&nbsp;Chọn tất cả&nbsp;&nbsp;</div> */}
+                </Tooltip>
+              );
+            },
+            isFreeAction: true,
+          },
+        ]}
+
       />
 
       <UpdateTeacherForAssignmentModel

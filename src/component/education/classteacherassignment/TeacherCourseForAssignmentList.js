@@ -135,7 +135,7 @@ function TeacherCourseForAssignmentList(props) {
     setOpen(false);
   };
 
-  const handleAddTeacherCourseToAssignmentPlan = (e) => {
+  const handleRemoveTeacherCourseFromAssignmentPlan = (e) => {
     let acceptList = [];
     teacherList.map((v, i) => {
       if (v.selected == true) {
@@ -152,7 +152,7 @@ function TeacherCourseForAssignmentList(props) {
         // token,
         // history,
         "POST",
-        "/add-teacher-course-to-assign-plan",
+        "/remove-teacher-course-from-assign-plan",
         (res) => {
           result = res.data;
 
@@ -207,7 +207,7 @@ function TeacherCourseForAssignmentList(props) {
                       variant="contained"
                       color="primary"
                       onClick={(e) => {
-                        handleAddTeacherCourseToAssignmentPlan(e);
+                        handleRemoveTeacherCourseFromAssignmentPlan(e);
                       }}
                       style={{ color: "white" }}
                     >
@@ -215,7 +215,7 @@ function TeacherCourseForAssignmentList(props) {
                         style={{ color: "white" }}
                         fontSize="default"
                       />
-                      &nbsp;&nbsp;&nbsp;Thêm&nbsp;&nbsp;
+                      &nbsp;&nbsp;&nbsp;Loại bỏ&nbsp;&nbsp;
                     </Button>
                   </ThemeProvider>
                 </Tooltip>

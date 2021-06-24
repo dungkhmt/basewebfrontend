@@ -48,6 +48,10 @@ function ClassForAssignmentList(props) {
     { title: "TKB", field: "lesson" },
     { title: "Chương trình", field: "program" },
     { title: "Giờ quy đổi", field: "hourLoad" },
+    { title: "Số GV", field: "numberPosibleTeachers" },
+    { title: "Số GV trong KH", field: "numberPosibleTeachersInPlan" },
+    
+
     {
       title: "",
       render: (rowData) => (
@@ -187,6 +191,8 @@ function ClassForAssignmentList(props) {
             createdByUserLoginId: elm.createdByUserLoginId,
             createdStamp: elm.createdStamp,
             hourLoad: elm.hourLoad,
+            numberPosibleTeachers: elm.numberPosibleTeachers,
+            numberPosibleTeachersInPlan: elm.numberPosibleTeachersInPlan,
             selected: false,
           });
         });
