@@ -1,6 +1,6 @@
 import { Button, Card } from "@material-ui/core/";
 import React, { useState, useEffect } from "react";
-import MaterialTable, { MTableToolbar } from "material-table";
+import MaterialTable, { MTableToolbar, TextField } from "material-table";
 import { request } from "../../../api";
 import UploadExcelClassForTeacherAssignmentModel from "./UploadExcelClassForTeacherAssignmentModel";
 import { authGet, authPostMultiPart } from "../../../api";
@@ -19,10 +19,9 @@ function ClassForAssignmentList(props) {
     { title: "classId", field: "classId" },
     { title: "Tên lớp", field: "className" },
     { title: "Tên môn", field: "courseId" },
-    { title: "Học kỳ", field: "semesterId" },
     { title: "TKB", field: "lesson" },
-    { title: "Loại Học kỳ", field: "semesterType" },
     { title: "Chương trình", field: "program" },
+    
   ];
 
   function uploadExcel(selectedFile) {
