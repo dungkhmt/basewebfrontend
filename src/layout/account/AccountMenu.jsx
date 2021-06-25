@@ -21,10 +21,13 @@ import { logout } from "../../action";
 const StyledMenu = withStyles({
   paper: {
     minWidth: 240,
+    borderRadius: 8,
+    boxShadow:
+      "0 12px 28px 0 rgba(0, 0, 0, 0.2), 0 2px 4px 0 rgba(0, 0, 0, 0.1), inset 0 0 0 1px rgba(255, 255, 255, 0.5)",
   },
 })((props) => (
   <Menu
-    elevation={8}
+    // elevation={3}
     getContentAnchorEl={null}
     anchorOrigin={{ vertical: "top", horizontal: "right" }}
     transformOrigin={{ vertical: "top", horizontal: "right" }}
@@ -35,7 +38,7 @@ const StyledMenu = withStyles({
 const StyledMenuItem = withStyles((theme) => ({
   root: {
     padding: "0px 8px",
-    borderRadius: 6,
+    borderRadius: 8,
     "&:hover": {
       backgroundColor: "#f5f5f5",
     },
