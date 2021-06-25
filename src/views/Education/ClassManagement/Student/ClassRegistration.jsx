@@ -17,7 +17,7 @@ import changePageSize, {
   localization,
   tableIcons,
 } from "../../../../utils/MaterialTableUtils";
-import { errorNoti, successNoti } from "../../../../utils/Notification";
+import { errorNoti, successNoti } from "../../../../utils/notification";
 
 const useStyles = makeStyles((theme) => ({
   card: {

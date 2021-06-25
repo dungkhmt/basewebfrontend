@@ -1,27 +1,26 @@
-import React, { useEffect, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { useForm, Controller } from "react-hook-form";
-import { authPost, authGet } from "../../../api";
-
-import { MuiThemeProvider } from "@material-ui/core/styles";
 import {
+  Button,
   Card,
   CardContent,
-  Button,
+  MenuItem,
   TextField,
   Typography,
-  MenuItem,
 } from "@material-ui/core";
-import { Save, Cancel } from "@material-ui/icons";
-import SelectWeekdays from "./SelectWeekdays";
+import { MuiThemeProvider } from "@material-ui/core/styles";
+import { Cancel, Save } from "@material-ui/icons";
+import React, { useEffect, useState } from "react";
+import { Controller, useForm } from "react-hook-form";
+import { DevTool } from "react-hook-form-devtools";
+import { useDispatch, useSelector } from "react-redux";
+import { useHistory } from "react-router";
+import { array, object, string } from "yup";
+import { authGet, authPost } from "../../../api";
 import {
   processingNoti,
-  updateSuccessNoti,
   updateErrorNoti,
-} from "../../../utils/Notification";
-import { object, array, string, mixed } from "yup";
-import { DevTool } from "react-hook-form-devtools";
-import { useHistory } from "react-router";
+  updateSuccessNoti,
+} from "../../../utils/notification";
+import SelectWeekdays from "./SelectWeekdays";
 
 function AddSalesRouteConfig() {
   const history = useHistory();

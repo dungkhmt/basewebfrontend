@@ -17,7 +17,7 @@ import { useHistory } from "react-router";
 import { toast } from "react-toastify";
 import { object, string } from "yup";
 import { axiosGet, axiosPost } from "../../../api";
-import { errorNoti } from "../../../utils/Notification";
+import { errorNoti } from "../../../utils/notification";
 
 function AddVisitConfirguration(props) {
   const history = useHistory();

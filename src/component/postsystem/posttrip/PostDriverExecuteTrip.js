@@ -22,8 +22,9 @@ import { useDispatch, useSelector } from "react-redux";
 import { authGet, authPost } from "../../../api";
 import AlertDialog from "../../../utils/AlertDialog";
 import { localization } from "../../../utils/MaterialTableUtils";
-import { errorNoti } from "../../../utils/Notification";
+import { errorNoti } from "../../../utils/notification";
 import BouncingBallsLoader from "../../../views/common/BouncingBallsLoader";
+
 function copyObj(obj) {
   return JSON.parse(JSON.stringify(obj));
 }

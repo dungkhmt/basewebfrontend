@@ -47,7 +47,7 @@ import changePageSize, {
   localization,
   tableIcons,
 } from "../../../../utils/MaterialTableUtils";
-import { errorNoti } from "../../../../utils/Notification";
+import { errorNoti } from "../../../../utils/notification";
 
 const ExcelFile = ReactExport.ExcelFile;
 const ExcelSheet = ReactExport.ExcelFile.ExcelSheet;

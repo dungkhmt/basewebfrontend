@@ -1,36 +1,37 @@
-import React, { useEffect, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { authPost, authGet } from "../../../api";
-import { makeStyles } from "@material-ui/core/styles";
+import DateFnsUtils from "@date-io/date-fns";
 import {
-  CircularProgress,
-  FormControlLabel,
   Button,
-  IconButton,
+  CircularProgress,
   Dialog,
-  DialogTitle,
   DialogContent,
+  DialogTitle,
+  FormControlLabel,
+  IconButton,
 } from "@material-ui/core";
-import Typography from "@material-ui/core/Typography";
-import { GoogleApiWrapper, Map, Marker, Polyline } from "google-maps-react";
 import Grid from "@material-ui/core/Grid";
+import { makeStyles } from "@material-ui/core/styles";
 import Switch from "@material-ui/core/Switch";
-import VisibilityIcon from "@material-ui/icons/Visibility";
-import VisibilityOffIcon from "@material-ui/icons/VisibilityOff";
-import MoreHorizIcon from "@material-ui/icons/MoreHoriz";
+import TextField from "@material-ui/core/TextField";
+import Typography from "@material-ui/core/Typography";
 import ExpandLessIcon from "@material-ui/icons/ExpandLess";
 import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
-import MaterialTable from "material-table";
-import { localization } from "../../../utils/MaterialTableUtils";
+import MoreHorizIcon from "@material-ui/icons/MoreHoriz";
+import VisibilityIcon from "@material-ui/icons/Visibility";
+import VisibilityOffIcon from "@material-ui/icons/VisibilityOff";
+import Autocomplete from "@material-ui/lab/Autocomplete";
 import {
   KeyboardDatePicker,
   MuiPickersUtilsProvider,
 } from "@material-ui/pickers";
-import DateFnsUtils from "@date-io/date-fns";
-import TextField from "@material-ui/core/TextField";
-import Autocomplete from "@material-ui/lab/Autocomplete";
-import { errorNoti } from "../../../utils/Notification";
+import { GoogleApiWrapper, Map, Marker, Polyline } from "google-maps-react";
+import MaterialTable from "material-table";
+import React, { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { authGet, authPost } from "../../../api";
 import AlertDialog from "../../../utils/AlertDialog";
+import { localization } from "../../../utils/MaterialTableUtils";
+import { errorNoti } from "../../../utils/notification";
+
 function errHandling(err) {
   if (err.message == "Unauthorized")
     errorNoti("Phiên làm việc đã kết thúc, vui lòng đăng nhập lại !", true);

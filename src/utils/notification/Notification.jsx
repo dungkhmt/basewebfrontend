@@ -6,7 +6,7 @@ import { GiInfo } from "react-icons/gi";
 import { IconContext } from "react-icons/lib/cjs";
 import { MdCancel, MdWarning } from "react-icons/md";
 import { toast } from "react-toastify";
-import TertiaryButton from "../component/button/TertiaryButton";
+import TertiaryButton from "../../component/button/TertiaryButton";
 
 // Snackbar
 

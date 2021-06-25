@@ -2,7 +2,7 @@ import base64 from "base-64";
 import { request } from "../api";
 import { API_URL } from "../config/config";
 import { menuState } from "../state/MenuState";
-import { errorNoti } from "../utils/Notification";
+import { errorNoti } from "../utils/notification";
 export const LOGIN_REQUESTING = "LOGIN_REQUESTING";
 export const LOGIN_SUCCESS = "LOGIN_SUCCESS";
 export const LOGOUT_SUCCESS = "LOGOUT_SUCCESS";

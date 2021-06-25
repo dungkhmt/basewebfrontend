@@ -1,17 +1,17 @@
-import React, { useEffect, useState } from "react";
-import { makeStyles } from "@material-ui/core/styles";
-import Paper from "@material-ui/core/Paper";
-import { useDispatch, useSelector } from "react-redux";
-import TabPanel from "../TabPanel";
 import AppBar from "@material-ui/core/AppBar";
-import Tabs from "@material-ui/core/Tabs";
+import Paper from "@material-ui/core/Paper";
+import { makeStyles } from "@material-ui/core/styles";
 import Tab from "@material-ui/core/Tab";
+import Tabs from "@material-ui/core/Tabs";
 import MaterialTable from "material-table";
-import { localization } from "../../../utils/MaterialTableUtils";
-import { errorNoti, infoNoti } from "../../../utils/Notification";
-import { authPost, authGet } from "../../../api";
-import AlertDialog from "../../../utils/AlertDialog";
+import React, { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
+import { authGet, authPost } from "../../../api";
+import AlertDialog from "../../../utils/AlertDialog";
+import { localization } from "../../../utils/MaterialTableUtils";
+import { errorNoti } from "../../../utils/notification";
+import TabPanel from "../TabPanel";
 
 const postmanColumns = [
   { title: "Mã người dùng", field: "postmanId", editable: false },

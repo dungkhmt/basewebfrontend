@@ -1,4 +1,9 @@
-import { CircularProgress, DialogContent, Grid, Paper } from "@material-ui/core";
+import {
+  CircularProgress,
+  DialogContent,
+  Grid,
+  Paper,
+} from "@material-ui/core";
 import Button from "@material-ui/core/Button";
 import Dialog from "@material-ui/core/Dialog";
 import DialogActions from "@material-ui/core/DialogActions";
@@ -21,7 +26,8 @@ import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useHistory } from "react-router-dom";
 import { authGet, authPost } from "../../../api";
-import { errorNoti } from "../../../utils/Notification";
+import { errorNoti } from "../../../utils/notification";
+
 const useStyles = makeStyles((theme) => ({
   root: {
     padding: theme.spacing(4),
@@ -75,14 +81,13 @@ function CreatePostShipOrder(props) {
     useState(false);
   const [isFromCustomerAddressChange, setIsFromCustomerAddressChange] =
     useState(false);
-  
+
   const [fromListening, setFromListening] = useState(false);
   const [toListening, setToListening] = useState(false);
   const handleCancelAlertDialog = () => {
     history.push("/postoffice/orderlist");
   };
 
-  
   const loadPackageTypeData = () => {
     authGet(dispatch, token, "/get-post-package-type")
       .then((res) => {

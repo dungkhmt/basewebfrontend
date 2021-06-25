@@ -1,31 +1,31 @@
-import React, { useEffect, useState } from "react";
-import { makeStyles } from "@material-ui/core/styles";
-import Typography from "@material-ui/core/Typography";
+import DateFnsUtils from "@date-io/date-fns";
+import { DialogContent, IconButton, Tooltip } from "@material-ui/core";
 import Button from "@material-ui/core/Button";
 import Dialog from "@material-ui/core/Dialog";
 import DialogTitle from "@material-ui/core/DialogTitle";
-import { DialogContent, Tooltip, IconButton } from "@material-ui/core";
+import { makeStyles } from "@material-ui/core/styles";
+import Typography from "@material-ui/core/Typography";
 import AlarmOnIcon from "@material-ui/icons/AlarmOn";
 import DoneIcon from "@material-ui/icons/Done";
-import PauseCircleOutlineIcon from "@material-ui/icons/PauseCircleOutline";
-import PlayArrowIcon from "@material-ui/icons/PlayArrow";
+import IndeterminateCheckBoxIcon from "@material-ui/icons/IndeterminateCheckBox";
 import NotificationsIcon from "@material-ui/icons/Notifications";
 import NotificationsActiveIcon from "@material-ui/icons/NotificationsActive";
-import { authPost, authGet, authDelete } from "../../../api";
+import PauseCircleOutlineIcon from "@material-ui/icons/PauseCircleOutline";
+import PlayArrowIcon from "@material-ui/icons/PlayArrow";
 import {
   KeyboardDatePicker,
   MuiPickersUtilsProvider,
-  KeyboardTimePicker,
 } from "@material-ui/pickers";
-import DateFnsUtils from "@date-io/date-fns";
 import MaterialTable from "material-table";
-import { localization } from "../../../utils/MaterialTableUtils";
+import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import IndeterminateCheckBoxIcon from "@material-ui/icons/IndeterminateCheckBox";
+import { authDelete, authGet, authPost } from "../../../api";
 import AlertDialog from "../../../utils/AlertDialog";
-import { errorNoti, infoNoti } from "../../../utils/Notification";
+import { localization } from "../../../utils/MaterialTableUtils";
+import { errorNoti } from "../../../utils/notification";
 import BouncingBallsLoader from "../../../views/common/BouncingBallsLoader";
 import ConfirmDialog from "../ConfirmDialog";
+
 function copyObj(obj) {
   return JSON.parse(JSON.stringify(obj));
 }

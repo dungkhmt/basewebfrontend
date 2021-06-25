@@ -9,7 +9,7 @@ import { Link } from "react-router-dom";
 import { authDelete } from "../../../api";
 import { API_URL } from "../../../config/config";
 import { localization } from "../../../utils/MaterialTableUtils";
-import { errorNoti } from "../../../utils/Notification";
+import { errorNoti } from "../../../utils/notification";
 import Upload from "../../../utils/Upload";
 
 function errHandling(err) {

@@ -19,9 +19,10 @@ import { useDispatch, useSelector } from "react-redux";
 import { authGet, authPost } from "../../../api";
 import AlertDialog from "../../../utils/AlertDialog";
 import { localization, tableIcons } from "../../../utils/MaterialTableUtils";
-import { errorNoti } from "../../../utils/Notification";
+import { errorNoti } from "../../../utils/notification";
 import ConfirmDialog from "../ConfirmDialog";
 import TabPanel from "../TabPanel";
+
 function errHandling(err) {
   if (err.message == "Unauthorized")
     errorNoti("Phiên làm việc đã kết thúc, vui lòng đăng nhập lại !", true);

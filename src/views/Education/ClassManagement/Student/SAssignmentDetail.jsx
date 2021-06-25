@@ -8,7 +8,7 @@ import {
   Chip,
   Divider,
   Grid,
-  Typography
+  Typography,
 } from "@material-ui/core";
 import { makeStyles, MuiThemeProvider } from "@material-ui/core/styles";
 import parse from "html-react-parser";
@@ -23,7 +23,7 @@ import { request } from "../../../../api";
 import NegativeButton from "../../../../component/education/classmanagement/NegativeButton";
 import PositiveButton from "../../../../component/education/classmanagement/PositiveButton";
 import displayTime from "../../../../utils/DateTimeUtils";
-import { errorNoti, successNoti } from "../../../../utils/Notification";
+import { errorNoti, successNoti } from "../../../../utils/notification";
 
 const useStyles = makeStyles((theme) => ({
   divider: {

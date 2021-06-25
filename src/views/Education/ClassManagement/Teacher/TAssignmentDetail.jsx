@@ -32,7 +32,7 @@ import changePageSize, {
   localization,
   tableIcons,
 } from "../../../../utils/MaterialTableUtils";
-import { errorNoti } from "../../../../utils/Notification";
+import { errorNoti } from "../../../../utils/notification";
 
 const useStyles = makeStyles((theme) => ({
   card: {

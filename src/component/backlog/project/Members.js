@@ -1,29 +1,29 @@
-import React, { useEffect, useState } from "react";
-import { makeStyles } from "@material-ui/core/styles";
-import { useDispatch, useSelector } from "react-redux";
-import { authPost, authGet } from "../../../api";
-import AlertDialog from "../AlertDialog";
 import {
-  Dialog,
-  DialogTitle,
-  DialogContent,
-  List,
-  InputAdornment,
-  Checkbox,
-  DialogActions,
+  Box,
   Button,
+  Checkbox,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogTitle,
+  IconButton,
+  InputAdornment,
+  List,
   TextField,
   Typography,
-  IconButton,
-  Box,
 } from "@material-ui/core";
-import SearchIcon from "@material-ui/icons/Search";
+import { makeStyles } from "@material-ui/core/styles";
 import ClearIcon from "@material-ui/icons/Clear";
+import SearchIcon from "@material-ui/icons/Search";
 import randomColor from "randomcolor";
+import React, { useEffect, useState } from "react";
 import InfiniteScroll from "react-infinite-scroll-component";
+import { useDispatch, useSelector } from "react-redux";
+import { authGet, authPost } from "../../../api";
+import { errorNoti } from "../../../utils/notification";
+import AlertDialog from "../AlertDialog";
 import UseDebounce from "../components/UseDebounce";
 import UserItem from "../components/UserItem";
-import { errorNoti } from "../../../utils/Notification";
 
 const avtColor = [...Array(20)].map((value, index) =>
   randomColor({ luminosity: "light", hue: "random" })

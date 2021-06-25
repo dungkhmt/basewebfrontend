@@ -6,7 +6,7 @@ import NotificationsIcon from "@material-ui/icons/Notifications";
 import NotificationsActiveIcon from "@material-ui/icons/NotificationsActive";
 import {
   KeyboardDatePicker,
-  MuiPickersUtilsProvider
+  MuiPickersUtilsProvider,
 } from "@material-ui/pickers";
 import MaterialTable from "material-table";
 import React, { useEffect, useState } from "react";
@@ -14,7 +14,8 @@ import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 import { authGet } from "../../../api";
 import { localization } from "../../../utils/MaterialTableUtils";
-import { errorNoti } from "../../../utils/Notification";
+import { errorNoti } from "../../../utils/notification";
+
 function errHandling(err) {
   if (err.message == "Unauthorized")
     errorNoti("Phiên làm việc đã kết thúc, vui lòng đăng nhập lại !", true);
@@ -53,19 +54,16 @@ const columns1 = [
       true: "Có đơn cần xử lý",
       false: "Không có đơn",
     },
-    render: (row) => 
-      
-        row.status ? (
-          <Tooltip title={"Có đơn cần xử lý"}>
-            <NotificationsActiveIcon style={{ color: "red" }} />
-          </Tooltip>
-        ) : (
-          <Tooltip title={"Hôm nay không có đơn nào"}>
-            <NotificationsIcon />
-          </Tooltip>
-        )
-      
-    
+    render: (row) =>
+      row.status ? (
+        <Tooltip title={"Có đơn cần xử lý"}>
+          <NotificationsActiveIcon style={{ color: "red" }} />
+        </Tooltip>
+      ) : (
+        <Tooltip title={"Hôm nay không có đơn nào"}>
+          <NotificationsIcon />
+        </Tooltip>
+      ),
   },
 ];
 

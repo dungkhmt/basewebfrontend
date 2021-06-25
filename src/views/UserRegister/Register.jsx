@@ -30,7 +30,7 @@ import { useHistory } from "react-router-dom";
 import { request } from "../../api";
 import CustomizedDialogs from "../../component/dialog/CustomizedDialogs";
 import PositiveButton from "../../component/education/classmanagement/PositiveButton";
-import { errorNoti } from "../../utils/Notification";
+import { errorNoti } from "../../utils/notification";
 
 const theme = createMuiTheme({
   overrides: {

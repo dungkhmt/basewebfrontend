@@ -12,7 +12,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 import { authDelete, authGet } from "../../../api";
 import { localization } from "../../../utils/MaterialTableUtils";
-import { errorNoti } from "../../../utils/Notification";
+import { errorNoti } from "../../../utils/notification";
 import ConfirmDialog from "../ConfirmDialog";
 
 function errHandling(err) {

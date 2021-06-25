@@ -7,7 +7,7 @@ import {
   infoNoti,
   unduplicatedErrorNoti,
   wifiOffNotify,
-} from "./utils/Notification";
+} from "./utils/notification";
 
 export const authPost = (dispatch, token, url, body) => {
   return fetch(API_URL + url, {

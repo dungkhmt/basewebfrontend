@@ -11,7 +11,7 @@ import { useParams } from "react-router-dom";
 import { authDelete, authGet, authPost } from "../../../api";
 import AlertDialog from "../../../utils/AlertDialog";
 import { localization, tableIcons } from "../../../utils/MaterialTableUtils";
-import { errorNoti } from "../../../utils/Notification";
+import { errorNoti } from "../../../utils/notification";
 import ConfirmDialog from "../ConfirmDialog";
 
 function errHandling(err) {

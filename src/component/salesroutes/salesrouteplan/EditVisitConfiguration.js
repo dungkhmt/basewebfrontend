@@ -14,7 +14,7 @@ import { useHistory } from "react-router";
 import { toast } from "react-toastify";
 import { object, string } from "yup";
 import { axiosGet, axiosPut } from "../../../api";
-import { errorNoti } from "../../../utils/Notification";
+import { errorNoti } from "../../../utils/notification";
 
 function EditVisitConfirguration(props) {
   const dispatch = useDispatch();

@@ -29,7 +29,7 @@ import { request } from "../../../../api";
 import NegativeButton from "../../../../component/education/classmanagement/NegativeButton";
 import useOnMount from "../../../../component/education/classmanagement/onMount";
 import PositiveButton from "../../../../component/education/classmanagement/PositiveButton";
-import { errorNoti } from "../../../../utils/Notification";
+import { errorNoti } from "../../../../utils/notification";
 
 const useStyles = makeStyles((theme) => ({
   card: {
