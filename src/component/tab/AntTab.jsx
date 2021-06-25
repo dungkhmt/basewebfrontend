@@ -5,6 +5,7 @@ import React from "react";
 
 export const AntTab = withStyles((theme) => ({
   root: {
+    transition: "text-shadow .3s",
     textTransform: "none",
     minWidth: 72,
     fontWeight: theme.typography.fontWeightRegular,
@@ -23,11 +24,13 @@ export const AntTab = withStyles((theme) => ({
     ].join(","),
     "&:hover": {
       opacity: 1,
-      fontWeight: theme.typography.fontWeightMedium,
+      // fontWeight: theme.typography.fontWeightMedium,
+      textShadow: "0 0 .65px, 0 0 .65px",
     },
     "&$selected": {
       color: teal[800],
-      fontWeight: theme.typography.fontWeightMedium,
+      // fontWeight: theme.typography.fontWeightMedium,
+      textShadow: "0 0 .65px, 0 0 .65px",
     },
     "&:focus": {
       color: teal[800],

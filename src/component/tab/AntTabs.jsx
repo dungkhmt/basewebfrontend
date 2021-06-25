@@ -1,6 +1,18 @@
+import { TabScrollButton } from "@material-ui/core";
 import { teal } from "@material-ui/core/colors";
 import { withStyles } from "@material-ui/core/styles";
 import Tabs from "@material-ui/core/Tabs";
+import React from "react";
+
+const AntTabScrollButton = withStyles((theme) => ({
+  root: {
+    overflow: "hidden",
+    transition: "width 0.5s",
+    "&.Mui-disabled": {
+      width: 0,
+    },
+  },
+}))(TabScrollButton);
 
 export const AntTabs = withStyles({
   root: {
@@ -9,4 +21,8 @@ export const AntTabs = withStyles({
   indicator: {
     backgroundColor: teal[800],
   },
-})(Tabs);
+})((props) => (
+  <Tabs ScrollButtonComponent={AntTabScrollButton} {...props}>
+    {props.children}
+  </Tabs>
+));

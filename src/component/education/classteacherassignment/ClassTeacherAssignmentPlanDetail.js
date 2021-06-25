@@ -56,7 +56,7 @@ function TabPanel(props) {
       aria-labelledby={`full-width-tab-${index}`}
       {...other}
     >
-      {value === index && <Box p={3}>{children}</Box>}
+      {value === index && <Box pt={3}>{children}</Box>}
     </div>
   );
 }
@@ -163,6 +163,7 @@ export default function ClassTeacherAssignmentPlanDetail(props) {
         onChange={handleChangeTab}
         aria-label="ant example"
         scrollButtons="auto"
+        variant="scrollable"
       >
         {tabsLabel.map((label, idx) => (
           <AntTab key={label} label={label} {...a11yProps(idx)} />
