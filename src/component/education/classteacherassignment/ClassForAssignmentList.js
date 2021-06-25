@@ -1,16 +1,13 @@
-import { Button, Card, Checkbox, Tooltip } from "@material-ui/core/";
-import React, { useState, useReducer, useEffect } from "react";
-import MaterialTable, { MTableToolbar, TextField } from "material-table";
-import { request } from "../../../api";
-import UploadExcelClassForTeacherAssignmentModel from "./UploadExcelClassForTeacherAssignmentModel";
-import { authGet, authPostMultiPart } from "../../../api";
-
-import { useDispatch, useSelector } from "react-redux";
-import { createMuiTheme, ThemeProvider } from "@material-ui/core/styles";
+import { Button, Card, Checkbox } from "@material-ui/core/";
 import { green } from "@material-ui/core/colors";
+import { createMuiTheme, ThemeProvider } from "@material-ui/core/styles";
 import CheckCircleOutlineIcon from "@material-ui/icons/CheckCircleOutline";
-
+import MaterialTable, { MTableToolbar } from "material-table";
+import React, { useEffect, useReducer, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { authPostMultiPart, request } from "../../../api";
 import UpdateClassForAssignmentModel from "./UpdateClassForAssignmentModel";
+import UploadExcelClassForTeacherAssignmentModel from "./UploadExcelClassForTeacherAssignmentModel";
 
 const headerProperties = {
   headerStyle: {
@@ -50,7 +47,6 @@ function ClassForAssignmentList(props) {
     { title: "Giờ quy đổi", field: "hourLoad" },
     { title: "Số GV", field: "numberPosibleTeachers" },
     { title: "Số GV trong KH", field: "numberPosibleTeachersInPlan" },
-    
 
     {
       title: "",
@@ -276,65 +272,67 @@ function ClassForAssignmentList(props) {
               </div>
             </div>
           ),
-        }}
-        actions={[
-          {
-            icon: () => {
+          Action: (props) => {
+            if (props.action.icon === "deleteClass") {
               return (
-                <Tooltip
-                  title="Loại lớp khỏi kế hoạch"
-                  aria-label="Loại lớp khỏi kế hoạch"
-                  placement="top"
-                >
-                  <ThemeProvider theme={theme} style={{ color: "white" }}>
-                    <Button
-                      variant="contained"
-                      color="primary"
-                      onClick={(e) => {
-                        handleRemoveClassFromAssignmentPlan(e);
-                      }}
-                      style={{ color: "white" }}
-                    >
+                <ThemeProvider theme={theme}>
+                  <Button
+                    variant="contained"
+                    color="primary"
+                    onClick={(event) => props.action.onClick(event, props.data)}
+                    style={{ color: "white" }}
+                    startIcon={
                       <CheckCircleOutlineIcon
                         style={{ color: "white" }}
                         fontSize="default"
                       />
-                      &nbsp;&nbsp;&nbsp;Xóa&nbsp;&nbsp;
-                    </Button>
-                  </ThemeProvider>
-                </Tooltip>
+                    }
+                  >
+                    Xóa
+                  </Button>
+                </ThemeProvider>
               );
-            },
-            isFreeAction: true,
-          },
-          {
-            icon: () => {
+            } else if (props.action.icon === "selectAll") {
               return (
-                <Tooltip
-                  title="Chọn tất cả"
-                  aria-label="Chọn tất cả"
-                  placement="top"
-                >
+                <>
                   <Checkbox
                     checked={selectedAll}
-                    onChange={(e) => {
-                      //alert('checkAll = ' + selectedAll);
-                      let tempS = e.target.checked;
-                      setSelectedAll(e.target.checked);
-
-                      if (tempS) count = classList.length;
-                      else count = 0;
-
-                      classList.map((value, index) => {
-                        value.selected = tempS;
-                      });
-                    }}
+                    onChange={(event) =>
+                      props.action.onClick(event, props.data)
+                    }
                   />
                   {/* <div>&nbsp;&nbsp;&nbsp;Chọn tất cả&nbsp;&nbsp;</div> */}
-                </Tooltip>
+                </>
               );
-            },
+            }
+            return "default button";
+          },
+        }}
+        actions={[
+          {
             isFreeAction: true,
+            icon: "deleteClass",
+            tooltip: "Loại lớp khỏi kế hoạch",
+            onClick: (event, rowData) => {
+              handleRemoveClassFromAssignmentPlan(event);
+            },
+          },
+          {
+            isFreeAction: true,
+            icon: "selectAll",
+            tooltip: "Chọn tất cả",
+            onClick: (event, rowData) => {
+              //alert('checkAll = ' + selectedAll);
+              let tempS = event.target.checked;
+              setSelectedAll(event.target.checked);
+
+              if (tempS) count = classList.length;
+              else count = 0;
+
+              classList.map((value) => {
+                value.selected = tempS;
+              });
+            },
           },
         ]}
       />
