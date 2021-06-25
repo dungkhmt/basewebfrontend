@@ -80,40 +80,50 @@ export const wifiOffNotify = (toastId) =>
     }
   );
 
-export const unduplicatedErrorNoti = (toastId, message, autoClose) =>
-  toast.error(
-    <Box display="flex" alignItems="center">
+const ContentContainer = (props) => (
+  <Box display="flex" alignItems="center">
+    {props.children}
+  </Box>
+);
+
+export const unduplicatedErrorNoti = (toastId, message, autoClose) => {
+  const content = (
+    <ContentContainer>
       <IconContext.Provider>
         <MdCancel size={20} style={{ marginRight: "5px" }} />
       </IconContext.Provider>
       {message}
-    </Box>,
-    {
-      toastId: toastId,
-      position: "bottom-right",
-      autoClose: autoClose === undefined ? false : autoClose,
-      pauseOnHover: true,
-      draggable: true,
-      progress: undefined,
-    }
+    </ContentContainer>
   );
 
-export const errorNoti = (message, autoClose) =>
-  toast.error(
-    <Box display="flex" alignItems="center">
+  return toast[toast.TYPE.ERROR](content, {
+    toastId: toastId,
+    position: "bottom-right",
+    autoClose: autoClose === undefined ? false : autoClose,
+    pauseOnHover: true,
+    draggable: true,
+    progress: undefined,
+  });
+};
+
+export const errorNoti = (message, autoClose) => {
+  const content = (
+    <ContentContainer>
       <IconContext.Provider>
         <MdCancel size={20} style={{ marginRight: "5px" }} />
       </IconContext.Provider>
       {message}
-    </Box>,
-    {
-      position: "bottom-right",
-      autoClose: autoClose === undefined ? false : autoClose,
-      pauseOnHover: true,
-      draggable: true,
-      progress: undefined,
-    }
+    </ContentContainer>
   );
+
+  return toast[toast.TYPE.ERROR](content, {
+    position: "bottom-right",
+    autoClose: autoClose === undefined ? false : autoClose,
+    pauseOnHover: true,
+    draggable: true,
+    progress: undefined,
+  });
+};
 
 export const successNoti = (message, autoClose) =>
   toast.success(
