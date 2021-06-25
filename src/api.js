@@ -3,7 +3,7 @@ import { store } from ".";
 import { failed } from "./action/Auth";
 import { API_URL } from "./config/config";
 import history from "./history";
-import { errorNoti, infoNoti } from "./utils/Notification";
+import { errorNoti, infoNoti, wifiOffNotify } from "./utils/Notification";
 
 export const authPost = (dispatch, token, url, body) => {
   return fetch(API_URL + url, {
@@ -151,11 +151,6 @@ export const authDelete = (dispatch, token, url, body) => {
     }
   );
 };
-export default {
-  getMenu: (dispatch, token) => {
-    return authGet(dispatch, token, "/menu");
-  },
-};
 
 export const axiosPost = (token, url, data, dispatch) => {
   return axios.post(API_URL + url, data, {
@@ -274,7 +269,8 @@ export async function request(
         errorHandlers["noResponse"](e);
       }
 
-      errorNoti("Không thể kết nối tới máy chủ.");
+      // , "Không thể kết nối tới máy chủ."
+      wifiOffNotify("cannot connect to server");
     } else {
       // Something happened in setting up the request that triggered an Error.
       console.log(

@@ -1,11 +1,12 @@
-import React from "react";
-import { IconContext } from "react-icons/lib/cjs";
-import { toast } from "react-toastify";
-import { GiInfo } from "react-icons/gi";
-import { FiCheckCircle } from "react-icons/fi";
-import { MdCancel, MdWarning } from "react-icons/md";
-import { Box } from "@material-ui/core";
+import { Box, Icon, Typography } from "@material-ui/core";
 import CheckCircleRoundedIcon from "@material-ui/icons/CheckCircleRounded";
+import React from "react";
+import { FiCheckCircle } from "react-icons/fi";
+import { GiInfo } from "react-icons/gi";
+import { IconContext } from "react-icons/lib/cjs";
+import { MdCancel, MdWarning } from "react-icons/md";
+import { toast } from "react-toastify";
+import TertiaryButton from "../component/button/TertiaryButton";
 
 // Snackbar
 
@@ -53,6 +54,49 @@ export const updateErrorNoti = (toastId, message) =>
       </Box>
     ),
   });
+
+export const wifiOffNotify = (toastId) =>
+  toast.dark(
+    <Box display="flex" alignItems="center">
+      <Icon style={{ margin: 6 }}>wifi_off_rounded</Icon>
+      <Typography component="span" style={{ padding: 6, flexGrow: 1 }}>
+        Bạn đang offline.
+      </Typography>
+      <TertiaryButton
+        disableRipple
+        onClick={() => window.location.reload(false)}
+        style={{ width: 92, fontSize: "1rem", color: "#42a5f5" }}
+      >
+        Làm mới
+      </TertiaryButton>
+    </Box>,
+    {
+      toastId: toastId,
+      autoClose: false,
+      pauseOnHover: true,
+      closeOnClick: false,
+      draggable: true,
+      progress: undefined,
+    }
+  );
+
+export const unduplicatedErrorNoti = (toastId, message, autoClose) =>
+  toast.error(
+    <Box display="flex" alignItems="center">
+      <IconContext.Provider>
+        <MdCancel size={20} style={{ marginRight: "5px" }} />
+      </IconContext.Provider>
+      {message}
+    </Box>,
+    {
+      toastId: toastId,
+      position: "bottom-right",
+      autoClose: autoClose === undefined ? false : autoClose,
+      pauseOnHover: true,
+      draggable: true,
+      progress: undefined,
+    }
+  );
 
 export const errorNoti = (message, autoClose) =>
   toast.error(

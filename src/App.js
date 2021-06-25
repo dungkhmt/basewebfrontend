@@ -43,7 +43,7 @@ class App extends Component {
         <Router history={history}>
           <Routes />
           <ToastContainer
-            position="bottom-left"
+            position="bottom-center"
             transition={Slide}
             autoClose={3000}
             limit={3}

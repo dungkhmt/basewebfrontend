@@ -12,6 +12,17 @@ code {
     monospace;
 }
 
+.Toastify__toast {
+  border-radius: 8px;
+}
+
+.Toastify__toast-container--bottom-center {
+  bottom: 1em;
+  right: 1em;
+  left: auto;
+  transform: none;
+}
+
 .Toastify__toast--success {
   border-radius: 6px !important;
 }
