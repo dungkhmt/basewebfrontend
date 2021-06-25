@@ -1,6 +1,8 @@
-import { API_URL } from "../config/config";
 import base64 from "base-64";
-import { errorNoti, infoNoti } from "../utils/Notification";
+import { request } from "../api";
+import { API_URL } from "../config/config";
+import { menuState } from "../state/MenuState";
+import { errorNoti } from "../utils/Notification";
 export const LOGIN_REQUESTING = "LOGIN_REQUESTING";
 export const LOGIN_SUCCESS = "LOGIN_SUCCESS";
 export const LOGOUT_SUCCESS = "LOGOUT_SUCCESS";
@@ -8,35 +10,17 @@ export const LOGIN_FAILURE = "LOGIN_FAILURE";
 export const ERROR = "ERROR";
 
 export const logout = () => {
+  menuState.permittedFunctions.set(new Set());
+
   return (dispatch, getState) => {
+    dispatch(logoutsuccess());
     dispatch(requesting()); // create a action
-    const headers = new Headers();
 
-    headers.append("Content-Type", "application/json");
-    headers.append("X-Auth-Token", getState().auth.token);
-
-    fetch(`${API_URL}/logout`, {
-      method: "GET",
-      headers: headers,
-    })
-      .then((res) => {
-        if (res.ok) {
-          dispatch(logoutsuccess());
-        }
-        return res.json();
-      })
-      .then(
-        (res) => {
-          // if (res.status === "SUCCESS") {
-          //     dispatch(success());
-          // } else{
-          //     dispatch(failed());
-          // }
-        },
-        (error) => {
-          dispatch(failed());
-        }
-      );
+    // Don't care if this request success or not.
+    request("get", "/logout", (res) => {}, {
+      onError: () => dispatch(failed()),
+      401: () => {},
+    });
   };
 };
 

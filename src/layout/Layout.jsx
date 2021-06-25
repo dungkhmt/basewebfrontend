@@ -6,14 +6,12 @@ import Toolbar from "@material-ui/core/Toolbar";
 import Typography from "@material-ui/core/Typography";
 import { default as MenuIcon } from "@material-ui/icons/Menu";
 import clsx from "clsx";
-import React, { useEffect, useState } from "react";
-import { connect, useSelector } from "react-redux";
-import { getMenu } from "../action";
+import React, { useState } from "react";
+import { useSelector } from "react-redux";
 import { ReactComponent as Logo } from "../assets/icons/logo.svg";
 import bgImage from "../assets/img/sidebar-2.jpg";
 import Back2Top from "../utils/Back2Top";
 import AccountButton from "./account/AccountButton";
-import { LayoutBreadcrumbs } from "./LayoutBreadcrumbs";
 import SideBar from "./sidebar/v1/SideBar";
 
 const useStyles = makeStyles((theme) => ({
@@ -105,10 +103,6 @@ function Layout(props) {
   const [image] = useState(bgImage);
   const [color] = useState("blue");
 
-  useEffect(() => {
-    if (props.isMenuGot === false) props.getMenu();
-  }, []);
-
   return (
     <div className={classes.root}>
       <AppBar
@@ -175,7 +169,7 @@ function Layout(props) {
         })}
       >
         <div id="back-to-top-anchor" className={classes.toolbar} />
-        <LayoutBreadcrumbs />
+        {/* <LayoutBreadcrumbs /> */}
         {children}
       </main>
       <Back2Top />
@@ -183,12 +177,4 @@ function Layout(props) {
   );
 }
 
-const mapStateToProps = (state) => ({
-  isMenuGot: state.menu.isMenuGot,
-});
-
-const mapDispatchToProps = (dispatch) => ({
-  getMenu: () => dispatch(getMenu()),
-});
-
-export default connect(mapStateToProps, mapDispatchToProps)(Layout);
+export default Layout;

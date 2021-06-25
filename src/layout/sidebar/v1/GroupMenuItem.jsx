@@ -1,3 +1,4 @@
+import { Downgraded } from "@hookstate/core";
 import {
   Collapse,
   Icon,
@@ -9,10 +10,10 @@ import makeStyles from "@material-ui/core/styles/makeStyles";
 import ArrowDropDownIcon from "@material-ui/icons/ArrowDropDown";
 import classNames from "classnames";
 import React, { useEffect, useState } from "react";
-import { connect } from "react-redux";
 import { useLocation } from "react-router-dom";
 import { whiteColor } from "../../../assets/jss/material-dashboard-react";
 import { menuIconMap } from "../../../config/menuconfig";
+import { useMenuState } from "../../../state/MenuState";
 import MenuItem, { hexToRgb } from "./MenuItem";
 
 export const menuItemBaseStyle = (theme) => ({
@@ -91,8 +92,14 @@ const activeRoute = (route) => {
 
 function GroupMenuItem(props) {
   const classes = useStyles();
-  const { color, group, menu } = props;
+  const { color, group } = props;
   const location = useLocation();
+
+  //
+  const menuState = useMenuState();
+  const permittedFunctions = menuState.permittedFunctions
+    .attach(Downgraded)
+    .get();
 
   //
   const [expanded, setExpanded] = useState(false);
@@ -119,7 +126,7 @@ function GroupMenuItem(props) {
   }, [location.pathname]);
 
   if (!group.isPublic) {
-    if (!menu?.has(group.id)) return null;
+    if (!permittedFunctions.has(group.id)) return null;
   }
 
   if (group.child?.length === 1) {
@@ -131,7 +138,7 @@ function GroupMenuItem(props) {
         menuItem={childMenuItem}
         color={color}
         selected={selected[0]}
-        menu={menu}
+        menu={permittedFunctions}
         icon
       />
     );
@@ -179,7 +186,7 @@ function GroupMenuItem(props) {
                 menuItem={childMenuItem}
                 color={color}
                 selected={selected[index]}
-                menu={menu}
+                menu={permittedFunctions}
               />
             ))}
           </List>
@@ -188,8 +195,4 @@ function GroupMenuItem(props) {
     );
 }
 
-const mapStateToProps = (state) => ({
-  menu: state.menu.menu,
-});
-
-export default connect(mapStateToProps)(GroupMenuItem);
+export default GroupMenuItem;

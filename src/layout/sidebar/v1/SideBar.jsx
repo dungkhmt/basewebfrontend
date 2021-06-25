@@ -4,13 +4,14 @@ import List from "@material-ui/core/List";
 import makeStyles from "@material-ui/core/styles/makeStyles";
 import classNames from "classnames";
 import PropTypes from "prop-types";
-import React from "react";
+import React, { useEffect } from "react";
 import { useSelector } from "react-redux";
 import { Link as RouterLink } from "react-router-dom";
 import SimpleBar from "simplebar-react";
 import "simplebar/dist/simplebar.min.css";
 import PrimaryButton from "../../../component/button/PrimaryButton";
 import { MENU_LIST } from "../../../config/menuconfig";
+import { fetchMenu } from "../../../state/MenuState";
 import GroupMenuItem, { menuItemBaseStyle } from "./GroupMenuItem";
 import { blackColor, whiteColor } from "./MenuItem";
 
@@ -108,6 +109,10 @@ export default function SideBar(props) {
   const classes = useStyles();
   const { open, image, color: bgColor } = props;
   const isAuthenticated = useSelector((state) => state.auth.isAuthenticated);
+
+  useEffect(() => {
+    if (isAuthenticated) fetchMenu();
+  }, []);
 
   return (
     <Drawer
