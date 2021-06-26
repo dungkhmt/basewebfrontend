@@ -3,11 +3,7 @@ import { store } from ".";
 import { failed } from "./action/Auth";
 import { API_URL } from "./config/config";
 import history from "./history";
-import {
-  infoNoti,
-  unduplicatedErrorNoti,
-  wifiOffNotify,
-} from "./utils/notification";
+import { infoNoti, wifiOffNotify } from "./utils/notification";
 
 export const authPost = (dispatch, token, url, body) => {
   return fetch(API_URL + url, {
@@ -257,10 +253,10 @@ export async function request(
           } else if (isFunction(errorHandlers["rest"])) {
             errorHandlers["rest"](e);
           } else {
-            unduplicatedErrorNoti(
-              "response error",
-              "Rất tiếc! Đã có lỗi xảy ra."
-            );
+            // unduplicatedErrorNoti(
+            //   "response error",
+            //   "Rất tiếc! Đã có lỗi xảy ra."
+            // );
           }
       }
     } else if (e.request) {
