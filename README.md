@@ -27,6 +27,9 @@ Khi đã sẵn sàng cho quá trình cài đặt project, thực hiện lần l�
 Sau lần chạy thành công đầu tiên, ở các lần chạy sau chỉ cần thực hiện bước 2
 
 ### 3. Cấu hình Visual Studio Code
+Bước này nhằm cài đặt và cấu hình một số extension hữu ích cho trải nghiệm và quá trình phát triển ứng dụng, ví dụ: tiện ích refactor, format code tự động, tiện ích làm việc với Git,... Vì vậy, bước này giữ vai trò cực kì <b>QUAN TRỌNG</b> và là <b>BẮT BUỘC</b> để giữ cho code base chuyên nghiệp, thống nhất xuyên suốt project.
+
+Thực hiện lần lượt theo các bước sau:
 * Mở Visual Studio Code (nếu chưa mở)
 * Tuỳ chọn sử dụng một trong hai cách sau:
   * Mở Git Bash tại thư mục project, chạy lệnh: `./vscode-extension-install.bash`
@@ -35,7 +38,7 @@ Sau lần chạy thành công đầu tiên, ở các lần chạy sau chỉ cầ
   ```
   Get-Content extensions.txt | ForEach-Object {code --install-extension $_ --force}
   ```
-* Trong Visual Studio Code, mở Command Palette bằng shotcut <b>CMD/CTRL + SHIFT + P</b>
+* Trong Visual Studio Code, mở Command Palette bằng shotcut <b>CTRL + SHIFT + P</b>
 * Trong Command Palette, nhập vào <b>Open Settings</b> và chọn <b>Open Settings (JSON)</b>
 * Thêm các [cấu hình](https://drive.google.com/file/d/1QMVt9ZhpRbvikHA05sTEp4tg9ehwklCt/view?usp=sharing) sau vào file <b>settings.json</b> ở vị trí cuối file, điều này đảm bảo
 ghi đè các cấu hình tương ứng (nếu có) được định nghĩa trước đó
