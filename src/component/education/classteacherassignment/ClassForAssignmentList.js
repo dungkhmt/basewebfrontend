@@ -1,8 +1,8 @@
-import { Button, Card, Checkbox } from "@material-ui/core/";
+import { Button, Checkbox } from "@material-ui/core/";
 import { green } from "@material-ui/core/colors";
 import { createMuiTheme, ThemeProvider } from "@material-ui/core/styles";
 import CheckCircleOutlineIcon from "@material-ui/icons/CheckCircleOutline";
-import MaterialTable, { MTableToolbar } from "material-table";
+import MaterialTable from "material-table";
 import React, { useEffect, useReducer, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { authPostMultiPart, request } from "../../../api";
@@ -254,26 +254,23 @@ function ClassForAssignmentList(props) {
     getClassTeacherAssignmentClassInfoList();
   }, []);
   return (
-    <Card>
+    <>
       <MaterialTable
         title={"Danh sách lớp chưa phân công"}
         columns={columns}
         data={classList}
         components={{
-          Toolbar: (props) => (
-            <div style={{ position: "relative" }}>
-              <MTableToolbar {...props} />
-              <div
-                style={{ position: "absolute", top: "16px", right: "350px" }}
-              >
-                <Button onClick={handleModalOpenModelExcel} color="primary">
-                  Upload excel
-                </Button>
-              </div>
-            </div>
-          ),
           Action: (props) => {
-            if (props.action.icon === "deleteClass") {
+            if (props.action.icon === "uploadExcel") {
+              return (
+                <Button
+                  onClick={(event) => props.action.onClick(event, props.data)}
+                  color="primary"
+                >
+                  Tải lên excel
+                </Button>
+              );
+            } else if (props.action.icon === "deleteClass") {
               return (
                 <ThemeProvider theme={theme}>
                   <Button
@@ -309,6 +306,13 @@ function ClassForAssignmentList(props) {
           },
         }}
         actions={[
+          {
+            isFreeAction: true,
+            icon: "uploadExcel",
+            onClick: (e, rowData) => {
+              handleModalOpenModelExcel();
+            },
+          },
           {
             isFreeAction: true,
             icon: "deleteClass",
@@ -347,7 +351,7 @@ function ClassForAssignmentList(props) {
         onUpdateInfo={customUpdateHandle}
         selectedClassId={selectedClassId}
       />
-    </Card>
+    </>
   );
 }
 

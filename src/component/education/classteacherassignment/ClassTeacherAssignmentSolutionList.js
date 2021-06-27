@@ -1,11 +1,11 @@
-import { Button, Card, Checkbox, Tooltip } from "@material-ui/core/";
-import MaterialTable, { MTableToolbar } from "material-table";
-import React, { useEffect, useState, useReducer } from "react";
+import { Button, Checkbox } from "@material-ui/core/";
+import { green } from "@material-ui/core/colors";
+import { createMuiTheme, ThemeProvider } from "@material-ui/core/styles";
+import CheckCircleOutlineIcon from "@material-ui/icons/CheckCircleOutline";
+import MaterialTable from "material-table";
+import React, { useEffect, useReducer, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { request } from "../../../api";
-import { createMuiTheme, ThemeProvider } from "@material-ui/core/styles";
-import { green } from "@material-ui/core/colors";
-import CheckCircleOutlineIcon from "@material-ui/icons/CheckCircleOutline";
 
 const headerProperties = {
   headerStyle: {
@@ -201,94 +201,98 @@ function ClassTeacherAssignmentSolutionList(props) {
       },
       {},
       {},
-      { responseType: "arraybuffer" }
+      { responseType: "blob" }
     );
   }
   useEffect(() => {
     getClassTeacherAssignmentSolutionList();
   }, []);
+
   return (
-    <Card>
-      <MaterialTable
-        title={"Danh sách lớp được phân công"}
-        columns={columns}
-        data={classList}
-        components={{
-          Toolbar: (props) => (
-            <div style={{ position: "relative" }}>
-              <MTableToolbar {...props} />
-              <div
-                style={{ position: "absolute", top: "16px", right: "350px" }}
+    <MaterialTable
+      title={"Danh sách lớp được phân công"}
+      columns={columns}
+      data={classList}
+      components={{
+        Action: (props) => {
+          if (props.action.icon === "exportExcel") {
+            return (
+              <Button
+                onClick={(event) => props.action.onClick(event, props.data)}
+                color="primary"
               >
-                <Button onClick={handleExportExcel} color="primary">
-                  Export excel
-                </Button>
-              </div>
-            </div>
-          ),
-        }}
-        actions={[
-          {
-            icon: () => {
-              return (
-                <Tooltip
-                  title="Loại thí sinh khỏi kì thi"
-                  aria-label="Loại thí sinh khỏi kì thi"
-                  placement="top"
-                >
-                  <ThemeProvider theme={theme} style={{ color: "white" }}>
-                    <Button
-                      variant="contained"
-                      color="primary"
-                      onClick={(e) => {
-                        handleRemoveClassTeacherAssignmentSolution(e);
-                      }}
+                Xuất excel
+              </Button>
+            );
+          } else if (props.action.icon === "removeSolution") {
+            return (
+              <ThemeProvider theme={theme}>
+                <Button
+                  variant="contained"
+                  color="primary"
+                  startIcon={
+                    <CheckCircleOutlineIcon
                       style={{ color: "white" }}
-                    >
-                      <CheckCircleOutlineIcon
-                        style={{ color: "white" }}
-                        fontSize="default"
-                      />
-                      &nbsp;&nbsp;&nbsp;Loại bỏ&nbsp;&nbsp;
-                    </Button>
-                  </ThemeProvider>
-                </Tooltip>
-              );
-            },
-            isFreeAction: true,
-          },
-          {
-            icon: () => {
-              return (
-                <Tooltip
-                  title="Chọn tất cả"
-                  aria-label="Chọn tất cả"
-                  placement="top"
+                      fontSize="default"
+                    />
+                  }
+                  onClick={(event) => props.action.onClick(event, props.data)}
+                  style={{ color: "white" }}
                 >
-                  <Checkbox
-                    checked={selectedAll}
-                    onChange={(e) => {
-                      //alert('checkAll = ' + selectedAll);
-                      let tempS = e.target.checked;
-                      setSelectedAll(e.target.checked);
+                  Loại bỏ
+                </Button>
+              </ThemeProvider>
+            );
+          } else if (props.action.icon === "selectAll") {
+            return (
+              <>
+                <Checkbox
+                  checked={selectedAll}
+                  onChange={(event) => props.action.onClick(event, props.data)}
+                />
+                {/* <div>&nbsp;&nbsp;&nbsp;Chọn tất cả&nbsp;&nbsp;</div> */}
+              </>
+            );
+          }
 
-                      if (tempS) count = classList.length;
-                      else count = 0;
-
-                      classList.map((value, index) => {
-                        value.selected = tempS;
-                      });
-                    }}
-                  />
-                  {/* <div>&nbsp;&nbsp;&nbsp;Chọn tất cả&nbsp;&nbsp;</div> */}
-                </Tooltip>
-              );
-            },
-            isFreeAction: true,
+          return "default button";
+        },
+      }}
+      actions={[
+        {
+          isFreeAction: true,
+          icon: "exportExcel",
+          onClick: (e, rowData) => {
+            handleExportExcel();
           },
-        ]}
-      />
-    </Card>
+        },
+        {
+          isFreeAction: true,
+          icon: "removeSolution",
+          tooltip: "Loại thí sinh khỏi kì thi",
+          onClick: (e, rowData) => {
+            handleRemoveClassTeacherAssignmentSolution(e);
+          },
+        },
+        {
+          isFreeAction: true,
+          icon: "selectAll",
+          tooltip: "Chọn tất cả",
+          onClick: (e, rowData) => {
+            //alert('checkAll = ' + selectedAll);
+            let tempS = e.target.checked;
+            setSelectedAll(e.target.checked);
+
+            if (tempS) count = classList.length;
+            else count = 0;
+
+            classList.map((value, index) => {
+              value.selected = tempS;
+            });
+          },
+        },
+      ]}
+    />
   );
 }
 
