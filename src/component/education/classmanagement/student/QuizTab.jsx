@@ -5,7 +5,7 @@ import React, { Fragment, useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { useHistory } from "react-router";
 import { request } from "../../../../api";
-import Quizz from "./Quizz";
+import Quiz from "./Quiz";
 
 const useStyles = makeStyles(() => ({
   titleContainer: {
@@ -112,7 +112,7 @@ function QuizzTab({ classId }) {
             </Fragment>
           ) : (
             quizzList.map((quizz, index) => (
-              <Quizz key={quizz.questionId} quizz={quizz} index={index} />
+              <Quiz key={quizz.questionId} quizz={quizz} index={index} />
             ))
           )}
         </div>
