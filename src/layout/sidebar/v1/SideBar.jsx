@@ -16,6 +16,7 @@ import GroupMenuItem, { menuItemBaseStyle } from "./GroupMenuItem";
 import { blackColor, whiteColor } from "./MenuItem";
 
 export const drawerWidth = 300;
+export const miniDrawerWidth = 50;
 
 const useStyles = makeStyles((theme) => ({
   menu: {

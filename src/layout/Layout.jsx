@@ -12,7 +12,7 @@ import { ReactComponent as Logo } from "../assets/icons/logo.svg";
 import bgImage from "../assets/img/sidebar-2.jpg";
 import Back2Top from "../utils/Back2Top";
 import AccountButton from "./account/AccountButton";
-import SideBar from "./sidebar/v1/SideBar";
+import SideBar, { drawerWidth, miniDrawerWidth } from "./sidebar/v1/SideBar";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -53,14 +53,23 @@ const useStyles = makeStyles((theme) => ({
     padding: theme.spacing(0, 1),
     ...theme.mixins.toolbar,
   },
+  maxWidthContent: {
+    maxWidth: `calc(100% - ${miniDrawerWidth}px)`,
+    transition: theme.transitions.create("max-width", {
+      easing: theme.transitions.easing.sharp,
+      duration: theme.transitions.duration.enteringScreen,
+    }),
+  },
+  minWidthContent: {
+    maxWidth: `calc(100% - ${drawerWidth}px)`,
+    transition: theme.transitions.create("max-width", {
+      easing: theme.transitions.easing.sharp,
+      duration: theme.transitions.duration.leavingScreen,
+    }),
+  },
   content: {
     flexGrow: 1,
     padding: theme.spacing(3),
-    // transition: theme.transitions.create("margin", {
-    //   easing: theme.transitions.easing.sharp,
-    //   duration: theme.transitions.duration.leavingScreen,
-    // }),
-    // marginLeft: -drawerWidth,
   },
   // appBarShift: {
   //   marginLeft: drawerWidth,
@@ -79,14 +88,6 @@ const useStyles = makeStyles((theme) => ({
   // },
   // hideButton: {
   //   marginLeft: drawerWidth / 2 - theme.spacing(6),
-  // },
-
-  // contentShift: {
-  //   transition: theme.transitions.create("margin", {
-  //     easing: theme.transitions.easing.easeOut,
-  //     duration: theme.transitions.duration.enteringScreen,
-  //   }),
-  //   marginLeft: 0,
   // },
   // largeIcon: {
   //   width: 50,
@@ -165,7 +166,9 @@ function Layout(props) {
       <SideBar open={open} image={image} color={color} />
       <main
         className={clsx(classes.content, {
-          // [classes.contentShift]: open,
+          [classes.maxWidthContent]: !open,
+          [classes.minWidthContent]: open,
+          // [classes.contentShift]: !open,
         })}
       >
         <div id="back-to-top-anchor" className={classes.toolbar} />
