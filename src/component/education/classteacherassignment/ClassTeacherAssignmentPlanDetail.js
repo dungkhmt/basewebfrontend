@@ -2,15 +2,13 @@ import { Box, Typography } from "@material-ui/core/";
 import { teal } from "@material-ui/core/colors";
 import { makeStyles, useTheme } from "@material-ui/core/styles";
 import { Skeleton } from "@material-ui/lab";
-import PropTypes from "prop-types";
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useParams } from "react-router";
 import { useHistory } from "react-router-dom";
 import { request } from "../../../api";
 import PrimaryButton from "../../button/PrimaryButton";
-import { AntTab } from "../../tab/AntTab";
-import { AntTabs } from "../../tab/AntTabs";
+import { a11yProps, AntTab, AntTabs, TabPanel } from "../../tab";
 import ClassesAssignToATeacherList from "./ClassesAssignToATeacherList";
 import ClassForAssignmentList from "./ClassForAssignmentList";
 import ClassTeacherAssignmentSolutionList from "./ClassTeacherAssignmentSolutionList";
@@ -38,35 +36,6 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-function a11yProps(index) {
-  return {
-    id: `full-width-tab-${index}`,
-    "aria-controls": `full-width-tabpanel-${index}`,
-  };
-}
-
-function TabPanel(props) {
-  const { children, value, index, ...other } = props;
-
-  return (
-    <div
-      role="tabpanel"
-      hidden={value !== index}
-      id={`full-width-tabpanel-${index}`}
-      aria-labelledby={`full-width-tab-${index}`}
-      {...other}
-    >
-      {value === index && <Box pt={3}>{children}</Box>}
-    </div>
-  );
-}
-
-TabPanel.propTypes = {
-  children: PropTypes.node,
-  index: PropTypes.any.isRequired,
-  value: PropTypes.any.isRequired,
-};
-
 const tabsLabel = [
   "DS lớp",
   "Giáo viên",
@@ -75,16 +44,6 @@ const tabsLabel = [
   "Giáo viên-môn trong KH",
   "Kết quả phân công",
   "Lớp chưa được phân công",
-];
-
-const weekDay = [
-  "Chủ nhật",
-  "Thứ hai",
-  "Thứ ba",
-  "Thứ tư",
-  "Thứ năm",
-  "Thứ sáu",
-  "Thứ bảy",
 ];
 
 export default function ClassTeacherAssignmentPlanDetail(props) {
@@ -111,6 +70,7 @@ export default function ClassTeacherAssignmentPlanDetail(props) {
 
   async function handleAssignTeacher2Class() {
     let datasend = { planId: planId };
+
     request(
       // token,
       // history,
@@ -127,6 +87,7 @@ export default function ClassTeacherAssignmentPlanDetail(props) {
 
   async function getClassTeacherAssignmentPlanDetail() {
     let datasend = { planId: planId };
+
     request(
       // token,
       // history,
@@ -139,6 +100,7 @@ export default function ClassTeacherAssignmentPlanDetail(props) {
     );
     // console.log(datasend);
   }
+
   useEffect(() => {
     getClassTeacherAssignmentPlanDetail();
   }, []);

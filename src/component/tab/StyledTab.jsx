@@ -1,22 +1,14 @@
-import { teal } from "@material-ui/core/colors";
+import { Tab } from "@material-ui/core";
 import { withStyles } from "@material-ui/core/styles";
-import Tab from "@material-ui/core/Tab";
 import React from "react";
 
-export function a11yProps(index) {
-  return {
-    id: `full-width-tab-${index}`,
-    "aria-controls": `full-width-tabpanel-${index}`,
-  };
-}
-
-export const AntTab = withStyles((theme) => ({
+export const StyledTab = withStyles((theme) => ({
   root: {
-    transition: "text-shadow .3s",
     textTransform: "none",
     minWidth: 72,
     fontWeight: theme.typography.fontWeightRegular,
-    marginRight: theme.spacing(4),
+    marginLeft: theme.spacing(2),
+    marginRight: theme.spacing(2),
     fontFamily: [
       "-apple-system",
       "BlinkMacSystemFont",
@@ -30,17 +22,15 @@ export const AntTab = withStyles((theme) => ({
       '"Segoe UI Symbol"',
     ].join(","),
     "&:hover": {
+      color: "#40a9ff",
       opacity: 1,
-      // fontWeight: theme.typography.fontWeightMedium,
-      textShadow: "0 0 .65px, 0 0 .65px",
     },
     "&$selected": {
-      color: teal[800],
-      // fontWeight: theme.typography.fontWeightMedium,
-      textShadow: "0 0 .65px, 0 0 .65px",
+      color: "#1890ff",
+      fontWeight: theme.typography.fontWeightMedium,
     },
     "&:focus": {
-      color: teal[800],
+      color: "#40a9ff",
     },
   },
   selected: {},

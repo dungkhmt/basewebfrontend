@@ -1,6 +1,5 @@
 import {
   Avatar,
-  Box,
   Card,
   CardContent,
   CardHeader,
@@ -8,13 +7,10 @@ import {
   Grid,
   Link,
   Paper,
-  Tab,
-  Tabs,
   Typography,
 } from "@material-ui/core";
-import { makeStyles, withStyles } from "@material-ui/core/styles";
+import { makeStyles } from "@material-ui/core/styles";
 import MaterialTable from "material-table";
-import PropTypes from "prop-types";
 import React, { Fragment, useEffect, useState } from "react";
 import { BiDetail } from "react-icons/bi";
 import { useSelector } from "react-redux";
@@ -22,91 +18,14 @@ import { useHistory, useParams } from "react-router";
 import { Link as RouterLink } from "react-router-dom";
 import { request } from "../../../../api";
 import AssignmentTab from "../../../../component/education/classmanagement/student/AssignmentTab";
-import QuizzTab from "../../../../component/education/classmanagement/student/QuizzTab";
+import QuizTab from "../../../../component/education/classmanagement/student/QuizTab";
 import StudentListTab from "../../../../component/education/classmanagement/student/StudentListTab";
-
-const AntTabs = withStyles({
-  root: {
-    borderBottom: "1px solid #e8e8e8",
-  },
-  indicator: {
-    display: "flex",
-    justifyContent: "center",
-    backgroundColor: "transparent",
-    "& > span": {
-      maxWidth: 40,
-      width: "100%",
-      backgroundColor: "#1890ff",
-    },
-  },
-})((props) => <Tabs {...props} TabIndicatorProps={{ children: <span /> }} />);
-
-const AntTab = withStyles((theme) => ({
-  root: {
-    textTransform: "none",
-    minWidth: 72,
-    fontWeight: theme.typography.fontWeightRegular,
-    marginLeft: theme.spacing(2),
-    marginRight: theme.spacing(2),
-    fontFamily: [
-      "-apple-system",
-      "BlinkMacSystemFont",
-      '"Segoe UI"',
-      "Roboto",
-      '"Helvetica Neue"',
-      "Arial",
-      "sans-serif",
-      '"Apple Color Emoji"',
-      '"Segoe UI Emoji"',
-      '"Segoe UI Symbol"',
-    ].join(","),
-    "&:hover": {
-      color: "#40a9ff",
-      opacity: 1,
-    },
-    "&$selected": {
-      color: "#1890ff",
-      fontWeight: theme.typography.fontWeightMedium,
-    },
-    "&:focus": {
-      color: "#40a9ff",
-    },
-  },
-  selected: {},
-}))((props) => <Tab disableRipple {...props} />);
-
-function TabPanel(props) {
-  const { children, value, index, ...other } = props;
-
-  return (
-    <div
-      role="tabpanel"
-      hidden={value !== index}
-      id={`simple-tabpanel-${index}`}
-      aria-labelledby={`simple-tab-${index}`}
-      {...other}
-    >
-      {value === index && (
-        <Box p={3}>
-          <Typography>{children}</Typography>
-        </Box>
-      )}
-    </div>
-  );
-}
-
-TabPanel.propTypes = {
-  children: PropTypes.node,
-  index: PropTypes.any.isRequired,
-  value: PropTypes.any.isRequired,
-};
-
-function a11yProps(index) {
-  return {
-    id: `simple-tab-${index}`,
-    "aria-controls": `simple-tabpanel-${index}`,
-  };
-}
+import {
+  a11yProps,
+  StyledTab,
+  StyledTabs,
+  TabPanel,
+} from "../../../../component/tab";
 
 const useStyles = makeStyles((theme) => ({
   card: {
@@ -194,18 +113,18 @@ function SClassDetail() {
   return (
     <Fragment>
       <div className={classes.tabs}>
-        <AntTabs
+        <StyledTabs
           value={activeTab}
           onChange={handleChange}
           aria-label="ant tabs"
           centered
         >
-          <AntTab label="Thông tin chung" {...a11yProps(0)} />
-          <AntTab label="Nội dung" {...a11yProps(1)} />
-          <AntTab label="Quiz" {...a11yProps(2)} />
-          <AntTab label="Sinh viên" {...a11yProps(3)} />
-          <AntTab label="Bài tập" {...a11yProps(4)} />
-        </AntTabs>
+          <StyledTab label="Thông tin chung" {...a11yProps(0)} />
+          <StyledTab label="Nội dung" {...a11yProps(1)} />
+          <StyledTab label="Quiz" {...a11yProps(2)} />
+          <StyledTab label="Sinh viên" {...a11yProps(3)} />
+          <StyledTab label="Bài tập" {...a11yProps(4)} />
+        </StyledTabs>
         <Typography className={classes.padding} />
       </div>
 
@@ -292,7 +211,7 @@ function SClassDetail() {
       </TabPanel>
 
       <TabPanel value={activeTab} index={2}>
-        <QuizzTab classId={params.id} />
+        <QuizTab classId={params.id} />
       </TabPanel>
 
       <TabPanel value={activeTab} index={3}>
