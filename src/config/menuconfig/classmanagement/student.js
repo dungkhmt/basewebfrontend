@@ -26,7 +26,7 @@ export const eduLearningManagement = {
       path: "/edu/class/student/quiztest/list",
       isPublic: false,
       icon: null,
-      text: "Danh sach Quiz Test",
+      text: "Quiz Test",
       child: [],
     },
     {

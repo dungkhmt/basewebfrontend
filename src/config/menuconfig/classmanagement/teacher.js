@@ -10,7 +10,7 @@ export const eduTeachingManagement = {
       path: "/edu/teacher/course/list",
       isPublic: false,
       icon: null,
-      text: "Danh sách môn",
+      text: "Môn học",
       child: [],
     },
     {
@@ -18,7 +18,7 @@ export const eduTeachingManagement = {
       path: "/edu/teacher/class/list",
       isPublic: false,
       icon: null,
-      text: "Danh sách lớp",
+      text: "Lớp",
       child: [],
     },
     {
@@ -35,7 +35,7 @@ export const eduTeachingManagement = {
       isPublic: false,
       icon: null,
       //Danh sách kỳ thi trắc nghiệm
-      text: "Danh sách Quiz Test",
+      text: "Quiz Test",
       child: [],
     },
     {

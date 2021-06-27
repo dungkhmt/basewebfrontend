@@ -10,7 +10,7 @@ export const teachingassignment = {
       path: "/edu/semester",
       isPublic: false,
       icon: "StarBorder",
-      text: "DS học kì",
+      text: "Học kì",
       child: [],
     },
     {
@@ -18,7 +18,7 @@ export const teachingassignment = {
       path: "/edu/courses/list",
       isPublic: false,
       icon: "StarBorder",
-      text: "DS môn học",
+      text: "Môn học",
       child: [],
     },
     {
@@ -26,7 +26,7 @@ export const teachingassignment = {
       path: "/edu/teachers/list",
       isPublic: false,
       icon: "StarBorder",
-      text: "DS giảng viên",
+      text: "Giảng viên",
       child: [],
     },
     {
@@ -34,7 +34,7 @@ export const teachingassignment = {
       path: "/edu/classes-list",
       isPublic: false,
       icon: "StarBorder",
-      text: "DS lớp",
+      text: "Lớp",
       child: [],
     },
     {
@@ -42,7 +42,7 @@ export const teachingassignment = {
       path: "/edu/class-teacher-assignment-plan/list",
       isPublic: false,
       icon: "StarBorder",
-      text: "DS kế hoạch phân công",
+      text: "Kế hoạch phân công",
       child: [],
     },
     {
@@ -50,7 +50,7 @@ export const teachingassignment = {
       path: "/edu/solve",
       isPublic: false,
       icon: "StarBorder",
-      text: "Tiến hành phân công",
+      text: "Phân công",
       child: [],
     },
   ],
