@@ -65,7 +65,7 @@ export const wifiOffNotify = (toastId) =>
       <TertiaryButton
         disableRipple
         onClick={() => window.location.reload(false)}
-        style={{ width: 92, fontSize: "1rem", color: "#42a5f5" }}
+        style={{ fontSize: "1rem", color: "#42a5f5" }}
       >
         Làm mới
       </TertiaryButton>
