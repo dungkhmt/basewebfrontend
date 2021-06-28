@@ -1,8 +1,10 @@
+import { Paper } from "@material-ui/core";
 import { green } from "@material-ui/core/colors";
 import { createMuiTheme } from "@material-ui/core/styles";
 import AddBox from "@material-ui/icons/AddBox";
 import ArrowDownward from "@material-ui/icons/ArrowDownward";
 import Check from "@material-ui/icons/Check";
+import CheckCircleIcon from "@material-ui/icons/CheckCircle";
 import ChevronLeft from "@material-ui/icons/ChevronLeft";
 import ChevronRight from "@material-ui/icons/ChevronRight";
 import Clear from "@material-ui/icons/Clear";
@@ -10,12 +12,54 @@ import DeleteOutline from "@material-ui/icons/DeleteOutline";
 import Edit from "@material-ui/icons/Edit";
 import FirstPage from "@material-ui/icons/FirstPage";
 import LastPage from "@material-ui/icons/LastPage";
+import RadioButtonUncheckedIcon from "@material-ui/icons/RadioButtonUnchecked";
 import Remove from "@material-ui/icons/Remove";
+import RemoveCircleIcon from "@material-ui/icons/RemoveCircle";
 import SaveAlt from "@material-ui/icons/SaveAlt";
 import Search from "@material-ui/icons/Search";
 import ViewColumn from "@material-ui/icons/ViewColumn";
+import { MTableBodyRow, MTableHeader } from "material-table";
 import React, { forwardRef } from "react";
 import { FcFilledFilter } from "react-icons/fc";
+
+export const components = {
+  Container: (props) => (
+    <Paper
+      {...props}
+      elevation={0}
+      style={{ backgroundColor: "transparent" }}
+    />
+  ),
+
+  Row: (props) => (
+    <MTableBodyRow
+      {...props}
+      options={{
+        ...props.options,
+        selectionProps: {
+          ...props.options.selectionProps,
+          icon: <RadioButtonUncheckedIcon fontSize="small" />,
+          checkedIcon: <CheckCircleIcon fontSize="small" />,
+        },
+      }}
+    />
+  ),
+
+  Header: (props) => (
+    <MTableHeader
+      {...props}
+      options={{
+        ...props.options,
+        headerSelectionProps: {
+          ...props.options.headerSelectionProps,
+          indeterminateIcon: <RemoveCircleIcon fontSize="small" />,
+          icon: <RadioButtonUncheckedIcon fontSize="small" />,
+          checkedIcon: <CheckCircleIcon fontSize="small" />,
+        },
+      }}
+    />
+  ),
+};
 
 export const theme = createMuiTheme({
   palette: {

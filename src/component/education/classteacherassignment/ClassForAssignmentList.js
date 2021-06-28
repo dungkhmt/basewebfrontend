@@ -1,13 +1,18 @@
-import { Box, Button, Paper, Typography } from "@material-ui/core/";
+import { Box, IconButton, Typography } from "@material-ui/core/";
 import { grey } from "@material-ui/core/colors";
 import { makeStyles, MuiThemeProvider } from "@material-ui/core/styles";
 import DeleteRoundedIcon from "@material-ui/icons/DeleteRounded";
+import EditIcon from "@material-ui/icons/Edit";
 import PublishRoundedIcon from "@material-ui/icons/PublishRounded";
 import MaterialTable, { MTableToolbar } from "material-table";
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { authPostMultiPart, request } from "../../../api";
-import { localization, theme } from "../../../utils/MaterialTableUtils";
+import {
+  components,
+  localization,
+  theme,
+} from "../../../utils/MaterialTableUtils";
 import TertiaryButton from "../../button/TertiaryButton";
 import UpdateClassForAssignmentModel from "./UpdateClassForAssignmentModel";
 import UploadExcelClassForTeacherAssignmentModel from "./UploadExcelClassForTeacherAssignmentModel";
@@ -58,34 +63,48 @@ function ClassForAssignmentList(props) {
 
   // Table
   const cellStyles = { headerStyle: { padding: 8 }, cellStyle: { padding: 8 } };
+  const alignRightCellStyles = {
+    headerStyle: { padding: 8, textAlign: "right" },
+    cellStyle: { padding: 8, textAlign: "right" },
+  };
   const columns = [
-    { title: "ClassId", field: "classId", ...cellStyles },
-    { title: "Tên lớp", field: "className", ...cellStyles },
-    { title: "Tên môn", field: "courseId", ...cellStyles },
-    { title: "TKB", field: "lesson", ...cellStyles },
+    { title: "Mã lớp", field: "classId", ...cellStyles },
+    { title: "Lớp", field: "className", ...cellStyles },
+    { title: "Học phần", field: "courseId", ...cellStyles },
+    { title: "Thời khoá biểu", field: "lesson", ...cellStyles },
     { title: "Chương trình", field: "program", ...cellStyles },
-    { title: "Giờ quy đổi", field: "hourLoad", ...cellStyles },
-    { title: "Số GV", field: "numberPosibleTeachers", ...cellStyles },
     {
+      sorting: false,
+      title: "Giờ quy đổi",
+      field: "hourLoad",
+      ...alignRightCellStyles,
+    },
+    {
+      sorting: false,
+      title: "Số GV",
+      field: "numberPosibleTeachers",
+      ...alignRightCellStyles,
+    },
+    {
+      sorting: false,
       title: "Số GV trong KH",
       field: "numberPosibleTeachersInPlan",
-      ...cellStyles,
+      ...alignRightCellStyles,
     },
-
     {
-      ...cellStyles,
       title: "",
       render: (rowData) => (
-        <Button
-          variant="contained"
+        <IconButton
           color="primary"
+          aria-label="edit"
           onClick={() => {
             onUpdateHourLoad(rowData["classId"]);
           }}
         >
-          Update
-        </Button>
+          <EditIcon />
+        </IconButton>
       ),
+      ...cellStyles,
     },
   ];
 
@@ -280,6 +299,9 @@ function ClassForAssignmentList(props) {
           options={{
             selection: true,
             pageSize: 20,
+            headerStyle: {
+              backgroundColor: "transparent",
+            },
             rowStyle: (rowData) => ({
               backgroundColor: rowData.tableData.checked
                 ? grey[200]
@@ -290,13 +312,7 @@ function ClassForAssignmentList(props) {
             setSelectedRows(rows);
           }}
           components={{
-            Container: (props) => (
-              <Paper
-                {...props}
-                elevation={0}
-                style={{ backgroundColor: "transparent" }}
-              />
-            ),
+            ...components,
             Toolbar: (props) => (
               <MTableToolbar
                 {...props}
