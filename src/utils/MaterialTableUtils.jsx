@@ -1,3 +1,5 @@
+import { green } from "@material-ui/core/colors";
+import { createMuiTheme } from "@material-ui/core/styles";
 import AddBox from "@material-ui/icons/AddBox";
 import ArrowDownward from "@material-ui/icons/ArrowDownward";
 import Check from "@material-ui/icons/Check";
@@ -14,6 +16,17 @@ import Search from "@material-ui/icons/Search";
 import ViewColumn from "@material-ui/icons/ViewColumn";
 import React, { forwardRef } from "react";
 import { FcFilledFilter } from "react-icons/fc";
+
+export const theme = createMuiTheme({
+  palette: {
+    primary: {
+      main: "#3f51b5",
+    },
+    secondary: {
+      main: green[900],
+    },
+  },
+});
 
 export const localization = {
   body: {
