@@ -1,5 +1,3 @@
-//import { Button, Box, Checkbox, Typography } from "@material-ui/core";
-
 import {
   Box,
   Button,
@@ -76,8 +74,8 @@ export const style = (theme) => ({
   assignBtn: {
     width: 120,
   },
-  cancelBtn: { width: 60 },
 });
+
 const useStyles = makeStyles((theme) => style(theme));
 
 /**
@@ -230,9 +228,7 @@ export default function TeacherViewQuizDetailForAssignment({
         }
         actions={
           <>
-            <TertiaryButton className={classes.cancelBtn} onClick={handleClose}>
-              Huỷ
-            </TertiaryButton>
+            <TertiaryButton onClick={handleClose}>Huỷ</TertiaryButton>
             <PrimaryButton
               className={classes.assignBtn}
               onClick={onSelectGroup}

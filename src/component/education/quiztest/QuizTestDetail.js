@@ -57,8 +57,7 @@ const useStyles = makeStyles((theme) => ({
   btn: { width: 180, marginLeft: theme.spacing(1) },
   courseName: { fontWeight: theme.typography.fontWeightMedium },
   editBtn: {
-    margin: theme.spacing(2),
-    width: 100,
+    marginLeft: theme.spacing(2),
     fontWeight: theme.typography.fontWeightRegular,
   },
   testName: { fontSize: "1.25rem", paddingTop: theme.spacing(1) },

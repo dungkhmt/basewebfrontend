@@ -4,7 +4,6 @@ import React from "react";
 
 const TertiaryButton = withStyles((theme) => ({
   root: {
-    // width: "100%",
     textTransform: "none",
   },
 }))((props) => (

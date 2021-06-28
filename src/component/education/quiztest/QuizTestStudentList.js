@@ -374,9 +374,7 @@ export default function QuizTestStudentList(props) {
         }
         actions={
           <>
-            <TertiaryButton className={classes.cancelBtn} onClick={handleClose}>
-              Huỷ
-            </TertiaryButton>
+            <TertiaryButton onClick={handleClose}>Huỷ</TertiaryButton>
             <PrimaryButton
               className={classes.assignBtn}
               onClick={handleAssignGroup}
