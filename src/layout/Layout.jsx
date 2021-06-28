@@ -10,7 +10,6 @@ import React, { useState } from "react";
 import { useSelector } from "react-redux";
 import { ReactComponent as Logo } from "../assets/icons/logo.svg";
 import bgImage from "../assets/img/sidebar-2.jpg";
-import Back2Top from "../utils/Back2Top";
 import AccountButton from "./account/AccountButton";
 import SideBar, { drawerWidth, miniDrawerWidth } from "./sidebar/v1/SideBar";
 
@@ -175,7 +174,7 @@ function Layout(props) {
         {/* <LayoutBreadcrumbs /> */}
         {children}
       </main>
-      <Back2Top />
+      {/* <Back2Top /> */}
     </div>
   );
 }

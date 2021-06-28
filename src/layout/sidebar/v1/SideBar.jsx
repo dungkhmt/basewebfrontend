@@ -30,6 +30,7 @@ const useStyles = makeStyles((theme) => ({
     paddingLeft: theme.spacing(4),
   },
   drawerPaper: {
+    overflowX: "hidden",
     width: drawerWidth,
     flexShrink: 0,
     border: "none",
@@ -94,6 +95,7 @@ const useStyles = makeStyles((theme) => ({
       opacity: ".8",
     },
   },
+
   // sidebarWrapper: {
   //   // width: "100%",
   //   paddingTop: 75,
@@ -143,15 +145,13 @@ export default function SideBar(props) {
           overscrollBehaviorY: "none", // To prevent tag <main> be scrolled when menu'scrollbar reach end
         }}
       >
-        <nav>
-          <List>
-            {MENU_LIST.map((group) => (
-              <GroupMenuItem key={group.text} group={group} color={bgColor} />
-            ))}
-          </List>
-        </nav>
+        <List component="nav">
+          {MENU_LIST.map((group) => (
+            <GroupMenuItem key={group.text} group={group} color={bgColor} />
+          ))}
+        </List>
       </SimpleBar>
-      {!isAuthenticated && (
+      {!isAuthenticated && open && (
         <Box
           className={classes.signInContainer}
           display="flex"
