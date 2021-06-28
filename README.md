@@ -43,5 +43,10 @@ Thực hiện lần lượt theo các bước sau:
 * Thêm các [cấu hình](https://drive.google.com/file/d/1QMVt9ZhpRbvikHA05sTEp4tg9ehwklCt/view?usp=sharing) sau vào file <b>settings.json</b> ở vị trí cuối file, điều này đảm bảo
 ghi đè các cấu hình tương ứng (nếu có) được định nghĩa trước đó
 
-### 4. Tips cấu hình IDEs
+### 4. Một số component
+* <b>Tab:</b> src/component/tab
+* <b>Button:</b> src/component/button
+* <b>Dialog:</b> src/component/dialog
+
+### 5. Tips cấu hình IDEs
 * [Tips cấu hình IDEs](https://drive.google.com/file/d/1fKf7MTXCSlk1VpL6iACoHWCvqeE6Ldgc/view?usp=sharing)
