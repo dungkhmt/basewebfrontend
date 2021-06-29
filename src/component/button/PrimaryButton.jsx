@@ -4,7 +4,6 @@ import { withStyles } from "@material-ui/core/styles";
 import React from "react";
 const PrimaryButton = withStyles((theme) => ({
   root: {
-    width: "100%",
     textTransform: "none",
     backgroundColor: blue[700],
     color: theme.palette.getContrastText(blue[700]),
