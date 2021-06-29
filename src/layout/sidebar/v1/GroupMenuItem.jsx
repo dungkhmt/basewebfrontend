@@ -156,7 +156,7 @@ function GroupMenuItem(props) {
           {/* Icon */}
           <Icon
             className={classNames(classes.menuItemIcon, classes.whiteFont)}
-            style={{ paddingLeft: 3, marginRight: 30 }}
+            style={{ marginLeft: 3, marginRight: 27 }}
           >
             {menuIconMap.get(group.icon)}
           </Icon>

@@ -2,7 +2,7 @@ export const teachingassignment = {
   id: "MENU_EDUCATION_TEACHING_ASSIGNMENT",
   path: "",
   isPublic: false,
-  icon: "AirportShuttleIcon",
+  icon: "Schedule",
   text: "Phân công giảng dạy",
   child: [
     {
