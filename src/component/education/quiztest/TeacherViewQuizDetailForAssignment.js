@@ -12,8 +12,6 @@ import { makeStyles } from "@material-ui/core/styles";
 import parse from "html-react-parser";
 import React, { useState } from "react";
 import { FcDocument } from "react-icons/fc";
-import { useSelector } from "react-redux";
-import { useHistory } from "react-router";
 import SimpleBar from "simplebar-react";
 import { request } from "../../../api";
 import PrimaryButton from "../../button/PrimaryButton";
@@ -71,33 +69,10 @@ export const style = (theme) => ({
   btn: {
     textTransform: "none",
   },
-  assignBtn: {
-    width: 120,
-  },
 });
 
 const useStyles = makeStyles((theme) => style(theme));
 
-/**
- * Customized checkbox.
- */
-// const GreenCheckbox = withStyles({
-//   root: {
-//     color: green[400],
-//     "&$checked": {
-//       color: green[600],
-//     },
-//     paddingLeft: 20,
-//     paddingTop: 0,
-//     paddingBottom: 0,
-//   },
-//   checked: {},
-// })((props) => <Checkbox color="default" disableRipple {...props} />);
-
-/**
- * Describe a multiple-choice quiz.
- * @returns
- */
 export default function TeacherViewQuizDetailForAssignment({
   quiz,
   index,
@@ -105,8 +80,6 @@ export default function TeacherViewQuizDetailForAssignment({
   quizGroups,
 }) {
   const classes = useStyles();
-  const token = useSelector((state) => state.auth.token);
-  const history = useHistory();
 
   //
   // const [result, setResult] = useState({ submited: false, isCorrect: false });
@@ -168,23 +141,6 @@ export default function TeacherViewQuizDetailForAssignment({
         Thêm vào đề
       </Button>
 
-      {/*<FormGroup row className={classes.answerWrapper}>
-        {quiz.quizChoiceAnswerList.map((answer) => (
-          <FormControlLabel
-            key={answer.choiceAnswerId}
-            className={classes.answer}
-            control={
-              <GreenCheckbox
-                checked={chkState[answer.choiceAnswerId]}
-                onChange={handleChange}
-                name={answer.choiceAnswerId}
-              />
-            }
-            label={parse(answer.choiceAnswerContent)}
-          />
-          ))}
-          </FormGroup>*/}
-
       {/* Dialogs */}
       <CustomizedDialogs
         open={open}
@@ -229,12 +185,7 @@ export default function TeacherViewQuizDetailForAssignment({
         actions={
           <>
             <TertiaryButton onClick={handleClose}>Huỷ</TertiaryButton>
-            <PrimaryButton
-              className={classes.assignBtn}
-              onClick={onSelectGroup}
-            >
-              Thêm vào đề
-            </PrimaryButton>
+            <PrimaryButton onClick={onSelectGroup}>Thêm vào đề</PrimaryButton>
           </>
         }
         style={{ content: classes.dialogContent }}

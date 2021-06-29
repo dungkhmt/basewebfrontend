@@ -18,6 +18,7 @@ import { useSelector } from "react-redux";
 import { useHistory } from "react-router-dom";
 import SimpleBar from "simplebar-react";
 import { request } from "../../../api";
+import { localization } from "../../../utils/MaterialTableUtils";
 import PrimaryButton from "../../button/PrimaryButton";
 import TertiaryButton from "../../button/TertiaryButton";
 import CustomizedDialogs from "../../dialog/CustomizedDialogs";
@@ -249,87 +250,72 @@ export default function QuizTestStudentList(props) {
 
   return (
     <>
-      <div style={{ width: "105%", marginLeft: "-2.5%" }}>
-        <MaterialTable
-          title=""
-          columns={cols}
-          data={studentList}
-          //icons={tableIcons}
-          localization={{
-            header: {
-              actions: "",
-            },
-            body: {
-              emptyDataSourceMessage: "Không có bản ghi nào để hiển thị",
-              filterRow: {
-                filterTooltip: "Lọc",
-              },
-            },
-          }}
-          options={{
-            search: true,
-            actionsColumnIndex: -1,
-            pageSize: 8,
-            tableLayout: "fixed",
-          }}
-          style={{
-            fontSize: 16,
-          }}
-          actions={[
-            {
-              icon: () => {
-                return (
-                  <Tooltip
-                    title="Loại thí sinh khỏi kì thi"
-                    aria-label="Loại thí sinh khỏi kì thi"
-                    placement="top"
+      <MaterialTable
+        title=""
+        columns={cols}
+        data={studentList}
+        //icons={tableIcons}
+        localization={localization}
+        options={{
+          search: true,
+          actionsColumnIndex: -1,
+          pageSize: 10,
+          tableLayout: "fixed",
+        }}
+        actions={[
+          {
+            icon: () => {
+              return (
+                <Tooltip
+                  title="Loại thí sinh khỏi kì thi"
+                  aria-label="Loại thí sinh khỏi kì thi"
+                  placement="top"
+                >
+                  <Button
+                    variant="contained"
+                    color="secondary"
+                    onClick={(e) => {
+                      handleRejectStudent(e);
+                    }}
                   >
-                    <Button
-                      variant="contained"
-                      color="secondary"
-                      onClick={(e) => {
-                        handleRejectStudent(e);
-                      }}
-                    >
-                      <Delete style={{ color: "white" }} fontSize="default" />
-                      &nbsp;&nbsp;&nbsp;Loại&nbsp;&nbsp;
-                    </Button>
-                  </Tooltip>
-                );
-              },
-              isFreeAction: true,
+                    <Delete style={{ color: "white" }} fontSize="default" />
+                    &nbsp;&nbsp;&nbsp;Loại&nbsp;&nbsp;
+                  </Button>
+                </Tooltip>
+              );
             },
-            {
-              icon: () => {
-                return (
-                  <Tooltip
-                    title="Chọn tất cả"
-                    aria-label="Chọn tất cả"
-                    placement="top"
-                  >
-                    <Checkbox
-                      checked={selectedAll}
-                      onChange={(e) => {
-                        let tempS = e.target.checked;
-                        setSelectedAll(e.target.checked);
+            isFreeAction: true,
+          },
+          {
+            icon: () => {
+              return (
+                <Tooltip
+                  title="Chọn tất cả"
+                  aria-label="Chọn tất cả"
+                  placement="top"
+                >
+                  <Checkbox
+                    checked={selectedAll}
+                    onChange={(e) => {
+                      let tempS = e.target.checked;
+                      setSelectedAll(e.target.checked);
 
-                        if (tempS) count = studentList.length;
-                        else count = 0;
+                      if (tempS) count = studentList.length;
+                      else count = 0;
 
-                        studentList.map((value, index) => {
-                          value.selected = tempS;
-                        });
-                      }}
-                    />
-                    {/* <div>&nbsp;&nbsp;&nbsp;Chọn tất cả&nbsp;&nbsp;</div> */}
-                  </Tooltip>
-                );
-              },
-              isFreeAction: true,
+                      studentList.map((value, index) => {
+                        value.selected = tempS;
+                      });
+                    }}
+                  />
+                  {/* <div>&nbsp;&nbsp;&nbsp;Chọn tất cả&nbsp;&nbsp;</div> */}
+                </Tooltip>
+              );
             },
-          ]}
-        />
-      </div>
+            isFreeAction: true,
+          },
+        ]}
+      />
 
       {/* Dialogs */}
       <CustomizedDialogs
@@ -376,7 +362,7 @@ export default function QuizTestStudentList(props) {
           <>
             <TertiaryButton onClick={handleClose}>Huỷ</TertiaryButton>
             <PrimaryButton
-              className={classes.assignBtn}
+              // className={classes.assignBtn}
               onClick={handleAssignGroup}
             >
               Áp dụng

@@ -5,8 +5,6 @@ import { Delete } from "@material-ui/icons";
 import AddCircleOutlineIcon from "@material-ui/icons/AddCircleOutline";
 import MaterialTable from "material-table";
 import React, { useEffect, useReducer, useState } from "react";
-import { useSelector } from "react-redux";
-import { useHistory } from "react-router-dom";
 import { request } from "../../../api";
 import QuizTestGroupQuestionList from "./QuizTestGroupQuestionList";
 
@@ -27,10 +25,8 @@ const headerProperties = {
 let count = 0;
 
 export default function QuizTestGroupList(props) {
-  const history = useHistory();
   // const classes = useStyles();
 
-  const token = useSelector((state) => state.auth.token);
   const [, forceUpdate] = useReducer((x) => x + 1, 0);
 
   const [selectedAll, setSelectedAll] = useState(false);
@@ -122,8 +118,8 @@ export default function QuizTestGroupList(props) {
   }
 
   const handleGenerateQuizGroup = (e) => {
-    //alert("Thêm đề");
-    let datasend = { quizTestId: testId, numberOfQuizTestGroups: 1 };
+    let data = { quizTestId: testId, numberOfQuizTestGroups: 1 };
+
     request(
       // token,
       // history,
@@ -134,9 +130,8 @@ export default function QuizTestGroupList(props) {
         alert("Thêm đề thành công");
       },
       { 401: () => {} },
-      datasend
+      data
     );
-    console.log(datasend);
   };
 
   const handleDeleteQuizGroup = (e) => {
@@ -156,6 +151,7 @@ export default function QuizTestGroupList(props) {
       let formData = new FormData();
       formData.append("testId", testId);
       formData.append("quizTestGroupList", acceptList.join(";"));
+
       request(
         // token,
         // history,
@@ -184,7 +180,7 @@ export default function QuizTestGroupList(props) {
   }, []);
 
   return (
-    <div style={{ width: "105%", marginLeft: "-2.5%" }}>
+    <>
       <MaterialTable
         title=""
         columns={columns}
@@ -204,12 +200,9 @@ export default function QuizTestGroupList(props) {
         options={{
           search: true,
           actionsColumnIndex: -1,
-          pageSize: 8,
+          pageSize: 10,
           tableLayout: "fixed",
           //selection: true
-        }}
-        style={{
-          fontSize: 16,
         }}
         actions={[
           {
@@ -220,7 +213,7 @@ export default function QuizTestGroupList(props) {
                   aria-label="Thêm đề mới"
                   placement="top"
                 >
-                  <ThemeProvider theme={theme} style={{ color: "white" }}>
+                  <ThemeProvider theme={theme}>
                     <Button
                       variant="contained"
                       color="primary"
@@ -295,6 +288,6 @@ export default function QuizTestGroupList(props) {
         ]}
       />
       <QuizTestGroupQuestionList testId={testId} />
-    </div>
+    </>
   );
 }

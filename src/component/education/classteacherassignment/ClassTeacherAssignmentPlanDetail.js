@@ -3,9 +3,7 @@ import { teal } from "@material-ui/core/colors";
 import { makeStyles, useTheme } from "@material-ui/core/styles";
 import { Skeleton } from "@material-ui/lab";
 import React, { useEffect, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
 import { useParams } from "react-router";
-import { useHistory } from "react-router-dom";
 import { request } from "../../../api";
 import PrimaryButton from "../../button/PrimaryButton";
 import { a11yProps, AntTab, AntTabs, TabPanel } from "../../tab";
@@ -20,13 +18,16 @@ import TeacherForAssignmentPlanList from "./TeacherForAssignmentPlanList";
 import TeacherList from "./TeacherList";
 
 const useStyles = makeStyles((theme) => ({
-  btn: { width: 180, marginLeft: theme.spacing(1) },
-  courseName: { fontWeight: theme.typography.fontWeightMedium },
-  editBtn: {
-    margin: theme.spacing(2),
-    width: 100,
-    fontWeight: theme.typography.fontWeightRegular,
+  btn: {
+    // width: 180,
+    marginLeft: theme.spacing(1),
   },
+  courseName: { fontWeight: theme.typography.fontWeightMedium },
+  // editBtn: {
+  //   margin: theme.spacing(2),
+  //   width: 100,
+  //   fontWeight: theme.typography.fontWeightRegular,
+  // },
   testName: { fontSize: "1.25rem", paddingTop: theme.spacing(1) },
   time: {
     paddingLeft: 6,
@@ -46,13 +47,10 @@ const tabsLabel = [
   "Lớp chưa được phân công",
 ];
 
-export default function ClassTeacherAssignmentPlanDetail(props) {
+export default function ClassTeacherAssignmentPlanDetail() {
   let param = useParams();
   let planId = param.planId;
-  const history = useHistory();
   const classes = useStyles();
-  const dispatch = useDispatch();
-  const token = useSelector((state) => state.auth.token);
 
   const [plan, setPlan] = useState([]);
 
@@ -64,12 +62,9 @@ export default function ClassTeacherAssignmentPlanDetail(props) {
     setSelectedTab(newValue);
   };
 
-  const handleChangeIndex = (index) => {
-    setSelectedTab(index);
-  };
-
   async function handleAssignTeacher2Class() {
-    let datasend = { planId: planId };
+    let data = { planId: planId };
+    // console.log(data);
 
     request(
       // token,
@@ -80,28 +75,24 @@ export default function ClassTeacherAssignmentPlanDetail(props) {
         alert("assign teacher to class " + res.data);
       },
       { 401: () => {} },
-      datasend
+      data
     );
-    console.log(datasend);
-  }
-
-  async function getClassTeacherAssignmentPlanDetail() {
-    let datasend = { planId: planId };
-
-    request(
-      // token,
-      // history,
-      "get",
-      "get-class-teacher-assignment-plan/detail/" + planId,
-      (res) => {
-        setPlan(res.data);
-      },
-      { 401: () => {} }
-    );
-    // console.log(datasend);
   }
 
   useEffect(() => {
+    function getClassTeacherAssignmentPlanDetail() {
+      request(
+        // token,
+        // history,
+        "get",
+        "get-class-teacher-assignment-plan/detail/" + planId,
+        (res) => {
+          setPlan(res.data);
+        },
+        { 401: () => {} }
+      );
+    }
+
     getClassTeacherAssignmentPlanDetail();
   }, []);
 
@@ -111,7 +102,7 @@ export default function ClassTeacherAssignmentPlanDetail(props) {
 
       <Box display="flex" justifyContent="flex-end">
         <PrimaryButton
-          className={classes.btn}
+          // className={classes.btn}
           onClick={(e) => {
             handleAssignTeacher2Class(e);
           }}
@@ -172,9 +163,7 @@ export default function ClassTeacherAssignmentPlanDetail(props) {
         <Skeleton width={200} variant="rect" animation="wave" />
       </Typography>
 
-      {/*  */}
       <Box display="flex" alignItems="center" pt={2}>
-        {/*  */}
         <Skeleton width={24} height={24} variant="circle" animation="wave" />
         <Typography component="span" className={classes.time}>
           <Skeleton width={80} variant="rect" animation="wave" />

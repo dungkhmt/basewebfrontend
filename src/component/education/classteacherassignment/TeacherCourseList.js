@@ -1,13 +1,12 @@
-import { Button, Card, Checkbox, Tooltip } from "@material-ui/core/";
-import React, { useEffect, useReducer, useState } from "react";
-import MaterialTable, { MTableToolbar } from "material-table";
-import { request } from "../../../api";
-import UploadExcelTeacherCourseModel from "./UploadExcelTeacherCourseModel";
-import { authPostMultiPart } from "../../../api";
-import { useDispatch, useSelector } from "react-redux";
-import CheckCircleOutlineIcon from "@material-ui/icons/CheckCircleOutline";
-import { createMuiTheme, ThemeProvider } from "@material-ui/core/styles";
+import { Button, Checkbox, Tooltip } from "@material-ui/core/";
 import { green } from "@material-ui/core/colors";
+import { createMuiTheme, ThemeProvider } from "@material-ui/core/styles";
+import CheckCircleOutlineIcon from "@material-ui/icons/CheckCircleOutline";
+import MaterialTable, { MTableToolbar } from "material-table";
+import React, { useEffect, useReducer, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { authPostMultiPart, request } from "../../../api";
+import UploadExcelTeacherCourseModel from "./UploadExcelTeacherCourseModel";
 
 const headerProperties = {
   headerStyle: {
@@ -41,7 +40,7 @@ function TeacherCourseList(props) {
     {
       field: "selected",
       title: "Chọn",
-      
+
       width: "10%",
       type: "numeric",
       render: (rowData) => (
@@ -63,7 +62,6 @@ function TeacherCourseList(props) {
         />
       ),
     },
-
   ];
 
   function uploadExcel(selectedFile, choice) {
@@ -76,7 +74,7 @@ function TeacherCourseList(props) {
     console.log("upload file " + selectedFile.name);
     let body = {
       planId: planId,
-      choice: choice      
+      choice: choice,
     };
     let formData = new FormData();
     formData.append("inputJson", JSON.stringify(body));
@@ -86,7 +84,7 @@ function TeacherCourseList(props) {
       .then((res) => {
         setIsProcessing(false);
         console.log("result submit = ", res);
-        
+
         //var f = document.getElementById("selected-upload-file");
         //f.value = null;
         //setSelectedFile(null);
@@ -113,12 +111,12 @@ function TeacherCourseList(props) {
       (res) => {
         let temp = [];
         res.data.map((elm, index) => {
-            temp.push({
-              teacherId: elm.teacherId,
-              courseId: elm.courseId,
-              priority: elm.priority,
-              selected: false,
-            });
+          temp.push({
+            teacherId: elm.teacherId,
+            courseId: elm.courseId,
+            priority: elm.priority,
+            selected: false,
+          });
         });
         setTeacherList(temp);
 
@@ -139,7 +137,13 @@ function TeacherCourseList(props) {
     let acceptList = [];
     teacherList.map((v, i) => {
       if (v.selected == true) {
-        acceptList.push(JSON.stringify({teacherId:v.teacherId,courseId:v.courseId, priority: v.priority}));
+        acceptList.push(
+          JSON.stringify({
+            teacherId: v.teacherId,
+            courseId: v.courseId,
+            priority: v.priority,
+          })
+        );
       }
     });
 
@@ -173,8 +177,9 @@ function TeacherCourseList(props) {
   useEffect(() => {
     getTeacherForAssignmentList();
   }, []);
+
   return (
-    <Card>
+    <>
       <MaterialTable
         title={"Danh sách giáo viên"}
         columns={columns}
@@ -183,13 +188,10 @@ function TeacherCourseList(props) {
           Toolbar: (props) => (
             <div style={{ position: "relative" }}>
               <MTableToolbar {...props} />
-              <div
-                style={{ position: "absolute", top: "16px", right: "350px" }}
-              >
-                <Button onClick={handleModalOpen} color="primary">
-                  Upload excel
-                </Button>
-              </div>
+
+              <Button onClick={handleModalOpen} color="primary">
+                Upload excel
+              </Button>
             </div>
           ),
         }}
@@ -254,12 +256,13 @@ function TeacherCourseList(props) {
           },
         ]}
       />
+
       <UploadExcelTeacherCourseModel
         open={open}
         onClose={handleModalClose}
         onUpload={customUploadHandle}
       />
-    </Card>
+    </>
   );
 }
 

@@ -2,7 +2,6 @@ import { Box, Typography } from "@material-ui/core/";
 import { teal } from "@material-ui/core/colors";
 import { makeStyles, useTheme } from "@material-ui/core/styles";
 import { Skeleton } from "@material-ui/lab";
-import PropTypes from "prop-types";
 import React, { useEffect, useState } from "react";
 import { FcCalendar, FcClock } from "react-icons/fc";
 import { useDispatch, useSelector } from "react-redux";
@@ -12,8 +11,7 @@ import { authGet, request } from "../../../api";
 import { addZeroBefore } from "../../../utils/dateutils";
 import PrimaryButton from "../../button/PrimaryButton";
 import TertiaryButton from "../../button/TertiaryButton";
-import { AntTab } from "../../tab/AntTab";
-import { AntTabs } from "../../tab/AntTabs";
+import { a11yProps, AntTab, AntTabs, TabPanel } from "../../tab";
 import QuizListForAssignment from "./QuizListForAssignment";
 import QuizTestGroupList from "./QuizTestGroupList";
 import QuizTestGroupParticipants from "./QuizTestGroupParticipants";
@@ -21,40 +19,10 @@ import QuizTestJoinRequestList from "./QuizTestJoinRequestList";
 import QuizTestStudentListResult from "./QuizTestResultList";
 import QuizTestStudentList from "./QuizTestStudentList";
 
-const tempCourseInfo = {
-  /* 'id': 'IT3011',
-    'courseName': 'Cấu trúc dữ liệu và giải thuật',
-    'credit': '3' */
-  id: "0",
-  courseName: "0",
-  credit: "0",
-};
-
-/* const tempStudentList = [
-    {
-        'MSSV': '20180000',
-        'name': 'Nguyễn Văn A',
-        'emal': 'abcAAA@gmail.com'
-    },
-    {
-        'MSSV': '20180001',
-        'name': 'Nguyễn Văn B',
-        'emal': 'abcBBB@gmail.com'
-    },
-    {
-        'MSSV': '20180002',
-        'name': 'Nguyễn Văn C',
-        'emal': 'abcCCC@gmail.com'
-    },
-    {
-        'MSSV': '20180003',
-        'name': 'Nguyễn Văn D',
-        'emal': 'abcDDD@gmail.com'
-    },
-] */
-
 const useStyles = makeStyles((theme) => ({
-  btn: { width: 180, marginLeft: theme.spacing(1) },
+  btn: {
+    marginLeft: theme.spacing(1),
+  },
   courseName: { fontWeight: theme.typography.fontWeightMedium },
   editBtn: {
     marginLeft: theme.spacing(2),
@@ -68,39 +36,6 @@ const useStyles = makeStyles((theme) => ({
     fontSize: "1rem",
   },
 }));
-
-function a11yProps(index) {
-  return {
-    id: `full-width-tab-${index}`,
-    "aria-controls": `full-width-tabpanel-${index}`,
-  };
-}
-
-function TabPanel(props) {
-  const { children, value, index, ...other } = props;
-
-  return (
-    <div
-      role="tabpanel"
-      hidden={value !== index}
-      id={`full-width-tabpanel-${index}`}
-      aria-labelledby={`full-width-tab-${index}`}
-      {...other}
-    >
-      {value === index && (
-        <Box p={3}>
-          <Typography>{children}</Typography>
-        </Box>
-      )}
-    </div>
-  );
-}
-
-TabPanel.propTypes = {
-  children: PropTypes.node,
-  index: PropTypes.any.isRequired,
-  value: PropTypes.any.isRequired,
-};
 
 const tabsLabel = [
   "Thí sinh",
@@ -122,7 +57,7 @@ const weekDay = [
   "Thứ bảy",
 ];
 
-export default function QuizTestDetail(props) {
+export default function QuizTestDetail() {
   let param = useParams();
   let testId = param.id;
   const history = useHistory();
@@ -141,16 +76,13 @@ export default function QuizTestDetail(props) {
     setSelectedTab(newValue);
   };
 
-  const handleChangeIndex = (index) => {
-    setSelectedTab(index);
-  };
-
   // function handleEditQuizTes() {
   //   history.push("/edu/class/quiztest/edit/" + testId);
   // }
 
   async function handleAssignStudents2QuizGroup() {
-    let datasend = { quizTestId: testId };
+    let data = { quizTestId: testId };
+
     request(
       // token,
       // history,
@@ -161,12 +93,15 @@ export default function QuizTestDetail(props) {
         alert("assign students to groups " + res.data);
       },
       { 401: () => {} },
-      datasend
+      data
     );
-    console.log(datasend);
+
+    // console.log(datasend);
   }
+
   async function handleAssignQuestions2QuizGroup() {
-    let datasend = { quizTestId: testId, numberQuestions: 10 };
+    let data = { quizTestId: testId, numberQuestions: 10 };
+
     request(
       // token,
       // history,
@@ -177,9 +112,10 @@ export default function QuizTestDetail(props) {
         alert("assign questions to groups " + res.data);
       },
       { 401: () => {} },
-      datasend
+      data
     );
-    console.log(datasend);
+
+    // console.log(datasend);
   }
 
   async function getQuizTestDetail() {
@@ -225,10 +161,7 @@ export default function QuizTestDetail(props) {
         }); */
 
     let re2 = await authGet(dispatch, token, `/edu/class/${res.classId}`);
-    tempCourseInfo.id = re2.courseId;
-    tempCourseInfo.courseName = re2.name;
-
-    setCourseInfo(tempCourseInfo);
+    setCourseInfo({ id: re2.courseId, courseName: re2.name });
   }
 
   useEffect(() => {
@@ -246,16 +179,13 @@ export default function QuizTestDetail(props) {
         className={classes.testName}
       >{`${testInfo.testName}`}</Typography>
 
-      {/*  */}
       <Box display="flex" alignItems="center" pt={2}>
-        {/*  */}
         <FcClock size={24} />
         <Typography
           component="span"
           className={classes.time}
         >{`${testInfo.duration} phút`}</Typography>
 
-        {/*  */}
         <FcCalendar size={24} style={{ marginLeft: 40 }} />
         <Typography
           component="span"
@@ -303,7 +233,7 @@ export default function QuizTestDetail(props) {
         scrollButtons="auto"
       >
         {tabsLabel.map((label, idx) => (
-          <AntTab label={label} {...a11yProps(idx)} />
+          <AntTab key={label} label={label} {...a11yProps(idx)} />
         ))}
       </AntTabs>
 

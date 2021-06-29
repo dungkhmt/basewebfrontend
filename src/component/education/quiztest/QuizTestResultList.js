@@ -1,10 +1,9 @@
 //import IconButton from '@material-ui/core/IconButton';
 import MaterialTable from "material-table";
-import React, { useEffect, useReducer, useState } from "react";
+import React, { useEffect, useState } from "react";
 import ReactExport from "react-data-export";
-import { useSelector } from "react-redux";
-import { useHistory } from "react-router-dom";
 import { request } from "../../../api";
+import { localization } from "../../../utils/MaterialTableUtils";
 import { exportResultListPdf } from "./TeacherQuizResultExportPDF.js";
 import ViewHistoryLogQuizGroupQuestionParticipationExecutionChoice from "./ViewHistoryLogQuizGroupQuestionParticipationExecutionChoice";
 
@@ -25,17 +24,15 @@ const headerProperties = {
   },
 };
 
-// let count = 0;
-
 export default function QuizTestStudentListResult(props) {
-  const history = useHistory();
   // const classes = useStyles();
 
-  const token = useSelector((state) => state.auth.token);
-  const [, forceUpdate] = useReducer((x) => x + 1, 0);
+  //
   const [studentListResult, setStudentListResult] = useState([]);
   const [resultExportPDFData, setResultExportPDFData] = useState([]);
   const [fetchedResult, setfetchedResults] = useState(false);
+
+  //
   let testId = props.testId;
   let isGeneral = props.isGeneral;
 
@@ -52,6 +49,7 @@ export default function QuizTestStudentListResult(props) {
       },
     },
   };
+
   const TableCellStyle = {
     style: {
       font: { sz: "14" },
@@ -133,6 +131,7 @@ export default function QuizTestStudentListResult(props) {
       ...headerProperties,
     },
   ];
+
   const generalColumns = [
     {
       field: "fullName",
@@ -154,13 +153,15 @@ export default function QuizTestStudentListResult(props) {
 
   async function getStudentListResultGeneral() {
     let input = { testId: testId };
+
     request(
       // token,
       // history,
       "Post",
       "/get-quiz-test-participation-execution-result",
       (res) => {
-        console.log(res);
+        // console.log(res);
+
         let dataPdf = [];
         let objectPdf = {};
         res.data.map((elm, index) => {
@@ -185,11 +186,14 @@ export default function QuizTestStudentListResult(props) {
           );
         });
 
-        console.log(objectPdf);
+        // console.log(objectPdf);
+
         Object.keys(objectPdf).map((ele, ind) => {
           dataPdf.push(objectPdf[ele]);
         });
-        console.log(dataPdf);
+
+        // console.log(dataPdf);
+
         dataPdf.sort(function (firstEl, secondEl) {
           if (firstEl.fullName === null || secondEl.fullName === null)
             return -1;
@@ -206,7 +210,8 @@ export default function QuizTestStudentListResult(props) {
           return 0;
         });
         //after sort
-        console.log(dataPdf);
+        // console.log(dataPdf);
+
         setResultExportPDFData(dataPdf);
 
         let temp = [];
@@ -227,7 +232,8 @@ export default function QuizTestStudentListResult(props) {
           temp.push(objectResult[ele]);
         });
 
-        console.log(temp);
+        // console.log(temp);
+
         setStudentListResult(temp);
         setfetchedResults(true);
       },
@@ -238,6 +244,7 @@ export default function QuizTestStudentListResult(props) {
 
   async function getStudentListResult() {
     let input = { testId: testId };
+
     request(
       // token,
       // history,
@@ -272,27 +279,17 @@ export default function QuizTestStudentListResult(props) {
   }, []);
 
   return (
-    <div style={{ width: "105%", marginLeft: "-2.5%" }}>
+    <>
       <MaterialTable
         title=""
         columns={isGeneral ? generalColumns : columns}
         data={studentListResult}
         //icons={tableIcons}
-        localization={{
-          header: {
-            actions: "",
-          },
-          body: {
-            emptyDataSourceMessage: "Không có bản ghi nào để hiển thị",
-            filterRow: {
-              filterTooltip: "Lọc",
-            },
-          },
-        }}
+        localization={localization}
         options={{
           search: true,
           actionsColumnIndex: 2,
-          pageSize: 8,
+          pageSize: 10,
           tableLayout: "fixed",
           //selection: true
         }}
@@ -300,40 +297,36 @@ export default function QuizTestStudentListResult(props) {
           studentListResult.length === 0 || !isGeneral
             ? null
             : {
-                icon: () => {
-                  return (
-                    <ExcelFile
-                      filename={"Danh sách kết quả " + testId}
-                      element={
-                        <img
-                          alt="Xuất Excel"
-                          src="/static/images/icons/excel_icon.png"
-                          style={{ width: "35px", height: "35px" }}
-                        ></img>
-                      }
-                    >
-                      <ExcelSheet
-                        dataSet={DataSet}
-                        name={"Danh sách kết quả " + testId}
+                icon: () => (
+                  <ExcelFile
+                    filename={"Danh sách kết quả " + testId}
+                    element={
+                      <img
+                        alt="Xuất Excel"
+                        src="/static/images/icons/excel_icon.png"
+                        style={{ width: "35px", height: "35px" }}
                       />
-                    </ExcelFile>
-                  );
-                },
+                    }
+                  >
+                    <ExcelSheet
+                      dataSet={DataSet}
+                      name={"Danh sách kết quả " + testId}
+                    />
+                  </ExcelFile>
+                ),
                 tooltip: "Xuất Excel",
                 isFreeAction: true,
               },
           studentListResult.length === 0 || !isGeneral
             ? null
             : {
-                icon: () => {
-                  return (
-                    <img
-                      alt="Xuất PDF"
-                      src="/static/images/icons/pdf_icon.png"
-                      style={{ width: "35px", height: "35px" }}
-                    ></img>
-                  );
-                },
+                icon: () => (
+                  <img
+                    alt="Xuất PDF"
+                    src="/static/images/icons/pdf_icon.png"
+                    style={{ width: "35px", height: "35px" }}
+                  />
+                ),
                 tooltip: "Xuất PDF",
                 isFreeAction: true,
                 onClick: () => {
@@ -345,13 +338,10 @@ export default function QuizTestStudentListResult(props) {
                 },
               },
         ]}
-        style={{
-          fontSize: 16,
-        }}
       />
       <ViewHistoryLogQuizGroupQuestionParticipationExecutionChoice
         testId={testId}
       />
-    </div>
+    </>
   );
 }

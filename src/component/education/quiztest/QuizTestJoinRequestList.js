@@ -4,8 +4,6 @@ import { createMuiTheme, ThemeProvider } from "@material-ui/core/styles";
 import CheckCircleOutlineIcon from "@material-ui/icons/CheckCircleOutline";
 import MaterialTable from "material-table";
 import React, { useEffect, useReducer, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { useHistory } from "react-router-dom";
 import { request } from "../../../api";
 
 // const useStyles = makeStyles({
@@ -31,10 +29,8 @@ const headerProperties = {
 let count = 0;
 
 export default function QuizTestJoinRequest(props) {
-  const history = useHistory();
   // const classes = useStyles();
-  const dispatch = useDispatch();
-  const token = useSelector((state) => state.auth.token);
+
   const [, forceUpdate] = useReducer((x) => x + 1, 0);
 
   const [selectedAll, setSelectedAll] = useState(false);
@@ -123,6 +119,7 @@ export default function QuizTestJoinRequest(props) {
       let formData = new FormData();
       formData.append("testId", testId);
       formData.append("studentList", acceptList.join(";"));
+
       request(
         // token,
         // history,
@@ -151,93 +148,88 @@ export default function QuizTestJoinRequest(props) {
   }, []);
 
   return (
-    <div style={{ width: "105%", marginLeft: "-2.5%" }}>
-      <MaterialTable
-        title=""
-        columns={columns}
-        data={studentList}
-        //icons={tableIcons}
-        localization={{
-          header: {
-            actions: "",
+    <MaterialTable
+      title=""
+      columns={columns}
+      data={studentList}
+      //icons={tableIcons}
+      localization={{
+        header: {
+          actions: "",
+        },
+        body: {
+          emptyDataSourceMessage: "Không có bản ghi nào để hiển thị",
+          filterRow: {
+            filterTooltip: "Lọc",
           },
-          body: {
-            emptyDataSourceMessage: "Không có bản ghi nào để hiển thị",
-            filterRow: {
-              filterTooltip: "Lọc",
-            },
-          },
-        }}
-        options={{
-          search: true,
-          actionsColumnIndex: -1,
-          pageSize: 8,
-          tableLayout: "fixed",
-          //selection: true
-        }}
-        style={{
-          fontSize: 16,
-        }}
-        actions={[
-          {
-            icon: () => {
-              return (
-                <Tooltip
-                  title="Loại thí sinh khỏi kì thi"
-                  aria-label="Loại thí sinh khỏi kì thi"
-                  placement="top"
-                >
-                  <ThemeProvider theme={theme} style={{ color: "white" }}>
-                    <Button
-                      variant="contained"
-                      color="primary"
-                      onClick={(e) => {
-                        handleAcceptStudent(e);
-                      }}
-                      style={{ color: "white" }}
-                    >
-                      <CheckCircleOutlineIcon
-                        style={{ color: "white" }}
-                        fontSize="default"
-                      />
-                      &nbsp;&nbsp;&nbsp;Phê duyệt&nbsp;&nbsp;
-                    </Button>
-                  </ThemeProvider>
-                </Tooltip>
-              );
-            },
-            isFreeAction: true,
-          },
-          {
-            icon: () => {
-              return (
-                <Tooltip
-                  title="Chọn tất cả"
-                  aria-label="Chọn tất cả"
-                  placement="top"
-                >
-                  <Checkbox
-                    checked={selectedAll}
-                    onChange={(e) => {
-                      let tempS = e.target.checked;
-                      setSelectedAll(e.target.checked);
-
-                      if (tempS) count = studentList.length;
-                      else count = 0;
-
-                      studentList.map((value, index) => {
-                        value.selected = tempS;
-                      });
+        },
+      }}
+      options={{
+        search: true,
+        actionsColumnIndex: -1,
+        pageSize: 10,
+        tableLayout: "fixed",
+        //selection: true
+      }}
+      actions={[
+        {
+          icon: () => {
+            return (
+              <Tooltip
+                title="Loại thí sinh khỏi kì thi"
+                aria-label="Loại thí sinh khỏi kì thi"
+                placement="top"
+              >
+                <ThemeProvider theme={theme} style={{ color: "white" }}>
+                  <Button
+                    variant="contained"
+                    color="primary"
+                    onClick={(e) => {
+                      handleAcceptStudent(e);
                     }}
-                  />
-                  {/* <div>&nbsp;&nbsp;&nbsp;Chọn tất cả&nbsp;&nbsp;</div> */}
-                </Tooltip>
-              );
-            },
-            isFreeAction: true,
+                    style={{ color: "white" }}
+                  >
+                    <CheckCircleOutlineIcon
+                      style={{ color: "white" }}
+                      fontSize="default"
+                    />
+                    &nbsp;&nbsp;&nbsp;Phê duyệt&nbsp;&nbsp;
+                  </Button>
+                </ThemeProvider>
+              </Tooltip>
+            );
           },
-        ]}
-      />
-    </div>
+          isFreeAction: true,
+        },
+        {
+          icon: () => {
+            return (
+              <Tooltip
+                title="Chọn tất cả"
+                aria-label="Chọn tất cả"
+                placement="top"
+              >
+                <Checkbox
+                  checked={selectedAll}
+                  onChange={(e) => {
+                    let tempS = e.target.checked;
+                    setSelectedAll(e.target.checked);
+
+                    if (tempS) count = studentList.length;
+                    else count = 0;
+
+                    studentList.map((value, index) => {
+                      value.selected = tempS;
+                    });
+                  }}
+                />
+                {/* <div>&nbsp;&nbsp;&nbsp;Chọn tất cả&nbsp;&nbsp;</div> */}
+              </Tooltip>
+            );
+          },
+          isFreeAction: true,
+        },
+      ]}
+    />
   );
 }
