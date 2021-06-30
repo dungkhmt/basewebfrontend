@@ -11,6 +11,7 @@ import { useSelector } from "react-redux";
 import { ReactComponent as Logo } from "../assets/icons/logo.svg";
 import bgImage from "../assets/img/sidebar-2.jpg";
 import AccountButton from "./account/AccountButton";
+import NotificationButton from "./notification/NotificationButton";
 import SideBar, { drawerWidth, miniDrawerWidth } from "./sidebar/v1/SideBar";
 
 const useStyles = makeStyles((theme) => ({
@@ -153,12 +154,12 @@ function Layout(props) {
           {/* use this div tag to push the icons to the right */}
           <div className={classes.grow}></div>
           <div className={classes.sectionDesktop}>
-            {/* <IconButton aria-label="show 17 new notifications" color="inherit">
-              <Badge badgeContent={17} color="secondary">
-                <NotificationsIcon />
-              </Badge>
-            </IconButton> */}
-            {isAuthenticated && <AccountButton />}
+            {isAuthenticated && (
+              <>
+                <NotificationButton />
+                <AccountButton />
+              </>
+            )}
           </div>
         </Toolbar>
       </AppBar>
