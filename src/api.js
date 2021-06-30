@@ -192,6 +192,8 @@ const axiosInstance = axios.create({
 // Alter defaults after instance has been created
 axiosInstance.defaults.headers.common["Content-Type"] = "application/json";
 
+const wifiOffNotifyToastId = "cannot connect to server";
+
 /**
  * url, method, and data properties don't need to be specified in config.
  * @param {*} method
@@ -273,7 +275,7 @@ export async function request(
       }
 
       // , "Không thể kết nối tới máy chủ."
-      wifiOffNotify("cannot connect to server");
+      wifiOffNotify(wifiOffNotifyToastId);
     } else {
       // Something happened in setting up the request that triggered an Error.
       console.log(
