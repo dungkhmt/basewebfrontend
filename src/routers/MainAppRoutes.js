@@ -1,11 +1,12 @@
 import { LinearProgress } from "@material-ui/core";
-import React, { lazy, Suspense } from "react";
-import { Route, Switch } from "react-router-dom";
+import React, { lazy, Suspense, useEffect } from "react";
+import { Route, Switch, useLocation } from "react-router-dom";
 import PrivateRoute from "../common/PrivateRoute";
 import { Home } from "../component";
 import error from "../component/common/errornotfound";
 import { Layout } from "../layout";
 import { drawerWidth } from "../layout/sidebar/v1/SideBar";
+import { useNotificationState } from "../state/NotificationState";
 import NotFound from "../views/errors/NotFound";
 
 const DepotContainerFuncRoute = lazy(() => import("./DepotContainerFuncRoute"));
@@ -57,7 +58,13 @@ const BacklogRoute = lazy(() => import("./BacklogRoute"));
 const ScheduleRoute = lazy(() => import("./ScheduleRoute"));
 
 function MainAppRoute(props) {
-  // const location = useLocation();
+  const location = useLocation();
+  const notificationState = useNotificationState();
+
+  useEffect(() => {
+    notificationState.open.set(false);
+  }, [location.pathname]);
+
   // const dispatch = useDispatch();
 
   // /**
