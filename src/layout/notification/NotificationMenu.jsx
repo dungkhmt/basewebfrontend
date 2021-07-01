@@ -28,12 +28,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function NotificationMenu({
-  open,
-  setOpen,
-  notifications,
-  anchorRef,
-}) {
+export default function NotificationMenu({ open, notifications, anchorRef }) {
   const classes = useStyles();
 
   const handleClose = (event) => {
@@ -41,19 +36,19 @@ export default function NotificationMenu({
       return;
     }
 
-    setOpen(false);
+    open.set(false);
   };
 
   function handleListKeyDown(event) {
     if (event.key === "Tab") {
       event.preventDefault();
-      setOpen(false);
+      open.set(false);
     }
   }
 
   return (
     <Popper
-      open={open}
+      open={open.get()}
       anchorEl={anchorRef.current}
       role={undefined}
       transition
@@ -70,7 +65,7 @@ export default function NotificationMenu({
           <Paper elevation={0} className={classes.paper}>
             <ClickAwayListener onClickAway={handleClose}>
               <MenuList
-                autoFocusItem={open}
+                autoFocusItem={open.get()}
                 id="menu-list-grow"
                 onKeyDown={handleListKeyDown}
                 style={{ padding: 0 }}
@@ -99,11 +94,12 @@ export default function NotificationMenu({
                     {notifications.map((notification) => (
                       <Notification
                         key={notification.id}
+                        id={notification.id}
                         url={notification.url}
                         content={notification.content}
                         time={notification.time}
                         read={notification.read}
-                        onClick={handleClose}
+                        handleClose={handleClose}
                         avatar={
                           <Avatar
                             alt="notification"

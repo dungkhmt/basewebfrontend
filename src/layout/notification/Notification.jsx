@@ -2,6 +2,8 @@ import { ListItemAvatar, Typography } from "@material-ui/core";
 import { grey } from "@material-ui/core/colors";
 import { makeStyles } from "@material-ui/core/styles";
 import React from "react";
+import { useLocation } from "react-router";
+import { request } from "../../api";
 import ListItemLink from "../sidebar/v1/ListItemLink";
 import NotificationReadIcon from "./NotificationReadIcon";
 
@@ -84,7 +86,19 @@ const formatTime = (createdTime) => {
 
 export default function Notification(props) {
   const classes = useStyles(props);
-  const { url, avatar, content, time, read, onClick } = props;
+  const location = useLocation();
+  const { id, url, avatar, content, time, read, handleClose } = props;
+
+  //
+  const onClick = (e) => {
+    if (location.pathname === url) {
+      handleClose(e);
+    }
+
+    request("patch", `/notification/${id}/mark-as-read`, undefined, {
+      401: () => {},
+    });
+  };
 
   return (
     <ListItemLink

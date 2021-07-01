@@ -6,6 +6,7 @@ import clsx from "clsx";
 import randomColor from "randomcolor";
 import React, { useState } from "react";
 import { request } from "../../api";
+import { useNotificationState } from "../../state/NotificationState";
 import NotificationMenu from "./NotificationMenu";
 
 const useStyles = makeStyles((theme) => ({
@@ -26,10 +27,11 @@ export default function NotificationButton() {
   const classes = useStyles();
 
   //
-  const [open, setOpen] = React.useState(false);
+  const notificationState = useNotificationState();
+  const open = notificationState.open;
 
   // return focus to the button when we transitioned from !open -> open
-  const prevOpen = React.useRef(open);
+  const prevOpen = React.useRef(open.get());
   const anchorRef = React.useRef(null);
 
   //
@@ -38,7 +40,7 @@ export default function NotificationButton() {
 
   //
   const handleToggle = () => {
-    setOpen((prevOpen) => !prevOpen);
+    open.set((prevOpen) => !prevOpen);
   };
 
   const fetchNotification = () => {
@@ -62,29 +64,28 @@ export default function NotificationButton() {
         }));
 
         setNotifications(notis);
-        setBadgeContent(data.numUnread);
+        setBadgeContent(data.numUnRead);
       },
       { 401: () => {} }
     );
   };
 
   React.useEffect(() => {
-    //
-    if (prevOpen.current === true && open === false) {
+    if (prevOpen.current === true && open.get() === false) {
       anchorRef.current.focus();
     }
 
-    prevOpen.current = open;
+    prevOpen.current = open.get();
 
-    if (open === false) fetchNotification();
-  }, [open]);
+    if (open.get() === false) fetchNotification();
+  }, [open.get()]);
 
   return (
     <>
       <IconButton
         disableRipple
         ref={anchorRef}
-        aria-controls={open ? "menu-list-grow" : undefined}
+        aria-controls={open.get() ? "menu-list-grow" : undefined}
         aria-haspopup="true"
         onClick={handleToggle}
         color="inherit"
@@ -93,9 +94,9 @@ export default function NotificationButton() {
       >
         <Avatar
           alt="notification button"
-          className={clsx(classes.avatar, { [classes.avatarOpen]: open })}
+          className={clsx(classes.avatar, { [classes.avatarOpen]: open.get() })}
         >
-          {open ? (
+          {open.get() ? (
             <NotificationsIcon color="primary" />
           ) : (
             <Badge
@@ -110,7 +111,6 @@ export default function NotificationButton() {
       </IconButton>
       <NotificationMenu
         open={open}
-        setOpen={setOpen}
         notifications={notifications}
         anchorRef={anchorRef}
       />
