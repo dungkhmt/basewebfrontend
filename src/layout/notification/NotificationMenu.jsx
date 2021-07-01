@@ -1,6 +1,5 @@
 import { Avatar, List, Typography } from "@material-ui/core";
 import ClickAwayListener from "@material-ui/core/ClickAwayListener";
-import { grey } from "@material-ui/core/colors";
 import Grow from "@material-ui/core/Grow";
 import MenuList from "@material-ui/core/MenuList";
 import Paper from "@material-ui/core/Paper";
@@ -12,9 +11,6 @@ import "simplebar/dist/simplebar.min.css";
 import Notification from "./Notification";
 
 const useStyles = makeStyles((theme) => ({
-  root: {
-    display: "flex",
-  },
   paper: {
     overflowY: "hidden",
     maxHeight: `calc(100vh - 80px)`,
@@ -26,37 +22,9 @@ const useStyles = makeStyles((theme) => ({
   notification: {
     fontWeight: theme.typography.fontWeightMedium,
   },
-  link: {
-    padding: "0px 8px",
-  },
-  linkContent: {
-    padding: "0px 8px",
-    borderRadius: 8,
-    "&:hover": {
-      backgroundColor: grey[200],
-    },
-  },
-  itemAvatar: {
-    marginRight: 12,
-    marginBottom: 8,
-    marginTop: 8,
-  },
   avatar: {
     width: 56,
     height: 56,
-  },
-  itemText: {
-    margin: 0,
-  },
-  time: {
-    fontSize: "0.8125rem",
-  },
-  notificationMessage: {
-    overflow: "hidden",
-    textOverflow: "ellipsis",
-    display: "-webkit-box",
-    "-webkit-line-clamp": 3 /* number of lines to show */,
-    "-webkit-box-orient": "vertical",
   },
 }));
 
@@ -138,15 +106,17 @@ export default function NotificationMenu({
                         onClick={handleClose}
                         avatar={
                           <Avatar
-                            alt="Notification"
+                            alt="notification"
                             className={classes.avatar}
                             style={{
                               backgroundColor: notification.avatarColor,
                             }}
                           >
-                            {notification.fromUser
-                              ?.substring(0, 1)
-                              .toLocaleUpperCase()}
+                            {notification.avatar
+                              ? notification.avatar
+                                  .substring(0, 2)
+                                  .toLocaleUpperCase()
+                              : "N"}
                           </Avatar>
                         }
                       />

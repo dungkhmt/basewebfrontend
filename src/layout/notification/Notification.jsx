@@ -102,7 +102,7 @@ export default function Notification(props) {
         {/* {icon ? <ListItemIcon>{icon}</ListItemIcon> : null} */}
         <div
           style={{
-            padding: "10px 0px",
+            padding: "6px 0px 10px",
             position: "relative",
             display: "flex",
           }}
