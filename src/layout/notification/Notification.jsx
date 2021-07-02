@@ -1,6 +1,7 @@
-import { ListItemAvatar, Typography } from "@material-ui/core";
+import { Box, ListItemAvatar, Typography } from "@material-ui/core";
 import { grey } from "@material-ui/core/colors";
 import { makeStyles } from "@material-ui/core/styles";
+import { Skeleton } from "@material-ui/lab";
 import React from "react";
 import { useLocation } from "react-router";
 import { request } from "../../api";
@@ -84,6 +85,15 @@ const formatTime = (createdTime) => {
   }
 };
 
+function getRandomIntInclusive(min, max) {
+  min = Math.ceil(min);
+  max = Math.floor(max);
+  return Math.floor(Math.random() * (max - min + 1) + min); //The maximum is inclusive and the minimum is inclusive
+}
+
+const STATUS_NOTIFICATION_CREATED = "NOTIFICATION_CREATED";
+const STATUS_NOTIFICATION_READ = "NOTIFICATION_READ";
+
 export default function Notification(props) {
   const classes = useStyles(props);
   const location = useLocation();
@@ -95,12 +105,18 @@ export default function Notification(props) {
       handleClose(e);
     }
 
-    request("patch", `/notification/${id}/mark-as-read`, undefined, {
-      401: () => {},
-    });
+    request(
+      "patch",
+      `/notification/${id}/status`,
+      undefined,
+      {
+        401: () => {},
+      },
+      { status: STATUS_NOTIFICATION_READ }
+    );
   };
 
-  return (
+  return id ? (
     <ListItemLink
       disableGutters
       className={classes.itemLink}
@@ -138,5 +154,41 @@ export default function Notification(props) {
         </div>
       </div>
     </ListItemLink>
+  ) : (
+    <Box
+      position="relative"
+      pl={2}
+      pr={2}
+      maxWidth="100%"
+      display="flex"
+      flexDirection="column"
+      flexShrink={0}
+    >
+      <Box display="flex" pt={1} pb={1}>
+        <Box
+          mr="12px"
+          display="flex"
+          justifyContent="center"
+          alignItems="flex-start"
+        >
+          <Skeleton variant="circle" width={56} height={56} />
+        </Box>
+        <Box
+          flexBasis={0}
+          alignSelf="center"
+          minWidth={0}
+          flexShrink={1}
+          flexGrow={1}
+          width="100%"
+        >
+          <Typography variant="body1" component="div">
+            <Skeleton
+              width={`${getRandomIntInclusive(50, 100)}%`}
+              style={{ borderRadius: 8 }}
+            />
+          </Typography>
+        </Box>
+      </Box>
+    </Box>
   );
 }

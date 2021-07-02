@@ -1,4 +1,4 @@
-import { Avatar, List, Typography } from "@material-ui/core";
+import { Avatar, Box, List, Typography } from "@material-ui/core";
 import ClickAwayListener from "@material-ui/core/ClickAwayListener";
 import Grow from "@material-ui/core/Grow";
 import MenuList from "@material-ui/core/MenuList";
@@ -8,7 +8,9 @@ import { makeStyles } from "@material-ui/core/styles";
 import React from "react";
 import SimpleBar from "simplebar-react";
 import "simplebar/dist/simplebar.min.css";
+import { ReactComponent as EmptyNotificationIcon } from "../../assets/icons/undraw_happy_announcement_ac67.svg";
 import Notification from "./Notification";
+import NotificationTitle from "./NotificationTitle";
 
 const useStyles = makeStyles((theme) => ({
   paper: {
@@ -26,7 +28,24 @@ const useStyles = makeStyles((theme) => ({
     width: 56,
     height: 56,
   },
+  notificationsLoadingList: {
+    "& div:first-of-type": {
+      "& div": {
+        paddingTop: 0,
+      },
+    },
+  },
 }));
+
+const NotificationsLoading = React.memo(({ quantity }) => {
+  const notifications = [];
+
+  for (let i = 0; i < quantity; i++) {
+    notifications.push(<Notification key={i} />);
+  }
+
+  return notifications;
+});
 
 export default function NotificationMenu({ open, notifications, anchorRef }) {
   const classes = useStyles();
@@ -70,55 +89,75 @@ export default function NotificationMenu({ open, notifications, anchorRef }) {
                 onKeyDown={handleListKeyDown}
                 style={{ padding: 0 }}
               >
-                <SimpleBar
-                  style={{
-                    width: 360,
-                    maxHeight: `calc(100vh - 80px)`,
-                    overscrollBehaviorY: "none", // To prevent tag <main> be scrolled when menu'scrollbar reach end
-                  }}
-                >
-                  <div
-                    style={{ margin: "20px 16px 12px", position: "relative" }}
+                {notifications ? (
+                  <SimpleBar
+                    style={{
+                      width: 360,
+                      maxHeight: `calc(100vh - 80px)`,
+                      overscrollBehaviorY: "none", // To prevent tag <main> be scrolled when menu'scrollbar reach end
+                    }}
                   >
-                    <Typography
-                      component="h1"
-                      variant="h5"
-                      className={classes.notification}
-                      style={{ marginTop: "-7px", marginBottom: "-7px" }}
+                    <NotificationTitle />
+                    {notifications.length > 0 ? (
+                      <List disablePadding aria-label="notifications list">
+                        {notifications.map((notification) => (
+                          <Notification
+                            key={notification.id}
+                            id={notification.id}
+                            url={notification.url}
+                            content={notification.content}
+                            time={notification.time}
+                            read={notification.read}
+                            handleClose={handleClose}
+                            avatar={
+                              <Avatar
+                                alt="notification"
+                                className={classes.avatar}
+                                style={{
+                                  backgroundColor: notification.avatarColor,
+                                }}
+                              >
+                                {notification.avatar
+                                  ? notification.avatar
+                                      .substring(0, 2)
+                                      .toLocaleUpperCase()
+                                  : "N"}
+                              </Avatar>
+                            }
+                          />
+                        ))}
+                      </List>
+                    ) : (
+                      // Empty notification.
+                      <Box
+                        display="flex"
+                        alignItems="center"
+                        flexDirection="column"
+                        pl={4}
+                        pr={4}
+                        pb={3}
+                      >
+                        <EmptyNotificationIcon width={225} height={200} />
+                        <Typography style={{ textAlign: "center" }}>
+                          Đừng bỏ lỡ những thông tin quan trọng. Khi có thông
+                          báo mới, chúng sẽ hiển thị tại đây
+                        </Typography>
+                      </Box>
+                    )}
+                  </SimpleBar>
+                ) : (
+                  // Notifications loading.
+                  <div>
+                    <NotificationTitle />
+                    <List
+                      disablePadding
+                      aria-label="notifications list"
+                      className={classes.notificationsLoadingList}
                     >
-                      Thông báo
-                    </Typography>
+                      <NotificationsLoading quantity={10} />
+                    </List>
                   </div>
-
-                  <List disablePadding aria-label="notifications list">
-                    {notifications.map((notification) => (
-                      <Notification
-                        key={notification.id}
-                        id={notification.id}
-                        url={notification.url}
-                        content={notification.content}
-                        time={notification.time}
-                        read={notification.read}
-                        handleClose={handleClose}
-                        avatar={
-                          <Avatar
-                            alt="notification"
-                            className={classes.avatar}
-                            style={{
-                              backgroundColor: notification.avatarColor,
-                            }}
-                          >
-                            {notification.avatar
-                              ? notification.avatar
-                                  .substring(0, 2)
-                                  .toLocaleUpperCase()
-                              : "N"}
-                          </Avatar>
-                        }
-                      />
-                    ))}
-                  </List>
-                </SimpleBar>
+                )}
               </MenuList>
             </ClickAwayListener>
           </Paper>

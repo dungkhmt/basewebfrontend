@@ -36,7 +36,7 @@ export default function NotificationButton() {
 
   //
   const [badgeContent, setBadgeContent] = useState(0);
-  const [notifications, setNotifications] = useState([]);
+  const [notifications, setNotifications] = useState(); // begin here
 
   //
   const handleToggle = () => {
