@@ -14,11 +14,15 @@ const useStyles = makeStyles((theme) => ({
     width: 36,
     height: 36,
     color: "#000000",
-    backgroundColor: grey[300],
+    backgroundColor: grey[200],
     overflow: "unset",
+    "&:hover": {
+      backgroundColor: grey[300],
+    },
   },
   avatarOpen: {
     backgroundColor: "#e7f3ff",
+    "&:hover": { backgroundColor: "rgba(187, 222, 251, 0.54)" },
   },
   badge: { top: -3, right: -3 },
 }));
