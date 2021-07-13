@@ -29,5 +29,13 @@ export const user = {
       text: "Phê duyệt",
       child: [],
     },
+    {
+      id: "MENU_USER_SEND_MAIL_TO_USERS",
+      path: "/user-group/user/send-mail",
+      isPublic: false,
+      icon: "StarBorder",
+      text: "Gửi email",
+      child: [],
+    },
   ],
 };
