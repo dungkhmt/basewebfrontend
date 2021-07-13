@@ -2,6 +2,7 @@ import { Box, ListItemAvatar, Typography } from "@material-ui/core";
 import { grey } from "@material-ui/core/colors";
 import { makeStyles } from "@material-ui/core/styles";
 import { Skeleton } from "@material-ui/lab";
+import _ from "lodash";
 import React from "react";
 import { useLocation } from "react-router";
 import { request } from "../../api";
@@ -101,8 +102,13 @@ export default function Notification(props) {
 
   //
   const onClick = (e) => {
-    if (location.pathname === url) {
-      handleClose(e);
+    if (_.isString(url)) {
+      if (location.pathname === url) {
+        e.preventDefault();
+        handleClose(e);
+      }
+    } else {
+      e.preventDefault();
     }
 
     request(
