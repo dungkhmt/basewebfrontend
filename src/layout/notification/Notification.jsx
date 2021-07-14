@@ -152,6 +152,8 @@ function Notification(props) {
         { onError: () => closeIfOnSameSite(e), 401: () => {} },
         { status: STATUS_NOTIFICATION_READ }
       );
+    } else {
+      closeIfOnSameSite(e);
     }
   };
 
@@ -232,8 +234,8 @@ function Notification(props) {
   );
 }
 
-// Notification.whyDidYouRender = {
-//   logOnDifferentValues: true,
-// };
+Notification.whyDidYouRender = {
+  logOnDifferentValues: true,
+};
 
 export default React.memo(Notification);
