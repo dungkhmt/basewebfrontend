@@ -27,10 +27,15 @@ const StyledMenu = withStyles({
   },
 })((props) => (
   <Menu
-    // elevation={3}
     getContentAnchorEl={null}
-    anchorOrigin={{ vertical: "top", horizontal: "right" }}
-    transformOrigin={{ vertical: "top", horizontal: "right" }}
+    anchorOrigin={{
+      vertical: "bottom",
+      horizontal: "center",
+    }}
+    transformOrigin={{
+      vertical: "top",
+      horizontal: "center",
+    }}
     {...props}
   />
 ));
@@ -70,6 +75,8 @@ const useStyles = makeStyles((theme) => ({
     fontWeight: theme.typography.fontWeightMedium,
   },
 }));
+
+const iconStyles = { color: "black" };
 
 export function AccountMenu(props) {
   const classes = useStyles();
@@ -124,7 +131,7 @@ export function AccountMenu(props) {
             <ListItemAvatar>
               <Avatar className={classes.avatarIcon}>
                 <AccountCircleRoundedIcon
-                  style={{ color: "black" }}
+                  style={iconStyles}
                   // fontSize="medium"
                 />
               </Avatar>
@@ -141,7 +148,7 @@ export function AccountMenu(props) {
             <ListItemAvatar>
               <Avatar className={classes.avatarIcon}>
                 <VpnKeyRoundedIcon
-                  style={{ color: "black" }}
+                  style={iconStyles}
                   // fontSize="medium"
                 />
               </Avatar>
@@ -162,7 +169,7 @@ export function AccountMenu(props) {
             <ListItemAvatar>
               <Avatar className={classes.avatarIcon}>
                 <ExitToAppIcon
-                  style={{ color: "black" }}
+                  style={iconStyles}
                   // fontSize="medium"
                 />
               </Avatar>

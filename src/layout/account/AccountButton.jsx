@@ -18,7 +18,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function AccountButton(props) {
+function AccountButton() {
   const classes = useStyles();
 
   //
@@ -39,7 +39,6 @@ export default function AccountButton(props) {
 
   useEffect(() => {
     request(
-      // token, history,
       "get",
       "/my-account/",
       (res) => {
@@ -58,6 +57,7 @@ export default function AccountButton(props) {
   return (
     <Fragment>
       <IconButton
+        disableRipple
         edge="end"
         aria-label="account of current user"
         aria-controls={menuId}
@@ -69,14 +69,20 @@ export default function AccountButton(props) {
         </Avatar>
       </IconButton>
       <AccountMenu
+        id={menuId}
         avatarBgColor={bgColor}
         anchorEl={anchorEl}
         name={user.name}
         userName={user.userName}
         partyId={user.partyId}
         handleClose={handleClose}
-        id={menuId}
       />
     </Fragment>
   );
 }
+
+// AccountButton.whyDidYouRender = {
+//   logOnDifferentValues: true,
+// };
+
+export default React.memo(AccountButton);
