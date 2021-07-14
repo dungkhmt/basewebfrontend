@@ -4,7 +4,7 @@ import { makeStyles } from "@material-ui/core/styles";
 import NotificationsIcon from "@material-ui/icons/Notifications";
 import clsx from "clsx";
 import randomColor from "randomcolor";
-import React, { useState } from "react";
+import React from "react";
 import { request } from "../../api";
 import { useNotificationState } from "../../state/NotificationState";
 import NotificationMenu from "./NotificationMenu";
@@ -27,20 +27,17 @@ const useStyles = makeStyles((theme) => ({
   badge: { top: -3, right: -3 },
 }));
 
-export default function NotificationButton() {
+function NotificationButton() {
   const classes = useStyles();
 
   //
-  const notificationState = useNotificationState();
-  const open = notificationState.open;
+  const { open, notifications, numUnRead } = useNotificationState();
 
   // return focus to the button when we transitioned from !open -> open
   const prevOpen = React.useRef(open.get());
   const anchorRef = React.useRef(null);
 
   //
-  const [badgeContent, setBadgeContent] = useState(0);
-  const [notifications, setNotifications] = useState(); // begin here
 
   //
   const handleToggle = () => {
@@ -67,8 +64,8 @@ export default function NotificationButton() {
           }),
         }));
 
-        setNotifications(notis);
-        setBadgeContent(data.numUnRead);
+        notifications.set(notis);
+        numUnRead.set(data.numUnRead);
       },
       { 401: () => {} }
     );
@@ -104,7 +101,7 @@ export default function NotificationButton() {
             <NotificationsIcon color="primary" />
           ) : (
             <Badge
-              badgeContent={badgeContent < 10 ? badgeContent : "+9"}
+              badgeContent={numUnRead.get() < 10 ? numUnRead.get() : "+9"}
               color="secondary"
               classes={{ badge: classes.badge }}
             >
@@ -121,3 +118,9 @@ export default function NotificationButton() {
     </>
   );
 }
+
+// NotificationButton.whyDidYouRender = {
+//   logOnDifferentValues: true,
+// };
+
+export default React.memo(NotificationButton);

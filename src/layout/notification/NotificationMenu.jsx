@@ -1,4 +1,4 @@
-import { Avatar, Box, List, Typography } from "@material-ui/core";
+import { Box, List, Typography } from "@material-ui/core";
 import ClickAwayListener from "@material-ui/core/ClickAwayListener";
 import Grow from "@material-ui/core/Grow";
 import MenuList from "@material-ui/core/MenuList";
@@ -6,6 +6,7 @@ import Paper from "@material-ui/core/Paper";
 import Popper from "@material-ui/core/Popper";
 import { makeStyles } from "@material-ui/core/styles";
 import React from "react";
+import { useLocation } from "react-router";
 import SimpleBar from "simplebar-react";
 import "simplebar/dist/simplebar.min.css";
 import { ReactComponent as EmptyNotificationIcon } from "../../assets/icons/undraw_happy_announcement_ac67.svg";
@@ -23,10 +24,6 @@ const useStyles = makeStyles((theme) => ({
   },
   notification: {
     fontWeight: theme.typography.fontWeightMedium,
-  },
-  avatar: {
-    width: 56,
-    height: 56,
   },
   notificationsLoadingList: {
     "& div:first-of-type": {
@@ -49,14 +46,16 @@ const NotificationsLoading = React.memo(({ quantity }) => {
 
 export default function NotificationMenu({ open, notifications, anchorRef }) {
   const classes = useStyles();
+  const { pathname } = useLocation();
 
-  const handleClose = (event) => {
+  // Use useCallback to prevent Notification rerender because callback is recreated.
+  const handleClose = React.useCallback((event) => {
     if (anchorRef.current && anchorRef.current.contains(event.target)) {
       return;
     }
 
     open.set(false);
-  };
+  }, []);
 
   function handleListKeyDown(event) {
     if (event.key === "Tab") {
@@ -102,28 +101,10 @@ export default function NotificationMenu({ open, notifications, anchorRef }) {
                       <List disablePadding aria-label="notifications list">
                         {notifications.map((notification) => (
                           <Notification
-                            key={notification.id}
-                            id={notification.id}
-                            url={notification.url}
-                            content={notification.content}
-                            time={notification.time}
-                            read={notification.read}
+                            key={notification.id.get()}
+                            notification={notification}
+                            currentURL={pathname}
                             handleClose={handleClose}
-                            avatar={
-                              <Avatar
-                                alt="notification"
-                                className={classes.avatar}
-                                style={{
-                                  backgroundColor: notification.avatarColor,
-                                }}
-                              >
-                                {notification.avatar
-                                  ? notification.avatar
-                                      .substring(0, 2)
-                                      .toLocaleUpperCase()
-                                  : "N"}
-                              </Avatar>
-                            }
                           />
                         ))}
                       </List>
@@ -166,3 +147,7 @@ export default function NotificationMenu({ open, notifications, anchorRef }) {
     </Popper>
   );
 }
+
+// NotificationMenu.whyDidYouRender = {
+//   logOnDifferentValues: true,
+// };

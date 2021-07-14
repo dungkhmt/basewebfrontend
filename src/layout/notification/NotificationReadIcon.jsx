@@ -43,10 +43,10 @@ export default function NotificationReadIcon({ read }) {
                   display: "inline-flex",
                   width: 12,
                   height: 12,
-                  "border-top-left-radius": "50%",
-                  "border-bottom-left-radius": "50%",
-                  "border-top-right-radius": "50%",
-                  "border-bottom-right-radius": "50%",
+                  borderTopLeftRadius: "50%",
+                  borderBottomLeftRadius: "50%",
+                  borderTopRightRadius: "50%",
+                  borderBottomRightRadius: "50%",
                   backgroundColor: "hsl(214, 89%, 52%)",
                 }}
               />
