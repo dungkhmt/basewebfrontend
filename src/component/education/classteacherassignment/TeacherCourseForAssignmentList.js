@@ -1,4 +1,4 @@
-import { Button, Checkbox, Tooltip } from "@material-ui/core/";
+import { Button, Checkbox, IconButton, Tooltip } from "@material-ui/core/";
 import { green } from "@material-ui/core/colors";
 import { createMuiTheme, ThemeProvider } from "@material-ui/core/styles";
 import CheckCircleOutlineIcon from "@material-ui/icons/CheckCircleOutline";
@@ -7,6 +7,8 @@ import React, { useEffect, useReducer, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { authPostMultiPart, request } from "../../../api";
 import UploadExcelTeacherCourseModel from "./UploadExcelTeacherCourseModel";
+import EditIcon from "@material-ui/icons/Edit";
+import UpdateTeacherCourseForAssignmentModel from "./UpdateTeacherCourseForAssignmentModel";
 
 const theme = createMuiTheme({
   palette: {
@@ -19,6 +21,9 @@ function TeacherCourseForAssignmentList(props) {
   const planId = props.planId;
   const [teacherList, setTeacherList] = useState([]);
   const [open, setOpen] = React.useState(false);
+  const [openUpdateTeacherCourse, setOpenUpdateTeacherCourse] =
+    React.useState(false);
+  const [selectedTeacherCourse, setSelectedTeacherCourse] = useState(null);
   const [isProcessing, setIsProcessing] = useState(false);
   const dispatch = useDispatch();
   const token = useSelector((state) => state.auth.token);
@@ -30,6 +35,20 @@ function TeacherCourseForAssignmentList(props) {
     { title: "Giáo viên", field: "teacherId" },
     { title: "Tên môn", field: "courseId" },
     { title: "Độ ưu tiên", field: "priority" },
+    {
+      title: "",
+      render: (rowData) => (
+        <IconButton
+          color="primary"
+          aria-label="edit"
+          onClick={() => {
+            onUpdatePriority(rowData["teacherId"], rowData["courseId"]);
+          }}
+        >
+          <EditIcon />
+        </IconButton>
+      ),
+    },
     {
       field: "selected",
       title: "Chọn",
@@ -56,6 +75,45 @@ function TeacherCourseForAssignmentList(props) {
       ),
     },
   ];
+
+  function onUpdatePriority(teacherId, courseId) {
+    //alert("update priority " + teacherId + "-" + courseId);
+    setSelectedTeacherCourse({
+      planId: planId,
+      teacherId: teacherId,
+      courseId: courseId,
+    });
+    handleModalUpdateTeacherCourseOpen();
+  }
+  const handleModalUpdateTeacherCourseOpen = () => {
+    setOpenUpdateTeacherCourse(true);
+  };
+  const handleModalUpdateTeacherCourseClose = () => {
+    setOpenUpdateTeacherCourse(false);
+  };
+  const customUpdateHandle = (priority) => {
+    //alert("update  class " + selectedClassId + " with ourload = " + hourLoad);
+    let datasend = {
+      planId: selectedTeacherCourse.planId,
+      teacherId: selectedTeacherCourse.teacherId,
+      courseId: selectedTeacherCourse.courseId,
+      priority: priority,
+    };
+    request(
+      // token,
+      // history,
+      "post",
+      "update-teacher-course-for-assignment-plan",
+      (res) => {
+        console.log(res);
+        alert("Cập nhật " + "  OK");
+      },
+      { 401: () => {} },
+      datasend
+    );
+
+    handleModalUpdateTeacherCourseClose();
+  };
 
   function uploadExcel(selectedFile, choice) {
     setIsProcessing(true);
@@ -254,6 +312,12 @@ function TeacherCourseForAssignmentList(props) {
         open={open}
         onClose={handleModalClose}
         onUpload={customUploadHandle}
+      />
+      <UpdateTeacherCourseForAssignmentModel
+        open={openUpdateTeacherCourse}
+        onClose={handleModalUpdateTeacherCourseClose}
+        onUpdateInfo={customUpdateHandle}
+        selectedTeacherCourse={selectedTeacherCourse}
       />
     </>
   );
