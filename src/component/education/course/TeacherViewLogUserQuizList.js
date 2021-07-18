@@ -15,6 +15,8 @@ function TeacherViewLogUserQuizList(props) {
     { title: "User", field: "userLoginId" },
     { title: "Name", field: "fullName" },
     { title: "questionId", field: "questionId" },
+    { title: "course", field: "courseName" },
+    { title: "topic", field: "topicName" },
     { title: "Date", field: "createdStamp" },
   ];
 
