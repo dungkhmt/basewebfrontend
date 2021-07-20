@@ -38,6 +38,7 @@ function ClassTeacherAssignmentSolutionList(props) {
     { title: "Mã GV", field: "teacherId" },
     { title: "Tên GV", field: "teacherName" },
     { title: "Timetable", field: "timetable" },
+    /*
     {
       title: "",
       render: (rowData) => (
@@ -52,6 +53,7 @@ function ClassTeacherAssignmentSolutionList(props) {
         </Button>
       ),
     },
+    */
     {
       field: "selected",
       title: "Chọn",
