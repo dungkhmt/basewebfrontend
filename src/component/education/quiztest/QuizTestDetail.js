@@ -138,7 +138,7 @@ export default function QuizTestDetail() {
       weekDay[date.getDay()]
     }, ${date.getDate()} Tháng ${
       date.getMonth() + 1
-    },${year} lúc ${addZeroBefore(date.getHours(), 2)}:${addZeroBefore(
+    }, ${year} lúc ${addZeroBefore(date.getHours(), 2)}:${addZeroBefore(
       date.getMinutes(),
       2
     )}`;
