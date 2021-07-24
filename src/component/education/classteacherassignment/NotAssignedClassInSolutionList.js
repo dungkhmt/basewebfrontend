@@ -111,6 +111,7 @@ function NotAssignedClassInSolutionList(props) {
         onClose={handleModalClose}
         onSelectAssign={customUploadHandle}
         selectedClassId={selectedClassId}
+        planId={planId}
       />
     </Card>
   );

@@ -23,6 +23,7 @@ const modalStyle = {
 
 function SuggestTeachersForClassModel(props) {
   const classId = props.selectedClassId;
+  const planId = props.planId;
   const [selectedTeacher, setSelectedTeacher] = React.useState("");
   const [teachers, setTeachers] = React.useState([]);
 
@@ -37,7 +38,7 @@ function SuggestTeachersForClassModel(props) {
       // token,
       // history,
       "GET",
-      "/get-suggested-teacher-for-class/" + classId,
+      "/get-suggested-teacher-for-class/" + classId + "/" + planId,
       (res) => {
         let temp = [];
         res.data.map((elm, index) => {
@@ -45,6 +46,7 @@ function SuggestTeachersForClassModel(props) {
             teacherId: elm.teacherId,
             courseId: elm.teacherName,
             priority: elm.hourLoad,
+            info: elm.info,
             selected: false,
           });
         });
@@ -71,7 +73,7 @@ function SuggestTeachersForClassModel(props) {
       aria-describedby="simple-modal-description"
     >
       <div style={modalStyle.paper}>
-        <h2 id="simple-modal-title">Chọn file excel để upload</h2>
+        <h2 id="simple-modal-title">Gợi ý giáo viên cho lớp</h2>
         <div width="100%">
           <form onSubmit={handleFormSubmit}>
             <Grid container spacing={1} alignItems="flex-end">
@@ -95,7 +97,7 @@ function SuggestTeachersForClassModel(props) {
                 >
                   {teachers.map((item) => (
                     <MenuItem key={item.teacherId} value={item.teacherId}>
-                      {item.teacherId}
+                      {item.info}
                     </MenuItem>
                   ))}
                 </TextField>

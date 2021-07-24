@@ -10,6 +10,7 @@ import { a11yProps, AntTab, AntTabs, TabPanel } from "../../tab";
 import ClassesAssignToATeacherList from "./ClassesAssignToATeacherList";
 import ClassForAssignmentList from "./ClassForAssignmentList";
 import ClassTeacherAssignmentSolutionList from "./ClassTeacherAssignmentSolutionList";
+import ConflictClassesAssignedToTeacherInSolution from "./ConflictClassesAssignedToTeacherInSolution";
 import NotAssignedClassInSolutionList from "./NotAssignedClassInSolutionList";
 import PairConflictTimetableClass from "./PairConflictTimetableClass";
 import TeacherCourseForAssignmentList from "./TeacherCourseForAssignmentList";
@@ -147,6 +148,7 @@ export default function ClassTeacherAssignmentPlanDetail() {
           planId={planId}
           planName={plan.planName}
         />
+        <ConflictClassesAssignedToTeacherInSolution planId={planId} />
         <ClassesAssignToATeacherList planId={planId} />
       </TabPanel>
       <TabPanel value={selectedTab} index={6} dir={theme.direction}>
