@@ -1,4 +1,6 @@
+import { Card, CardContent } from "@material-ui/core/";
 import React, { Component } from "react";
+import MyMap from "./leafletmap";
 
 class GISMap extends Component {
   constructor(props) {
@@ -46,11 +48,13 @@ class GISMap extends Component {
     console.log("render, props = ", this.props);
     return (
       // Important! Always set the container height explicitly
-
-      <div
-        style={{ height: this.props.height, width: "100%" }}
-        id={this.props.id}
-      />
+      <Card>
+        <CardContent>
+          style={{ height: this.props.height, width: "100%" }}
+          id={this.props.id}
+        </CardContent>
+        <MyMap />
+      </Card>
     );
   }
 }

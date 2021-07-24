@@ -13,6 +13,7 @@ import ClassTeacherAssignmentSolutionList from "./ClassTeacherAssignmentSolution
 import ConflictClassesAssignedToTeacherInSolution from "./ConflictClassesAssignedToTeacherInSolution";
 import NotAssignedClassInSolutionList from "./NotAssignedClassInSolutionList";
 import PairConflictTimetableClass from "./PairConflictTimetableClass";
+import TeacherBasedTimeTableAssignmentInSolution from "./TeacherBasedTimeTableAssignmentInSolution";
 import TeacherCourseForAssignmentList from "./TeacherCourseForAssignmentList";
 import TeacherCourseList from "./TeacherCourseList";
 import TeacherForAssignmentPlanList from "./TeacherForAssignmentPlanList";
@@ -144,10 +145,12 @@ export default function ClassTeacherAssignmentPlanDetail() {
       </TabPanel>
 
       <TabPanel value={selectedTab} index={5} dir={theme.direction}>
+        <TeacherBasedTimeTableAssignmentInSolution planId={planId} />
         <ClassTeacherAssignmentSolutionList
           planId={planId}
           planName={plan.planName}
         />
+
         <ConflictClassesAssignedToTeacherInSolution planId={planId} />
         <ClassesAssignToATeacherList planId={planId} />
       </TabPanel>
