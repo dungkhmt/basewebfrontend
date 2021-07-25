@@ -1,13 +1,10 @@
-import { Button, Card, Checkbox, Tooltip } from "@material-ui/core/";
-import React, { useEffect, useReducer, useState } from "react";
-import MaterialTable, { MTableToolbar } from "material-table";
-import { request } from "../../../api";
-import UploadExcelTeacherCourseModel from "./UploadExcelTeacherCourseModel";
-import { authPostMultiPart } from "../../../api";
-import { useDispatch, useSelector } from "react-redux";
-import CheckCircleOutlineIcon from "@material-ui/icons/CheckCircleOutline";
-import { createMuiTheme, ThemeProvider } from "@material-ui/core/styles";
+import { Card } from "@material-ui/core/";
 import { green } from "@material-ui/core/colors";
+import { createMuiTheme } from "@material-ui/core/styles";
+import MaterialTable from "material-table";
+import React, { useEffect, useReducer, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { request } from "../../../api";
 
 const headerProperties = {
   headerStyle: {
@@ -39,6 +36,7 @@ function ClassesAssignToATeacherList(props) {
     { title: "Tên", field: "teacherName" },
     { title: "Tổng số giờ", field: "hourLoad" },
     { title: "Tổng số lớp", field: "numberOfClass" },
+    { title: "Tổng số ngày", field: "numberOfWorkingDays" },
   ];
 
   async function getTeacherList() {

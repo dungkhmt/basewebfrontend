@@ -1,6 +1,5 @@
-import { Button, Grid, Modal, TextField, MenuItem } from "@material-ui/core";
-import React, { useEffect, useReducer, useState } from "react";
-import { request } from "../../../api";
+import { Button, Grid, MenuItem, Modal, TextField } from "@material-ui/core";
+import React, { useEffect } from "react";
 
 const modalStyle = {
   paper: {
@@ -24,10 +23,12 @@ const modalStyle = {
 function UpdateTeacherForAssignmentModel(props) {
   const selectedTeacherId = props.selectedTeacherId;
   const [hourLoad, setHourLoad] = React.useState(null);
+  const [minimizeNumberWorkingDays, setMinimizeNumberWorkingDays] =
+    React.useState(null);
 
   const handleFormSubmit = (event) => {
     event.preventDefault();
-    props.onUpdateInfo(hourLoad);
+    props.onUpdateInfo(hourLoad, minimizeNumberWorkingDays);
   };
 
   useEffect(() => {
@@ -42,7 +43,7 @@ function UpdateTeacherForAssignmentModel(props) {
       aria-describedby="simple-modal-description"
     >
       <div style={modalStyle.paper}>
-        <h2 id="simple-modal-title">Chọn file excel để upload</h2>
+        <h2 id="simple-modal-title">Cập nhật giáo viên cho đợt phân công</h2>
         <div width="100%">
           <form onSubmit={handleFormSubmit}>
             <Grid container spacing={1} alignItems="flex-end">
@@ -57,6 +58,25 @@ function UpdateTeacherForAssignmentModel(props) {
                     setHourLoad(event.target.value);
                   }}
                 ></TextField>
+                <TextField
+                  required
+                  id="minimizeNumberWorkingDays"
+                  select
+                  label="Tối thiểu số ngày dạy"
+                  value={minimizeNumberWorkingDays}
+                  fullWidth
+                  onChange={(event) => {
+                    setMinimizeNumberWorkingDays(event.target.value);
+                    //console.log(problemId,event.target.value);
+                  }}
+                >
+                  <MenuItem key={"Y"} value={"Y"}>
+                    {"Y"}
+                  </MenuItem>
+                  <MenuItem key={"N"} value={"N"}>
+                    {"N"}
+                  </MenuItem>
+                </TextField>
               </Grid>
 
               <Grid item xs={2}>

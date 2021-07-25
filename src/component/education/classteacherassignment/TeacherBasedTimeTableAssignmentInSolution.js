@@ -5,6 +5,8 @@ import map from "lodash/map";
 import range from "lodash/range";
 import React, { useEffect, useState } from "react";
 import { request } from "../../../api";
+import PrimaryButton from "../../button/PrimaryButton";
+
 const useStyles = makeStyles((theme) => ({
   root: {
     flexGrow: 1,
@@ -172,12 +174,25 @@ function TeacherBasedTimeTableAssignmentInSolution(props) {
     );
   }
 
+  function handleBtnClick() {
+    alert("Phân công lại");
+  }
   useEffect(() => {
     getDataTimeTableList();
   }, []);
 
   return (
     <Card>
+      <Box display="flex" justifyContent="flex-end">
+        <PrimaryButton
+          // className={classes.btn}
+          onClick={(e) => {
+            handleBtnClick(e);
+          }}
+        >
+          Phân công thêm số ngày dạy
+        </PrimaryButton>
+      </Box>
       <TimeTableHeader />
       <TimeTable data={dataTimeTable} />
     </Card>

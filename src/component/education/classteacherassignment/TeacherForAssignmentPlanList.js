@@ -1,13 +1,11 @@
 import { Button, Card, Checkbox, Tooltip } from "@material-ui/core/";
-import React, { useEffect, useReducer, useState } from "react";
-import MaterialTable, { MTableToolbar } from "material-table";
-import { request } from "../../../api";
-import UploadExcelTeacherCourseModel from "./UploadExcelTeacherCourseModel";
-import { authPostMultiPart } from "../../../api";
-import { useDispatch, useSelector } from "react-redux";
-import CheckCircleOutlineIcon from "@material-ui/icons/CheckCircleOutline";
-import { createMuiTheme, ThemeProvider } from "@material-ui/core/styles";
 import { green } from "@material-ui/core/colors";
+import { createMuiTheme, ThemeProvider } from "@material-ui/core/styles";
+import CheckCircleOutlineIcon from "@material-ui/icons/CheckCircleOutline";
+import MaterialTable from "material-table";
+import React, { useEffect, useReducer, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { authPostMultiPart, request } from "../../../api";
 import UpdateTeacherForAssignmentModel from "./UpdateTeacherForAssignmentModel";
 
 const headerProperties = {
@@ -39,7 +37,8 @@ function TeacherForAssignmentPlanList(props) {
   const columns = [
     { title: "Mã Giáo viên", field: "teacherId" },
     { title: "Tên", field: "teacherName" },
-    { title: "Max Hour Load", field: "maxHourLoad" },
+    { title: "Max GD", field: "maxHourLoad" },
+    { title: "Tối ưu số ngày", field: "minimizeNumberWorkingDays" },
     {
       title: "",
       render: (rowData) => (
@@ -57,7 +56,7 @@ function TeacherForAssignmentPlanList(props) {
     {
       field: "selected",
       title: "Chọn",
-      
+
       width: "10%",
       type: "numeric",
       render: (rowData) => (
@@ -79,7 +78,6 @@ function TeacherForAssignmentPlanList(props) {
         />
       ),
     },
-
   ];
 
   function onUpdateTeacher(teacherId) {
@@ -117,13 +115,14 @@ function TeacherForAssignmentPlanList(props) {
         console.error(e);
       });
   }
-  const customUploadHandle = (hourLoad) => {
+  const customUploadHandle = (hourLoad, minimizeNumberWorkingDays) => {
     //console.log(filename);
     //setSearchString(sString);
     let datasend = {
       planId: planId,
       teacherId: selectedTeacherId,
       hourLoad: hourLoad,
+      minimizeNumberWorkingDays: minimizeNumberWorkingDays,
     };
     request(
       // token,
@@ -277,7 +276,6 @@ function TeacherForAssignmentPlanList(props) {
             isFreeAction: true,
           },
         ]}
-
       />
 
       <UpdateTeacherForAssignmentModel

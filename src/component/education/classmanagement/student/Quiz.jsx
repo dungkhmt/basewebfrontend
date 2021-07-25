@@ -61,7 +61,7 @@ const GreenCheckbox = withStyles({
  * Describe a multiple-choice quizz.
  * @returns
  */
-export default function Quizz({ quizz, index }) {
+export default function Quizz({ quizz, index, classId }) {
   const classes = useStyles();
   const token = useSelector((state) => state.auth.token);
   const history = useHistory();
@@ -101,7 +101,11 @@ export default function Quizz({ quizz, index }) {
           setResult({ submited: true, isCorrect: res.data });
         },
         {},
-        { questionId: quizz.questionId, chooseAnsIds: chooseAnsIds }
+        {
+          questionId: quizz.questionId,
+          chooseAnsIds: chooseAnsIds,
+          classId: classId,
+        }
       );
     }
   };

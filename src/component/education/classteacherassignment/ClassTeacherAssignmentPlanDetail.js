@@ -1,4 +1,4 @@
-import { Box, Typography } from "@material-ui/core/";
+import { Box, CircularProgress, Typography } from "@material-ui/core/";
 import { teal } from "@material-ui/core/colors";
 import { makeStyles, useTheme } from "@material-ui/core/styles";
 import { Skeleton } from "@material-ui/lab";
@@ -55,7 +55,7 @@ export default function ClassTeacherAssignmentPlanDetail() {
   const classes = useStyles();
 
   const [plan, setPlan] = useState([]);
-
+  const [isProcessing, setIsProcessing] = useState(false);
   const [selectedTab, setSelectedTab] = useState(0);
   const theme = useTheme();
 
@@ -65,6 +65,8 @@ export default function ClassTeacherAssignmentPlanDetail() {
   };
 
   async function handleAssignTeacher2Class() {
+    setIsProcessing(true);
+
     let data = { planId: planId };
     // console.log(data);
 
@@ -74,7 +76,8 @@ export default function ClassTeacherAssignmentPlanDetail() {
       "post",
       "auto-assign-teacher-2-class",
       (res) => {
-        alert("assign teacher to class " + res.data);
+        //alert("assign teacher to class " + res.data);
+        setIsProcessing(false);
       },
       { 401: () => {} },
       data
@@ -112,7 +115,7 @@ export default function ClassTeacherAssignmentPlanDetail() {
           Phân công
         </PrimaryButton>
       </Box>
-
+      {isProcessing ? <CircularProgress /> : ""}
       <AntTabs
         value={selectedTab}
         onChange={handleChangeTab}
