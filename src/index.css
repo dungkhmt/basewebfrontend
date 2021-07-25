@@ -45,3 +45,8 @@ code {
   top: 0;
   left: 0;
 }
+
+.leaflet-container {
+  width: 100%;
+  height: calc(100vh - 112px);
+}
