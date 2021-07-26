@@ -74,6 +74,23 @@ function TimeTableHeader() {
 function BoxClass(props) {
   function handleClick() {
     alert("Class " + props.code);
+    //props.root.suggestTeacherListForClass(props.code);
+
+    let datasend = {
+      classId: props.code,
+      planId: props.planId,
+    };
+    request(
+      // token,
+      // history,
+      "post",
+      "get-suggested-teacher-and-actions-for-class",
+      (res) => {
+        alert("suggested teacher list: " + JSON.stringify(res.data));
+      },
+      { 401: () => {} },
+      datasend
+    );
   }
 
   return (
@@ -110,8 +127,10 @@ function TimeTableElement(props) {
             <TimeTableSpace sz={e.startIndexFromPrevious} />
             <BoxClass
               code={e.classCode}
+              planId={props.planId}
               sz={e.duration}
               bgcolor={"text.secondary"}
+              root={props.root}
             />
           </Box>
         );
@@ -121,7 +140,9 @@ function TimeTableElement(props) {
   );
 }
 function TimeTable(props) {
+  //const root = props.root;
   console.log("TimeTable data = " + JSON.stringify(props.data));
+  //console.log("TimeTable planId (from root) = " + root.planId);
   return (
     <div>
       {props.data.map((e, i) => {
@@ -129,8 +150,10 @@ function TimeTable(props) {
           <Box display="flex" justifyContent="left">
             <TimeTableElement
               list={e.classList}
+              planId={props.planId}
               teacherId={e.teacherId}
               remainEmptySlots={e.remainEmptySlots}
+              root={props.root}
             />
           </Box>
         );
@@ -142,6 +165,10 @@ function TeacherBasedTimeTableAssignmentInSolution(props) {
   const planId = props.planId;
   const classes = useStyles();
   const [dataTimeTable, setDataTimeTable] = useState([]);
+  const [selectedTeacherId, setSelectedTeacherId] = useState(null);
+  const [selectedClassId, setSelectedClassId] = useState(null);
+
+  const [openSuggestion, setOpenSuggestion] = React.useState(false);
 
   const data = [
     {
@@ -174,6 +201,15 @@ function TeacherBasedTimeTableAssignmentInSolution(props) {
     );
   }
 
+  const suggestTeacherListForClass = (classId) => {
+    alert("suggest teacher list for class " + classId);
+  };
+  const customSelectTeacherHandle = (selectedTeacherId) => {};
+
+  const handleSuggestionModalClose = () => {
+    setOpenSuggestion(false);
+  };
+
   function handleBtnClick() {
     alert("Phân công lại");
   }
@@ -190,11 +226,11 @@ function TeacherBasedTimeTableAssignmentInSolution(props) {
             handleBtnClick(e);
           }}
         >
-          Phân công thêm số ngày dạy
+          ""
         </PrimaryButton>
       </Box>
       <TimeTableHeader />
-      <TimeTable data={dataTimeTable} />
+      <TimeTable data={dataTimeTable} root={this} planId={planId} />
     </Card>
   );
 }

@@ -1,4 +1,4 @@
-import { Button, Checkbox } from "@material-ui/core/";
+import { Button, Card, Checkbox } from "@material-ui/core/";
 import { green } from "@material-ui/core/colors";
 import { createMuiTheme, ThemeProvider } from "@material-ui/core/styles";
 import CheckCircleOutlineIcon from "@material-ui/icons/CheckCircleOutline";
@@ -6,6 +6,7 @@ import MaterialTable from "material-table";
 import React, { useEffect, useReducer, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { request } from "../../../api";
+import SuggestedTeacherListForSelectedClassModel from "./SuggestedTeacherListForSelectedClassModel";
 
 const headerProperties = {
   headerStyle: {
@@ -30,6 +31,8 @@ function ClassTeacherAssignmentSolutionList(props) {
   const token = useSelector((state) => state.auth.token);
   const [selectedAll, setSelectedAll] = useState(false);
   const [, forceUpdate] = useReducer((x) => x + 1, 0);
+  const [selectedClassId, setSelectedClassId] = useState(null);
+  const [suggestionData, setSuggestionData] = useState(null);
 
   const columns = [
     { title: "Mã lớp", field: "classCode" },
@@ -38,6 +41,20 @@ function ClassTeacherAssignmentSolutionList(props) {
     { title: "Mã GV", field: "teacherId" },
     { title: "Tên GV", field: "teacherName" },
     { title: "Timetable", field: "timetable" },
+    {
+      title: "",
+      render: (rowData) => (
+        <Button
+          variant="contained"
+          color="primary"
+          onClick={() => {
+            onSuggestTeacher(rowData["classCode"]);
+          }}
+        >
+          Gợi ý GV
+        </Button>
+      ),
+    },
     /*
     {
       title: "",
@@ -81,6 +98,40 @@ function ClassTeacherAssignmentSolutionList(props) {
     },
   ];
 
+  const customAssignHandle = (selectedTeacherId) => {
+    //console.log(filename);
+    //setSearchString(sString);
+    //alert("upload " + filename);
+    //uploadExcel(selectedFile, choice);
+    //perform API to assign teacher here
+    //alert("call API to assign teacher " + selectedTeacherId);
+    let datasend = {
+      classId: selectedClassId,
+      teacherId: selectedTeacherId,
+      planId: planId,
+    };
+    request(
+      // token,
+      // history,
+      "post",
+      "manual-assign-teacher-to-class",
+      (res) => {
+        console.log(res);
+        alert(
+          "phân giảng viên " +
+            selectedTeacherId +
+            " cho lớp " +
+            selectedClassId +
+            "  OK"
+        );
+      },
+      { 401: () => {} },
+      datasend
+    );
+
+    handleModalClose();
+  };
+
   async function getClassTeacherAssignmentSolutionList() {
     request(
       // token,
@@ -115,6 +166,32 @@ function ClassTeacherAssignmentSolutionList(props) {
   const handleModalClose = () => {
     setOpen(false);
   };
+
+  function onSuggestTeacher(classId) {
+    setSelectedClassId(classId);
+    //handleModalOpen();
+
+    let datasend = { classId: classId, planId: planId };
+    request(
+      // token,
+      // history,
+      "get",
+      "get-suggested-teacher-and-actions-for-class/" + classId + "/" + planId,
+      (res) => {
+        console.log(res);
+        setSuggestionData(res.data);
+        alert(
+          "Gợi ý giảng viên cho lớp " +
+            classId +
+            ", KQ: " +
+            JSON.stringify(res.data)
+        );
+        setIsProcessing(false);
+      },
+      { 401: () => {} },
+      datasend
+    );
+  }
   function onRemoveTeacher(solutionItemId) {
     setIsProcessing(true);
     let datasend = { solutionItemId: solutionItemId };
@@ -218,90 +295,103 @@ function ClassTeacherAssignmentSolutionList(props) {
   }, []);
 
   return (
-    <MaterialTable
-      title={"Danh sách lớp được phân công"}
-      columns={columns}
-      data={classList}
-      components={{
-        Action: (props) => {
-          if (props.action.icon === "exportExcel") {
-            return (
-              <Button
-                onClick={(event) => props.action.onClick(event, props.data)}
-                color="primary"
-              >
-                Xuất excel
-              </Button>
-            );
-          } else if (props.action.icon === "removeSolution") {
-            return (
-              <ThemeProvider theme={theme}>
+    <Card>
+      <MaterialTable
+        title={"Danh sách lớp được phân công"}
+        columns={columns}
+        data={classList}
+        components={{
+          Action: (props) => {
+            if (props.action.icon === "exportExcel") {
+              return (
                 <Button
-                  variant="contained"
-                  color="primary"
-                  startIcon={
-                    <CheckCircleOutlineIcon
-                      style={{ color: "white" }}
-                      fontSize="default"
-                    />
-                  }
                   onClick={(event) => props.action.onClick(event, props.data)}
-                  style={{ color: "white" }}
+                  color="primary"
                 >
-                  Loại bỏ
+                  Xuất excel
                 </Button>
-              </ThemeProvider>
-            );
-          } else if (props.action.icon === "selectAll") {
-            return (
-              <>
-                <Checkbox
-                  checked={selectedAll}
-                  onChange={(event) => props.action.onClick(event, props.data)}
-                />
-                {/* <div>&nbsp;&nbsp;&nbsp;Chọn tất cả&nbsp;&nbsp;</div> */}
-              </>
-            );
-          }
+              );
+            } else if (props.action.icon === "removeSolution") {
+              return (
+                <ThemeProvider theme={theme}>
+                  <Button
+                    variant="contained"
+                    color="primary"
+                    startIcon={
+                      <CheckCircleOutlineIcon
+                        style={{ color: "white" }}
+                        fontSize="default"
+                      />
+                    }
+                    onClick={(event) => props.action.onClick(event, props.data)}
+                    style={{ color: "white" }}
+                  >
+                    Loại bỏ
+                  </Button>
+                </ThemeProvider>
+              );
+            } else if (props.action.icon === "selectAll") {
+              return (
+                <>
+                  <Checkbox
+                    checked={selectedAll}
+                    onChange={(event) =>
+                      props.action.onClick(event, props.data)
+                    }
+                  />
+                  {/* <div>&nbsp;&nbsp;&nbsp;Chọn tất cả&nbsp;&nbsp;</div> */}
+                </>
+              );
+            }
 
-          return "default button";
-        },
-      }}
-      actions={[
-        {
-          isFreeAction: true,
-          icon: "exportExcel",
-          onClick: (e, rowData) => {
-            handleExportExcel();
+            return "default button";
           },
-        },
-        {
-          isFreeAction: true,
-          icon: "removeSolution",
-          tooltip: "Loại thí sinh khỏi kì thi",
-          onClick: (e, rowData) => {
-            handleRemoveClassTeacherAssignmentSolution(e);
+        }}
+        actions={[
+          {
+            isFreeAction: true,
+            icon: "exportExcel",
+            onClick: (e, rowData) => {
+              handleExportExcel();
+            },
           },
-        },
-        {
-          isFreeAction: true,
-          icon: "selectAll",
-          tooltip: "Chọn tất cả",
-          onClick: (e, rowData) => {
-            //alert('checkAll = ' + selectedAll);
-            let tempS = e.target.checked;
-            setSelectedAll(e.target.checked);
+          {
+            isFreeAction: true,
+            icon: "removeSolution",
+            tooltip: "Loại thí sinh khỏi kì thi",
+            onClick: (e, rowData) => {
+              handleRemoveClassTeacherAssignmentSolution(e);
+            },
+          },
+          {
+            isFreeAction: true,
+            icon: "selectAll",
+            tooltip: "Chọn tất cả",
+            onClick: (e, rowData) => {
+              //alert('checkAll = ' + selectedAll);
+              let tempS = e.target.checked;
+              setSelectedAll(e.target.checked);
 
-            if (tempS) count = classList.length;
-            else count = 0;
+              if (tempS) count = classList.length;
+              else count = 0;
 
-            classList.map((value, index) => {
-              value.selected = tempS;
-            });
+              classList.map((value, index) => {
+                value.selected = tempS;
+              });
+            },
           },
-        },
-      ]}
-    />
+        ]}
+      />
+
+      <SuggestedTeacherListForSelectedClassModel
+        open={open}
+        onClose={handleModalClose}
+        onSelectAssign={customAssignHandle}
+        selectedClassId={selectedClassId}
+        suggestionData={suggestionData}
+        planId={planId}
+      />
+    </Card>
   );
 }
 
