@@ -64,10 +64,12 @@ export default function ClassTeacherAssignmentPlanDetail() {
     setSelectedTab(newValue);
   };
 
-  async function handleAssignTeacher2Class() {
+  async function handleAssignTeacher2Class(solver) {
+    //alert("handleAssignTeacher2Class, solver = " + solver);
+
     setIsProcessing(true);
 
-    let data = { planId: planId };
+    let data = { planId: planId, solver: solver };
     // console.log(data);
 
     request(
@@ -109,12 +111,21 @@ export default function ClassTeacherAssignmentPlanDetail() {
         <PrimaryButton
           // className={classes.btn}
           onClick={(e) => {
-            handleAssignTeacher2Class(e);
+            handleAssignTeacher2Class("PRIORITY");
           }}
         >
-          Phân công
+          Phân công tối ưu độ ưu tiên
+        </PrimaryButton>
+        <PrimaryButton
+          // className={classes.btn}
+          onClick={(e) => {
+            handleAssignTeacher2Class("WORKDAYS");
+          }}
+        >
+          Phân công tối ưu ngày dạy
         </PrimaryButton>
       </Box>
+
       {isProcessing ? <CircularProgress /> : ""}
       <AntTabs
         value={selectedTab}

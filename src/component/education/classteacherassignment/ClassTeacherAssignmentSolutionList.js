@@ -116,6 +116,7 @@ function ClassTeacherAssignmentSolutionList(props) {
     setOpen(false);
   };
   function onRemoveTeacher(solutionItemId) {
+    setIsProcessing(true);
     let datasend = { solutionItemId: solutionItemId };
     request(
       // token,
@@ -125,6 +126,8 @@ function ClassTeacherAssignmentSolutionList(props) {
       (res) => {
         console.log(res);
         alert("Huy phân giảng viên " + " cho lớp " + "  OK");
+        setIsProcessing(false);
+        getClassTeacherAssignmentSolutionList();
       },
       { 401: () => {} },
       datasend
@@ -154,6 +157,7 @@ function ClassTeacherAssignmentSolutionList(props) {
         "POST",
         "/remove-class-teacher-assign-solution-list",
         (res) => {
+          /*
           result = res.data;
 
           if (result >= 0) {
@@ -163,6 +167,9 @@ function ClassTeacherAssignmentSolutionList(props) {
             setClassList(temp);
             count = 0;
           }
+          */
+          getClassTeacherAssignmentSolutionList();
+          count = 0;
         },
         {},
         formData

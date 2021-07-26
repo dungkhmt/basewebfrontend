@@ -168,7 +168,7 @@ function TeacherBasedTimeTableAssignmentInSolution(props) {
       //"/get-classes-assigned-to-a-teacher-solution/" + planId,
       "/get-classes-assigned-to-a-teacher-solution-for-view-grid/" + planId,
       (res) => {
-        //console.log("Gird TimeTable data = " + JSON.stringify(res.data));
+        console.log("Gird TimeTable data = " + JSON.stringify(res.data));
         setDataTimeTable(res.data);
       }
     );

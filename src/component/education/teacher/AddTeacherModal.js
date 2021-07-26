@@ -9,37 +9,36 @@ import {
   Fade,
   makeStyles,
   Modal,
-  TextField
+  TextField,
 } from "@material-ui/core";
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import * as yup from "yup";
 import { request } from "../../../api";
 import { infoNoti } from "../../../utils/notification";
-
 const useStyles = makeStyles((theme) => ({
   modal: {
     display: "flex",
     alignItems: "center",
-    justifyContent: "center"
+    justifyContent: "center",
   },
   card: {
-    minWidth: 400
+    minWidth: 400,
   },
   action: {
     display: "flex",
-    justifyContent: "center"
+    justifyContent: "center",
   },
   error: {
     textAlign: "center",
     color: "red",
-    marginTop: theme.spacing(2)
-  }
+    marginTop: theme.spacing(2),
+  },
 }));
 
 let schema = yup.object().shape({
   name: yup.string().required(),
   email: yup.string().email("Email invalid").required(),
-  userLogin: yup.string()
+  userLogin: yup.string(),
 });
 
 export default function AddTeacherModal({ open, handleClose }) {
@@ -50,7 +49,7 @@ export default function AddTeacherModal({ open, handleClose }) {
   const [userLogin, setUserLogin] = useState("");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
-  
+
   // const toastId = React.useRef(null);
 
   useEffect(() => {
@@ -60,7 +59,7 @@ export default function AddTeacherModal({ open, handleClose }) {
     setError("");
     setLoading(false);
   }, [open]);
-  
+
   const handleSubmit = (e) => {
     e.preventDefault();
     setLoading(true);
@@ -68,29 +67,34 @@ export default function AddTeacherModal({ open, handleClose }) {
       .validate({ name, email, userLogin })
       .then((data) => {
         setError("");
-        const reqData = {teacherName: name, teacherId: email, userLoginId: userLogin};
+        const reqData = {
+          teacherName: name,
+          teacherId: email,
+          userLoginId: userLogin,
+        };
         request(
-          'post', 
-          'add-teacher', 
+          "post",
+          "add-teacher",
           (data) => {
             setLoading(false);
             handleClose();
-            infoNoti('Thêm giảng viên thành công');
+            infoNoti("Thêm giảng viên thành công");
           },
           {
             400: (res) => {
               // console.log('check', res.response)
               setError(res.response.data);
               setLoading(false);
-          }},
+            },
+          },
           reqData
-        )
+        );
         console.log(reqData);
       })
       .catch((err) => {
-        setError(err.message)
-        setLoading(false)
-      })
+        setError(err.message);
+        setLoading(false);
+      });
   };
 
   return (
@@ -101,7 +105,7 @@ export default function AddTeacherModal({ open, handleClose }) {
       closeAfterTransition
       BackdropComponent={Backdrop}
       BackdropProps={{
-        timeout: 500
+        timeout: 500,
       }}
     >
       <Fade in={open}>
