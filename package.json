@@ -13,6 +13,7 @@
     "@material-ui/lab": "^4.0.0-alpha.50",
     "@material-ui/pickers": "^3.2.9",
     "@mdi/js": "^3.9.97",
+    "@react-leaflet/core": ">=1.0.0 <1.1.0 || ^1.1.1",
     "@welldone-software/why-did-you-render": "^6.2.0",
     "axios": "^0.21.1",
     "base-64": "^0.1.0",
@@ -23,6 +24,7 @@
     "date-fns": "^2.15.0",
     "draft-js": "^0.11.7",
     "draftjs-to-html": "^0.9.1",
+    "event-source-polyfill": "^1.0.24",
     "framer-motion": "^2.6.13",
     "google-maps-react": "^2.0.2",
     "html-react-parser": "^0.14.0",
@@ -65,8 +67,7 @@
     "redux-thunk": "^2.3.0",
     "simplebar-react": "^2.3.0",
     "xlsx": "^0.14.5",
-    "yup": "^0.29.1",
-    "@react-leaflet/core": ">=1.0.0 <1.1.0 || ^1.1.1"
+    "yup": "^0.29.1"
   },
   "scripts": {
     "start": "craco start",
