@@ -1,83 +1,119 @@
-import { Modal } from "@material-ui/core";
-import React, { useEffect } from "react";
-import { request } from "../../../api";
+import {
+  Avatar,
+  Divider,
+  List,
+  ListItem,
+  ListItemAvatar,
+  ListItemText,
+  Typography,
+} from "@material-ui/core";
+import { grey } from "@material-ui/core/colors";
+import { makeStyles } from "@material-ui/core/styles";
+import React from "react";
+import { FcBusinessman } from "react-icons/fc";
+import SimpleBar from "simplebar-react";
+import TertiaryButton from "../../button/TertiaryButton";
+import CustomizedDialogs from "../../dialog/CustomizedDialogs";
 
-const modalStyle = {
-  paper: {
-    boxSizing: "border-box",
-    position: "absolute",
-    width: 600,
-    maxHeight: 600,
-    // border: '2px solid #000',
-    borderRadius: "5px",
-    boxShadow:
-      "0px 3px 1px -2px rgb(0 0 0 / 20%), 0px 2px 2px 0px rgb(0 0 0 / 14%), 0px 1px 5px 0px rgb(0 0 0 / 12%)",
-    backgroundColor: "white",
-    zIndex: 999,
-    left: "50%",
-    top: "50%",
-    transform: "translate(-50% , -50%)",
-    padding: "20px 40px",
+const useStyles = makeStyles((theme) => ({
+  dialogContent: {
+    paddingLeft: theme.spacing(1),
+    paddingRight: theme.spacing(1),
+    paddingTop: theme.spacing(1) * 1.5,
+    paddingBottom: theme.spacing(1),
   },
-};
+  listItem: {
+    paddingLeft: theme.spacing(1),
+    paddingRight: theme.spacing(1),
+    paddingTop: theme.spacing(1) * 1.5,
+    paddingBottom: theme.spacing(1) * 1.5,
+  },
+}));
 
 function SuggestedTeacherListForSelectedClassModel(props) {
-  const classId = props.selectedClassId;
-  const planId = props.planId;
-  const [selectedTeacher, setSelectedTeacher] = React.useState("");
-  const [teachers, setTeachers] = React.useState([]);
-  const suggestionData = props.suggestionData;
+  const classes = useStyles();
+  const { classId, suggestionData, open, handleClose } = props;
 
-  const handleFormSubmit = (event) => {
-    event.preventDefault();
-    props.onSelectAssign(selectedTeacher);
+  const onAssign = (teacherId) => {
+    console.log(teacherId);
+    handleClose();
   };
 
-  async function getTeacherForAssignmentList(classId) {
-    //alert("get suggested teacher for class " + classId);
-    request(
-      // token,
-      // history,
-      "GET",
-      "/get-suggested-teacher-for-class/" + classId + "/" + planId,
-      (res) => {
-        let temp = [];
-        res.data.map((elm, index) => {
-          temp.push({
-            teacherId: elm.teacherId,
-            courseId: elm.teacherName,
-            priority: elm.hourLoad,
-            info: elm.info,
-            selected: false,
-          });
-        });
-        setTeachers(temp);
-
-        //setTeacherList(res.data);
-      }
-    );
-  }
-  function handleGetData() {
-    //alert("get data " + classId);
-    getTeacherForAssignmentList(classId);
-  }
-
-  useEffect(() => {
-    //getTeacherForAssignmentList();
-  }, []);
-
   return (
-    <Modal
-      open={props.open}
-      onClose={props.onClose}
-      aria-labelledby="simple-modal-title"
-      aria-describedby="simple-modal-description"
-    >
-      <div style={modalStyle.paper}>
-        <h2 id="simple-modal-title">Gợi ý giáo viên cho lớp</h2>
-        <div width="100%">Gợi ý DS GV có thể phân công</div>
-      </div>
-    </Modal>
+    <CustomizedDialogs
+      open={open}
+      handleClose={handleClose}
+      title={
+        suggestionData
+          ? `Gợi ý giáo viên cho lớp ${classId} (${suggestionData.length})`
+          : `Gợi ý giáo viên cho lớp ${classId}`
+      }
+      content={
+        <>
+          <SimpleBar
+            style={{
+              height: "100%",
+              maxHeight: 400,
+              width: 440,
+              overflowX: "hidden",
+              overscrollBehaviorY: "none", // To prevent tag <main> be scrolled when menu's scrollbar reach end
+            }}
+          >
+            <List disablePadding>
+              {suggestionData
+                ? suggestionData.map((teacher, index) => (
+                    <>
+                      <ListItem
+                        alignItems="flex-start"
+                        key={teacher.teacherId}
+                        className={classes.listItem}
+                      >
+                        <ListItemAvatar style={{ minWidth: 52 }}>
+                          <Avatar
+                            alt="Avatar"
+                            style={{ background: grey[200] }}
+                          >
+                            <FcBusinessman size={24} />
+                          </Avatar>
+                        </ListItemAvatar>
+
+                        <ListItemText
+                          primary={teacher.teacherName}
+                          secondary={
+                            <>
+                              <Typography variant="body2">
+                                11345 =&gt; ThuanDP
+                              </Typography>
+                              <Typography variant="body2">
+                                12300 =&gt; HuyQD
+                              </Typography>
+                            </>
+                          }
+                        />
+
+                        <TertiaryButton
+                          onClick={() => onAssign(teacher.teacherId)}
+                        >
+                          Áp dụng
+                        </TertiaryButton>
+                      </ListItem>
+
+                      {index < suggestionData.length - 1 && (
+                        <Divider
+                          variant="inset"
+                          component="li"
+                          style={{ marginRight: 8 }}
+                        />
+                      )}
+                    </>
+                  ))
+                : null}
+            </List>
+          </SimpleBar>
+        </>
+      }
+      style={{ content: classes.dialogContent }}
+    />
   );
 }
 

@@ -4,17 +4,9 @@ import { createMuiTheme, ThemeProvider } from "@material-ui/core/styles";
 import CheckCircleOutlineIcon from "@material-ui/icons/CheckCircleOutline";
 import MaterialTable from "material-table";
 import React, { useEffect, useReducer, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
 import { request } from "../../../api";
 import SuggestedTeacherListForSelectedClassModel from "./SuggestedTeacherListForSelectedClassModel";
 
-const headerProperties = {
-  headerStyle: {
-    fontSize: 16,
-    backgroundColor: "rgb(63, 81, 181)",
-    color: "white",
-  },
-};
 const theme = createMuiTheme({
   palette: {
     primary: green,
@@ -27,12 +19,11 @@ function ClassTeacherAssignmentSolutionList(props) {
   const [classList, setClassList] = useState([]);
   const [open, setOpen] = React.useState(false);
   const [isProcessing, setIsProcessing] = useState(false);
-  const dispatch = useDispatch();
-  const token = useSelector((state) => state.auth.token);
+
   const [selectedAll, setSelectedAll] = useState(false);
   const [, forceUpdate] = useReducer((x) => x + 1, 0);
   const [selectedClassId, setSelectedClassId] = useState(null);
-  const [suggestionData, setSuggestionData] = useState(null);
+  const [suggestionData, setSuggestionData] = useState();
 
   const columns = [
     { title: "Mã lớp", field: "classCode" },
@@ -129,7 +120,7 @@ function ClassTeacherAssignmentSolutionList(props) {
       datasend
     );
 
-    handleModalClose();
+    handleClose();
   };
 
   async function getClassTeacherAssignmentSolutionList() {
@@ -163,8 +154,9 @@ function ClassTeacherAssignmentSolutionList(props) {
     setOpen(true);
   };
 
-  const handleModalClose = () => {
+  const handleClose = () => {
     setOpen(false);
+    setSuggestionData(undefined);
   };
 
   function onSuggestTeacher(classId) {
@@ -178,14 +170,7 @@ function ClassTeacherAssignmentSolutionList(props) {
       "get",
       "get-suggested-teacher-and-actions-for-class/" + classId + "/" + planId,
       (res) => {
-        console.log(res);
         setSuggestionData(res.data);
-        alert(
-          "Gợi ý giảng viên cho lớp " +
-            classId +
-            ", KQ: " +
-            JSON.stringify(res.data)
-        );
 
         setIsProcessing(false);
       },
@@ -386,9 +371,9 @@ function ClassTeacherAssignmentSolutionList(props) {
 
       <SuggestedTeacherListForSelectedClassModel
         open={open}
-        onClose={handleModalClose}
+        handleClose={handleClose}
         onSelectAssign={customAssignHandle}
-        selectedClassId={selectedClassId}
+        classId={selectedClassId}
         suggestionData={suggestionData}
         planId={planId}
       />
