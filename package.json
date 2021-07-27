@@ -9,6 +9,7 @@
     "@hookstate/core": "^3.0.8",
     "@jackwilsdon/craco-use-babelrc": "^1.0.0",
     "@material-ui/core": "^4.9.11",
+    "@material-ui/data-grid": "^4.0.0-alpha.34",
     "@material-ui/icons": "^4.5.1",
     "@material-ui/lab": "^4.0.0-alpha.50",
     "@material-ui/pickers": "^3.2.9",

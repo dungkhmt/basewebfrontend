@@ -1,14 +1,23 @@
-import { Box, Button, Card, CardContent } from "@material-ui/core";
-import { MuiThemeProvider } from "@material-ui/core/styles";
-import AddCircleIcon from "@material-ui/icons/AddCircle";
-import MaterialTable, { MTableToolbar } from "material-table";
-import React, { useEffect, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { Link, useHistory } from "react-router-dom";
+import {
+  Box,
+  Container,
+  IconButton,
+  InputAdornment,
+  makeStyles,
+  Paper,
+  TextField,
+  Tooltip,
+  Typography
+} from "@material-ui/core";
+import React, { useEffect, useReducer, useRef, useState } from "react";
+import { useSelector } from "react-redux";
+import SearchIcon from "@material-ui/icons/Search";
+import PersonAddIcon from "@material-ui/icons/PersonAdd";
+import AddTeacherModal from "./AddTeacherModal";
+import { axiosPost, request } from "../../../api";
+import UploadButton from "../UploadButton";
 import { toast } from "react-toastify";
 import XLSX from "xlsx";
-import { axiosGet, axiosPost } from "../../../api";
-import { tableIcons } from "../../../utils/iconutil";
 import {
   errorNoti,
   processingNoti,
@@ -17,57 +26,193 @@ import {
   updateSuccessNoti,
   warningNoti,
 } from "../../../utils/notification";
-import UploadButton from "../UploadButton";
+import { Link } from "react-router-dom";
+import { DataGrid } from "@material-ui/data-grid";
 
-function TeacherList() {
-  const history = useHistory();
-  const dispatch = useDispatch();
+const useStyles = makeStyles((theme) => ({
+  wrapper: {
+    paddingTop: theme.spacing(2),
+    paddingBottom: theme.spacing(3)
+  },
+  header: {
+    flexGrow: 1,
+    textAlign: "left",
+    paddingLeft: theme.spacing(1)
+  },
+  search: {
+    width: 200
+  }
+}));
+
+const columns = [
+  {
+    headerName: "Tên giảng viên",
+    field: "teacherName",
+    headerAlign: "center",
+    flex: 1,
+    minWidth: 200,
+    renderCell: (row) => <Link to={`/edu/teacher/detail/${row.row.teacherId}`}>{row.value}</Link>
+  },
+  { 
+    headerName: "Email", 
+    field: "teacherId", 
+    headerAlign: "center", 
+    flex: 1,
+    minWidth: 200, 
+  },
+  { headerName: "Tài khoản", field: "userLoginId", headerAlign: "center", minWidth: 200 }
+];
+
+const initState = {
+  data: [],
+  loading: false,
+  page: 0,
+  pageSize: 5,
+  totalCount: 0,
+  keyword: "",
+  sortBy: "",
+  sortType: "",
+  error: ""
+};
+
+function reducer(state, action) {
+  const { type, payload } = action;
+  switch (type) {
+    case "fetchData":
+      return {
+        ...state,
+        loading: true,
+        error: ""
+      };
+    case "success":
+      return {
+        ...state,
+        data: payload.data,
+        totalCount: payload.totalCount,
+        loading: false,
+        error: ""
+      };
+    case "error":
+      return {
+        ...state,
+        loading: false,
+        error: action.payload,
+        page: 0,
+        totalCount: 1,
+        data: []
+      };
+    case "pageChange":
+      return {
+        ...state,
+        page: action.payload
+      };
+    case "sortChange":
+      return {
+        ...state,
+        sortBy: action.sortBy,
+        sortType: action.sortType
+      };
+    case "pageSizeChange":
+      return {
+        ...state,
+        page: 0,
+        pageSize: action.pageSize
+      };
+    case "keywordChange":
+      return {
+        ...state,
+        keyword: payload.keyword,
+        page: 0
+      };
+    default:
+      return state;
+  }
+}
+
+export default function TeacherList() {
+  const [state, localDispatch] = useReducer(reducer, initState);
+
+  const [openTeacherAdd, setOpenTeacherAdd] = useState(false);
+
   const token = useSelector((state) => state.auth.token);
 
   // Snackbar
   const toastId = React.useRef(null);
 
-  // Table.
-  const [teachers, setTeachers] = useState([]);
-  const columns = [
-    {
-      title: "Tên giảng viên",
-      field: "teacherName",
-      render: (rowData) => (
-        <Link
-          to={{
-            pathname: "/edu/teacher/detail",
-            state: {
-              email: rowData["email"],
-            },
-          }}
-        >
-          {rowData["teacherName"]}
-        </Link>
-      ),
-    },
-    { title: "Bộ môn", field: "department" },
-    {
-      field: "email",
-      title: "Email",
-    },
-  ];
+  const {
+    data,
+    page,
+    pageSize,
+    totalCount,
+    loading,
+    keyword,
+    sortBy,
+    sortType
+  } = state;
 
-  // Functions.
-  const getAllTeachers = () => {
-    axiosGet(token, "/edu/teacher/all")
-      .then((res) => {
-        console.log("getAllTeachers, teachers ", res.data);
-        setTeachers(res.data);
-      })
-      .catch((error) => console.log("getAllTeachers, error ", error));
+  const classes = useStyles();
+
+  useEffect(() => {
+    let url = '/get-all-teachers-by-page'
+      url += `?page=${page}&pageSize=${pageSize}`
+      if(sortBy)
+        url += `&sortBy=${sortBy}&sortType=${sortType}`
+      if(keyword !== '')
+        url += `&keyword=${keyword}`
+    console.log(url);
+    localDispatch({ type: "fetchData" });
+    
+    const timeout = setTimeout(() => {
+      localDispatch({type: 'error', payload: 'có lỗi xảy ra'})
+    }, 10000)
+
+    request(
+      'get',
+      url,
+      ({data}) => {
+        const dataWidthId = data.content.map((item, index) => ({...item, id: index}))
+        localDispatch({
+          type: "success",
+          payload: {
+            data: dataWidthId,
+            totalCount: data.totalElements,
+          }
+        });
+        clearTimeout(timeout)
+      }
+    )
+  }, [page, pageSize, sortBy, sortType, keyword]);
+
+  const handlePageSizeChange = (param) => {
+    localDispatch({ type: "pageSizeChange", pageSize: param.pageSize });
   };
 
-  const onClickCreateNewButton = () => {
-    history.push({
-      pathname: "/edu/teacher/create",
-      state: {},
+  const handlePageChange = (...rest) => {
+    localDispatch({ type: "pageChange", payload: rest[0].page });
+  };
+
+  const handleSortModelChange = ([params]) => {
+    const sortBy = params?.field || '';
+    const sortType = params?.sort || '';
+    localDispatch({
+      type: "sortChange",
+      sortBy,
+      sortType
     });
+  };
+
+  const handleKeywordChange = (txt) => {
+    localDispatch({
+      type: "keywordChange",
+      payload: { keyword: txt }
+    });
+  };
+
+  const handleOpen = () => {
+    setOpenTeacherAdd(true);
+  };
+  const handleClose = () => {
+    setOpenTeacherAdd(false);
   };
 
   const onClickSaveButton = (files) => {
@@ -293,7 +438,7 @@ function TeacherList() {
                 successNoti(res.data);
               }
 
-              getAllTeachers();
+              // getAllTeachers();
             })
             .catch((error) => {
               if (toast.isActive(toastId.current)) {
@@ -324,66 +469,125 @@ function TeacherList() {
     reader.readAsBinaryString(file);
   };
 
-  useEffect(() => {
-    getAllTeachers();
-  }, []);
-
   return (
-    <div>
-      <MuiThemeProvider>
-        <Card>
-          <CardContent>
-            <MaterialTable
-              title="Danh sách giảng viên"
-              columns={columns}
-              data={teachers}
-              icons={tableIcons}
-              localization={{
-                header: {
-                  actions: "",
-                },
-                body: {
-                  emptyDataSourceMessage: "Không có bản ghi nào để hiển thị",
-                  filterRow: {
-                    filterTooltip: "Lọc",
-                  },
-                },
-              }}
-              options={{
-                search: false,
-                actionsColumnIndex: -1,
-              }}
-              components={{
-                Toolbar: (props) => (
-                  <div>
-                    <MTableToolbar {...props} />
-                    <MuiThemeProvider>
-                      <Box display="flex" justifyContent="flex-end" width="98%">
-                        <Button
-                          variant="contained"
-                          color="primary"
-                          onClick={onClickCreateNewButton}
-                          startIcon={<AddCircleIcon />}
-                          style={{ marginRight: 16 }}
-                        >
-                          Thêm mới
-                        </Button>
-                        <UploadButton
-                          buttonTitle="Tải lên"
-                          onClickSaveButton={onClickSaveButton}
-                          filesLimit={1}
-                        />
-                      </Box>
-                    </MuiThemeProvider>
-                  </div>
-                ),
-              }}
+    <Container maxWidth="md">
+      <Paper elevation={5} className={classes.wrapper}>
+        <Container>
+          <Box
+            display="flex"
+            aria-orientation="horizontal"
+            alignItems="center"
+            p={1}
+          >
+            <Typography variant="h6" className={classes.header}>
+              Danh sách giảng viên
+            </Typography>
+            <TextSearch onSubmid={handleKeywordChange} />
+          </Box>
+          <Box
+            display="flex"
+            aria-orientation="horizontal"
+            alignItems="center"
+            justifyContent="center"
+            p={1}
+          >
+            <MyIconButton
+              onClick={handleOpen}
+              title="Add new teacher"
+              icon={PersonAddIcon}
+              color="#0030e0"
             />
-          </CardContent>
-        </Card>
-      </MuiThemeProvider>
-    </div>
+            {/* <MyIconButton
+              color="#0fbf00"
+              title="Import from a excel file"
+              icon={CloudUploadIcon}
+            /> */}
+            <UploadButton
+              buttonTitle="Tải lên"
+              onClickSaveButton={onClickSaveButton}
+              filesLimit={1}
+            />
+          </Box>
+          <DataGrid
+            rowCount={totalCount}
+            rows={data}
+            columns={columns}
+            page={page}
+            pageSize={pageSize}
+            pagination
+            paginationMode="server"
+            onPageChange={handlePageChange}
+            onPageSizeChange={handlePageSizeChange}
+            rowsPerPageOptions={[5, 10, 20]}
+            sortingMode="server"
+            onSortModelChange={handleSortModelChange}
+            loading={loading}
+            disableColumnMenu
+            autoHeight
+          />
+        </Container>
+      </Paper>
+      <AddTeacherModal open={openTeacherAdd} handleClose={handleClose} />
+    </Container>
   );
 }
 
-export default TeacherList;
+const TextSearch = ({ onSubmid }) => {
+  const classes = useStyles();
+
+  const [text, setText] = useState("");
+  const timeoutRef = useRef(null);
+
+  const handleTextChange = (event) => {
+    const value = event.target.value;
+    console.log(event)
+    setText(value);
+    if (timeoutRef.current) clearTimeout(timeoutRef.current);
+    timeoutRef.current = setTimeout(() => {
+      onSubmid(value);
+    }, 600);
+  };
+
+  const handleSubmid = (e) => {
+    e.preventDefault();
+    onSubmid(text);
+  };
+
+  return (
+    <form onSubmit={handleSubmid}>
+      <TextField
+        className={classes.search}
+        size="small"
+        // variant="outlined"
+        id="search"
+        placeholder="Search"
+        name="search"
+        value={text}
+        onChange={handleTextChange}
+        InputProps={{
+          startAdornment: (
+            <InputAdornment position="start">
+              <SearchIcon />
+            </InputAdornment>
+          )
+        }}
+      />
+    </form>
+  );
+};
+
+function MyIconButton(props) {
+  const { title, icon: Icon, onClick, color } = props;
+  const handleClick = (e) => {
+    if (onClick) {
+      onClick();
+    }
+  };
+  return (
+    <Tooltip title={title}>
+      <IconButton aria-label={title} onClick={handleClick}>
+        <Icon style={{ color: color }} />
+      </IconButton>
+    </Tooltip>
+  );
+}

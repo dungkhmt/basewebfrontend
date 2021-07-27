@@ -112,7 +112,12 @@ function QuizzTab({ classId }) {
             </Fragment>
           ) : (
             quizzList.map((quizz, index) => (
-              <Quiz key={quizz.questionId} quizz={quizz} index={index} />
+              <Quiz
+                key={quizz.questionId}
+                quizz={quizz}
+                index={index}
+                classId={classId}
+              />
             ))
           )}
         </div>

@@ -5,6 +5,8 @@ import map from "lodash/map";
 import range from "lodash/range";
 import React, { useEffect, useState } from "react";
 import { request } from "../../../api";
+import PrimaryButton from "../../button/PrimaryButton";
+
 const useStyles = makeStyles((theme) => ({
   root: {
     flexGrow: 1,
@@ -72,6 +74,23 @@ function TimeTableHeader() {
 function BoxClass(props) {
   function handleClick() {
     alert("Class " + props.code);
+    //props.root.suggestTeacherListForClass(props.code);
+
+    let datasend = {
+      classId: props.code,
+      planId: props.planId,
+    };
+    request(
+      // token,
+      // history,
+      "post",
+      "get-suggested-teacher-and-actions-for-class",
+      (res) => {
+        alert("suggested teacher list: " + JSON.stringify(res.data));
+      },
+      { 401: () => {} },
+      datasend
+    );
   }
 
   return (
@@ -108,8 +127,10 @@ function TimeTableElement(props) {
             <TimeTableSpace sz={e.startIndexFromPrevious} />
             <BoxClass
               code={e.classCode}
+              planId={props.planId}
               sz={e.duration}
               bgcolor={"text.secondary"}
+              root={props.root}
             />
           </Box>
         );
@@ -119,7 +140,9 @@ function TimeTableElement(props) {
   );
 }
 function TimeTable(props) {
+  //const root = props.root;
   console.log("TimeTable data = " + JSON.stringify(props.data));
+  //console.log("TimeTable planId (from root) = " + root.planId);
   return (
     <div>
       {props.data.map((e, i) => {
@@ -127,8 +150,10 @@ function TimeTable(props) {
           <Box display="flex" justifyContent="left">
             <TimeTableElement
               list={e.classList}
+              planId={props.planId}
               teacherId={e.teacherId}
               remainEmptySlots={e.remainEmptySlots}
+              root={props.root}
             />
           </Box>
         );
@@ -140,6 +165,10 @@ function TeacherBasedTimeTableAssignmentInSolution(props) {
   const planId = props.planId;
   const classes = useStyles();
   const [dataTimeTable, setDataTimeTable] = useState([]);
+  const [selectedTeacherId, setSelectedTeacherId] = useState(null);
+  const [selectedClassId, setSelectedClassId] = useState(null);
+
+  const [openSuggestion, setOpenSuggestion] = React.useState(false);
 
   const data = [
     {
@@ -166,20 +195,42 @@ function TeacherBasedTimeTableAssignmentInSolution(props) {
       //"/get-classes-assigned-to-a-teacher-solution/" + planId,
       "/get-classes-assigned-to-a-teacher-solution-for-view-grid/" + planId,
       (res) => {
-        //console.log("Gird TimeTable data = " + JSON.stringify(res.data));
+        console.log("Gird TimeTable data = " + JSON.stringify(res.data));
         setDataTimeTable(res.data);
       }
     );
   }
 
+  const suggestTeacherListForClass = (classId) => {
+    alert("suggest teacher list for class " + classId);
+  };
+  const customSelectTeacherHandle = (selectedTeacherId) => {};
+
+  const handleSuggestionModalClose = () => {
+    setOpenSuggestion(false);
+  };
+
+  function handleBtnClick() {
+    alert("Phân công lại");
+  }
   useEffect(() => {
     getDataTimeTableList();
   }, []);
 
   return (
     <Card>
+      <Box display="flex" justifyContent="flex-end">
+        <PrimaryButton
+          // className={classes.btn}
+          onClick={(e) => {
+            handleBtnClick(e);
+          }}
+        >
+          ""
+        </PrimaryButton>
+      </Box>
       <TimeTableHeader />
-      <TimeTable data={dataTimeTable} />
+      <TimeTable data={dataTimeTable} root={this} planId={planId} />
     </Card>
   );
 }
