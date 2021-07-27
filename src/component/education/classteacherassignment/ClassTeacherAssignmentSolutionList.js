@@ -169,7 +169,7 @@ function ClassTeacherAssignmentSolutionList(props) {
 
   function onSuggestTeacher(classId) {
     setSelectedClassId(classId);
-    //handleModalOpen();
+    handleModalOpen();
 
     let datasend = { classId: classId, planId: planId };
     request(
@@ -186,6 +186,7 @@ function ClassTeacherAssignmentSolutionList(props) {
             ", KQ: " +
             JSON.stringify(res.data)
         );
+
         setIsProcessing(false);
       },
       { 401: () => {} },

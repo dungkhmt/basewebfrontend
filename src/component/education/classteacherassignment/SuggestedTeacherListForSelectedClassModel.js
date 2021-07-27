@@ -1,4 +1,4 @@
-import { Button, Grid, MenuItem, Modal, TextField } from "@material-ui/core";
+import { Modal } from "@material-ui/core";
 import React, { useEffect } from "react";
 import { request } from "../../../api";
 
@@ -75,43 +75,7 @@ function SuggestedTeacherListForSelectedClassModel(props) {
     >
       <div style={modalStyle.paper}>
         <h2 id="simple-modal-title">Gợi ý giáo viên cho lớp</h2>
-        <div width="100%">
-          <form onSubmit={handleFormSubmit}>
-            <Grid container spacing={1} alignItems="flex-end">
-              <Grid item xs={2}>
-                <Button color="primary" width="100%" onClick={handleGetData}>
-                  GET DATA
-                </Button>
-              </Grid>
-
-              <Grid item xs={2}>
-                <TextField
-                  required
-                  id="selectedTeacher"
-                  select
-                  label="Chọn GV"
-                  value={selectedTeacher}
-                  fullWidth
-                  onChange={(event) => {
-                    setSelectedTeacher(event.target.value);
-                  }}
-                >
-                  {teachers.map((item) => (
-                    <MenuItem key={item.teacherId} value={item.teacherId}>
-                      {item.info}
-                    </MenuItem>
-                  ))}
-                </TextField>
-              </Grid>
-
-              <Grid item xs={2}>
-                <Button color="primary" type="submit" width="100%">
-                  Chon
-                </Button>
-              </Grid>
-            </Grid>
-          </form>
-        </div>
+        <div width="100%">Gợi ý DS GV có thể phân công</div>
       </div>
     </Modal>
   );
