@@ -6,7 +6,7 @@ import CustomizedDialogs from "./CustomizedDialogs";
 
 const useStyles = makeStyles((theme) => ({
   btn: { width: 100 },
-  dialogContent: { width: 550, borderBottom: "none" },
+  dialogContent: { width: 550 },
   actions: { paddingRight: theme.spacing(2) },
 }));
 
@@ -26,20 +26,19 @@ function ErrorDialog({ open }) {
       open={openDialog}
       handleClose={handleClose}
       title="Rất tiếc"
+      centerTitle
+      contentTopDivider
       content={
-        <Typography color="textSecondary" gutterBottom>
+        <Typography color="textSecondary" gutterBottom style={{ padding: 8 }}>
           Đã xảy ra lỗi. Chúng tôi đang cố gắng khắc phục lỗi sớm nhất có thể.
         </Typography>
       }
-      contentDividers={true}
       actions={
-        <>
-          <PrimaryButton className={classes.btn} onClick={handleClose}>
-            Đã hiểu
-          </PrimaryButton>
-        </>
+        <PrimaryButton className={classes.btn} onClick={handleClose}>
+          Đã hiểu
+        </PrimaryButton>
       }
-      style={{ content: classes.dialogContent, actions: classes.actions }}
+      classNames={{ content: classes.dialogContent, actions: classes.actions }}
     />
   );
 }
