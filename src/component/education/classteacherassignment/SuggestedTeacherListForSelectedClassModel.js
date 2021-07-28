@@ -13,14 +13,13 @@ import React from "react";
 import { FcBusinessman } from "react-icons/fc";
 import SimpleBar from "simplebar-react";
 import { request } from "../../../api";
+import PrimaryButton from "../../button/PrimaryButton";
 import TertiaryButton from "../../button/TertiaryButton";
 import CustomizedDialogs from "../../dialog/CustomizedDialogs";
 const useStyles = makeStyles((theme) => ({
   dialogContent: {
-    paddingLeft: theme.spacing(1),
-    paddingRight: theme.spacing(1),
-    paddingTop: theme.spacing(1) * 1.5,
-    paddingBottom: theme.spacing(1),
+    // paddingTop: theme.spacing(1) / 2,
+    minWidth: 480,
   },
   listItem: {
     paddingLeft: theme.spacing(1),
@@ -28,11 +27,12 @@ const useStyles = makeStyles((theme) => ({
     paddingTop: theme.spacing(1) * 1.5,
     paddingBottom: theme.spacing(1) * 1.5,
   },
+  btn: { marginRight: theme.spacing(1) },
 }));
 
 function SuggestedTeacherListForSelectedClassModel(props) {
   const classes = useStyles();
-  const { planId, classId, suggestionData, open, handleClose } = props;
+  const { planId, classId, suggestions, open, handleClose } = props;
 
   const onAssign = (teacherId) => {
     console.log(teacherId);
@@ -62,78 +62,86 @@ function SuggestedTeacherListForSelectedClassModel(props) {
       open={open}
       handleClose={handleClose}
       title={
-        suggestionData
-          ? `Gợi ý giáo viên cho lớp ${classId} (${suggestionData.length})`
-          : `Gợi ý giáo viên cho lớp ${classId}`
+        suggestions
+          ? `Gợi ý giảng viên cho lớp ${classId} (${suggestions.length})`
+          : `Gợi ý giảng viên cho lớp ${classId}`
       }
+      contentTopDivider
       content={
-        <>
+        suggestions &&
+        (suggestions.length === 0 ? (
+          <Typography color="textSecondary" gutterBottom style={{ padding: 8 }}>
+            Không tìm thấy giảng viên nào phù hợp.
+          </Typography>
+        ) : (
           <SimpleBar
             style={{
               height: "100%",
-              maxHeight: 400,
-              width: 440,
+              minHeight: 220,
+              maxHeight: 480,
+              width: 480,
               overflowX: "hidden",
               overscrollBehaviorY: "none", // To prevent tag <main> be scrolled when menu's scrollbar reach end
             }}
           >
             <List disablePadding>
-              {suggestionData
-                ? suggestionData.map((teacher, index) => (
-                    <>
-                      <ListItem
-                        alignItems="flex-start"
-                        key={teacher.teacherId}
-                        className={classes.listItem}
-                      >
-                        <ListItemAvatar style={{ minWidth: 52 }}>
-                          <Avatar
-                            alt="Avatar"
-                            style={{ background: grey[200] }}
-                          >
-                            <FcBusinessman size={24} />
-                          </Avatar>
-                        </ListItemAvatar>
+              {suggestions.map((teacher, index) => (
+                <>
+                  <ListItem
+                    alignItems="flex-start"
+                    key={teacher.teacherId}
+                    className={classes.listItem}
+                  >
+                    <ListItemAvatar style={{ minWidth: 52 }}>
+                      <Avatar alt="Avatar" style={{ background: grey[200] }}>
+                        <FcBusinessman size={24} />
+                      </Avatar>
+                    </ListItemAvatar>
 
-                        <ListItemText
-                          primary={teacher.teacherName}
-                          secondary={
-                            <>
-                              {teacher.moveClass
-                                ? teacher.moveClass.map((c, i) => (
-                                    <>
-                                      <Typography variant="body2">
-                                        {c.classCode} =&gt; {c.infoNewTeachers}
-                                      </Typography>
-                                    </>
-                                  ))
-                                : null}
-                            </>
-                          }
-                        />
+                    <ListItemText
+                      primary={teacher.teacherName}
+                      secondary={
+                        <>
+                          {teacher.moveClass
+                            ? teacher.moveClass.map((c, i) => (
+                                <>
+                                  <Typography variant="body2">
+                                    {c.classCode} =&gt; {c.infoNewTeachers}
+                                  </Typography>
+                                </>
+                              ))
+                            : null}
+                        </>
+                      }
+                    />
 
-                        <TertiaryButton
-                          onClick={() => onAssign(teacher.teacherId)}
-                        >
-                          Áp dụng
-                        </TertiaryButton>
-                      </ListItem>
+                    <TertiaryButton onClick={() => onAssign(teacher.teacherId)}>
+                      Áp dụng
+                    </TertiaryButton>
+                  </ListItem>
 
-                      {index < suggestionData.length - 1 && (
-                        <Divider
-                          variant="inset"
-                          component="li"
-                          style={{ marginRight: 8 }}
-                        />
-                      )}
-                    </>
-                  ))
-                : null}
+                  {index < suggestions.length - 1 && (
+                    <Divider
+                      variant="inset"
+                      component="li"
+                      style={{ marginRight: 8 }}
+                    />
+                  )}
+                </>
+              ))}
             </List>
           </SimpleBar>
-        </>
+        ))
       }
-      style={{ content: classes.dialogContent }}
+      actions={
+        suggestions &&
+        suggestions.length === 0 && (
+          <PrimaryButton className={classes.btn} onClick={handleClose}>
+            Đã hiểu
+          </PrimaryButton>
+        )
+      }
+      classNames={{ content: classes.dialogContent }}
     />
   );
 }
