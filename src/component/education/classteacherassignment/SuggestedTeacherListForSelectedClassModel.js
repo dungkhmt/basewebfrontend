@@ -12,9 +12,9 @@ import { makeStyles } from "@material-ui/core/styles";
 import React from "react";
 import { FcBusinessman } from "react-icons/fc";
 import SimpleBar from "simplebar-react";
+import { request } from "../../../api";
 import TertiaryButton from "../../button/TertiaryButton";
 import CustomizedDialogs from "../../dialog/CustomizedDialogs";
-
 const useStyles = makeStyles((theme) => ({
   dialogContent: {
     paddingLeft: theme.spacing(1),
@@ -32,10 +32,28 @@ const useStyles = makeStyles((theme) => ({
 
 function SuggestedTeacherListForSelectedClassModel(props) {
   const classes = useStyles();
-  const { classId, suggestionData, open, handleClose } = props;
+  const { planId, classId, suggestionData, open, handleClose } = props;
 
   const onAssign = (teacherId) => {
     console.log(teacherId);
+    let datasend = {
+      classId: classId,
+      teacherId: teacherId,
+      planId: planId,
+    };
+    request(
+      // token,
+      // history,
+      "post",
+      "manual-reassign-teacher-to-class",
+      (res) => {
+        console.log(res);
+        alert("phân giảng viên " + teacherId + " cho lớp " + classId + "  OK");
+      },
+      { 401: () => {} },
+      datasend
+    );
+
     handleClose();
   };
 
