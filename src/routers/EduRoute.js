@@ -4,6 +4,8 @@ import AssignmentList from "../component/education/AssignmentList";
 import BCASolver from "../component/education/BCASolver";
 import ClassCreate from "../component/education/class/ClassCreate";
 import ClassesList from "../component/education/class/ClassesList";
+import ClassTeacherAssignmentPlanDetail from "../component/education/classteacherassignment/ClassTeacherAssignmentPlanDetail";
+import ClassTeacherAssignmentPlanList from "../component/education/classteacherassignment/ClassTeacherAssignmentPlanList";
 import AddNewCourse from "../component/education/course/AddNewCourse";
 import CourseDetail from "../component/education/course/CourseDetail";
 import CourseList from "../component/education/course/CourseList";
@@ -49,10 +51,6 @@ import CreateAssignment from "../views/Education/ClassManagement/Teacher/CreateA
 import TAssignmentDetail from "../views/Education/ClassManagement/Teacher/TAssignmentDetail";
 import TClassDetail from "../views/Education/ClassManagement/Teacher/TClassDetail";
 import TClassList from "../views/Education/ClassManagement/Teacher/TClassList";
-
-import ClassTeacherAssignmentPlanList from "../component/education/classteacherassignment/ClassTeacherAssignmentPlanList";
-import ClassTeacherAssignmentPlanDetail from "../component/education/classteacherassignment/ClassTeacherAssignmentPlanDetail";
-
 import NotFound from "../views/errors/NotFound";
 
 export default function EduRoute() {
@@ -92,7 +90,7 @@ export default function EduRoute() {
         />
         <Route
           component={TeacherCourseQuizDetail}
-          path={`${path}/teacher/course/quiz/detail/:questionId`}
+          path={`${path}/teacher/course/quiz/detail/:questionId/:courseId`}
           exact
         />
         <Route

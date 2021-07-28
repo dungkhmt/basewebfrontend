@@ -1,4 +1,4 @@
-import { Card, CardContent, Typography } from "@material-ui/core/";
+import { Typography } from "@material-ui/core/";
 import AddIcon from "@material-ui/icons/Add";
 import parse from "html-react-parser";
 import MaterialTable from "material-table";
@@ -63,29 +63,25 @@ function TeacherCourseQuizChoiceAnswerList(props) {
   }, []);
 
   return (
-    <Card>
-      <CardContent>
-        <MaterialTable
-          title={"Choice Answer"}
-          columns={columns}
-          data={choiceAnswers}
-          actions={[
-            {
-              icon: () => {
-                return <AddIcon color="primary" fontSize="large" />;
-              },
-              tooltip: "Thêm mới",
-              isFreeAction: true,
-              onClick: () => {
-                history.push(
-                  "/edu/course/detail/quiz/choiceanswer/create/" + questionId
-                );
-              },
-            },
-          ]}
-        />
-      </CardContent>
-    </Card>
+    <MaterialTable
+      title={"Choice Answer"}
+      columns={columns}
+      data={choiceAnswers}
+      actions={[
+        {
+          icon: () => {
+            return <AddIcon color="primary" fontSize="large" />;
+          },
+          tooltip: "Thêm mới",
+          isFreeAction: true,
+          onClick: () => {
+            history.push(
+              "/edu/course/detail/quiz/choiceanswer/create/" + questionId
+            );
+          },
+        },
+      ]}
+    />
   );
 }
 

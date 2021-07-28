@@ -81,12 +81,15 @@ function SuggestedTeacherListForSelectedClassModel(props) {
                           primary={teacher.teacherName}
                           secondary={
                             <>
-                              <Typography variant="body2">
-                                11345 =&gt; ThuanDP
-                              </Typography>
-                              <Typography variant="body2">
-                                12300 =&gt; HuyQD
-                              </Typography>
+                              {teacher.moveClass
+                                ? teacher.moveClass.map((c, i) => (
+                                    <>
+                                      <Typography variant="body2">
+                                        {c.classCode} =&gt; {c.infoNewTeachers}
+                                      </Typography>
+                                    </>
+                                  ))
+                                : null}
                             </>
                           }
                         />
