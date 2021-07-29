@@ -75,7 +75,7 @@ const useStyles = makeStyles(() => ({
  * Describe a multiple-choice quiz.
  * @returns
  */
-export default function TeacherViewQuizDetail({ quiz, index }) {
+export default function TeacherViewQuizDetail({ quiz, index, courseId }) {
   const classes = useStyles();
   const token = useSelector((state) => state.auth.token);
   const history = useHistory();
@@ -93,7 +93,9 @@ export default function TeacherViewQuizDetail({ quiz, index }) {
   // });
 
   function handleUpdateQuizQuestion() {
-    history.push("/edu/teacher/course/quiz/detail/" + quiz.questionId);
+    history.push(
+      "/edu/teacher/course/quiz/detail/" + quiz.questionId + "/" + courseId
+    );
   }
 
   function handleChangeStatus() {

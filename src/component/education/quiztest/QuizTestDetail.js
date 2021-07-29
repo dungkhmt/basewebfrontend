@@ -13,6 +13,7 @@ import PrimaryButton from "../../button/PrimaryButton";
 import TertiaryButton from "../../button/TertiaryButton";
 import { a11yProps, AntTab, AntTabs, TabPanel } from "../../tab";
 import QuizListForAssignment from "./QuizListForAssignment";
+import QuizQuestionsInQuizTest from "./QuizQuestionsInQuizTest";
 import QuizTestGroupList from "./QuizTestGroupList";
 import QuizTestGroupParticipants from "./QuizTestGroupParticipants";
 import QuizTestJoinRequestList from "./QuizTestJoinRequestList";
@@ -43,6 +44,7 @@ const tabsLabel = [
   "Đề",
   "Phân đề cho thí sinh",
   "DS quiz",
+  "DS quiz trong Kỳ thi",
   "Kết quả",
   "Kết quả tổng quát",
 ];
@@ -253,9 +255,13 @@ export default function QuizTestDetail() {
         <QuizListForAssignment testId={param.id} />
       </TabPanel>
       <TabPanel value={selectedTab} index={5} dir={theme.direction}>
+        <QuizQuestionsInQuizTest testId={param.id} />
+      </TabPanel>
+
+      <TabPanel value={selectedTab} index={6} dir={theme.direction}>
         <QuizTestStudentListResult testId={param.id} isGeneral={false} />
       </TabPanel>
-      <TabPanel value={selectedTab} index={6} dir={theme.direction}>
+      <TabPanel value={selectedTab} index={7} dir={theme.direction}>
         <QuizTestStudentListResult testId={param.id} isGeneral={true} />
       </TabPanel>
     </>
