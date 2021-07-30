@@ -17,6 +17,7 @@ import QuizQuestionsInQuizTest from "./QuizQuestionsInQuizTest";
 import QuizTestGroupList from "./QuizTestGroupList";
 import QuizTestGroupParticipants from "./QuizTestGroupParticipants";
 import QuizTestJoinRequestList from "./QuizTestJoinRequestList";
+import QuizTestResultChart from "./QuizTestResultChart";
 import QuizTestStudentListResult from "./QuizTestResultList";
 import QuizTestStudentList from "./QuizTestStudentList";
 
@@ -47,6 +48,7 @@ const tabsLabel = [
   "DS quiz trong Kỳ thi",
   "Kết quả",
   "Kết quả tổng quát",
+  "Biểu đồ"
 ];
 
 const weekDay = [
@@ -232,6 +234,7 @@ export default function QuizTestDetail() {
         value={selectedTab}
         onChange={handleChangeTab}
         aria-label="ant example"
+        variant="scrollable"
         scrollButtons="auto"
       >
         {tabsLabel.map((label, idx) => (
@@ -263,6 +266,9 @@ export default function QuizTestDetail() {
       </TabPanel>
       <TabPanel value={selectedTab} index={7} dir={theme.direction}>
         <QuizTestStudentListResult testId={param.id} isGeneral={true} />
+      </TabPanel>
+      <TabPanel value={selectedTab} index={8} dir={theme.direction}>
+        <QuizTestResultChart testId={param.id} />
       </TabPanel>
     </>
   ) : (
