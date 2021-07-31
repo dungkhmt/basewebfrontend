@@ -1,6 +1,4 @@
-import {
-  Card, CardContent
-} from "@material-ui/core/";
+import { Card, CardContent } from "@material-ui/core/";
 import { makeStyles } from "@material-ui/core/styles";
 import AddIcon from "@material-ui/icons/Add";
 import MaterialTable from "material-table";
@@ -24,7 +22,6 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 function TeacherCourseQuizList(props) {
-  
   const classes = useStyles();
   const courseId = props.courseId;
   const dispatch = useDispatch();
@@ -121,7 +118,14 @@ function TeacherCourseQuizList(props) {
       title: "QuestionId",
       field: "questionId",
       render: (rowData) => (
-        <Link to={"/edu/teacher/course/quiz/detail/" + rowData["questionId"]}>
+        <Link
+          to={
+            "/edu/teacher/course/quiz/detail/" +
+            rowData["questionId"] +
+            "/" +
+            courseId
+          }
+        >
           {rowData["questionId"]}
         </Link>
       ),

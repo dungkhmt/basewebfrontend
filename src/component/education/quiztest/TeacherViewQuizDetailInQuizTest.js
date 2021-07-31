@@ -73,7 +73,7 @@ export const style = (theme) => ({
 
 const useStyles = makeStyles((theme) => style(theme));
 
-export default function TeacherViewQuizDetailForAssignment({
+export default function TeacherViewQuizDetailInQuizTest({
   quiz,
   index,
   testId,
@@ -121,13 +121,13 @@ export default function TeacherViewQuizDetailForAssignment({
       { quizGroupId: selectedGroupId, questionId: quiz.questionId }
     );
   };
-  const onSelectQuizTest = () => {
+  const onRemoveFromQuizTest = () => {
     handleCloseQuizTest();
     request(
       // token,
       // history,
       "post",
-      "/add-question-to-quiz-test",
+      "/remove-question-from-quiz-test",
       (res) => {},
       { rest: () => setError(true) },
       { testId: testId, questionId: quiz.questionId }
@@ -153,6 +153,14 @@ export default function TeacherViewQuizDetailForAssignment({
         {quiz.statusId})&nbsp;&nbsp;
         {parse(quiz.statement)}
       </Box>
+      <Button
+        color="primary"
+        variant="contained"
+        onClick={onOpenDialog}
+        className={classes.btn}
+      >
+        Thêm vào đề
+      </Button>
 
       <Button
         color="primary"
@@ -160,7 +168,7 @@ export default function TeacherViewQuizDetailForAssignment({
         onClick={onOpenDialogQuizTest}
         className={classes.btn}
       >
-        Thêm vào kỳ thi
+        Loại khỏi kỳ thi
       </Button>
 
       {/* Dialogs */}
@@ -223,8 +231,8 @@ export default function TeacherViewQuizDetailForAssignment({
         actions={
           <>
             <TertiaryButton onClick={handleCloseQuizTest}>Huỷ</TertiaryButton>
-            <PrimaryButton onClick={onSelectQuizTest}>
-              Thêm vào kỳ thi
+            <PrimaryButton onClick={onRemoveFromQuizTest}>
+              Loại khỏi kỳ thi
             </PrimaryButton>
           </>
         }

@@ -1,18 +1,80 @@
-import { Button, Checkbox, Tooltip } from "@material-ui/core/";
-import { green } from "@material-ui/core/colors";
-import { createMuiTheme, ThemeProvider } from "@material-ui/core/styles";
+import {
+  Button,
+  Checkbox,
+  TextField,
+  Tooltip,
+  Typography,
+} from "@material-ui/core/";
+import { blue, green, grey } from "@material-ui/core/colors";
+import {
+  createMuiTheme,
+  makeStyles,
+  ThemeProvider,
+} from "@material-ui/core/styles";
 import { Delete } from "@material-ui/icons";
 import AddCircleOutlineIcon from "@material-ui/icons/AddCircleOutline";
 import MaterialTable from "material-table";
 import React, { useEffect, useReducer, useState } from "react";
+import SimpleBar from "simplebar-react";
 import { request } from "../../../api";
+import PrimaryButton from "../../button/PrimaryButton";
+import TertiaryButton from "../../button/TertiaryButton";
+import CustomizedDialogs from "../../dialog/CustomizedDialogs";
+import ErrorDialog from "../../dialog/ErrorDialog";
 import QuizTestGroupQuestionList from "./QuizTestGroupQuestionList";
+export const style = (theme) => ({
+  testBtn: {
+    marginLeft: 40,
+    marginTop: 32,
+  },
+  wrapper: {
+    padding: "32px 0px",
+  },
+  answerWrapper: {
+    "& label": {
+      "&>:nth-child(2)": {
+        display: "inline-block",
+        "& p": {
+          margin: 0,
+          textAlign: "justify",
+        },
+      },
+    },
+  },
+  answer: {
+    width: "100%",
+    marginTop: 20,
+  },
+  quizStatement: {
+    fontSize: "1rem",
+    "&>p:first-of-type": {
+      display: "inline",
+    },
+  },
+  list: {
+    paddingBottom: 0,
+    width: 330,
+  },
+  dialogContent: { paddingBottom: theme.spacing(1), width: 362 },
+  listItem: {
+    borderRadius: 6,
+    "&:hover": {
+      backgroundColor: grey[200],
+    },
+    "&.Mui-selected": {
+      backgroundColor: blue[500],
+      color: theme.palette.getContrastText(blue[500]),
+      "&:hover": {
+        backgroundColor: blue[500],
+      },
+    },
+  },
+  btn: {
+    textTransform: "none",
+  },
+});
 
-// const useStyles = makeStyles({
-//   table: {
-//     minWidth: 700,
-//   },
-// });
+const useStyles = makeStyles((theme) => style(theme));
 
 const headerProperties = {
   headerStyle: {
@@ -31,11 +93,14 @@ export default function QuizTestGroupList(props) {
 
   const [selectedAll, setSelectedAll] = useState(false);
 
+  const [open, setOpen] = useState(false);
+  const [error, setError] = useState(false);
   const theme = createMuiTheme({
     palette: {
       primary: green,
     },
   });
+  const classes = useStyles();
 
   const columns = [
     {
@@ -91,7 +156,17 @@ export default function QuizTestGroupList(props) {
   let testId = props.testId;
 
   const [groupList, setGroupList] = useState([]);
+  const [numberGroups, setNumberGroups] = useState(null);
 
+  const onOpenDialog = () => {
+    setOpen(true);
+  };
+  const handleClose = () => {
+    setOpen(false);
+  };
+  const handleChangeNumberGroups = (event) => {
+    setNumberGroups(event.target.value);
+  };
   async function getStudentList() {
     request(
       // token,
@@ -118,7 +193,8 @@ export default function QuizTestGroupList(props) {
   }
 
   const handleGenerateQuizGroup = (e) => {
-    let data = { quizTestId: testId, numberOfQuizTestGroups: 1 };
+    handleClose();
+    let data = { quizTestId: testId, numberOfQuizTestGroups: numberGroups };
 
     request(
       // token,
@@ -129,7 +205,8 @@ export default function QuizTestGroupList(props) {
         console.log(res);
         alert("Thêm đề thành công");
       },
-      { 401: () => {} },
+      { rest: () => setError(true) },
+
       data
     );
   };
@@ -218,7 +295,8 @@ export default function QuizTestGroupList(props) {
                       variant="contained"
                       color="primary"
                       onClick={(e) => {
-                        handleGenerateQuizGroup(e);
+                        //handleGenerateQuizGroup(e);
+                        onOpenDialog();
                       }}
                       style={{ color: "white" }}
                     >
@@ -288,6 +366,45 @@ export default function QuizTestGroupList(props) {
         ]}
       />
       <QuizTestGroupQuestionList testId={testId} />
+
+      <CustomizedDialogs
+        open={open}
+        handleClose={handleClose}
+        title="Sinh thêm đề"
+        content={
+          <>
+            <Typography color="textSecondary" gutterBottom>
+              Nhập số lượng đề cần sinh thêm
+            </Typography>
+            <SimpleBar
+              style={{
+                height: "100%",
+                maxHeight: 400,
+                width: 330,
+                overflowX: "hidden",
+                overscrollBehaviorY: "none", // To prevent tag <main> be scrolled when menu's scrollbar reach end
+              }}
+            ></SimpleBar>
+            <TextField
+              required
+              id="standard-required"
+              label="Required"
+              defaultValue="1"
+              onChange={handleChangeNumberGroups}
+            />
+          </>
+        }
+        actions={
+          <>
+            <TertiaryButton onClick={handleClose}>Huỷ</TertiaryButton>
+            <PrimaryButton onClick={handleGenerateQuizGroup}>
+              Sinh thêm đề
+            </PrimaryButton>
+          </>
+        }
+        style={{ content: classes.dialogContent }}
+      />
+      <ErrorDialog open={error} />
     </>
   );
 }

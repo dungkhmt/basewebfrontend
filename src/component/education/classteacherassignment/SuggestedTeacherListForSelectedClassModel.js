@@ -12,10 +12,10 @@ import { makeStyles } from "@material-ui/core/styles";
 import React from "react";
 import { FcBusinessman } from "react-icons/fc";
 import SimpleBar from "simplebar-react";
+import { request } from "../../../api";
 import PrimaryButton from "../../button/PrimaryButton";
 import TertiaryButton from "../../button/TertiaryButton";
 import CustomizedDialogs from "../../dialog/CustomizedDialogs";
-
 const useStyles = makeStyles((theme) => ({
   dialogContent: {
     // paddingTop: theme.spacing(1) / 2,
@@ -32,10 +32,28 @@ const useStyles = makeStyles((theme) => ({
 
 function SuggestedTeacherListForSelectedClassModel(props) {
   const classes = useStyles();
-  const { classId, suggestionData: suggestions, open, handleClose } = props;
+  const { planId, classId, suggestions, open, handleClose } = props;
 
   const onAssign = (teacherId) => {
     console.log(teacherId);
+    let datasend = {
+      classId: classId,
+      teacherId: teacherId,
+      planId: planId,
+    };
+    request(
+      // token,
+      // history,
+      "post",
+      "manual-reassign-teacher-to-class",
+      (res) => {
+        console.log(res);
+        alert("phân giảng viên " + teacherId + " cho lớp " + classId + "  OK");
+      },
+      { 401: () => {} },
+      datasend
+    );
+
     handleClose();
   };
 
@@ -84,12 +102,15 @@ function SuggestedTeacherListForSelectedClassModel(props) {
                       primary={teacher.teacherName}
                       secondary={
                         <>
-                          <Typography variant="body2">
-                            11345 =&gt; ThuanDP
-                          </Typography>
-                          <Typography variant="body2">
-                            12300 =&gt; HuyQD
-                          </Typography>
+                          {teacher.moveClass
+                            ? teacher.moveClass.map((c, i) => (
+                                <>
+                                  <Typography variant="body2">
+                                    {c.classCode} =&gt; {c.infoNewTeachers}
+                                  </Typography>
+                                </>
+                              ))
+                            : null}
                         </>
                       }
                     />

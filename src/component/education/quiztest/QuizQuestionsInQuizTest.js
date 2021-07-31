@@ -5,7 +5,7 @@ import React, { Fragment, useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { useHistory } from "react-router";
 import { request } from "../../../api";
-import TeacherViewQuizDetail from "./TeacherViewQuizDetail";
+import TeacherViewQuizDetailInQuizTest from "./TeacherViewQuizDetailInQuizTest";
 
 const useStyles = makeStyles(() => ({
   titleContainer: {
@@ -26,23 +26,24 @@ const useStyles = makeStyles(() => ({
   },
 }));
 
-function TeacherViewCourseQuizList({ courseId }) {
+function QuizQuestionsInQuizTest({ testId }) {
   const classes = useStyles();
   const token = useSelector((state) => state.auth.token);
   const history = useHistory();
 
-  const [quizzList, setQuizList] = useState([]);
+  const [quizList, setQuizList] = useState([]);
+  const [quizGroups, setQuizGroups] = useState();
   const [loading, setLoading] = useState(true);
 
+  //
   const getQuizListOfClass = () => {
     request(
       // token,
       // history,
       "get",
-      //`/get-unpublished-quiz-of-course/${courseId}`,
-      `/get-quiz-of-course/${courseId}`,
+      `/get-questions-of-quiz-test/${testId}`,
       (res) => {
-        console.log("getQuizListOfClass, res.data = ", res.data);
+        // console.log("getQuizListOfClass, res.data = ", res.data);
         setQuizList(res.data);
         setLoading(false);
       },
@@ -54,8 +55,21 @@ function TeacherViewCourseQuizList({ courseId }) {
     );
   };
 
+  const getQuizGroup = () => {
+    request(
+      // token,
+      // history,
+      "get",
+      `/get-test-groups-info?testId=${testId}`,
+      (res) => {
+        setQuizGroups(res.data);
+      }
+    );
+  };
+
   useEffect(() => {
     getQuizListOfClass();
+    getQuizGroup();
   }, []);
 
   return (
@@ -112,11 +126,13 @@ function TeacherViewCourseQuizList({ courseId }) {
               />
             </Fragment>
           ) : (
-            quizzList.map((quizz, index) => (
-              <TeacherViewQuizDetail
-                quiz={quizz}
+            quizList.map((quiz, index) => (
+              <TeacherViewQuizDetailInQuizTest
+                key={quiz.questionId}
+                quiz={quiz}
                 index={index}
-                courseId={courseId}
+                testId={testId}
+                quizGroups={quizGroups}
               />
             ))
           )}
@@ -126,4 +142,4 @@ function TeacherViewCourseQuizList({ courseId }) {
   );
 }
 
-export default TeacherViewCourseQuizList;
+export default QuizQuestionsInQuizTest;

@@ -90,12 +90,6 @@ function ClassTeacherAssignmentSolutionList(props) {
   ];
 
   const customAssignHandle = (selectedTeacherId) => {
-    //console.log(filename);
-    //setSearchString(sString);
-    //alert("upload " + filename);
-    //uploadExcel(selectedFile, choice);
-    //perform API to assign teacher here
-    //alert("call API to assign teacher " + selectedTeacherId);
     let datasend = {
       classId: selectedClassId,
       teacherId: selectedTeacherId,
@@ -171,7 +165,7 @@ function ClassTeacherAssignmentSolutionList(props) {
       "get-suggested-teacher-and-actions-for-class/" + classId + "/" + planId,
       (res) => {
         setSuggestionData(res.data);
-
+        console.log("SUGGEST TEACHERS ", res.data);
         setIsProcessing(false);
       },
       { 401: () => {} },
