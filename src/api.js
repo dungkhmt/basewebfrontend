@@ -279,7 +279,7 @@ export async function request(
     } else {
       // Something happened in setting up the request that triggered an Error.
       console.log(
-        "Something happened in setting up the request that triggered an Error",
+        "Something happened in setting up the request that triggered an error: ",
         e.message
       );
     }
