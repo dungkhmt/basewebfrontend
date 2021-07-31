@@ -3,9 +3,12 @@ import { grey } from "@material-ui/core/colors";
 import { makeStyles } from "@material-ui/core/styles";
 import NotificationsIcon from "@material-ui/icons/Notifications";
 import clsx from "clsx";
+import { EventSourcePolyfill } from "event-source-polyfill";
 import randomColor from "randomcolor";
 import React from "react";
+import { store } from "../..";
 import { request } from "../../api";
+import { API_URL } from "../../config/config";
 import { useNotificationState } from "../../state/NotificationState";
 import NotificationMenu from "./NotificationMenu";
 
@@ -27,6 +30,26 @@ const useStyles = makeStyles((theme) => ({
   badge: { top: -3, right: -3 },
 }));
 
+const SSE_EVENTS = {
+  HEARTBEAT: "HEARTBEAT",
+  NEW_NOTIFICATION: "NEW_NOTIFICATION",
+};
+
+const processNotificationsContent = (notifications) => {
+  return notifications.map((notification) => ({
+    id: notification.id,
+    url: notification.url,
+    avatar: notification.avatar,
+    content: notification.content,
+    time: notification.createdStamp,
+    read: notification.read,
+    avatarColor: randomColor({
+      luminosity: "dark",
+      hue: "random",
+    }),
+  }));
+};
+
 function NotificationButton() {
   const classes = useStyles();
 
@@ -36,8 +59,6 @@ function NotificationButton() {
   // return focus to the button when we transitioned from !open -> open
   const prevOpen = React.useRef(open.get());
   const anchorRef = React.useRef(null);
-
-  //
 
   //
   const handleToggle = () => {
@@ -50,21 +71,9 @@ function NotificationButton() {
       `/notification?page=${0}&size=${20}`,
       (res) => {
         let data = res.data;
+        const noties = processNotificationsContent(data.notifications.content);
 
-        const notis = data.notifications.content.map((notification) => ({
-          id: notification.id,
-          url: notification.url,
-          avatar: notification.avatar,
-          content: notification.content,
-          time: notification.createdStamp,
-          read: notification.read,
-          avatarColor: randomColor({
-            luminosity: "dark",
-            hue: "random",
-          }),
-        }));
-
-        notifications.set(notis);
+        notifications.set(noties);
         numUnRead.set(data.numUnRead);
       },
       { 401: () => {} }
@@ -78,8 +87,133 @@ function NotificationButton() {
 
     prevOpen.current = open.get();
 
-    if (open.get() === false) fetchNotification();
+    // if (open.get() === false) fetchNotification();
   }, [open.get()]);
+
+  // SSE event handler
+  const handleNewNotification = (e) => {
+    if (notifications.get()) {
+      let newNotification = processNotificationsContent([JSON.parse(e.data)]);
+      const len = notifications.get().length;
+
+      if (len === 0) {
+        // Notification list is empty
+        notifications.set(newNotification);
+        numUnRead.set(1);
+      } else {
+        newNotification = newNotification[0];
+        const newCreatedTime = new Date(newNotification.time).getTime();
+        let consideredCreatedTime;
+
+        // case 1: new is later than the considered one -> insert at that position and stop
+        // case 2: new is the same as the considered one -> stop
+        // case 3: new is earlier than the considered one -> continuously iterate
+        for (let i = 0; i < len; i++) {
+          consideredCreatedTime = new Date(
+            notifications[i].time.get()
+          ).getTime();
+
+          if (newCreatedTime > consideredCreatedTime) {
+            notifications.set((p) => {
+              p.splice(i, 0, newNotification);
+              return p;
+            });
+
+            numUnRead.set(numUnRead.get() + 1);
+            return;
+          } else if (newCreatedTime === consideredCreatedTime) {
+            return;
+          }
+        }
+      }
+    } else {
+      fetchNotification();
+    }
+  };
+
+  React.useEffect(() => {
+    // When user open multiple tabs, only one tab will receive events at any point of time,
+    // all other tabs will wait for 45 secs timeout and reconnect to server,
+    // one of them will successfully connect and receive next events
+
+    let eventSource;
+    let reconnectFrequencySeconds = 1;
+
+    // Putting these functions in extra variables is just for the sake of readability
+    const wait = function () {
+      return reconnectFrequencySeconds * 1000;
+    };
+
+    const tryToSetup = function () {
+      setupEventSource();
+      reconnectFrequencySeconds *= 2;
+
+      if (reconnectFrequencySeconds >= 64) {
+        reconnectFrequencySeconds = 64;
+      }
+    };
+
+    // Reconnect on every error
+    const reconnect = function () {
+      setTimeout(tryToSetup, wait());
+    };
+
+    function setupEventSource() {
+      eventSource = new EventSourcePolyfill(
+        `${API_URL}/notification/subscription`,
+        {
+          headers: {
+            "X-Auth-Token": store.getState().auth.token,
+          },
+          heartbeatTimeout: 120000,
+        }
+      );
+
+      eventSource.onopen = (event) => {
+        console.info("SSE opened");
+        reconnectFrequencySeconds = 1;
+        fetchNotification();
+      };
+
+      // This event only to keep sse connection alive
+      eventSource.addEventListener(SSE_EVENTS.HEARTBEAT, (e) => {
+        // console.log(e);
+      });
+
+      eventSource.addEventListener(SSE_EVENTS.NEW_NOTIFICATION, (e) =>
+        handleNewNotification(e)
+      );
+
+      eventSource.onerror = (event) => {
+        // When server SseEmitters timeout, it cause error
+        console.error(
+          `EventSource connection state: ${
+            eventSource.readyState
+          }, error occurred: ${JSON.stringify(event)}`
+        );
+
+        if (event.target.readyState === EventSource.CLOSED) {
+          console.log(
+            `SSE closed (event readyState = ${event.target.readyState})`
+          );
+        } else if (event.target.readyState === EventSource.CONNECTING) {
+          console.log(
+            `SSE reconnecting (event readyState = ${event.target.readyState})`
+          );
+        }
+
+        eventSource.close();
+        reconnect();
+      };
+    }
+
+    setupEventSource();
+
+    return () => {
+      eventSource.close();
+      console.info("SSE closed");
+    };
+  }, []);
 
   return (
     <>
