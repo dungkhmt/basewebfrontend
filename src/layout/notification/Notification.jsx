@@ -166,7 +166,7 @@ function Notification(props) {
     >
       <div
         className={classes.contentContainer}
-        style={{ display: "flex", alignItems: "flex-start" }}
+        style={{ display: "flex", alignItems: "flex-start", width: "100%" }}
       >
         <ListItemAvatar className={classes.itemAvatar}>{avatar}</ListItemAvatar>
 
