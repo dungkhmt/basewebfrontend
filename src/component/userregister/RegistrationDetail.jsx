@@ -142,6 +142,30 @@ function RegistrationDetail(props) {
       { userLoginId: data.id, roles: grantedRolesId }
     );
   };
+  const handleDisable = () => {
+    setDisabled(true);
+
+    // Send request
+    request(
+      "post",
+      `/user/disable-registration`,
+      () => {},
+      {
+        onError: () => setDisabled(false),
+        400: (e) => {
+          if ("approved" === e.response.data.error) {
+            errorNoti("Tài khoản đã được phê duyệt trước đó.");
+          } else {
+            errorNoti("Rất tiếc! Đã có lỗi xảy ra. Vui lòng thử lại.");
+          }
+        },
+        rest: () => {
+          errorNoti("Rất tiếc! Đã có lỗi xảy ra. Vui lòng thử lại.");
+        },
+      },
+      { userLoginId: data.id }
+    );
+  };
 
   //
   useEffect(() => {
@@ -245,6 +269,13 @@ function RegistrationDetail(props) {
               onClick={handleApprove}
             >
               Phê duyệt
+            </PrimaryButton>
+            <PrimaryButton
+              disabled={disabled}
+              style={approveBtnStyle}
+              onClick={handleDisable}
+            >
+              Hủy
             </PrimaryButton>
           </div>
         </div>

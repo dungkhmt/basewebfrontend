@@ -1,7 +1,8 @@
 import { Box, Grid, Paper } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
+import { DataGrid } from "@material-ui/data-grid";
 import React, { useEffect, useState } from "react";
-import { Doughnut, HorizontalBar } from "react-chartjs-2";
+import { Bar, Doughnut, HorizontalBar, Line } from "react-chartjs-2";
 import { useDispatch, useSelector } from "react-redux";
 import { useHistory } from "react-router";
 import { authPost, request } from "../api";
@@ -66,6 +67,52 @@ const taskCounterOpt = {
   },
 };
 
+const columns = [
+  { field: "id", headerName: "ID", width: 90 },
+  {
+    field: "firstName",
+    headerName: "First name",
+    width: 150,
+    editable: true,
+  },
+  {
+    field: "lastName",
+    headerName: "Last name",
+    width: 150,
+    editable: true,
+  },
+  {
+    field: "age",
+    headerName: "Age",
+    type: "number",
+    width: 110,
+    editable: true,
+  },
+  {
+    field: "fullName",
+    headerName: "Full name",
+    description: "This column has a value getter and is not sortable.",
+    sortable: false,
+    width: 160,
+    valueGetter: (params) =>
+      `${params.getValue(params.id, "firstName") || ""} ${
+        params.getValue(params.id, "lastName") || ""
+      }`,
+  },
+];
+
+const rows = [
+  { id: 1, lastName: "Snow", firstName: "Jon", age: 35 },
+  { id: 2, lastName: "Lannister", firstName: "Cersei", age: 42 },
+  { id: 3, lastName: "Lannister", firstName: "Jaime", age: 45 },
+  { id: 4, lastName: "Stark", firstName: "Arya", age: 16 },
+  { id: 5, lastName: "Targaryen", firstName: "Daenerys", age: null },
+  { id: 6, lastName: "Melisandre", firstName: null, age: 150 },
+  { id: 7, lastName: "Clifford", firstName: "Ferrara", age: 44 },
+  { id: 8, lastName: "Frances", firstName: "Rossini", age: 36 },
+  { id: 9, lastName: "Roxie", firstName: "Harvey", age: 65 },
+];
+
 export default function Home(props) {
   const classes = useStyles();
   const dispatch = useDispatch();
@@ -82,9 +129,13 @@ export default function Home(props) {
 
   const [dateStudentParticipation, setDateStudentParticipation] = useState([]);
   const [totalParticipation, setTotalParticipation] = useState([]);
+  const [accTotalParticipation, setAccTotalParticipation] = useState([]);
 
   const [dateQuizParticipation, setDateQuizParticipation] = useState([]);
   const [totalQuizParticipation, setTotalQuizParticipation] = useState([]);
+  const [accTotalQuizParticipation, setAccTotalQuizParticipation] = useState(
+    []
+  );
 
   // const data = {
   //   labels: ["January", "February", "March", "April", "May", "June", "July"],
@@ -136,13 +187,40 @@ export default function Home(props) {
     datasets: [
       {
         label: "Part.",
-        backgroundColor: "rgba(255,99,132,0.2)",
-        borderColor: "rgba(255,99,132,1)",
-        borderWidth: 1,
-        height: 500,
-        hoverBackgroundColor: "rgba(255,99,132,0.4)",
-        hoverBorderColor: "rgba(255,99,132,1)",
+        //backgroundColor: "rgba(255,99,132,0.2)",
+        //borderColor: "rgba(255,99,132,1)",
+        //borderWidth: 1,
+        //height: 500,
+        //hoverBackgroundColor: "rgba(255,99,132,0.4)",
+        //hoverBorderColor: "rgba(255,99,132,1)",
         data: totalParticipation,
+
+        backgroundColor: "rgba(54, 162, 235, 0.2)",
+        borderColor: "rgba(54, 162, 235, 1)",
+        borderWidth: 1,
+        hoverBackgroundColor: "rgba(54, 162, 235, 0.4)",
+        hoverBorderColor: "rgba(54, 162, 235, 1)",
+      },
+    ],
+  };
+
+  const dataStudentAccParticipation = {
+    labels: dateStudentParticipation,
+    datasets: [
+      {
+        label: "Acc.Part.",
+        //backgroundColor: "rgba(255,99,132,0.2)",
+        //borderColor: "rgba(255,99,132,1)",
+        //borderWidth: 1,
+        //height: 500,
+        //hoverBackgroundColor: "rgba(255,99,132,0.4)",
+        //hoverBorderColor: "rgba(255,99,132,1)",
+        data: accTotalParticipation,
+        backgroundColor: "rgba(54, 162, 235, 0.2)",
+        borderColor: "rgba(54, 162, 235, 1)",
+        borderWidth: 1,
+        hoverBackgroundColor: "rgba(54, 162, 235, 0.4)",
+        hoverBorderColor: "rgba(54, 162, 235, 1)",
       },
     ],
   };
@@ -151,13 +229,39 @@ export default function Home(props) {
     labels: dateQuizParticipation,
     datasets: [
       {
-        label: "Quiz.",
-        backgroundColor: "rgba(255,99,132,0.2)",
-        borderColor: "rgba(255,99,132,1)",
-        borderWidth: 1,
-        hoverBackgroundColor: "rgba(255,99,132,0.4)",
-        hoverBorderColor: "rgba(255,99,132,1)",
+        label: "Qz.",
+        //backgroundColor: "rgba(255,99,132,0.2)",
+        //borderColor: "rgba(255,99,132,1)",
+        //borderWidth: 1,
+        //hoverBackgroundColor: "rgba(255,99,132,0.4)",
+        //hoverBorderColor: "rgba(255,99,132,1)",
         data: totalQuizParticipation,
+        backgroundColor: "rgba(54, 162, 235, 0.2)",
+        borderColor: "rgba(54, 162, 235, 1)",
+        borderWidth: 1,
+        hoverBackgroundColor: "rgba(54, 162, 235, 0.4)",
+        hoverBorderColor: "rgba(54, 162, 235, 1)",
+      },
+    ],
+  };
+  const dataQuizAccParticipation = {
+    labels: dateQuizParticipation,
+    datasets: [
+      {
+        label: "Acc.Qz.",
+        //backgroundColor: "rgba(255,99,132,0.2)",
+        //borderColor: "rgba(255,99,132,1)",
+        //borderWidth: 1,
+        height: 500,
+        fill: false,
+        //hoverBackgroundColor: "rgba(255,99,132,0.4)",
+        //hoverBorderColor: "rgba(255,99,132,1)",
+        data: accTotalQuizParticipation,
+        backgroundColor: "rgba(54, 162, 235, 0.2)",
+        borderColor: "rgba(54, 162, 235, 1)",
+        borderWidth: 1,
+        hoverBackgroundColor: "rgba(54, 162, 235, 0.4)",
+        hoverBorderColor: "rgba(54, 162, 235, 1)",
       },
     ],
   };
@@ -172,16 +276,18 @@ export default function Home(props) {
         let lst = res.data;
         let dates = [];
         let participations = [];
-
+        let accParticipation = [];
         // console.log("getStudentParticipation, lst = ", lst);
 
         lst.forEach((r) => {
           dates.push(r.date);
           participations.push(r.count);
+          accParticipation.push(r.accCount);
         });
 
         setDateStudentParticipation(dates);
         setTotalParticipation(participations);
+        setAccTotalParticipation(accParticipation);
       },
       { 401: () => {} },
       {
@@ -233,16 +339,19 @@ export default function Home(props) {
         let lst = res.data;
         let dates = [];
         let participations = [];
+        let accParticipations = [];
 
         // console.log("getQuizParticipation, lst = ", lst);
 
         lst.forEach((r) => {
           dates.push(r.date);
           participations.push(r.count);
+          accParticipations.push(r.accCount);
         });
 
         setDateQuizParticipation(dates);
         setTotalQuizParticipation(participations);
+        setAccTotalQuizParticipation(accParticipations);
       },
       { 401: () => {} },
       { fromDate: "", thruDate: "" }
@@ -371,14 +480,67 @@ export default function Home(props) {
   return (
     <div>
       <Grid container spacing={3}>
-        <Grid item xs={6}>
-          <h2>Cour.</h2>
-          <HorizontalBar data={dataStudentParticipation} />
+        <Grid item xs={3}>
+          <Paper>
+            <h2>Cour.</h2>
+            <HorizontalBar data={dataStudentParticipation} />
+          </Paper>
         </Grid>
-        <Grid item xs={6}>
-          <h2>Quiz.</h2>
-          <HorizontalBar data={dataQuizParticipation} />
+        <Grid item xs={3}>
+          <Paper>
+            <h2>Quiz.</h2>
+            <HorizontalBar data={dataQuizParticipation} />
+          </Paper>
         </Grid>
+        <Grid item xs={3}>
+          <Paper>
+            <h2>Acc.Cour.</h2>
+            <Bar data={dataStudentAccParticipation} />
+          </Paper>
+        </Grid>
+        <Grid item xs={3}>
+          <Paper>
+            <h2>Quiz.</h2>
+            <Line data={dataQuizAccParticipation} />
+          </Paper>
+        </Grid>
+        <Grid item xs={3}>
+          <Paper>
+            <h2>Quiz.</h2>
+            <Line data={dataQuizParticipation} />
+          </Paper>
+        </Grid>
+        <Grid item xs={3}>
+          <Paper>
+            <h2>Acc.Cour.</h2>
+            <Line data={dataStudentAccParticipation} />
+          </Paper>
+        </Grid>
+        <Grid item xs={3}>
+          <Paper>
+            <h2>Cour.</h2>
+            <HorizontalBar data={dataStudentParticipation} />
+          </Paper>
+        </Grid>
+        <Grid item xs={3}>
+          <Paper>
+            <h2>Quiz.</h2>
+            <Line data={dataQuizParticipation} />
+          </Paper>
+        </Grid>
+
+        <Grid item xs={12}>
+          <Paper>
+            <DataGrid
+              rows={rows}
+              columns={columns}
+              pageSize={5}
+              checkboxSelection
+              disableSelectionOnClick
+            />
+          </Paper>
+        </Grid>
+
         <Grid item xs={12}>
           <Paper>
             <Box className={classes.doughnutStyle}>
@@ -396,6 +558,13 @@ export default function Home(props) {
           <HorizontalBar data={dataVehicleDistance} />
         </Grid>
       </Grid>
+      <DataGrid
+        rows={rows}
+        columns={columns}
+        pageSize={5}
+        checkboxSelection
+        disableSelectionOnClick
+      />
     </div>
   );
 }
