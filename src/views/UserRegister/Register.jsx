@@ -25,8 +25,6 @@ import VisibilityOff from "@material-ui/icons/VisibilityOff";
 import { motion } from "framer-motion";
 import React, { useEffect, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
-import { useSelector } from "react-redux";
-import { useHistory } from "react-router-dom";
 import { request } from "../../api";
 import CustomizedDialogs from "../../component/dialog/CustomizedDialogs";
 import PositiveButton from "../../component/education/classmanagement/PositiveButton";
@@ -120,14 +118,12 @@ const useStyles = makeStyles(() => ({
     fontFamily: "'Roboto', sans-serif",
   },
   confirmBtn: {
-    fontWeight: "normal",
+    marginRight: theme.spacing(1),
   },
 }));
 
 export default function NewRegister() {
   const classes = useStyles();
-  const history = useHistory();
-  const token = useSelector((state) => state.auth.token);
   const [roles, setRoles] = useState([]);
   const [showPassword, setShowPassword] = useState(false);
   const [existedAccErr, setExistedAccErr] = useState(false);
@@ -585,21 +581,21 @@ export default function NewRegister() {
       <CustomizedDialogs
         open={open}
         handleClose={handleClose}
-        title=""
+        title="Đăng ký tài khoản thành công"
+        centerTitle
         content={
-          <Typography gutterBottom>
-            Đăng ký tài khoản thành công. Vui lòng chờ quản trị viên phê duyệt
-            để sử dụng các tính năng của hệ thống.
+          <Typography color="textSecondary" gutterBottom style={{ padding: 8 }}>
+            Vui lòng chờ quản trị viên phê duyệt để sử dụng các tính năng của hệ
+            thống.
           </Typography>
         }
         actions={
           <PositiveButton
-            label="Đã hiểu"
+            label="OK"
             onClick={handleClose}
             className={classes.confirmBtn}
           />
         }
-        style={{ title: { height: 24 }, actions: { height: 40 } }}
       />
     </Box>
   );

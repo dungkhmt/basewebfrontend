@@ -4,7 +4,6 @@ import { DataGrid } from "@material-ui/data-grid";
 import React, { useEffect, useState } from "react";
 import { Bar, Doughnut, HorizontalBar, Line } from "react-chartjs-2";
 import { useDispatch, useSelector } from "react-redux";
-import { useHistory } from "react-router";
 import { authPost, request } from "../api";
 
 const useStyles = makeStyles((theme) => ({
@@ -117,7 +116,6 @@ export default function Home(props) {
   const classes = useStyles();
   const dispatch = useDispatch();
   const token = useSelector((state) => state.auth.token);
-  const history = useHistory();
   const taskCounterOption = taskCounterOpt;
 
   const [dataAllProject, setDataAllProject] = useState({});
@@ -266,10 +264,8 @@ export default function Home(props) {
     ],
   };
 
-  async function getStudentParticipation() {
+  function getStudentParticipation() {
     request(
-      // token,
-      // history,
       "post",
       "/get-class-participation-statistic",
       (res) => {
@@ -331,8 +327,6 @@ export default function Home(props) {
     //   }
     // );
     request(
-      // token,
-      // history,
       "post",
       "/get-quiz-participation-statistic",
       (res) => {
@@ -363,9 +357,7 @@ export default function Home(props) {
     authPost(dispatch, token, "/report-date-based-revenue-recent", {
       nbDays: 15,
     })
-      .then((response) => response.json())
       .then((response) => {
-        console.log("response = ", response);
         let listRev = response.revenueElements;
         //setVehicleDistance(response);
         let arrDates = [];
@@ -380,7 +372,6 @@ export default function Home(props) {
         //dataVehicleDistance.datasets[0].data = distance;
         //console.log('dataVehicleDistance.vehicle = ', dataVehicleDistance.labels);
         //console.log('dataVehicleDistance.distance = ', dataVehicleDistance.datasets[0].data);
-        console.log("revenue = ", revenue);
       })
       .catch(console.log);
   }
@@ -391,9 +382,7 @@ export default function Home(props) {
       fromDate: "",
       thruDate: "",
     })
-      .then((response) => response.json())
       .then((response) => {
-        console.log("response = ", response);
         //setVehicleDistance(response);
         let vehicle = [];
         let distance = [];
@@ -405,30 +394,22 @@ export default function Home(props) {
         setDistance(distance);
         //dataVehicleDistance.labels = vehicle;
         //dataVehicleDistance.datasets[0].data = distance;
-        console.log(
-          "dataVehicleDistance.vehicle = ",
-          dataVehicleDistance.labels
-        );
-        console.log(
-          "dataVehicleDistance.distance = ",
-          dataVehicleDistance.datasets[0].data
-        );
       })
       .catch(console.log);
   }
-  async function getChartBackLog() {
+
+  function getChartBackLog() {
     request(
-      // token,
-      // history,
       "get",
       "/backlog/get-all-dash-board",
       (res) => {
         //setTaskList(res);
-        console.log(res);
+
         let [taskOpen, taskInprogress, taskResolved, taskclose] = [0, 0, 0, 0];
-        Object.keys(res).map((key, index) => {
+        Object.keys(res.data).forEach((key) => {
           // task counter data
-          let listTask = res[key];
+          let listTask = res.data[key];
+
           listTask.forEach((task) => {
             switch (task.statusId) {
               case "TASK_OPEN":
@@ -447,6 +428,7 @@ export default function Home(props) {
             }
           });
         });
+
         let data = {
           datasets: [
             {
@@ -542,7 +524,7 @@ export default function Home(props) {
         </Grid>
 
         <Grid item xs={12}>
-          <Paper>
+          <Paper elevation={0}>
             <Box className={classes.doughnutStyle}>
               <Doughnut data={dataAllProject} options={taskCounterOption} />
             </Box>
