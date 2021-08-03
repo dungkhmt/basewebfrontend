@@ -10,7 +10,7 @@ import {
   ListItemIcon,
   ListItemText,
   Paper,
-  Typography,
+  Typography
 } from "@material-ui/core";
 import AppBar from "@material-ui/core/AppBar";
 import Box from "@material-ui/core/Box";
@@ -29,7 +29,7 @@ import {
   FcClock,
   FcConferenceCall,
   FcExpired,
-  FcMindMap,
+  FcMindMap
 } from "react-icons/fc";
 import { useSelector } from "react-redux";
 import { useHistory, useParams } from "react-router";
@@ -45,7 +45,7 @@ import TeacherViewLogUserQuizList from "../../../../component/education/course/T
 import displayTime from "../../../../utils/DateTimeUtils";
 import changePageSize, {
   localization,
-  tableIcons,
+  tableIcons
 } from "../../../../utils/MaterialTableUtils";
 import { errorNoti } from "../../../../utils/notification";
 
@@ -63,11 +63,7 @@ function TabPanel(props) {
       aria-labelledby={`scrollable-auto-tab-${index}`}
       {...other}
     >
-      {value === index && (
-        <Box p={3}>
-          <Typography>{children}</Typography>
-        </Box>
-      )}
+      {value === index && <Box p={2}>{children}</Box>}
     </div>
   );
 }
@@ -110,7 +106,7 @@ const useStyles = makeStyles((theme) => ({
     fontWeight: "normal",
   },
   listItem: {
-    heigth: 48,
+    height: 48,
     borderRadius: 6,
     marginBottom: 6,
     backgroundColor: "#f5f5f5",
@@ -142,11 +138,11 @@ function TClassDetail() {
   const token = useSelector((state) => state.auth.token);
 
   const tabs = [
-    "Thong tin chung",
+    "Thông tin chung",
     "DS SV",
-    "SV dang ky",
-    "Bai tap",
-    "DS nop bai tap",
+    "SV đăng ký",
+    "Bài tập",
+    "DS nộp bài tập",
     "Lịch sử học",
     "Lịch sử làm quiz",
   ];
