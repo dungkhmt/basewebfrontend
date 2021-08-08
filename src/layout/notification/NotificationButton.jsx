@@ -90,128 +90,140 @@ function NotificationButton() {
     // if (open.get() === false) fetchNotification();
   }, [open.get()]);
 
-  // SSE event handler
-  const handleNewNotification = (e) => {
-    if (notifications.get()) {
-      let newNotification = processNotificationsContent([JSON.parse(e.data)]);
-      const len = notifications.get().length;
-
-      if (len === 0) {
-        // Notification list is empty
-        notifications.set(newNotification);
-        numUnRead.set(1);
-      } else {
-        newNotification = newNotification[0];
-        const newCreatedTime = new Date(newNotification.time).getTime();
-        let consideredCreatedTime;
-
-        // case 1: new is later than the considered one -> insert at that position and stop
-        // case 2: new is the same as the considered one -> stop
-        // case 3: new is earlier than the considered one -> continuously iterate
-        for (let i = 0; i < len; i++) {
-          consideredCreatedTime = new Date(
-            notifications[i].time.get()
-          ).getTime();
-
-          if (newCreatedTime > consideredCreatedTime) {
-            notifications.set((p) => {
-              p.splice(i, 0, newNotification);
-              return p;
-            });
-
-            numUnRead.set(numUnRead.get() + 1);
-            return;
-          } else if (newCreatedTime === consideredCreatedTime) {
-            return;
-          }
-        }
-      }
-    } else {
-      fetchNotification();
-    }
-  };
-
   React.useEffect(() => {
     // When user open multiple tabs, only one tab will receive events at any point of time,
     // all other tabs will wait for 45 secs timeout and reconnect to server,
     // one of them will successfully connect and receive next events
 
-    let eventSource;
-    let reconnectFrequencySeconds = 1;
-
-    // Putting these functions in extra variables is just for the sake of readability
-    const wait = function () {
-      return reconnectFrequencySeconds * 1000;
+    // SSE event handlers
+    const handleHeartbeatEvent = function (e) {
+      if (!notifications.get()) fetchNotification();
+      console.log(new Date(), e);
     };
 
-    const tryToSetup = function () {
-      setupEventSource();
-      reconnectFrequencySeconds *= 2;
+    const handleNewNotificationEvent = function (e) {
+      if (notifications.get()) {
+        let newNotification = processNotificationsContent([JSON.parse(e.data)]);
+        const len = notifications.get().length;
 
-      if (reconnectFrequencySeconds >= 64) {
-        reconnectFrequencySeconds = 64;
+        if (len === 0) {
+          // Notification list is empty
+          notifications.set(newNotification);
+          numUnRead.set(1);
+        } else {
+          newNotification = newNotification[0];
+          const newCreatedTime = new Date(newNotification.time).getTime();
+          let consideredCreatedTime;
+
+          // case 1: new is later than the considered one -> insert at that position and stop
+          // case 2: new is the same as the considered one -> stop
+          // case 3: new is earlier than the considered one -> continuously iterate
+          for (let i = 0; i < len; i++) {
+            consideredCreatedTime = new Date(
+              notifications[i].time.get()
+            ).getTime();
+
+            if (newCreatedTime > consideredCreatedTime) {
+              notifications.set((p) => {
+                p.splice(i, 0, newNotification);
+                return p;
+              });
+
+              numUnRead.set(numUnRead.get() + 1);
+              return;
+            } else if (newCreatedTime === consideredCreatedTime) {
+              return;
+            }
+          }
+        }
+      } else {
+        fetchNotification();
       }
     };
 
-    // Reconnect on every error
-    const reconnect = function () {
-      setTimeout(tryToSetup, wait());
-    };
-
-    function setupEventSource() {
-      eventSource = new EventSourcePolyfill(
-        `${API_URL}/notification/subscription`,
-        {
-          headers: {
-            "X-Auth-Token": store.getState().auth.token,
-          },
-          heartbeatTimeout: 120000,
-        }
+    const onError = function (e) {
+      // When server SseEmitters timeout, it cause error
+      console.error(
+        `EventSource connection state: ${
+          es.readyState
+        }, error occurred: ${JSON.stringify(e)}`
       );
 
-      eventSource.onopen = (event) => {
-        console.info("SSE opened");
-        reconnectFrequencySeconds = 1;
-        fetchNotification();
+      if (e.target.readyState === EventSource.CLOSED) {
+        console.log(
+          new Date(),
+          `SSE closed (event readyState = ${e.target.readyState})`
+        );
+      } else if (e.target.readyState === EventSource.CONNECTING) {
+        console.log(
+          new Date(),
+          `SSE reconnecting (event readyState = ${e.target.readyState})`
+        );
+      }
+
+      // es.close();
+      // console.info(new Date(), `SSE closed`);
+      // reconnect();
+    };
+
+    // Setup EventSource
+    let es;
+    // let reconnectFrequencySeconds = 1;
+
+    // // Putting these functions in extra variables is just for the sake of readability
+    // const wait = function () {
+    //   return reconnectFrequencySeconds * 1000;
+    // };
+
+    // const tryToSetup = function () {
+    //   setupEventSource();
+    //   reconnectFrequencySeconds *= 2;
+
+    //   if (reconnectFrequencySeconds >= 64) {
+    //     reconnectFrequencySeconds = 64;
+    //   }
+    // };
+
+    // // Reconnect on every error
+    // const reconnect = function () {
+    //   setTimeout(tryToSetup, wait());
+    // };
+
+    // let count = 0;
+
+    function setupEventSource() {
+      fetchNotification();
+
+      es = new EventSourcePolyfill(`${API_URL}/notification/subscription`, {
+        headers: {
+          "X-Auth-Token": store.getState().auth.token,
+          // Count: count++,
+        },
+        heartbeatTimeout: 120000,
+      });
+
+      es.onopen = (event) => {
+        console.info(new Date(), `SSE opened`);
+        // reconnectFrequencySeconds = 1;
       };
 
       // This event only to keep sse connection alive
-      eventSource.addEventListener(SSE_EVENTS.HEARTBEAT, (e) => {
-        // console.log(e);
-      });
+      es.addEventListener(SSE_EVENTS.HEARTBEAT, handleHeartbeatEvent);
 
-      eventSource.addEventListener(SSE_EVENTS.NEW_NOTIFICATION, (e) =>
-        handleNewNotification(e)
+      es.addEventListener(
+        SSE_EVENTS.NEW_NOTIFICATION,
+        handleNewNotificationEvent
       );
 
-      eventSource.onerror = (event) => {
-        // When server SseEmitters timeout, it cause error
-        console.error(
-          `EventSource connection state: ${
-            eventSource.readyState
-          }, error occurred: ${JSON.stringify(event)}`
-        );
-
-        if (event.target.readyState === EventSource.CLOSED) {
-          console.log(
-            `SSE closed (event readyState = ${event.target.readyState})`
-          );
-        } else if (event.target.readyState === EventSource.CONNECTING) {
-          console.log(
-            `SSE reconnecting (event readyState = ${event.target.readyState})`
-          );
-        }
-
-        eventSource.close();
-        reconnect();
-      };
+      es.onerror = onError;
     }
 
     setupEventSource();
 
     return () => {
-      eventSource.close();
-      console.info("SSE closed");
+      es.close();
+      es = null;
+      console.info(new Date(), `SSE closed`);
     };
   }, []);
 
