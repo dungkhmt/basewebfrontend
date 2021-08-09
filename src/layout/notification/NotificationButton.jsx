@@ -92,7 +92,7 @@ function NotificationButton() {
 
   React.useEffect(() => {
     // When user open multiple tabs, only one tab will receive events at any point of time,
-    // all other tabs will wait for 45 secs timeout and reconnect to server,
+    // all other tabs will wait for "heartbeatTimeout" secs and reconnect to server,
     // one of them will successfully connect and receive next events
 
     // SSE event handlers
@@ -202,6 +202,8 @@ function NotificationButton() {
         heartbeatTimeout: 120000,
       });
 
+      // In fact, this callback function is usually not fired as soon as the connection is opened,
+      // but fired when the first event is received. Don't know the reason but this doesn't matter
       es.onopen = (event) => {
         console.info(new Date(), `SSE opened`);
         // reconnectFrequencySeconds = 1;
