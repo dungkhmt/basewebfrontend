@@ -3,12 +3,16 @@ import {
   Box,
   Divider,
   ListItemAvatar,
-  Menu,
   MenuItem,
   Typography,
 } from "@material-ui/core";
+import ClickAwayListener from "@material-ui/core/ClickAwayListener";
 import { grey } from "@material-ui/core/colors";
+import Grow from "@material-ui/core/Grow";
 import ListItemText from "@material-ui/core/ListItemText";
+import MenuList from "@material-ui/core/MenuList";
+import Paper from "@material-ui/core/Paper";
+import Popper from "@material-ui/core/Popper";
 import { makeStyles, withStyles } from "@material-ui/core/styles";
 import AccountCircleRoundedIcon from "@material-ui/icons/AccountCircleRounded";
 import ExitToAppIcon from "@material-ui/icons/ExitToApp";
@@ -18,27 +22,27 @@ import { useDispatch } from "react-redux";
 import { useHistory } from "react-router-dom";
 import { logout } from "../../action";
 
-const StyledMenu = withStyles({
-  paper: {
-    minWidth: 240,
-    borderRadius: 8,
-    boxShadow:
-      "0 12px 28px 0 rgba(0, 0, 0, 0.2), 0 2px 4px 0 rgba(0, 0, 0, 0.1), inset 0 0 0 1px rgba(255, 255, 255, 0.5)",
-  },
-})((props) => (
-  <Menu
-    getContentAnchorEl={null}
-    anchorOrigin={{
-      vertical: "bottom",
-      horizontal: "center",
-    }}
-    transformOrigin={{
-      vertical: "top",
-      horizontal: "center",
-    }}
-    {...props}
-  />
-));
+// const StyledMenu = withStyles({
+//   paper: {
+//     minWidth: 240,
+//     borderRadius: 8,
+//     boxShadow:
+//       "0 12px 28px 0 rgba(0, 0, 0, 0.2), 0 2px 4px 0 rgba(0, 0, 0, 0.1), inset 0 0 0 1px rgba(255, 255, 255, 0.5)",
+//   },
+// })((props) => (
+//   <Menu
+//     getContentAnchorEl={null}
+//     anchorOrigin={{
+//       vertical: "bottom",
+//       horizontal: "center",
+//     }}
+//     transformOrigin={{
+//       vertical: "top",
+//       horizontal: "center",
+//     }}
+//     {...props}
+//   />
+// ));
 
 const StyledMenuItem = withStyles((theme) => ({
   root: {
@@ -51,6 +55,14 @@ const StyledMenuItem = withStyles((theme) => ({
 }))(MenuItem);
 
 const useStyles = makeStyles((theme) => ({
+  paper: {
+    maxHeight: `calc(100vh - 80px)`,
+    minWidth: 240,
+    borderRadius: 8,
+    overflowY: "hidden",
+    boxShadow:
+      "0 12px 28px 0 rgba(0, 0, 0, 0.2), 0 2px 4px 0 rgba(0, 0, 0, 0.1), inset 0 0 0 1px rgba(255, 255, 255, 0.5)",
+  },
   divider: {
     marginRight: theme.spacing(2),
     marginLeft: theme.spacing(2),
@@ -60,10 +72,10 @@ const useStyles = makeStyles((theme) => ({
   avatar: {
     // width: 60,
     // height: 60,
+    // fontSize: "1.875rem",
     marginRight: 12,
     marginTop: theme.spacing(1),
     marginBottom: theme.spacing(1),
-    // fontSize: "1.875rem",
   },
 
   avatarIcon: {
@@ -77,111 +89,158 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const iconStyles = { color: "black" };
+const menuItemWrapperStyles = { padding: "0px 8px" };
 
 export function AccountMenu(props) {
   const classes = useStyles();
   const history = useHistory();
   const dispatch = useDispatch();
-  const { id, handleClose, anchorEl, partyId, userName, name, avatarBgColor } =
-    props;
 
-  //
-  const handlePasswordChange = () => {
-    handleClose();
-    history.push(`/userlogin/change-password/${userName}`);
+  const { open, id, anchorRef, user, avatarBgColor } = props;
+
+  // Menu
+  const handleClose = (event) => {
+    if (anchorRef.current && anchorRef.current.contains(event.target)) {
+      return;
+    }
+
+    open.set(false);
   };
 
-  const handleViewAccount = () => {
-    handleClose();
-    history.push(`/userlogin/${partyId}`);
+  function handleListKeyDown(event) {
+    if (event.key === "Tab") {
+      event.preventDefault();
+      open.set(false);
+    }
+  }
+
+  //
+  const handlePasswordChange = (event) => {
+    handleClose(event);
+    history.push(`/userlogin/change-password/${user.userName.get()}`);
+  };
+
+  const handleViewAccount = (event) => {
+    handleClose(event);
+    history.push(`/userlogin/${user.partyId.get()}`);
   };
 
   const handleLogout = () => dispatch(logout());
 
+  const menuItems = [
+    { topDivider: true },
+    {
+      text: "Tài khoản",
+      onClick: handleViewAccount,
+      icon: (
+        <AccountCircleRoundedIcon
+          style={iconStyles}
+          // fontSize="medium"
+        />
+      ),
+    },
+    {
+      text: "Đổi mật khẩu",
+      onClick: handlePasswordChange,
+      icon: (
+        <VpnKeyRoundedIcon
+          style={iconStyles}
+          // fontSize="medium"
+        />
+      ),
+    },
+    { topDivider: true },
+    {
+      text: "Đăng xuất",
+      onClick: handleLogout,
+      icon: (
+        <ExitToAppIcon
+          style={iconStyles}
+          // fontSize="medium"
+        />
+      ),
+    },
+  ];
   return (
-    <div>
-      <StyledMenu
-        id={id}
-        anchorEl={anchorEl}
-        keepMounted
-        open={Boolean(anchorEl)}
-        onClose={handleClose}
-      >
-        <div style={{ padding: "0px 8px" }}>
-          <Box display="flex" pl={1} pr={1} alignItems="center">
-            <Avatar
-              className={classes.avatar}
-              style={{
-                background: avatarBgColor,
-              }}
-            >
-              {name ? name.substring(0, 1).toLocaleUpperCase() : ""}
-            </Avatar>
+    <Popper
+      open={open.get()}
+      anchorEl={anchorRef.current}
+      role={undefined}
+      transition
+      disablePortal
+      modifiers={{
+        flip: {
+          enabled: false,
+        },
+        preventOverflow: {
+          enabled: true,
+          boundariesElement: "scrollParent",
+        },
+      }}
+    >
+      {({ TransitionProps, placement }) => (
+        <Grow
+          {...TransitionProps}
+          style={{
+            transformOrigin:
+              placement === "bottom" ? "center top" : "center bottom",
+          }}
+        >
+          <Paper elevation={0} className={classes.paper}>
+            <ClickAwayListener onClickAway={handleClose}>
+              <MenuList
+                id={id}
+                autoFocusItem={open.get()}
+                onKeyDown={handleListKeyDown}
+              >
+                <li style={menuItemWrapperStyles}>
+                  <Box display="flex" pl={1} pr={1} alignItems="center">
+                    <Avatar
+                      className={classes.avatar}
+                      style={{
+                        background: avatarBgColor,
+                      }}
+                    >
+                      {user.name.get()
+                        ? user.name.get().substring(0, 1).toLocaleUpperCase()
+                        : ""}
+                    </Avatar>
 
-            <Box display="flex" flexGrow={1} alignItems="center" flexShrink={1}>
-              <Typography className={classes.text}>{name}</Typography>
-            </Box>
-          </Box>
-        </div>
+                    <Box
+                      display="flex"
+                      flexGrow={1}
+                      alignItems="center"
+                      flexShrink={1}
+                    >
+                      <Typography className={classes.text}>
+                        {user.name.get()}
+                      </Typography>
+                    </Box>
+                  </Box>
+                </li>
 
-        <Divider className={classes.divider} />
-
-        <div style={{ padding: "0px 8px" }}>
-          <StyledMenuItem onClick={handleViewAccount}>
-            <ListItemAvatar>
-              <Avatar className={classes.avatarIcon}>
-                <AccountCircleRoundedIcon
-                  style={iconStyles}
-                  // fontSize="medium"
-                />
-              </Avatar>
-            </ListItemAvatar>
-            <ListItemText
-              primary="Tài khoản"
-              primaryTypographyProps={{ className: classes.text }}
-            />
-          </StyledMenuItem>
-        </div>
-
-        <div style={{ padding: "0px 8px" }}>
-          <StyledMenuItem onClick={handlePasswordChange}>
-            <ListItemAvatar>
-              <Avatar className={classes.avatarIcon}>
-                <VpnKeyRoundedIcon
-                  style={iconStyles}
-                  // fontSize="medium"
-                />
-              </Avatar>
-            </ListItemAvatar>
-            <ListItemText
-              primary="Đổi mật khẩu"
-              primaryTypographyProps={{
-                className: classes.text,
-              }}
-            />
-          </StyledMenuItem>
-        </div>
-
-        <Divider className={classes.divider} />
-
-        <div style={{ padding: "0px 8px" }}>
-          <StyledMenuItem onClick={handleLogout}>
-            <ListItemAvatar>
-              <Avatar className={classes.avatarIcon}>
-                <ExitToAppIcon
-                  style={iconStyles}
-                  // fontSize="medium"
-                />
-              </Avatar>
-            </ListItemAvatar>
-
-            <ListItemText
-              primary="Đăng xuất"
-              primaryTypographyProps={{ className: classes.text }}
-            />
-          </StyledMenuItem>
-        </div>
-      </StyledMenu>
-    </div>
+                {menuItems.map(({ text, topDivider, onClick, icon }, index) =>
+                  topDivider ? (
+                    <Divider key={index} className={classes.divider} />
+                  ) : (
+                    <div key={text} style={menuItemWrapperStyles}>
+                      <StyledMenuItem onClick={onClick}>
+                        <ListItemAvatar>
+                          <Avatar className={classes.avatarIcon}>{icon}</Avatar>
+                        </ListItemAvatar>
+                        <ListItemText
+                          primary={text}
+                          primaryTypographyProps={{ className: classes.text }}
+                        />
+                      </StyledMenuItem>
+                    </div>
+                  )
+                )}
+              </MenuList>
+            </ClickAwayListener>
+          </Paper>
+        </Grow>
+      )}
+    </Popper>
   );
 }
