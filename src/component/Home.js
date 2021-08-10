@@ -1,6 +1,5 @@
 import { Box, Grid, Paper } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
-import { DataGrid } from "@material-ui/data-grid";
 import React, { useEffect, useState } from "react";
 import { Bar, Doughnut, HorizontalBar, Line } from "react-chartjs-2";
 import { useDispatch, useSelector } from "react-redux";
@@ -299,8 +298,6 @@ export default function Home(props) {
     // formData.append("file", null);
 
     // request(
-    //   token,
-    //   history,
     //   "post",
     //   "/get-quiz-participation-statistic",
     //   (res) => {
@@ -511,7 +508,7 @@ export default function Home(props) {
           </Paper>
         </Grid>
 
-        <Grid item xs={12}>
+        {/* <Grid item xs={12}>
           <Paper>
             <DataGrid
               rows={rows}
@@ -521,7 +518,7 @@ export default function Home(props) {
               disableSelectionOnClick
             />
           </Paper>
-        </Grid>
+        </Grid> */}
 
         <Grid item xs={12}>
           <Paper elevation={0}>
@@ -531,22 +528,15 @@ export default function Home(props) {
           </Paper>
         </Grid>
 
-        <Grid item xs={6}>
+        {/* <Grid item xs={6}>
           <h2>Rev.</h2>
           <HorizontalBar data={dataRevenue} />
         </Grid>
         <Grid item xs={6}>
           <h2>Dis.</h2>
           <HorizontalBar data={dataVehicleDistance} />
-        </Grid>
+        </Grid> */}
       </Grid>
-      <DataGrid
-        rows={rows}
-        columns={columns}
-        pageSize={5}
-        checkboxSelection
-        disableSelectionOnClick
-      />
     </div>
   );
 }
