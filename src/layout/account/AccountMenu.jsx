@@ -1,3 +1,4 @@
+import { useState } from "@hookstate/core";
 import {
   Avatar,
   Box,
@@ -16,11 +17,13 @@ import Popper from "@material-ui/core/Popper";
 import { makeStyles, withStyles } from "@material-ui/core/styles";
 import AccountCircleRoundedIcon from "@material-ui/icons/AccountCircleRounded";
 import ExitToAppIcon from "@material-ui/icons/ExitToApp";
+import FeedbackIcon from "@material-ui/icons/Feedback";
 import VpnKeyRoundedIcon from "@material-ui/icons/VpnKeyRounded";
 import React from "react";
 import { useDispatch } from "react-redux";
 import { useHistory } from "react-router-dom";
 import { logout } from "../../action";
+import FeedbackDialog from "./FeedbackDialog";
 
 // const StyledMenu = withStyles({
 //   paper: {
@@ -97,6 +100,7 @@ export function AccountMenu(props) {
   const dispatch = useDispatch();
 
   const { open, id, anchorRef, user, avatarBgColor } = props;
+  const openFeedback = useState(false);
 
   // Menu
   const handleClose = (event) => {
@@ -127,7 +131,24 @@ export function AccountMenu(props) {
 
   const handleLogout = () => dispatch(logout());
 
+  const handleOpenFeedbackDialog = (event) => {
+    handleClose(event);
+    openFeedback.set(true);
+  };
+
   const menuItems = [
+    { topDivider: true },
+    {
+      text: "Đóng góp ý kiến",
+      subheader: "Góp phần cải thiện phiên bản Open ERP mới.",
+      onClick: handleOpenFeedbackDialog,
+      icon: (
+        <FeedbackIcon
+          style={iconStyles}
+          // fontSize="medium"
+        />
+      ),
+    },
     { topDivider: true },
     {
       text: "Tài khoản",
@@ -162,85 +183,94 @@ export function AccountMenu(props) {
     },
   ];
   return (
-    <Popper
-      open={open.get()}
-      anchorEl={anchorRef.current}
-      role={undefined}
-      transition
-      disablePortal
-      modifiers={{
-        flip: {
-          enabled: false,
-        },
-        preventOverflow: {
-          enabled: true,
-          boundariesElement: "scrollParent",
-        },
-      }}
-    >
-      {({ TransitionProps, placement }) => (
-        <Grow
-          {...TransitionProps}
-          style={{
-            transformOrigin:
-              placement === "bottom" ? "center top" : "center bottom",
-          }}
-        >
-          <Paper elevation={0} className={classes.paper}>
-            <ClickAwayListener onClickAway={handleClose}>
-              <MenuList
-                id={id}
-                autoFocusItem={open.get()}
-                onKeyDown={handleListKeyDown}
-              >
-                <li style={menuItemWrapperStyles}>
-                  <Box display="flex" pl={1} pr={1} alignItems="center">
-                    <Avatar
-                      className={classes.avatar}
-                      style={{
-                        background: avatarBgColor,
-                      }}
-                    >
-                      {user.name.get()
-                        ? user.name.get().substring(0, 1).toLocaleUpperCase()
-                        : ""}
-                    </Avatar>
+    <>
+      <Popper
+        open={open.get()}
+        anchorEl={anchorRef.current}
+        role={undefined}
+        transition
+        disablePortal
+        modifiers={{
+          flip: {
+            enabled: false,
+          },
+          preventOverflow: {
+            enabled: true,
+            boundariesElement: "scrollParent",
+          },
+        }}
+      >
+        {({ TransitionProps, placement }) => (
+          <Grow
+            {...TransitionProps}
+            style={{
+              transformOrigin:
+                placement === "bottom" ? "center top" : "center bottom",
+            }}
+          >
+            <Paper elevation={0} className={classes.paper}>
+              <ClickAwayListener onClickAway={handleClose}>
+                <MenuList
+                  id={id}
+                  autoFocusItem={open.get()}
+                  onKeyDown={handleListKeyDown}
+                >
+                  <li style={menuItemWrapperStyles}>
+                    <Box display="flex" pl={1} pr={1} alignItems="center">
+                      <Avatar
+                        className={classes.avatar}
+                        style={{
+                          background: avatarBgColor,
+                        }}
+                      >
+                        {user.name.get()
+                          ? user.name.get().substring(0, 1).toLocaleUpperCase()
+                          : ""}
+                      </Avatar>
 
-                    <Box
-                      display="flex"
-                      flexGrow={1}
-                      alignItems="center"
-                      flexShrink={1}
-                    >
-                      <Typography className={classes.text}>
-                        {user.name.get()}
-                      </Typography>
+                      <Box
+                        display="flex"
+                        flexGrow={1}
+                        alignItems="center"
+                        flexShrink={1}
+                      >
+                        <Typography className={classes.text}>
+                          {user.name.get()}
+                        </Typography>
+                      </Box>
                     </Box>
-                  </Box>
-                </li>
+                  </li>
 
-                {menuItems.map(({ text, topDivider, onClick, icon }, index) =>
-                  topDivider ? (
-                    <Divider key={index} className={classes.divider} />
-                  ) : (
-                    <div key={text} style={menuItemWrapperStyles}>
-                      <StyledMenuItem onClick={onClick}>
-                        <ListItemAvatar>
-                          <Avatar className={classes.avatarIcon}>{icon}</Avatar>
-                        </ListItemAvatar>
-                        <ListItemText
-                          primary={text}
-                          primaryTypographyProps={{ className: classes.text }}
-                        />
-                      </StyledMenuItem>
-                    </div>
-                  )
-                )}
-              </MenuList>
-            </ClickAwayListener>
-          </Paper>
-        </Grow>
-      )}
-    </Popper>
+                  {menuItems.map(
+                    ({ text, subheader, topDivider, onClick, icon }, index) =>
+                      topDivider ? (
+                        <Divider key={index} className={classes.divider} />
+                      ) : (
+                        <div key={text} style={menuItemWrapperStyles}>
+                          <StyledMenuItem onClick={onClick}>
+                            <ListItemAvatar>
+                              <Avatar className={classes.avatarIcon}>
+                                {icon}
+                              </Avatar>
+                            </ListItemAvatar>
+                            <ListItemText
+                              primary={text}
+                              secondary={subheader}
+                              primaryTypographyProps={{
+                                className: classes.text,
+                              }}
+                            />
+                          </StyledMenuItem>
+                        </div>
+                      )
+                  )}
+                </MenuList>
+              </ClickAwayListener>
+            </Paper>
+          </Grow>
+        )}
+      </Popper>
+      <FeedbackDialog open={openFeedback} />
+    </>
   );
 }
