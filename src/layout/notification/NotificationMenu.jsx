@@ -13,11 +13,12 @@ import { ReactComponent as EmptyNotificationIcon } from "../../assets/icons/undr
 import Notification from "./Notification";
 import NotificationTitle from "./NotificationTitle";
 
+export const notificationMenuWidth = 360;
 const useStyles = makeStyles((theme) => ({
   paper: {
     overflowY: "hidden",
     maxHeight: `calc(100vh - 80px)`,
-    width: 360,
+    width: notificationMenuWidth,
     borderRadius: 8,
     boxShadow:
       "0 12px 28px 0 rgba(0, 0, 0, 0.2), 0 2px 4px 0 rgba(0, 0, 0, 0.1), inset 0 0 0 1px rgba(255, 255, 255, 0.5)",
@@ -91,7 +92,7 @@ export default function NotificationMenu({ open, notifications, anchorRef }) {
                 {notifications ? (
                   <SimpleBar
                     style={{
-                      width: 360,
+                      width: notificationMenuWidth,
                       maxHeight: `calc(100vh - 80px)`,
                       overscrollBehaviorY: "none", // To prevent tag <main> be scrolled when menu'scrollbar reach end
                     }}
