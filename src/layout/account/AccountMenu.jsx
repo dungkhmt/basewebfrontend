@@ -47,7 +47,7 @@ import FeedbackDialog from "./FeedbackDialog";
 //   />
 // ));
 
-const StyledMenuItem = withStyles((theme) => ({
+export const StyledMenuItem = withStyles((theme) => ({
   root: {
     padding: "0px 8px",
     borderRadius: 8,
@@ -91,8 +91,8 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const iconStyles = { color: "black" };
-const menuItemWrapperStyles = { padding: "0px 8px" };
+export const iconStyles = { color: "black" };
+export const menuItemWrapperStyles = { padding: "0px 8px" };
 
 export function AccountMenu(props) {
   const classes = useStyles();
@@ -182,6 +182,7 @@ export function AccountMenu(props) {
       ),
     },
   ];
+
   return (
     <>
       <Popper

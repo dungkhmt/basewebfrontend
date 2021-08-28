@@ -97,7 +97,7 @@ export function getRandomIntInclusive(min, max) {
 }
 
 const STATUS_NOTIFICATION_CREATED = "NOTIFICATION_CREATED";
-const STATUS_NOTIFICATION_READ = "NOTIFICATION_READ";
+export const STATUS_NOTIFICATION_READ = "NOTIFICATION_READ";
 
 function Notification(props) {
   const { numUnRead } = useNotificationState();
@@ -132,6 +132,7 @@ function Notification(props) {
 
   // Temporary
   const closeIfOnSameSite = (e) => {
+    // TODO: consider case URL = ""
     if (currentURL === url.get()) {
       // e.preventDefault();
       handleClose(e);
