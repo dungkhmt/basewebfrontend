@@ -36,7 +36,10 @@ function TeacherCourseQuizDetail() {
     <Card>
       <Link to={"/edu/course/detail/" + courseId}>QUAY VỀ CHI TIẾT MÔN</Link>
       <TeacherCourseQuizContent questionId={questionId} />
-      <TeacherCourseQuizChoiceAnswerList questionId={questionId} />
+      <TeacherCourseQuizChoiceAnswerList
+        questionId={questionId}
+        courseId={courseId}
+      />
     </Card>
   );
 }

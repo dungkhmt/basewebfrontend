@@ -18,6 +18,7 @@ import { authGet } from "../../../api";
 function TeacherCourseQuizChoiceAnswerList(props) {
   // const classes = useStyles();
   const questionId = props.questionId;
+  const courseId = props.courseId;
   const dispatch = useDispatch();
   const token = useSelector((state) => state.auth.token);
   const history = useHistory();
@@ -76,7 +77,10 @@ function TeacherCourseQuizChoiceAnswerList(props) {
           isFreeAction: true,
           onClick: () => {
             history.push(
-              "/edu/course/detail/quiz/choiceanswer/create/" + questionId
+              "/edu/course/detail/quiz/choiceanswer/create/" +
+                questionId +
+                "/" +
+                courseId
             );
           },
         },

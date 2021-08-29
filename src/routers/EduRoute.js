@@ -106,7 +106,7 @@ export default function EduRoute() {
         />
         <Route
           component={CreateQuizChoiceAnswerOfCourse}
-          path={`${path}/course/detail/quiz/choiceanswer/create/:questionId`}
+          path={`${path}/course/detail/quiz/choiceanswer/create/:questionId/:courseId`}
           exact
         />
         <Route

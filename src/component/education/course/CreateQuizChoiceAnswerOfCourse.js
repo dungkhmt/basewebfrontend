@@ -1,25 +1,24 @@
 import DateFnsUtils from "@date-io/date-fns";
-import Button from "@material-ui/core/Button";
 import {
   Card,
   CardActions,
   CardContent,
+  MenuItem,
   TextField,
   Typography,
-  MenuItem,
 } from "@material-ui/core/";
+import Button from "@material-ui/core/Button";
 import { makeStyles } from "@material-ui/core/styles";
 import { MuiPickersUtilsProvider } from "@material-ui/pickers";
-import React, { useState, useEffect } from "react";
-import { useHistory } from "react-router-dom";
-import { authPost, authGet, authPostMultiPart } from "../../../api";
-import { useDispatch, useSelector } from "react-redux";
-import AlertDialog from "../../common/AlertDialog";
-import { Editor } from "react-draft-wysiwyg";
-import { useParams } from "react-router";
-import { ContentState, convertToRaw, EditorState } from "draft-js";
-
+import { convertToRaw, EditorState } from "draft-js";
 import draftToHtml from "draftjs-to-html";
+import React, { useEffect, useState } from "react";
+import { Editor } from "react-draft-wysiwyg";
+import { useDispatch, useSelector } from "react-redux";
+import { useParams } from "react-router";
+import { useHistory } from "react-router-dom";
+import { authGet, authPost } from "../../../api";
+import AlertDialog from "../../common/AlertDialog";
 
 let reDirect = null;
 const useStyles = makeStyles((theme) => ({
@@ -51,6 +50,7 @@ const editorStyle = {
 function CreateQuizChoiceAnswerOfCourse() {
   const params = useParams();
   const classes = useStyles();
+  const courseId = params.courseId;
   const questionId = params.questionId;
   const [choiceAnswerContent, setChoiceAnswerContent] = useState(null);
   const [isCorrectAnswer, setIsCorrectAnswer] = useState(null);
@@ -101,7 +101,11 @@ function CreateQuizChoiceAnswerOfCourse() {
       body
     );
 
-    history.push("/edu/teacher/course/quiz/detail/" + questionId);
+    //history.push("/edu/teacher/course/quiz/detail/" + questionId);
+    history.push(
+      "/edu/teacher/course/quiz/detail/" + questionId + "/" + courseId
+    );
+    //course/quiz/detail/264e1fec-1f92-4687-ad9b-6396a3d9ecc9/IT3170
   }
   useEffect(() => {
     getYesNoList(); // need to be upgraded
