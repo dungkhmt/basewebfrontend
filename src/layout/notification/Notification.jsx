@@ -146,9 +146,11 @@ function Notification(props) {
         "patch",
         `/notification/${id.get()}/status`,
         (res) => {
-          read.set(true);
-          numUnRead.set(numUnRead.get() - 1);
-          closeIfOnSameSite(e);
+          if (!read.get()) {
+            read.set(true);
+            numUnRead.set(numUnRead.get() - 1);
+            closeIfOnSameSite(e);
+          }
         },
         { onError: () => closeIfOnSameSite(e), 401: () => {} },
         { status: STATUS_NOTIFICATION_READ }

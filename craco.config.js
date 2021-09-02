@@ -2,6 +2,7 @@
 
 module.exports = {
   babel: {
+    plugins: ["@babel/plugin-proposal-nullish-coalescing-operator"],
     babelrc: true,
     loaderOptions: (babelLoaderOptions) => {
       const origBabelPresetCRAIndex = babelLoaderOptions.presets.findIndex(

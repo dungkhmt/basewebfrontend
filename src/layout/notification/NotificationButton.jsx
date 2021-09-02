@@ -87,7 +87,7 @@ function NotificationButton() {
 
     prevOpen.current = open.get();
 
-    // if (open.get() === false) fetchNotification();
+    // if (open.get() === false && numUnRead.get() > 0) numUnRead.set(0);
   }, [open.get()]);
 
   React.useEffect(() => {
@@ -98,7 +98,7 @@ function NotificationButton() {
     // SSE event handlers
     const handleHeartbeatEvent = function (e) {
       if (!notifications.get()) fetchNotification();
-      console.log(new Date(), e);
+      // console.log(new Date(), e);
     };
 
     const handleNewNotificationEvent = function (e) {
@@ -233,13 +233,13 @@ function NotificationButton() {
     <>
       <IconButton
         disableRipple
-        ref={anchorRef}
-        aria-controls={open.get() ? "menu-list-grow" : undefined}
-        aria-haspopup="true"
-        onClick={handleToggle}
         color="inherit"
-        aria-label="notification button"
         component="span"
+        ref={anchorRef}
+        aria-haspopup="true"
+        aria-label="notification button"
+        aria-controls={open.get() ? "menu-list-grow" : undefined}
+        onClick={handleToggle}
       >
         <Avatar
           alt="notification button"
