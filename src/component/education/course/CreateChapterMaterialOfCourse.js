@@ -1,23 +1,22 @@
 import DateFnsUtils from "@date-io/date-fns";
-import Button from "@material-ui/core/Button";
 import {
   Card,
   CardActions,
   CardContent,
+  MenuItem,
   TextField,
   Typography,
-  MenuItem,
 } from "@material-ui/core/";
+import Button from "@material-ui/core/Button";
 import { makeStyles } from "@material-ui/core/styles";
 import { MuiPickersUtilsProvider } from "@material-ui/pickers";
-import React, { useState, useEffect } from "react";
-import { useHistory } from "react-router-dom";
-import { authPost, authGet, authPostMultiPart } from "../../../api";
+import { EditorState } from "draft-js";
+import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import AlertDialog from "../../common/AlertDialog";
-import { Editor } from "react-draft-wysiwyg";
 import { useParams } from "react-router";
-import { ContentState, convertToRaw, EditorState } from "draft-js";
+import { useHistory } from "react-router-dom";
+import { authGet, authPostMultiPart } from "../../../api";
+import AlertDialog from "../../common/AlertDialog";
 let reDirect = null;
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -88,7 +87,9 @@ function CreateChapterMaterialOfCourse() {
 
     //let chapter = await authPost(dispatch, token, '/edu/class/create-chapter-material-of-course', body);
     console.log("Create chapter success, chapter = ", chapter);
-    history.push("/edu/course/chapter/detail/" + chapterId);
+    //history.push("/edu/course/chapter/detail/" + chapterId);
+    history.push("/edu/teacher/course/chapter/detail/" + chapterId);
+    //edu/teacher/course/chapter/detail/010a357c-eb5b-49a6-93de-ec1aef3695dd
   }
   async function getCourseChapterMaterialTypeList() {
     let lst = await authGet(
