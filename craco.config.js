@@ -1,4 +1,5 @@
 // const BabelRcPlugin = require("@jackwilsdon/craco-use-babelrc");
+const CompressionPlugin = require("compression-webpack-plugin");
 
 module.exports = {
   babel: {
@@ -40,9 +41,28 @@ module.exports = {
       return babelLoaderOptions;
     },
   },
-  // if you want to track react-redux selectors
   webpack: {
+    plugins: [
+      new CompressionPlugin({
+        filename: "[path][base].br",
+        algorithm: "brotliCompress",
+        test: /\.(js|css|html|svg)$/,
+        compressionOptions: {
+          level: 11,
+        },
+        threshold: 10240,
+        minRatio: 0.8,
+      }),
+      new CompressionPlugin({
+        filename: "[path][base].gz",
+        algorithm: "gzip",
+        test: /\.js$|\.css$|\.html$|\.eot?.+$|\.ttf?.+$|\.woff?.+$|\.svg?.+$/,
+        threshold: 10240,
+        minRatio: 0.8,
+      }),
+    ],
     alias: {
+      // if you want to track react-redux selectors
       "react-redux":
         process.env.NODE_ENV === "development"
           ? "react-redux/lib"
