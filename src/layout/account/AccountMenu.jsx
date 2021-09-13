@@ -5,7 +5,7 @@ import {
   Divider,
   ListItemAvatar,
   MenuItem,
-  Typography,
+  Typography
 } from "@material-ui/core";
 import ClickAwayListener from "@material-ui/core/ClickAwayListener";
 import { grey } from "@material-ui/core/colors";
@@ -19,11 +19,12 @@ import AccountCircleRoundedIcon from "@material-ui/icons/AccountCircleRounded";
 import ExitToAppIcon from "@material-ui/icons/ExitToApp";
 import FeedbackIcon from "@material-ui/icons/Feedback";
 import VpnKeyRoundedIcon from "@material-ui/icons/VpnKeyRounded";
-import React from "react";
+import React, { lazy } from "react";
 import { useDispatch } from "react-redux";
 import { useHistory } from "react-router-dom";
 import { logout } from "../../action";
-import FeedbackDialog from "./FeedbackDialog";
+
+const FeedbackDialog = lazy(() => import("./FeedbackDialog"));
 
 // const StyledMenu = withStyles({
 //   paper: {

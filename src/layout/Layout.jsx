@@ -9,7 +9,7 @@ import clsx from "clsx";
 import React, { useState } from "react";
 import { useSelector } from "react-redux";
 import { ReactComponent as Logo } from "../assets/icons/logo.svg";
-import bgImage from "../assets/img/sidebar-2.jpg";
+import bgImage from "../assets/img/sidebar-2.webp";
 import AccountButton from "./account/AccountButton";
 import NotificationButton from "./notification/NotificationButton";
 import SideBar, { drawerWidth, miniDrawerWidth } from "./sidebar/v1/SideBar";

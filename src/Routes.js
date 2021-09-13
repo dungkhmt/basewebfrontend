@@ -1,18 +1,33 @@
-import React, { Suspense } from "react";
+import { LinearProgress } from "@material-ui/core";
+import React, { lazy, Suspense } from "react";
 import { Route, Switch } from "react-router-dom";
-import Register from "../src/views/UserRegister/Register";
 import PrivateRoute from "./common/PrivateRoute";
-import ChangePassword from "./component/userlogin/changepassword";
 import SignInContainer from "./container/SignInContainer";
 import { Layout } from "./layout";
 import MainAppRoute from "./routers/MainAppRoutes";
-import BouncingBallsLoader from "./views/common/BouncingBallsLoader";
+
+const Register = lazy(() => import("../src/views/UserRegister/Register"));
+// const MainAppRoute = lazy(() => import("./routers/MainAppRoutes"));
+const ChangePassword = lazy(() =>
+  import("./component/userlogin/changepassword")
+);
 
 function Routes(props) {
   //const isError = useSelector((state) => state.error.isError);
   //if (isError) return <Route component={Error500} path="*" />;
   return (
-    <Suspense fallback={<BouncingBallsLoader />}>
+    <Suspense
+      fallback={
+        <LinearProgress
+          style={{
+            position: "absolute",
+            top: 0,
+            width: "100%",
+            zIndex: 1202,
+          }}
+        />
+      }
+    >
       <Switch>
         <Route component={Register} layout={Layout} path="/user/register" />
         <PrivateRoute
