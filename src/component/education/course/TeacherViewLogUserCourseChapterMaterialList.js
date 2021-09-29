@@ -155,8 +155,8 @@ function TeacherViewLogUserCourseChapterMaterialList(props) {
     localDispatch({ type: "pageSizeChange", pageSize: param.pageSize });
   };
 
-  const handlePageChange = (...rest) => {
-    localDispatch({ type: "pageChange", payload: rest[0].page });
+  const handlePageChange = (newPage) => {
+    localDispatch({ type: "pageChange", payload: newPage });
   };
 
   const handleKeywordChange = (txt) => {

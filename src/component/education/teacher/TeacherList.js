@@ -7,7 +7,7 @@ import {
   Paper,
   TextField,
   Tooltip,
-  Typography
+  Typography,
 } from "@material-ui/core";
 import React, { useEffect, useReducer, useRef, useState } from "react";
 import { useSelector } from "react-redux";
@@ -32,16 +32,16 @@ import { DataGrid } from "@material-ui/data-grid";
 const useStyles = makeStyles((theme) => ({
   wrapper: {
     paddingTop: theme.spacing(2),
-    paddingBottom: theme.spacing(3)
+    paddingBottom: theme.spacing(3),
   },
   header: {
     flexGrow: 1,
     textAlign: "left",
-    paddingLeft: theme.spacing(1)
+    paddingLeft: theme.spacing(1),
   },
   search: {
-    width: 200
-  }
+    width: 200,
+  },
 }));
 
 const columns = [
@@ -51,16 +51,23 @@ const columns = [
     headerAlign: "center",
     flex: 1,
     minWidth: 200,
-    renderCell: (row) => <Link to={`/edu/teacher/detail/${row.row.teacherId}`}>{row.value}</Link>
+    renderCell: (row) => (
+      <Link to={`/edu/teacher/detail/${row.row.teacherId}`}>{row.value}</Link>
+    ),
   },
-  { 
-    headerName: "Email", 
-    field: "teacherId", 
-    headerAlign: "center", 
+  {
+    headerName: "Email",
+    field: "teacherId",
+    headerAlign: "center",
     flex: 1,
-    minWidth: 200, 
+    minWidth: 200,
   },
-  { headerName: "Tài khoản", field: "userLoginId", headerAlign: "center", minWidth: 200 }
+  {
+    headerName: "Tài khoản",
+    field: "userLoginId",
+    headerAlign: "center",
+    minWidth: 200,
+  },
 ];
 
 const initState = {
@@ -72,7 +79,7 @@ const initState = {
   keyword: "",
   sortBy: "",
   sortType: "",
-  error: ""
+  error: "",
 };
 
 function reducer(state, action) {
@@ -82,7 +89,7 @@ function reducer(state, action) {
       return {
         ...state,
         loading: true,
-        error: ""
+        error: "",
       };
     case "success":
       return {
@@ -90,7 +97,7 @@ function reducer(state, action) {
         data: payload.data,
         totalCount: payload.totalCount,
         loading: false,
-        error: ""
+        error: "",
       };
     case "error":
       return {
@@ -99,30 +106,30 @@ function reducer(state, action) {
         error: action.payload,
         page: 0,
         totalCount: 1,
-        data: []
+        data: [],
       };
     case "pageChange":
       return {
         ...state,
-        page: action.payload
+        page: action.payload,
       };
     case "sortChange":
       return {
         ...state,
         sortBy: action.sortBy,
-        sortType: action.sortType
+        sortType: action.sortType,
       };
     case "pageSizeChange":
       return {
         ...state,
         page: 0,
-        pageSize: action.pageSize
+        pageSize: action.pageSize,
       };
     case "keywordChange":
       return {
         ...state,
         keyword: payload.keyword,
-        page: 0
+        page: 0,
       };
     default:
       return state;
@@ -147,64 +154,61 @@ export default function TeacherList() {
     loading,
     keyword,
     sortBy,
-    sortType
+    sortType,
   } = state;
 
   const classes = useStyles();
 
   useEffect(() => {
-    let url = '/get-all-teachers-by-page'
-      url += `?page=${page}&pageSize=${pageSize}`
-      if(sortBy)
-        url += `&sortBy=${sortBy}&sortType=${sortType}`
-      if(keyword !== '')
-        url += `&keyword=${keyword}`
+    let url = "/get-all-teachers-by-page";
+    url += `?page=${page}&pageSize=${pageSize}`;
+    if (sortBy) url += `&sortBy=${sortBy}&sortType=${sortType}`;
+    if (keyword !== "") url += `&keyword=${keyword}`;
     console.log(url);
     localDispatch({ type: "fetchData" });
-    
-    const timeout = setTimeout(() => {
-      localDispatch({type: 'error', payload: 'có lỗi xảy ra'})
-    }, 10000)
 
-    request(
-      'get',
-      url,
-      ({data}) => {
-        const dataWidthId = data.content.map((item, index) => ({...item, id: index}))
-        localDispatch({
-          type: "success",
-          payload: {
-            data: dataWidthId,
-            totalCount: data.totalElements,
-          }
-        });
-        clearTimeout(timeout)
-      }
-    )
+    const timeout = setTimeout(() => {
+      localDispatch({ type: "error", payload: "có lỗi xảy ra" });
+    }, 10000);
+
+    request("get", url, ({ data }) => {
+      const dataWidthId = data.content.map((item, index) => ({
+        ...item,
+        id: index,
+      }));
+      localDispatch({
+        type: "success",
+        payload: {
+          data: dataWidthId,
+          totalCount: data.totalElements,
+        },
+      });
+      clearTimeout(timeout);
+    });
   }, [page, pageSize, sortBy, sortType, keyword]);
 
   const handlePageSizeChange = (param) => {
     localDispatch({ type: "pageSizeChange", pageSize: param.pageSize });
   };
 
-  const handlePageChange = (...rest) => {
-    localDispatch({ type: "pageChange", payload: rest[0].page });
+  const handlePageChange = (newPage) => {
+    localDispatch({ type: "pageChange", payload: newPage });
   };
 
   const handleSortModelChange = ([params]) => {
-    const sortBy = params?.field || '';
-    const sortType = params?.sort || '';
+    const sortBy = params?.field || "";
+    const sortType = params?.sort || "";
     localDispatch({
       type: "sortChange",
       sortBy,
-      sortType
+      sortType,
     });
   };
 
   const handleKeywordChange = (txt) => {
     localDispatch({
       type: "keywordChange",
-      payload: { keyword: txt }
+      payload: { keyword: txt },
     });
   };
 
@@ -540,7 +544,7 @@ const TextSearch = ({ onSubmid }) => {
 
   const handleTextChange = (event) => {
     const value = event.target.value;
-    console.log(event)
+    console.log(event);
     setText(value);
     if (timeoutRef.current) clearTimeout(timeoutRef.current);
     timeoutRef.current = setTimeout(() => {
@@ -569,7 +573,7 @@ const TextSearch = ({ onSubmid }) => {
             <InputAdornment position="start">
               <SearchIcon />
             </InputAdornment>
-          )
+          ),
         }}
       />
     </form>
