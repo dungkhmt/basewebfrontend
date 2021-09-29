@@ -11,6 +11,7 @@ function StudentCourseChapterMaterialDetail() {
   const chapterMaterialId = params.chapterMaterialId;
   const dispatch = useDispatch();
   const token = useSelector((state) => state.auth.token);
+  const classId = useSelector((state) => state.class.classId);
   const history = useHistory();
   const [chapterMaterial, setChapterMaterial] = useState(null);
   const [sourceId, setSourceId] = useState(null);
@@ -18,12 +19,16 @@ function StudentCourseChapterMaterialDetail() {
   const [chapterName, setChapterName] = useState(null);
 
   async function getCourseChapterMaterialDetail() {
+    // let res = await authGet(
+    //   dispatch,
+    //   token,
+    //   "/edu/class/get-course-chapter-material-detail/" + chapterMaterialId
+    // );
     let res = await authGet(
       dispatch,
       token,
-      "/edu/class/get-course-chapter-material-detail/" + chapterMaterialId
+      `/edu/class/get-course-chapter-material-detail/${chapterMaterialId}/${classId}`
     );
-    //let res = authGet(dispatch, token, '/edu/class/get-course-chapter-material-detail/' + chapterMaterialId);
     setChapterMaterial(res);
     console.log("getCourseChapterMaterialDetail ", res);
     setSourceId(res.sourceId);
