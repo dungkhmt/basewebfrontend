@@ -358,11 +358,15 @@ curl --header "Content-Type: multipart/form-data" -v POST http://localhost:8080/
 ------------
 Class management
 
-$ curl --header "Content-Type: application/json" -v GET http://localhost:8080/api/update-edu-class-set-class-code -u admin:sscm@123456
+curl --header "Content-Type: application/json" -v GET http://localhost:8080/api/update-edu-class-set-class-code -u admin:sscm@123456
+ 
  
 ------------
 MAINTENANCE
 Xóa dữ liệu hoạt động
+
+
+
 
 curl --location --request GET 'http://localhost:8080/api/delete-order-shipment-invoice-delivery-trip-payment' \
 --header 'Authorization: Basic YWRtaW46MTIz' \
