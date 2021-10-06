@@ -35,6 +35,7 @@ function TeacherCourseForAssignmentList(props) {
     { title: "Giáo viên", field: "teacherId" },
     { title: "Tên môn", field: "courseId" },
     { title: "Độ ưu tiên", field: "priority" },
+    { title: "Score", field: "score" },
     {
       title: "",
       render: (rowData) => (
@@ -91,13 +92,14 @@ function TeacherCourseForAssignmentList(props) {
   const handleModalUpdateTeacherCourseClose = () => {
     setOpenUpdateTeacherCourse(false);
   };
-  const customUpdateHandle = (priority) => {
+  const customUpdateHandle = (priority, score) => {
     //alert("update  class " + selectedClassId + " with ourload = " + hourLoad);
     let datasend = {
       planId: selectedTeacherCourse.planId,
       teacherId: selectedTeacherCourse.teacherId,
       courseId: selectedTeacherCourse.courseId,
       priority: priority,
+      score: score,
     };
     request(
       // token,
@@ -166,6 +168,7 @@ function TeacherCourseForAssignmentList(props) {
             teacherId: elm.teacherId,
             courseId: elm.courseId,
             priority: elm.priority,
+            score: elm.score,
             selected: false,
           });
         });
