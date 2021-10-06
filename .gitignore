@@ -6,6 +6,7 @@
 .pnp.js
 debug.log
 ./notes-curl-call-api.txt
+notes-curl-call-api.txt
 # testing
 /coverage
 
