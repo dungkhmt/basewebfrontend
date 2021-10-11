@@ -43,6 +43,8 @@ const columns = [
   },
 ];
 
+const rowsPerPage = [5, 10, 20];
+
 const initState = {
   data: [],
   loading: false,
@@ -151,8 +153,9 @@ function TeacherViewLogUserCourseChapterMaterialList(props) {
     );
   };
 
-  const handlePageSizeChange = (param) => {
-    localDispatch({ type: "pageSizeChange", pageSize: param.pageSize });
+  const handlePageSizeChange = (newPageSize) => {
+    // console.log(newPageSize);
+    localDispatch({ type: "pageSizeChange", pageSize: newPageSize });
   };
 
   const handlePageChange = (newPage) => {
@@ -195,7 +198,7 @@ function TeacherViewLogUserCourseChapterMaterialList(props) {
           paginationMode="server"
           onPageChange={handlePageChange}
           onPageSizeChange={handlePageSizeChange}
-          rowsPerPageOptions={[5, 10, 20]}
+          rowsPerPageOptions={rowsPerPage}
           sortModel={sortModel}
           onSortModelChange={handleSortModelChange}
           loading={loading}
