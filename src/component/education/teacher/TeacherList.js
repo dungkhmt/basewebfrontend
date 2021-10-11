@@ -79,7 +79,6 @@ const initState = {
   keyword: "",
   sortBy: "",
   sortType: "",
-  error: "",
 };
 
 function reducer(state, action) {
@@ -89,7 +88,6 @@ function reducer(state, action) {
       return {
         ...state,
         loading: true,
-        error: "",
       };
     case "success":
       return {
@@ -97,13 +95,11 @@ function reducer(state, action) {
         data: payload.data,
         totalCount: payload.totalCount,
         loading: false,
-        error: "",
       };
     case "error":
       return {
         ...state,
         loading: false,
-        error: action.payload,
         page: 0,
         totalCount: 1,
         data: [],
@@ -167,28 +163,33 @@ export default function TeacherList() {
     console.log(url);
     localDispatch({ type: "fetchData" });
 
-    const timeout = setTimeout(() => {
-      localDispatch({ type: "error", payload: "có lỗi xảy ra" });
-    }, 10000);
-
-    request("get", url, ({ data }) => {
-      const dataWidthId = data.content.map((item, index) => ({
-        ...item,
-        id: index,
-      }));
-      localDispatch({
-        type: "success",
-        payload: {
-          data: dataWidthId,
-          totalCount: data.totalElements,
+    request(
+      "get",
+      url,
+      ({ data }) => {
+        const dataWidthId = data.content.map((item, index) => ({
+          ...item,
+          id: index,
+        }));
+        localDispatch({
+          type: "success",
+          payload: {
+            data: dataWidthId,
+            totalCount: data.totalElements,
+          },
+        });
+      },
+      {
+        onError: (res) => {
+          console.log({ res });
+          localDispatch({ type: "error" });
         },
-      });
-      clearTimeout(timeout);
-    });
+      }
+    );
   }, [page, pageSize, sortBy, sortType, keyword]);
 
-  const handlePageSizeChange = (param) => {
-    localDispatch({ type: "pageSizeChange", pageSize: param.pageSize });
+  const handlePageSizeChange = (newPageSize) => {
+    localDispatch({ type: "pageSizeChange", pageSize: newPageSize });
   };
 
   const handlePageChange = (newPage) => {
