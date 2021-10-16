@@ -54,7 +54,7 @@ function NotificationButton() {
   const classes = useStyles();
 
   //
-  const { open, notifications, numUnRead } = useNotificationState();
+  const { open, notifications, numUnRead, hasMore } = useNotificationState();
 
   // return focus to the button when we transitioned from !open -> open
   const prevOpen = React.useRef(open.get());
@@ -66,15 +66,28 @@ function NotificationButton() {
   };
 
   const fetchNotification = () => {
+    let fromId = null;
+    const fetchedNoties = notifications.get();
+
+    if (fetchedNoties) {
+      fromId = fetchedNoties[fetchedNoties.length - 1].id;
+    }
+
     request(
       "get",
-      `/notification?page=${0}&size=${20}`,
+      `/notification?fromId=${fromId || ""}&page=${0}&size=${20}`,
       (res) => {
         let data = res.data;
         const noties = processNotificationsContent(data.notifications.content);
 
-        notifications.set(noties);
+        if (fromId === null) {
+          notifications.set(noties);
+        } else {
+          notifications.merge(noties);
+        }
+
         numUnRead.set(data.numUnRead);
+        hasMore.set(!data.notifications.last);
       },
       { 401: () => {} }
     );
@@ -192,7 +205,7 @@ function NotificationButton() {
     // let count = 0;
 
     function setupEventSource() {
-      fetchNotification();
+      // fetchNotification();
 
       es = new EventSourcePolyfill(`${API_URL}/notification/subscription`, {
         headers: {
@@ -261,6 +274,8 @@ function NotificationButton() {
       <NotificationMenu
         open={open}
         notifications={notifications}
+        next={fetchNotification}
+        hasMore={hasMore}
         anchorRef={anchorRef}
       />
     </>

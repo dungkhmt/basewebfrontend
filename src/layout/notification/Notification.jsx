@@ -114,17 +114,17 @@ function Notification(props) {
     avatarColor,
   } = useState(notification);
 
-  const classes = useStyles(read.get());
+  const classes = useStyles(read?.get());
 
   const avatar = (
     <Avatar
       alt="notification"
       className={classes.avatar}
       style={{
-        backgroundColor: avatarColor.get(),
+        backgroundColor: avatarColor?.get(),
       }}
     >
-      {avatarContent.get()
+      {avatarContent?.get()
         ? avatarContent.get().substring(0, 2).toLocaleUpperCase()
         : "N"}
     </Avatar>
@@ -160,7 +160,7 @@ function Notification(props) {
     }
   };
 
-  return id.get() ? (
+  return id?.get() ? (
     <ListItemLink
       disableGutters
       className={classes.itemLink}
