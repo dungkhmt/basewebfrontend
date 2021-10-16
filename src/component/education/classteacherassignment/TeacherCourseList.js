@@ -1,4 +1,4 @@
-import { Button, Checkbox, Tooltip } from "@material-ui/core/";
+import { Button, Checkbox, Tooltip, IconButton } from "@material-ui/core/";
 import { green } from "@material-ui/core/colors";
 import { createMuiTheme, ThemeProvider } from "@material-ui/core/styles";
 import CheckCircleOutlineIcon from "@material-ui/icons/CheckCircleOutline";
@@ -7,6 +7,8 @@ import React, { useEffect, useReducer, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { authPostMultiPart, request } from "../../../api";
 import UploadExcelTeacherCourseModel from "./UploadExcelTeacherCourseModel";
+import EditIcon from "@material-ui/icons/Edit";
+import UpdateTeacherCourseModel from "./UpdateTeacherCourseModel";
 
 const headerProperties = {
   headerStyle: {
@@ -30,13 +32,31 @@ function TeacherCourseList(props) {
   const dispatch = useDispatch();
   const token = useSelector((state) => state.auth.token);
   //const [selectedFile, setSelectedFile] = useState(null);
+  const [selectedTeacherCourse, setSelectedTeacherCourse] = useState(null);
   const [selectedAll, setSelectedAll] = useState(false);
   const [, forceUpdate] = useReducer((x) => x + 1, 0);
+  const [openUpdateTeacherCourse, setOpenUpdateTeacherCourse] =
+    React.useState(false);
 
   const columns = [
     { title: "Giáo viên", field: "teacherId" },
     { title: "Tên môn", field: "courseId" },
     { title: "Độ ưu tiên", field: "priority" },
+    { title: "Score", field: "score" },
+    {
+      title: "",
+      render: (rowData) => (
+        <IconButton
+          color="primary"
+          aria-label="edit"
+          onClick={() => {
+            onUpdatePriority(rowData["teacherId"], rowData["courseId"]);
+          }}
+        >
+          <EditIcon />
+        </IconButton>
+      ),
+    },
     {
       field: "selected",
       title: "Chọn",
@@ -94,6 +114,46 @@ function TeacherCourseList(props) {
         console.error(e);
       });
   }
+  function onUpdatePriority(teacherId, courseId) {
+    //alert("update priority " + teacherId + "-" + courseId);
+    setSelectedTeacherCourse({
+      planId: planId,
+      teacherId: teacherId,
+      courseId: courseId,
+    });
+    handleModalUpdateTeacherCourseOpen();
+  }
+  const handleModalUpdateTeacherCourseOpen = () => {
+    setOpenUpdateTeacherCourse(true);
+  };
+  const handleModalUpdateTeacherCourseClose = () => {
+    setOpenUpdateTeacherCourse(false);
+  };
+  const customUpdateHandle = (priority, score) => {
+    //alert("update  class " + selectedClassId + " with ourload = " + hourLoad);
+    let datasend = {
+      planId: selectedTeacherCourse.planId,
+      teacherId: selectedTeacherCourse.teacherId,
+      courseId: selectedTeacherCourse.courseId,
+      priority: priority,
+      score: score,
+    };
+    request(
+      // token,
+      // history,
+      "post",
+      "update-teacher-course",
+      (res) => {
+        console.log(res);
+        alert("Cập nhật " + "  OK");
+      },
+      { 401: () => {} },
+      datasend
+    );
+
+    handleModalUpdateTeacherCourseClose();
+  };
+
   const customUploadHandle = (selectedFile, choice) => {
     //console.log(filename);
     //setSearchString(sString);
@@ -115,6 +175,7 @@ function TeacherCourseList(props) {
             teacherId: elm.teacherId,
             courseId: elm.courseId,
             priority: elm.priority,
+            score: elm.score,
             selected: false,
           });
         });
@@ -142,6 +203,7 @@ function TeacherCourseList(props) {
             teacherId: v.teacherId,
             courseId: v.courseId,
             priority: v.priority,
+            score: v.score,
           })
         );
       }
@@ -261,6 +323,12 @@ function TeacherCourseList(props) {
         open={open}
         onClose={handleModalClose}
         onUpload={customUploadHandle}
+      />
+      <UpdateTeacherCourseModel
+        open={openUpdateTeacherCourse}
+        onClose={handleModalUpdateTeacherCourseClose}
+        onUpdateInfo={customUpdateHandle}
+        selectedTeacherCourse={selectedTeacherCourse}
       />
     </>
   );

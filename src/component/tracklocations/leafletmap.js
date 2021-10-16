@@ -1,12 +1,46 @@
-import React from "react";
-import { Map } from "react-leaflet";
+import React, { useCallback, useState } from "react";
+import { MapContainer, TileLayer } from "react-leaflet";
+import DraggableMarker from "./DraggableMarker";
+import RoutingMachine from "./RoutingMachine";
 
-function MyMap() {
+const point = { lat: 21.006015, lng: 105.84368 }; // Bach khoa
+const waypoints = [
+  { lat: 21.005015, lng: 105.84368 },
+  { lat: 21.008015, lng: 105.84568 },
+];
+
+function LeafletMap() {
+  const [draggable, setDraggable] = useState(false);
+  const [position, setPosition] = useState(point);
+
+  const toggleDraggable = useCallback(() => {
+    setDraggable((d) => !d);
+  }, []);
+
   return (
-    <div>
-      <Map style={{ height: "80vh" }} zoom={2} center={[20, 100]}></Map>
-    </div>
+    <MapContainer center={point} zoom={13} scrollWheelZoom={true}>
+      <TileLayer
+        attribution='&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
+        url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+      />
+      {/* <LayersControl position="topright">
+        <LayersControl.Overlay name="Draggable marker">
+        </LayersControl.Overlay>
+      </LayersControl> */}
+      <DraggableMarker
+        draggable={draggable}
+        position={position}
+        setPosition={setPosition}
+      >
+        <div>
+          <button onClick={toggleDraggable}>
+            {draggable ? "turn off draggable" : "turn on draggable"}
+          </button>
+        </div>
+      </DraggableMarker>
+      <RoutingMachine waypoints={waypoints} />
+    </MapContainer>
   );
 }
 
-export default MyMap;
+export default LeafletMap;

@@ -13,7 +13,7 @@ import { makeStyles } from "@material-ui/core/styles";
 import MaterialTable from "material-table";
 import React, { Fragment, useEffect, useState } from "react";
 import { BiDetail } from "react-icons/bi";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { useHistory, useParams } from "react-router";
 import { Link as RouterLink } from "react-router-dom";
 import { request } from "../../../../api";
@@ -26,6 +26,7 @@ import {
   StyledTabs,
   TabPanel,
 } from "../../../../component/tab";
+import { setClassId } from "../../../../reducers/classReducer";
 
 const useStyles = makeStyles((theme) => ({
   card: {
@@ -51,6 +52,7 @@ function SClassDetail() {
   const classes = useStyles();
   const params = useParams();
   const token = useSelector((state) => state.auth.token);
+  const dispatch = useDispatch();
   const history = useHistory();
 
   const [classDetail, setClassDetail] = useState({});
@@ -80,12 +82,14 @@ function SClassDetail() {
 
   // Functions.
   const getClassDetail = () => {
+    const classId = params.id;
     request(
       // token, history,
       "get",
       `/edu/class/${params.id}`,
       (res) => {
         setClassDetail(res.data);
+        dispatch(setClassId(classId));
       }
     );
   };

@@ -111,6 +111,14 @@ export default function ClassTeacherAssignmentPlanDetail() {
         <PrimaryButton
           // className={classes.btn}
           onClick={(e) => {
+            handleAssignTeacher2Class("SCORES");
+          }}
+        >
+          Phân công tối ưu thói quen
+        </PrimaryButton>
+        <PrimaryButton
+          // className={classes.btn}
+          onClick={(e) => {
             handleAssignTeacher2Class("PRIORITY");
           }}
         >
