@@ -55,9 +55,11 @@ import { user } from "./menuconfig/user";
 import { warehouse } from "./menuconfig/warehouse";
 import { lake_mgr } from "./menuconfig/water-resources-management/lakemanagement";
 import { webcam } from "./menuconfig/webcam";
+import {ProgrammingContestMenuConfig} from "./menuconfig/ProgramingContest";
 
 export const MENU_LIST = [];
 MENU_LIST.push(general);
+MENU_LIST.push(ProgrammingContestMenuConfig);
 MENU_LIST.push(eduTeachingManagement);
 MENU_LIST.push(eduLearningManagement);
 MENU_LIST.push(teachingassignment);
@@ -102,6 +104,7 @@ menuIconMap.set(
   <img alt="Teaching icon" src={TeachingIcon} height={24} width={24} />
 );
 menuIconMap.set("DashboardIcon", <DashboardRoundedIcon />);
+menuIconMap.set("GiTeacher", <GiTeacher size={24} />);
 menuIconMap.set("InboxIcon", <InboxIcon />);
 menuIconMap.set("StarBorder", <StarBorder />);
 menuIconMap.set("PeopleIcon", <PeopleIcon />);

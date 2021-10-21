@@ -60,6 +60,7 @@ const ScheduleRoute = lazy(() => import("./ScheduleRoute"));
 function MainAppRoute(props) {
   const location = useLocation();
   const notificationState = useNotificationState();
+  const ProgrammingContestRoutes = lazy(() => import("./ProgrammingContestRoutes"));
 
   useEffect(() => {
     notificationState.open.set(false);
@@ -99,9 +100,14 @@ function MainAppRoute(props) {
         }
       >
         <Switch>
+
+
           <Route component={Home} exact path="/" />
 
           <PrivateRoute component={UserLoginRoute} path="/userlogin" />
+
+          <PrivateRoute component={ProgrammingContestRoutes} path="/programming-contest" />
+
 
           <PrivateRoute component={OrderRoute} path="/orders" />
 
