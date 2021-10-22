@@ -55,13 +55,15 @@ import { user } from "./menuconfig/user";
 import { warehouse } from "./menuconfig/warehouse";
 import { lake_mgr } from "./menuconfig/water-resources-management/lakemanagement";
 import { webcam } from "./menuconfig/webcam";
-import {ProgrammingContestMenuConfig} from "./menuconfig/ProgramingContest";
+import { ProgrammingContestMenuConfig } from "./menuconfig/ProgramingContest";
+import { DataAdministration } from "./menuconfig/dataadmin";
 
 export const MENU_LIST = [];
 MENU_LIST.push(general);
 MENU_LIST.push(ProgrammingContestMenuConfig);
 MENU_LIST.push(eduTeachingManagement);
 MENU_LIST.push(eduLearningManagement);
+MENU_LIST.push(DataAdministration);
 MENU_LIST.push(teachingassignment);
 MENU_LIST.push(schedule);
 MENU_LIST.push(department);
