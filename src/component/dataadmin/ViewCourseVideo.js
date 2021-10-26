@@ -1,11 +1,18 @@
 import MaterialTable from "material-table";
 import React from "react";
 import axios from "axios";
+import { request } from "../../api";
+import { toFormattedDateTime } from "../../utils/dateutils";
 export default function ViewCourseVideo() {
   const columns = [
     { title: "UserName", field: "userLoginId" },
-    { title: "MaterialId", field: "eduCourseMaterialId" },
-    { title: "Date", field: "createdStamp" },
+    { title: "FullName", field: "fullname" },
+    { title: "ClassId", field: "classId" },
+    { title: "CourseId", field: "courseId" },
+    { title: "CourseName", field: "courseName" },
+    { title: "Chapter", field: "chapterName" },
+    { title: "Material", field: "materialName" },
+    { title: "Date", field: "date" },
   ];
   return (
     <div>
@@ -15,19 +22,49 @@ export default function ViewCourseVideo() {
         data={(query) =>
           new Promise((resolve, reject) => {
             let url =
-              "http://localhost:8080/admin/data/view-course-video?page=" +
+              "http://localhost:8080/api/admin/data/view-course-video?page=" +
               `${query.page}` +
               "&size=" +
               `${query.pageSize}`;
-            let token = localStorage.getItem("token");
+
+            request(
+              "get",
+              url,
+              (res) => {
+                const data = res.data;
+                const content = data.content.map((c) => ({
+                  ...c,
+                  date: toFormattedDateTime(c.date),
+                }));
+
+                resolve({
+                  data: content, // your data array
+                  page: data.number, // current page number
+                  totalCount: data.totalElements, // total row number
+                });
+              },
+              {
+                onError: (e) => {
+                  reject({
+                    message:
+                      "Đã có lỗi xảy ra trong quá trình tải dữ liệu. Thử lại ",
+                    errorCause: "query",
+                  });
+                },
+              }
+            );
+
+            /*  
+            let token = localStorage.getItem("TOKEN");
             axios
               .get(url, { headers: { "x-auth-token": token } })
               .then((res) => res.data)
               .then((res) => {
+                console.log("before resolve, res = ", res);
                 resolve({
                   data: res.content,
                   page: query.page,
-                  totalCount: res.totalElement,
+                  totalCount: res.totalElements,
                 });
               })
               .catch((err) => {
@@ -35,6 +72,7 @@ export default function ViewCourseVideo() {
                 //}
                 console.log("exception err = ", err);
               });
+              */
           })
         }
       ></MaterialTable>
