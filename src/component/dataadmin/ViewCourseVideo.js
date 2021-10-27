@@ -22,7 +22,7 @@ export default function ViewCourseVideo() {
         data={(query) =>
           new Promise((resolve, reject) => {
             let url =
-              "http://localhost:8080/api/admin/data/view-course-video?page=" +
+              "/admin/data/view-course-video?page=" +
               `${query.page}` +
               "&size=" +
               `${query.pageSize}`;
