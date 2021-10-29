@@ -5,7 +5,9 @@ import {
   CardHeader,
   Paper,
   Typography,
+  IconButton,
 } from "@material-ui/core";
+import EditIcon from "@material-ui/icons/Edit";
 import { makeStyles, MuiThemeProvider } from "@material-ui/core/styles";
 import MaterialTable from "material-table";
 import React, { useEffect, useRef, useState } from "react";
@@ -72,12 +74,35 @@ function TClassList() {
       title: "Học kỳ",
       ...headerProperties,
     },
+    {
+      field: "statusId",
+      title: "Trạng thái",
+      ...headerProperties,
+    },
+    {
+      title: "",
+      render: (rowData) => (
+        <IconButton
+          color="primary"
+          aria-label="edit"
+          onClick={() => {
+            onUpdateClass(rowData["id"]);
+          }}
+        >
+          <EditIcon />
+        </IconButton>
+      ),
+    },
   ];
 
   const [data, setData] = useState([]);
   const tableRef = useRef(null);
 
   // Functions.
+
+  function onUpdateClass(classId) {
+    alert("Edit Class ", classId);
+  }
   const getClasses = () => {
     request(
       // token, history,
