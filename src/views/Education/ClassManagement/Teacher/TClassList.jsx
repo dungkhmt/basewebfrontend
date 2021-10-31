@@ -158,7 +158,8 @@ function TClassList() {
             onRowClick={(event, rowData) => {
               // console.log(rowData);
               history.push({
-                pathname: `/edu/teacher/class/${rowData.id}`,
+                //pathname: `/edu/teacher/class/${rowData.id}`,
+                pathname: `/edu/teacher/class/detail/${rowData.id}`,
                 state: {},
               });
             }}

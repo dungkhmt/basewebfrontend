@@ -51,6 +51,7 @@ import CreateAssignment from "../views/Education/ClassManagement/Teacher/CreateA
 import TAssignmentDetail from "../views/Education/ClassManagement/Teacher/TAssignmentDetail";
 import TClassDetail from "../views/Education/ClassManagement/Teacher/TClassDetail";
 import TClassList from "../views/Education/ClassManagement/Teacher/TClassList";
+import TeacherViewDetailClass from "../views/Education/ClassManagement/Teacher/TeacherViewDetailClass";
 import NotFound from "../views/errors/NotFound";
 
 export default function EduRoute() {
@@ -219,6 +220,12 @@ export default function EduRoute() {
         <Route
           component={TClassList}
           path={`${path}/teacher/class/list`}
+          exact
+        />
+
+        <Route
+          component={TeacherViewDetailClass}
+          path={`${path}/teacher/class/detail/:classId`}
           exact
         />
 
