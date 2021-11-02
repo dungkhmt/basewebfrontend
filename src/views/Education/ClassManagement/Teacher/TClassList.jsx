@@ -41,6 +41,42 @@ function TClassList() {
       fontSize: "1rem",
     },
   };
+
+  const columns = [
+    {
+      field: "classCode",
+      title: "Mã lớp",
+      ...headerProperties,
+    },
+    {
+      field: "courseId",
+      title: "Mã môn",
+      ...headerProperties,
+    },
+    {
+      field: "courseName",
+      title: "Tên môn",
+      ...headerProperties,
+    },
+    {
+      field: "createdByUserLoginId",
+      title: "Người tạo",
+      ...headerProperties,
+    },
+
+    {
+      field: "semester",
+      title: "Học kỳ",
+      ...headerProperties,
+    },
+
+    {
+      field: "statusId",
+      title: "Trạng thái",
+      ...headerProperties,
+    },
+  ];
+
   const cols = [
     {
       field: "classCode",
@@ -79,23 +115,10 @@ function TClassList() {
       title: "Trạng thái",
       ...headerProperties,
     },
-    {
-      title: "",
-      render: (rowData) => (
-        <IconButton
-          color="primary"
-          aria-label="edit"
-          onClick={() => {
-            onUpdateClass(rowData["id"]);
-          }}
-        >
-          <EditIcon />
-        </IconButton>
-      ),
-    },
   ];
 
   const [data, setData] = useState([]);
+  const [classesOfUser, setClassesOfUser] = useState([]);
   const tableRef = useRef(null);
 
   // Functions.
@@ -115,8 +138,26 @@ function TClassList() {
     );
   };
 
+  function getClassesOfUser() {
+    request(
+      // token, history,
+      "get",
+      "/edu/class/get-classes-of-user/null",
+      (res) => {
+        //let lst = [];
+        //res.data.map((e) => {
+        //  lst.push(e);s
+        //});
+        console.log("getClassesOfUser, res.data = ", res.data);
+        //console.log("getClassesOfUser, lst = ", lst);
+        setClassesOfUser(res.data);
+      }
+    );
+  }
+
   useEffect(() => {
     getClasses();
+    getClassesOfUser();
   }, []);
 
   return (
@@ -160,6 +201,25 @@ function TClassList() {
               history.push({
                 //pathname: `/edu/teacher/class/${rowData.id}`,
                 pathname: `/edu/teacher/class/detail/${rowData.id}`,
+                state: {},
+              });
+            }}
+          />
+        </CardContent>
+
+        <CardContent>
+          <MaterialTable
+            title=""
+            columns={columns}
+            icons={tableIcons}
+            //tableRef={tableRef}
+            //localization={localization}
+            data={classesOfUser}
+            onRowClick={(event, rowData) => {
+              // console.log(rowData);
+              history.push({
+                //pathname: `/edu/teacher/class/${rowData.id}`,
+                pathname: `/edu/teacher/class/detail/${rowData.classId}`,
                 state: {},
               });
             }}

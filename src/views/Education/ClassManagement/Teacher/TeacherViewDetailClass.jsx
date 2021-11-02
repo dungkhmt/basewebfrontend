@@ -23,6 +23,8 @@ import TeacherViewDetailClassStudentRegistered from "./TeacherViewDetailClassStu
 import TClassUpdatePopup from "./TClassUpdatePopup";
 import TeacherViewDetailClassExercises from "./TeacherViewDetailClassExercises";
 import TeacherViewDetailClassExerciseSubmission from "./TeacherViewDetailClassExerciseSubmission";
+import TeacherViewDetailClassGeneralInfo from "./TeacherViewDetailClassGeneralInfo";
+
 const useStyles = makeStyles((theme) => ({
   btn: {
     // width: 180,
@@ -44,6 +46,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const tabsLabel = [
+  "Thông tin chung",
   "DS Sinh viên",
   "SV đăng ký",
   "Bài tập",
@@ -62,25 +65,8 @@ export default function TeacherViewDetailClass() {
     setSelectedTab(newTab);
   }
 
-  function onUpdateClass() {
-    setOpen(true);
-  }
-
-  function performUpdate() {
-    alert("update class info");
-  }
   return (
     <div>
-      <h1>Teacher View Detail Class{classId}</h1>
-      <IconButton
-        color="primary"
-        aria-label="edit"
-        onClick={() => {
-          onUpdateClass();
-        }}
-      >
-        <EditIcon />
-      </IconButton>
       <AntTabs
         value={selectedTab}
         onChange={handleChangeTab}
@@ -94,25 +80,21 @@ export default function TeacherViewDetailClass() {
       </AntTabs>
 
       <TabPanel value={selectedTab} index={0} dir={theme.direction}>
-        <TeacherViewDetailClassStudentList classId={classId} />
+        <TeacherViewDetailClassGeneralInfo classId={classId} />
       </TabPanel>
       <TabPanel value={selectedTab} index={1} dir={theme.direction}>
-        <TeacherViewDetailClassStudentRegistered classId={classId} />
+        <TeacherViewDetailClassStudentList classId={classId} />
       </TabPanel>
       <TabPanel value={selectedTab} index={2} dir={theme.direction}>
+        <TeacherViewDetailClassStudentRegistered classId={classId} />
+      </TabPanel>
+      <TabPanel value={selectedTab} index={3} dir={theme.direction}>
         <TeacherViewDetailClassExercises classId={classId} />
       </TabPanel>
 
-      <TabPanel value={selectedTab} index={3} dir={theme.direction}>
+      <TabPanel value={selectedTab} index={4} dir={theme.direction}>
         <TeacherViewDetailClassExerciseSubmission classId={classId} />
       </TabPanel>
-
-      <TClassUpdatePopup
-        open={open}
-        setOpen={setOpen}
-        performUpdate={performUpdate}
-        classId={classId}
-      />
     </div>
   );
 }

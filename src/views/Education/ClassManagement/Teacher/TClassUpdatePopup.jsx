@@ -13,6 +13,7 @@ export default function TClassUpdatePopup(props) {
   const { open, performUpdate, setOpen, classId } = props;
   const [roles, setRoles] = useState([]);
   const [selectedRole, setSelectedRole] = useState(null);
+  const [selectedUserLoginId, setSelectedUserLoginId] = useState(null);
   function updateStatus(status) {
     request(
       "get",
@@ -27,6 +28,26 @@ export default function TClassUpdatePopup(props) {
       console.log("getRoles res = ", res);
     });
   }
+  function handleChangeUserLoginId(e) {
+    setSelectedUserLoginId(e.target.value);
+  }
+  function performUpdateRole() {
+    let body = {
+      classId: classId,
+      userLoginId: selectedUserLoginId,
+      roleId: selectedRole,
+    };
+    request(
+      "POST",
+      "edu/class/add-class-user-login-role",
+      (res) => {
+        //alert("assign teacher to class " + res.data);
+        //setIsProcessing(false);
+      },
+      { 401: () => {} },
+      body
+    );
+  }
   useEffect(() => {
     getRoles();
   }, []);
@@ -34,6 +55,10 @@ export default function TClassUpdatePopup(props) {
     <Dialog open={open}>
       <DialogTitle>Register information</DialogTitle>
       <DialogContent>
+        <TextField
+          label="UserLoginId"
+          onChange={handleChangeUserLoginId}
+        ></TextField>
         <TextField
           label="input"
           required
@@ -48,7 +73,7 @@ export default function TClassUpdatePopup(props) {
         </TextField>
         <Button onClick={() => updateStatus("HIDDEN")}>Hide</Button>
         <Button onClick={() => updateStatus("OPEN")}>Open</Button>
-        <Button onClick={() => performUpdate()}>Save</Button>
+        <Button onClick={() => performUpdateRole()}>Save</Button>
         <Button onClick={() => setOpen(false)}>Cancel</Button>
       </DialogContent>
     </Dialog>
