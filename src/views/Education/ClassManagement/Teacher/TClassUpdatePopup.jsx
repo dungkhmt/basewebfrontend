@@ -53,28 +53,40 @@ export default function TClassUpdatePopup(props) {
   }, []);
   return (
     <Dialog open={open}>
-      <DialogTitle>Register information</DialogTitle>
+      <DialogTitle>Phân quyền cho giáo viên</DialogTitle>
       <DialogContent>
-        <TextField
-          label="UserLoginId"
-          onChange={handleChangeUserLoginId}
-        ></TextField>
-        <TextField
-          label="input"
-          required
-          select
-          onChange={(e) => setSelectedRole(e.target.value)}
+        <div
+          style={{
+            display: "flex",
+            justifyContent: "space-around",
+            minWidth: "500px",
+            border: "1px solid black",
+          }}
         >
-          {roles.map((item) => (
-            <MenuItem key={item.roleId} value={item.roleId}>
-              {item.description}
-            </MenuItem>
-          ))}
-        </TextField>
-        <Button onClick={() => updateStatus("HIDDEN")}>Hide</Button>
-        <Button onClick={() => updateStatus("OPEN")}>Open</Button>
-        <Button onClick={() => performUpdateRole()}>Save</Button>
-        <Button onClick={() => setOpen(false)}>Cancel</Button>
+          <TextField
+            label="UserLoginId"
+            onChange={handleChangeUserLoginId}
+          ></TextField>
+          <TextField
+            style={{ minWidth: "200px" }}
+            label="Chọn vai trò"
+            required
+            select
+            onChange={(e) => setSelectedRole(e.target.value)}
+          >
+            {roles.map((item) => (
+              <MenuItem key={item.roleId} value={item.roleId}>
+                {item.description}
+              </MenuItem>
+            ))}
+          </TextField>
+        </div>
+        <div>
+          <Button onClick={() => updateStatus("HIDDEN")}>Hide</Button>
+          <Button onClick={() => updateStatus("OPEN")}>Open</Button>
+          <Button onClick={() => performUpdateRole()}>Save</Button>
+          <Button onClick={() => setOpen(false)}>Cancel</Button>
+        </div>
       </DialogContent>
     </Dialog>
   );
