@@ -39,6 +39,14 @@ export const eduTeachingManagement = {
       child: [],
     },
     {
+      id: "",
+      path: "/edu/resource-links/list",
+      isPublic: true,
+      icon: null,
+      text: "Link hữu ích",
+      child: [],
+    },
+    {
       id: "MENU_EDUCATION_MANAGEMENT_PROGRAMMING_CONTEST",
       path: "/edu/management/contestprogramming",
       isPublic: true,

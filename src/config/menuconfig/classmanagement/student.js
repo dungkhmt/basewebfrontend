@@ -29,6 +29,7 @@ export const eduLearningManagement = {
       text: "Quiz Test",
       child: [],
     },
+
     {
       id: "MENU_EDUCATION_ASSIGNMENT_EXECUTION",
       path: "/edu/student/contestprogramming",
