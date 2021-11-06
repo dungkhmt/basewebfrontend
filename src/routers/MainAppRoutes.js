@@ -8,6 +8,7 @@ import { Layout } from "../layout";
 import { drawerWidth } from "../layout/sidebar/v1/SideBar";
 import { useNotificationState } from "../state/NotificationState";
 import NotFound from "../views/errors/NotFound";
+import AdminRoute from "./AdminRoute";
 
 const DepotContainerFuncRoute = lazy(() => import("./DepotContainerFuncRoute"));
 const DepotTrailerFuncRoute = lazy(() => import("./DepotTrailerFuncRoute"));
@@ -60,6 +61,9 @@ const ScheduleRoute = lazy(() => import("./ScheduleRoute"));
 function MainAppRoute(props) {
   const location = useLocation();
   const notificationState = useNotificationState();
+  const ProgrammingContestRoutes = lazy(() =>
+    import("./ProgrammingContestRoutes")
+  );
 
   useEffect(() => {
     notificationState.open.set(false);
@@ -102,6 +106,11 @@ function MainAppRoute(props) {
           <Route component={Home} exact path="/" />
 
           <PrivateRoute component={UserLoginRoute} path="/userlogin" />
+
+          <PrivateRoute
+            component={ProgrammingContestRoutes}
+            path="/programming-contest"
+          />
 
           <PrivateRoute component={OrderRoute} path="/orders" />
 
@@ -173,6 +182,8 @@ function MainAppRoute(props) {
           <PrivateRoute component={PurchaseOrderRoute} path="/purchase-order" />
 
           <PrivateRoute component={EduRoute} path="/edu" />
+
+          <PrivateRoute component={AdminRoute} path="/admin/data" />
 
           <PrivateRoute
             component={WebcamRoute}

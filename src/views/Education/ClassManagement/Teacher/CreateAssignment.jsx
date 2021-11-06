@@ -501,19 +501,20 @@ function CreateAssignment() {
                     editorStyle={editorStyle.editor}
                   />
                 </Grid>
-                <Grid item md={10}>
-                  <NegativeButton
-                    label="Huỷ"
-                    className={classes.cancelBtn}
-                    onClick={onCancel}
-                  />
-                  <PositiveButton
-                    disabled={isProcessing}
-                    type="submit"
-                    label={assignId ? "Chỉnh sửa" : "Tạo bài tập"}
-                    className={classes.createOrUpdateBtn}
-                  />
-                </Grid>
+              </Grid>
+
+              <Grid item md={10}>
+                <NegativeButton
+                  label="Huỷ"
+                  className={classes.cancelBtn}
+                  onClick={onCancel}
+                />
+                <PositiveButton
+                  disabled={isProcessing}
+                  type="submit"
+                  label={assignId ? "Chỉnh sửa" : "Tạo bài tập"}
+                  className={classes.createOrUpdateBtn}
+                />
               </Grid>
             </Grid>
           </form>

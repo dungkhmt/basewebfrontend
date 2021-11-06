@@ -5,7 +5,9 @@ import {
   CardHeader,
   Paper,
   Typography,
+  IconButton,
 } from "@material-ui/core";
+import EditIcon from "@material-ui/icons/Edit";
 import { makeStyles, MuiThemeProvider } from "@material-ui/core/styles";
 import MaterialTable from "material-table";
 import React, { useEffect, useRef, useState } from "react";
@@ -39,6 +41,42 @@ function TClassList() {
       fontSize: "1rem",
     },
   };
+
+  const columns = [
+    {
+      field: "classCode",
+      title: "Mã lớp",
+      ...headerProperties,
+    },
+    {
+      field: "courseId",
+      title: "Mã môn",
+      ...headerProperties,
+    },
+    {
+      field: "courseName",
+      title: "Tên môn",
+      ...headerProperties,
+    },
+    {
+      field: "createdByUserLoginId",
+      title: "Người tạo",
+      ...headerProperties,
+    },
+
+    {
+      field: "semester",
+      title: "Học kỳ",
+      ...headerProperties,
+    },
+
+    {
+      field: "statusId",
+      title: "Trạng thái",
+      ...headerProperties,
+    },
+  ];
+
   const cols = [
     {
       field: "classCode",
@@ -72,12 +110,22 @@ function TClassList() {
       title: "Học kỳ",
       ...headerProperties,
     },
+    {
+      field: "statusId",
+      title: "Trạng thái",
+      ...headerProperties,
+    },
   ];
 
   const [data, setData] = useState([]);
+  const [classesOfUser, setClassesOfUser] = useState([]);
   const tableRef = useRef(null);
 
   // Functions.
+
+  function onUpdateClass(classId) {
+    alert("Edit Class ", classId);
+  }
   const getClasses = () => {
     request(
       // token, history,
@@ -90,8 +138,26 @@ function TClassList() {
     );
   };
 
+  function getClassesOfUser() {
+    request(
+      // token, history,
+      "get",
+      "/edu/class/get-classes-of-user/null",
+      (res) => {
+        //let lst = [];
+        //res.data.map((e) => {
+        //  lst.push(e);s
+        //});
+        console.log("getClassesOfUser, res.data = ", res.data);
+        //console.log("getClassesOfUser, lst = ", lst);
+        setClassesOfUser(res.data);
+      }
+    );
+  }
+
   useEffect(() => {
     getClasses();
+    getClassesOfUser();
   }, []);
 
   return (
@@ -133,7 +199,27 @@ function TClassList() {
             onRowClick={(event, rowData) => {
               // console.log(rowData);
               history.push({
-                pathname: `/edu/teacher/class/${rowData.id}`,
+                //pathname: `/edu/teacher/class/${rowData.id}`,
+                pathname: `/edu/teacher/class/detail/${rowData.id}`,
+                state: {},
+              });
+            }}
+          />
+        </CardContent>
+
+        <CardContent>
+          <MaterialTable
+            title=""
+            columns={columns}
+            icons={tableIcons}
+            //tableRef={tableRef}
+            //localization={localization}
+            data={classesOfUser}
+            onRowClick={(event, rowData) => {
+              // console.log(rowData);
+              history.push({
+                //pathname: `/edu/teacher/class/${rowData.id}`,
+                pathname: `/edu/teacher/class/detail/${rowData.classId}`,
                 state: {},
               });
             }}
