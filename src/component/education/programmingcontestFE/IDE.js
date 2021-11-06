@@ -7,12 +7,8 @@ import {java} from '@codemirror/lang-java';
 import {pythonLanguage} from '@codemirror/lang-python';
 import { go } from '@codemirror/legacy-modes/mode/go';
 import { StreamLanguage } from '@codemirror/stream-parser';
-import 'codemirror/lib/codemirror.css';
-import 'codemirror/theme/material.css';
 import {useDispatch, useSelector} from "react-redux";
 import {authPost} from "../../../api";
-import 'codemirror/lib/codemirror.css';
-import 'codemirror/theme/material.css';
 import {OutputWithLoading} from "./OutputWithLoading";
 
 function IDE(){

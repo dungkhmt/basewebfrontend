@@ -1,6 +1,7 @@
-import {Box} from "@material-ui/core";
+import {Box, Link} from "@material-ui/core";
 import Typography from "@mui/material/Typography";
 import * as React from "react";
+import styled from 'styled-components';
 
 export function TabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -28,3 +29,13 @@ export function a11yProps(index) {
     "aria-controls": `simple-tabpanel-${index}`,
   };
 }
+
+const StyledLink = styled(Link)`
+    text-decoration: none;
+
+    &:focus, &:hover, &:visited, &:link, &:active {
+        text-decoration: none;
+    }
+`;
+
+export default (props) => <StyledLink {...props} />;

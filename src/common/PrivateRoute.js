@@ -1,6 +1,6 @@
 import React from "react";
 import { useSelector } from "react-redux";
-import { Redirect, useHistory } from "react-router";
+import { Redirect, useHistory, } from "react-router";
 import { Route } from "react-router-dom";
 
 function PrivateRoute({ component: Component, ...rest }) {

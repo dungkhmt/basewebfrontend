@@ -29,8 +29,9 @@ import CodeMirror from "@uiw/react-codemirror";
 import {SubmitWarming} from "./SubmitWarming";
 import {CompileStatus} from "./CompileStatus";
 import {SubmitSuccess} from "./SubmitSuccess";
-import {errorNoti, successNoti} from "../../../utils/notification";
+import {useParams} from "react-router";
 import {request} from "./Request";
+
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -76,16 +77,16 @@ const editorStyle = {
   },
 };
 
-function CreateProblem(){
+function EditProblem(){
+  const {problemId} = useParams();
   const token = useSelector((state) => state.auth.token);
   const dispatch = useDispatch();
   const history = useHistory();
-  const [problemId, setProblemID] = useState();
-  const [problemName, setProblemName] = useState();
+  const [problemName, setProblemName] = useState("");
   const [problemDescriptions, setProblemDescription] = useState();
-  const [timeLimit, setTimeLimit] = useState(0);
-  const [memoryLimit, setMemoryLimit] = useState();
-  const [levelId, setLevelId] = useState();
+  const [timeLimit, setTimeLimit] = useState(1);
+  const [memoryLimit, setMemoryLimit] = useState(1);
+  const [levelId, setLevelId] = useState("");
   const [categoryId, setCategoryId] = useState();
   const defaultLevel = ["easy", "medium", "hard"];
   const listCategory = [];
@@ -100,10 +101,38 @@ function CreateProblem(){
   const [showCompile, setShowCompile] = useState(false);
   const [statusSuccessful, setStatusSuccessful] = useState(false);
   const [showSubmitSuccess, setShowSubmitSuccess] = useState(false);
+
+  useEffect( () =>{
+    console.log("problemid ", problemId);
+    let url = API_URL+"/problem-details/"+problemId;
+    console.log("url ", url);
+    request(
+      "get",
+      API_URL+"/problem-details/"+problemId,
+      (res) =>{
+        console.log("res data", res.data);
+        console.log(res.data.levelId);
+        // setEditorStateDescription(EditorState.set(res.data.problemDescription));
+        setProblemName(res.data.problemName);
+        setLevelId(res.data.levelId);
+        setMemoryLimit(res.data.memoryLimit);
+        setCodeSolution(res.data.correctSolutionSourceCode);
+        setTimeLimit(res.data.timeLimit);
+        setEditorStateDescription(EditorState.createWithText(res.data.problemDescription));
+        setEditorStateSolution(EditorState.createWithText(res.data.solution));
+        // setEditorStateSolution(res.data.solution);
+        // setLanguageSolution(res.data.correctSolutionLanguage);
+        // setEditorStateDescription(res.data.description);
+      },
+      {}
+    );
+  }, [problemId]);
+
   const onChangeEditorStateDescription = (editorState) => {
-    console.log(problemDescriptions);
     setEditorStateDescription(editorState);
   };
+
+
 
   const onChangeEditorStateSolution = (editorState) => {
     setEditorStateSolution(editorState);
@@ -130,7 +159,6 @@ function CreateProblem(){
       source: codeSolution,
       computerLanguage: languageSolution
     }
-    console.log("body ", body);
     // authPost(dispatch, token, "/check-compile", body).then(
     //   (res) =>{
     //     console.log("res", res);
@@ -143,7 +171,7 @@ function CreateProblem(){
     //       setStatusSuccessful(false);
     //     }
     //   }
-    // );
+    // )
     request(
       "post",
       API_URL+"/check-compile",
@@ -160,7 +188,6 @@ function CreateProblem(){
       {},
       body
     ).then();
-
   }
   function sleep(ms) {
     return new Promise(resolve => setTimeout(resolve, ms));
@@ -173,11 +200,11 @@ function CreateProblem(){
     }
     let description = draftToHtml(convertToRaw(editorStateDescription.getCurrentContent()));
     let solution = draftToHtml(convertToRaw(editorStateSolution.getCurrentContent()));
+
     let body = {
-      problemId: problemId,
       problemName: problemName,
       problemDescription: description,
-      timeLimit: Number(timeLimit),
+      timeLimit: timeLimit,
       levelId: levelId,
       categoryId: categoryId,
       memoryLimit: memoryLimit,
@@ -185,12 +212,9 @@ function CreateProblem(){
       solution: solution,
       correctSolutionSourceCode: codeSolution,
     }
-    console.log("body ", body);
-    console.log(API_URL);
-
     request(
       "post",
-      API_URL+"/create-contest-problem-new",
+      API_URL+"/update-problem-detail/"+problemId,
       (res) =>{
         console.log("res ", res);
         setShowSubmitSuccess(true);
@@ -203,29 +227,18 @@ function CreateProblem(){
     ).then();
   }
 
-
   return (
     <div>
       <MuiPickersUtilsProvider utils={DateFnsUtils}>
         <Card>
           <CardContent>
             <Typography variant="h5" component="h2">
-              Create Problem
+              Edit Problem <Typography variant="h4" > {problemId}</Typography>
             </Typography>
             <form className={classes.root} noValidate autoComplete="off">
               <div>
                 <TextField
-                  autoFocus
-                  required
-                  id="problemId"
-                  label="Problem ID"
-                  placeholder="Problem ID"
-                  onChange={(event) => {
-                    setProblemID(event.target.value);
-                  }}
-                >
-                </TextField>
-                <TextField
+                  value={problemName}
                   autoFocus
                   required
                   id="problemName"
@@ -246,7 +259,7 @@ function CreateProblem(){
                   onChange={(event) => {
                     setTimeLimit(event.target.value);
                   }}
-
+                  value={timeLimit}
                 >
                 </TextField>
 
@@ -259,10 +272,12 @@ function CreateProblem(){
                   onChange={(event) => {
                     setMemoryLimit(event.target.value);
                   }}
+                  value={memoryLimit}
                 >
                 </TextField>
 
                 <TextField
+
                   autoFocus
                   required
                   select
@@ -272,6 +287,7 @@ function CreateProblem(){
                   onChange={(event) => {
                     setLevelId(event.target.value);
                   }}
+                  value={levelId}
                 >
                   {defaultLevel.map((item) => (
                     <MenuItem key={item} value={item}>
@@ -290,6 +306,7 @@ function CreateProblem(){
                   onChange={(event) => {
                     setCategoryId(event.target.value);
                   }}
+                  value={categoryId}
                 >
                   {listCategory.map((item) => (
                     <MenuItem key={item} value={item}>
@@ -351,11 +368,11 @@ function CreateProblem(){
               width="100%"
               extensions={getExtension()}
               onChange={(value, viewUpdate) => {
-                console.log("value ")
                 setCodeSolution(value);
               }}
-
               autoFocus={false}
+
+              value={codeSolution}
             />
             <CompileStatus
               showCompile={showCompile}
@@ -392,5 +409,5 @@ function CreateProblem(){
     </div>
   );
 }
-export default CreateProblem;
+export default EditProblem;
 

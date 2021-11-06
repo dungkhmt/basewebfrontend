@@ -21,23 +21,30 @@ import {Console} from "./Console";
 import {ScrollBox} from 'react-scroll-box';
 import PropTypes from "prop-types"; // ES6
 import {a11yProps, TabPanel} from "./TabPanel";
-import {authGet, authPost} from "../../../api";
+// import {authGet, authPost} from "../../../api";
 import {useDispatch, useSelector} from "react-redux";
 import {useHistory, useParams} from "react-router-dom";
 import {Markup} from "interweave";
-
+import {ProblemSubmission} from "./ProblemSubmission";
+import {SubmissionExecute} from "./SubmissionExecute";
+import SplitterLayout from 'react-splitter-layout';
+import './css/splitter.css'
+import {request} from "./Request";
+import {API_URL} from "../../../config/config";
 TabPanel.propTypes = {
   children: PropTypes.node,
   index: PropTypes.any.isRequired,
   value: PropTypes.any.isRequired,
 };
 
+const heightConst = (window.innerHeight-500)+"px"
 
 const useStyles = makeStyles((theme) => ({
   root: {
-    flexGrow: 1,
+    // flexGrow: 1,
     backgroundColor: theme.palette.background.paper,
-    height: theme.navBarHeight
+    // height: heightConst
+    width:"60%"
   },
   // tabIndicator: {
   //   backgroundColor: PRIMARY_RED.default
@@ -63,7 +70,7 @@ const useStyles = makeStyles((theme) => ({
 
 
 
-export default function ProblemDetail(){
+export default function ProblemDetail(props){
   const [description, setDescription] = useState();
   const [solution, setSolution] = useState();
   const [problem, setProblem] = useState();
@@ -89,6 +96,13 @@ export default function ProblemDetail(){
   const dispatch = useDispatch();
   const {problemId} = useParams();
   const history = useHistory();
+  const [problemSubmissionList, setProblemSubmissionList] = useState([]);
+  const [submitted, setSubmitted] = useState(false);
+  const [showShowSubmissionExecute, setShowShowSubmissionExecute] = useState(false);
+  const [submissionRuntime, setSubmissionRuntime] = useState();
+  const [submissionStatus, setSubmissionStatus] = useState();
+  const [submissionPoint, setSubmissionPoint] = useState();
+  const [loadSubmission, setLoadSubmission] = useState(false);
 
   const onInputChange = (input) =>{
     setInput(input);
@@ -118,35 +132,118 @@ export default function ProblemDetail(){
       computerLanguage: computerLanguage,
       input: input
     }
-    authPost(dispatch, token, "/problem-detail-run-code/"+problemId,body).then(
-      (res) =>{
-        console.log("res" , res);
+    // authPost(dispatch, token, "/problem-detail-run-code/"+problemId,body).then(
+    //   (res) =>{
+    //     console.log("res" , res);
+    //     setRun(true);
+    //     setRunCodeLoading(false);
+    //     if(res.status == "Time Limit Exceeded"){
+    //       setTimeLimit(true);
+    //       setCompileError(false);
+    //       setAccept(false);
+    //     }else if(res.status == "Compile Error"){
+    //       setTimeLimit(false);
+    //       setCompileError(true);
+    //       console.log("111");
+    //     }else if(res.status == "Accept"){
+    //       setAccept(true);
+    //       setTimeLimit(false);
+    //       setCompileError(false);
+    //     }else{
+    //       setAccept(false);
+    //       setTimeLimit(false);
+    //       setCompileError(false);
+    //     }
+    //     setOutput(res.output);
+    //     setExpected(res.expected);
+    //
+    //     // setAccept(true);
+    //     // setTimeLimit(false);
+    //   }
+    // );
+    request(
+      "post",
+      API_URL + "/problem-detail-run-code/" + problemId,
+      (res) => {
         setRun(true);
         setRunCodeLoading(false);
-        if(res.status == "Time Limit Exceeded"){
+        if (res.data.status == "Time Limit Exceeded") {
           setTimeLimit(true);
           setCompileError(false);
           setAccept(false);
-        }else if(res.status == "Compile Error"){
+        } else if (res.data.status == "Compile Error") {
           setTimeLimit(false);
           setCompileError(true);
           console.log("111");
-        }else if(res.status == "Accept"){
+        } else if (res.data.status == "Accept") {
           setAccept(true);
           setTimeLimit(false);
           setCompileError(false);
-        }else{
+        } else {
           setAccept(false);
           setTimeLimit(false);
           setCompileError(false);
         }
-        setOutput(res.output);
-        setExpected(res.expected);
+        setOutput(res.data.output);
+        setExpected(res.data.expected);
+      },
+      {},
+      body
+    ).then();
+  }
 
-        // setAccept(true);
-        // setTimeLimit(false);
-      }
-    )
+  const handleSubmission = ()=>{
+    setValue(3);
+    setLoadSubmission(true);
+    setShowShowSubmissionExecute(true);
+    let body ={
+      source: source,
+      language:computerLanguage
+    }
+    // authPost(dispatch, token, "/problem-details-submission/"+problemId, body).then(
+    //   (res)=>{
+    //     console.log("res ", res);
+    //     setSubmissionStatus(res.status);
+    //     setSubmissionPoint(res.result);
+    //     setLoadSubmission(false);
+    //   }
+    // );
+    // authGet(dispatch,token, "/problem-details/"+problemId).then(
+    //   (res) =>{
+    //     console.log("res ", res);
+    //     setProblem(res);
+    //     setDescription(res.problemDescription);
+    //     setSolution(res.solution);
+    //   }
+    // );
+
+    request(
+      "post",
+      API_URL+"/problem-details-submission/"+problemId,
+      (res) =>{
+        problemSubmissionList.push(res.data);
+        setSubmissionStatus(res.data.status);
+        setSubmissionPoint(res.data.result);
+        setLoadSubmission(false);
+
+      },
+      {},
+      body
+    ).then();
+
+    // request(
+    //   "get",
+    //   API_URL+"/problem-details/"+problemId,
+    //   (res)=>{
+    //     console.log("res ", res);
+    //     setProblem(res.data);
+    //     setDescription(res.data.problemDescription);
+    //     setSolution(res.data.solution);
+    //   }
+    // ).then();
+
+
+
   }
   const handleChange = (event, newValue) => {
     setValue(newValue);
@@ -167,30 +264,61 @@ export default function ProblemDetail(){
   }
 
   useEffect(() =>{
-    authGet(dispatch,token, "/problem-details/"+problemId).then(
-      (res) =>{
-        console.log("res ", res);
-        setProblem(res);
-        setDescription(res.problemDescription);
-        setSolution(res.solution);
+    console.log("props ", props);
+    // authGet(dispatch, token, "/get-all-problem-submission-by-user/"+problemId).then(
+    //   (res) =>{
+    //     console.log("list problem submission ", res);
+    //     setProblemSubmissionList(res.contents);
+    //     setSubmitted(res.submitted);
+    //   }
+    // )
+    // authGet(dispatch,token, "/problem-details/"+problemId).then(
+    //   (res) =>{
+    //     console.log("res ", res);
+    //     setProblem(res);
+    //     setDescription(res.problemDescription);
+    //     setSolution(res.solution);
+    //   }
+    // );
+
+    request(
+      "get",
+      API_URL+"/get-all-problem-submission-by-user/"+problemId,
+      (res)=>{
+        console.log("list problem submission ", res);
+        setProblemSubmissionList(res.data.contents);
+        setSubmitted(res.data.submitted);
       }
-    );
+    ).then();
+
+    request(
+      "get",
+      API_URL+"/problem-details/"+problemId,
+      (res)=>{
+        console.log("res ", res);
+        setProblem(res.data);
+        setDescription(res.data.problemDescription);
+        setSolution(res.data.solution);
+      }
+    ).then()
+
+
+
   },[])
 
   return (
-    <div onScroll={false}>
-
-      {/*<AppBar position="static" color={"default"} variant={"outlined"} style={{width: "100%", height: "65px", marginTop:"0px"}} >*/}
-
-        <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
-          <Toolbar style={{height:"0px", marginTop:"-12px", marginBottom:"-8px", border:"1px solid transparent", position: "relative", width:"100%"}} color={"default"} >
+    <div >
+      {/*<form className={classes.root}>*/}
+        <SplitterLayout >
+          <div>
+            {/*tab 1*/}
             <Tabs
               value={value}
               onChange={handleChange}
               indicatorColor={"primary"}
               autoFocus
               style={{
-                width:"50%",
+                width:"100%",
                 display:"inline-table",
                 border: "1px solid transparent ",
                 position: "relative",
@@ -204,10 +332,43 @@ export default function ProblemDetail(){
               <Tab label="Discuss" {...a11yProps(2)} style={{width:"25%"}}/>
               <Tab label="Submissions" {...a11yProps(3)} style={{width:"25%"}}/>
             </Tabs>
+            {/*</Toolbar>*/}
+
+            <TabPanel value={value} index={0}>
+              <ScrollBox style={{width: '100%', overflow:"auto", height:(window.innerHeight-130) + "px"}}>
+                <Markup content={description} />
+              </ScrollBox>
+            </TabPanel>
+            <TabPanel value={value} index={1}>
+              <ScrollBox style={{width: '100%', overflow:"auto", height:(window.innerHeight-130) + "px"}}>
+                <Markup content={solution} />
+              </ScrollBox>
+            </TabPanel>
+            <TabPanel value={value} index={2}>
+            </TabPanel>
+            <TabPanel value={value} index={3}>
+              <ScrollBox style={{width: '95%',  height:(window.innerHeight-130) + "px"}}>
+                <SubmissionExecute
+                  show={showShowSubmissionExecute}
+                  loadSubmission={loadSubmission}
+                  point={submissionPoint}
+                  status={submissionStatus}
+                />
+                <ProblemSubmission
+                  show={showShowSubmissionExecute}
+                  submitted={submitted}
+                  problemSubmission={problemSubmissionList}
+                />
+              </ScrollBox>
+
+            </TabPanel>
+          </div>
+          <div>
+            {/*tab 2*/}
             <div>
 
               <TextField
-                style={{width:0.075*window.innerWidth, margin:20}}
+                style={{width:0.075*window.innerWidth, marginLeft:20}}
                 variant={"outlined"}
                 size={"small"}
                 autoFocus
@@ -225,7 +386,7 @@ export default function ProblemDetail(){
                 ))}
               </TextField>
               <TextField
-                style={{width:"100px", margin:20}}
+                style={{width:"100px", marginLeft:20}}
                 variant="outlined"
                 size="small"
                 autoFocus
@@ -244,99 +405,72 @@ export default function ProblemDetail(){
                 ))}
               </TextField>
             </div>
-          </Toolbar>
-        </Box>
-      {/*</AppBar>*/}
-      {/*</MuiThemeProvider>*/}
 
 
 
+            <CodeMirror
+              height={screenHeight}
+              width="100%"
+              extensions={getExtension()}
+              onChange={(value, viewUpdate) => {
+                setSource(value);
+              }}
+              autoFocus={false}
+              theme={color}
+            />
+            <Console
+              showConsole={showConsole}
+              load={runCodeLoading}
+              output={output}
+              color={color}
+              extension={getExtension()}
+              input={input}
+              onInputChange={onInputChange}
+              consoleTabIndex={consoleTabIndex}
+              onChangeConsoleTabIndex={onChangeConsoleTabIndex}
+              accept={accept}
+              run={run}
+              timeLimit={timeLimit}
+              expected={expected}
+              compileError={compileError}
+            />
+            <Button
+              variant="contained"
+              color="light"
+              // style={{marginLeft:"90px"}}
+              onClick={handleScroll}
+              // style={{position}}
+              // style={{left:"50%"}}
+              extension={getExtension()}
+            >
+              Console
+            </Button>
+            <Button
+              variant="contained"
+              color="light"
+              // style={{marginLeft:"90px"}}
+              onClick={handleRunCode}
+              // style={{position}}
+              style={{marginLeft:"20px"}}
+            >
+              Run Code
+            </Button>
+            <Button
+              variant="contained"
+              color="light"
+              // style={{marginLeft:"90px"}}
+              onClick={handleSubmission}
+              // style={{position}}
+              style={{marginLeft:"20px"}}
+            >
+              Submit
+            </Button>
+          </div>
+        </SplitterLayout>
 
-      <Grid container spacing={12}>
-        <Grid item xs={6}>
-          <TabPanel value={value} index={0}>
-            <ScrollBox style={{width: '100%', overflow:"auto", height:(window.innerHeight-180) + "px"}}>
-              <Markup content={description} />
-            </ScrollBox>
-          </TabPanel>
-          <TabPanel value={value} index={1}>
-            <ScrollBox style={{width: '100%', overflow:"auto", height:(window.innerHeight-180) + "px"}}>
-              <Markup content={solution} />
-            </ScrollBox>
-          </TabPanel>
-          <TabPanel value={value} index={2}>
-          </TabPanel>
-          <TabPanel value={value} index={3}>
-          </TabPanel>
-        </Grid>
-        <Grid item xs={6}>
-          <CodeMirror
-            height={screenHeight}
-            width="100%"
-            extensions={getExtension()}
-            onChange={(value, viewUpdate) => {
-              setSource(value);
-            }}
-            autoFocus={false}
-            theme={color}
-          />
-          <Console
-            showConsole={showConsole}
-            load={runCodeLoading}
-            output={output}
-            color={color}
-            extension={getExtension()}
-            input={input}
-            onInputChange={onInputChange}
-            consoleTabIndex={consoleTabIndex}
-            onChangeConsoleTabIndex={onChangeConsoleTabIndex}
-            accept={accept}
-            run={run}
-            timeLimit={timeLimit}
-            expected={expected}
-            compileError={compileError}
-          />
-        </Grid>
-      </Grid>
+      {/*</form>*/}
 
-
-
-
-
-      <Button
-        variant="contained"
-        color="light"
-        // style={{marginLeft:"90px"}}
-        // onClick={handleRun}
-        // style={{position}}
-        style={{left:"95%"}}
-      >
-        Submit
-      </Button>
-      <Button
-        variant="contained"
-        color="light"
-        // style={{marginLeft:"90px"}}
-        onClick={handleRunCode}
-        // style={{position}}
-        style={{left:"82%"}}
-      >
-        Run Code
-      </Button>
-      <Button
-        variant="contained"
-        color="light"
-        // style={{marginLeft:"90px"}}
-        onClick={handleScroll}
-        // style={{position}}
-        style={{left:"40%"}}
-        extension={getExtension()}
-      >
-        Console
-      </Button>
     </div>
-
-
   );
 
 }
