@@ -8,6 +8,7 @@ import { Layout } from "../layout";
 import { drawerWidth } from "../layout/sidebar/v1/SideBar";
 import { useNotificationState } from "../state/NotificationState";
 import NotFound from "../views/errors/NotFound";
+import AccountActivationRoute from "./AccountActivationRoute";
 import AdminRoute from "./AdminRoute";
 
 const DepotContainerFuncRoute = lazy(() => import("./DepotContainerFuncRoute"));
@@ -184,6 +185,8 @@ function MainAppRoute(props) {
           <PrivateRoute component={EduRoute} path="/edu" />
 
           <PrivateRoute component={AdminRoute} path="/admin/data" />
+
+          <PrivateRoute component={AccountActivationRoute} path="/activation" />
 
           <PrivateRoute
             component={WebcamRoute}
