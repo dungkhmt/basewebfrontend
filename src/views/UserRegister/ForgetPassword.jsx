@@ -18,10 +18,42 @@ export default function ForgetPassword() {
     );
   }
   return (
-    <div>
-      <h1>Forget password</h1>
-      <TextField label="userlogin" onChange={handleChange}></TextField>
-      <Button onClick={handleClick}>Reset password</Button>
+    <div
+      style={{
+        display: "flex",
+
+        justifyContent: "center",
+      }}
+    >
+      <div
+        style={{
+          display: "flex",
+          paddingTop: "50px",
+
+          justifyContent: "center",
+        }}
+      >
+        <div
+          style={{
+            display: "flex",
+            paddingRight: "30px",
+
+            justifyContent: "center",
+          }}
+        >
+          <TextField label="userlogin" onChange={handleChange}></TextField>
+        </div>
+        <div
+          style={{
+            display: "flex",
+            justifyContent: "center",
+          }}
+        >
+          <Button variant="contained" onClick={handleClick}>
+            Reset password
+          </Button>
+        </div>
+      </div>
     </div>
   );
 }
