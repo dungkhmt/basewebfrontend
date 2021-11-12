@@ -24,7 +24,7 @@
     "@mdi/js": "^3.9.97",
     "@mui/material": "^5.0.4",
     "@react-leaflet/core": "^1.1.0",
-    "@uiw/react-codemirror": "^4.0.6",
+    "@uiw/react-codemirror": "^4.2.3",
     "@welldone-software/why-did-you-render": "^6.2.0",
     "axios": "^0.21.1",
     "base-64": "^0.1.0",
