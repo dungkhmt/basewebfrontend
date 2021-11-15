@@ -3,6 +3,7 @@ import { TextField, Button } from "@material-ui/core";
 import { request } from "../../api";
 export default function ForgetPassword() {
   const [userLogin, setUserLogin] = useState("");
+  const [msg, setMsg] = useState("");
   function handleChange(e) {
     setUserLogin(e.target.value);
   }
@@ -12,7 +13,8 @@ export default function ForgetPassword() {
       "get",
       "/public/user/resetpassword/" + userLogin,
       (res) => {
-        console.log("new password sent to email");
+        console.log("new password sent to email, res = ", res);
+        setMsg(res.data.message);
       },
       {}
     );
@@ -53,6 +55,7 @@ export default function ForgetPassword() {
             Reset password
           </Button>
         </div>
+        <h2>{msg}</h2>
       </div>
     </div>
   );

@@ -10,6 +10,7 @@ import { useNotificationState } from "../state/NotificationState";
 import NotFound from "../views/errors/NotFound";
 import AccountActivationRoute from "./AccountActivationRoute";
 import AdminRoute from "./AdminRoute";
+import ChatRoute from "./ChatRoute";
 
 const DepotContainerFuncRoute = lazy(() => import("./DepotContainerFuncRoute"));
 const DepotTrailerFuncRoute = lazy(() => import("./DepotTrailerFuncRoute"));
@@ -185,6 +186,7 @@ function MainAppRoute(props) {
           <PrivateRoute component={EduRoute} path="/edu" />
 
           <PrivateRoute component={AdminRoute} path="/admin/data" />
+          <PrivateRoute component={ChatRoute} path="/chat" />
 
           <PrivateRoute component={AccountActivationRoute} path="/activation" />
 

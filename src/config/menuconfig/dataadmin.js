@@ -21,5 +21,13 @@ export const DataAdministration = {
       text: "View course video",
       child: [],
     },
+    {
+      id: "MENU_DATA_ADMIN_VIEW_LOG_USER_DO_PRATICE_QUIZ",
+      path: "/admin/data/view-log-user-do-pratice-quiz/list",
+      isPublic: false,
+      icon: null,
+      text: "View Users doing quiz",
+      child: [],
+    },
   ],
 };
