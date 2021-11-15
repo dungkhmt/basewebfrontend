@@ -122,7 +122,8 @@ function RegistrationDetail(props) {
     // Send request
     request(
       "post",
-      `/user/approve-registration`,
+      //`/user/approve-registration`,
+      `/user/approve-registration-send-email-for-activation`,
       () => {
         setGrantedRoles(grantedRolesName);
       },

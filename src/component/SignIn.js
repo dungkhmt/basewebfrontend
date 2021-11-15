@@ -195,14 +195,24 @@ export default function SignIn(props) {
                 </Link>
               </Grid> */}
 
-            <Link
-              component={NavLink}
-              to={process.env.PUBLIC_URL + "/user/register"}
-              variant="body2"
-              style={{ position: "relative", fontSize: "18px" }}
-            >
-              {"Tạo tài khoản"}
-            </Link>
+            <div style={{ display: "flex", justifyContent: "space-around" }}>
+              <Link
+                component={NavLink}
+                to={process.env.PUBLIC_URL + "/user/register"}
+                variant="body2"
+                style={{ position: "relative", fontSize: "18px" }}
+              >
+                {"Tạo tài khoản"}
+              </Link>
+              <Link
+                component={NavLink}
+                to={process.env.PUBLIC_URL + "/user/forgetpassword"}
+                variant="body2"
+                style={{ position: "relative", fontSize: "18px" }}
+              >
+                {"Quên mật khẩu"}
+              </Link>
+            </div>
 
             {/* <Box mt={2} className={classes.cp}>
                 <Copyright />

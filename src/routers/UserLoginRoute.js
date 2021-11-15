@@ -6,6 +6,7 @@ import EditUser from "../component/userlogin/edituserlogin";
 import Update from "../component/userlogin/updatepassword";
 import UpdateDirectly from "../component/userlogin/updatePassworDiectly";
 import UserList from "../component/userlogin/userlist";
+//import AccountActivation from "../component/userregister/AccountActivation";
 
 export default function UserLoginRoute() {
   let { path } = useRouteMatch();

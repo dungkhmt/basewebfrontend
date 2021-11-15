@@ -165,8 +165,9 @@ function QuizTestList() {
           break;
         }
       }
-      if (foundIndex == -1) alert("Something went wrong !!!");
-      else
+      if (foundIndex == -1) {
+        //alert("Something went wrong !!!");
+      } else
         rows.push(
           createData(
             elm.testId,

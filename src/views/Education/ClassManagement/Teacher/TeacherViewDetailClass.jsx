@@ -24,7 +24,8 @@ import TClassUpdatePopup from "./TClassUpdatePopup";
 import TeacherViewDetailClassExercises from "./TeacherViewDetailClassExercises";
 import TeacherViewDetailClassExerciseSubmission from "./TeacherViewDetailClassExerciseSubmission";
 import TeacherViewDetailClassGeneralInfo from "./TeacherViewDetailClassGeneralInfo";
-
+import TeacherViewLogUserQuizList from "../../../../component/education/course/TeacherViewLogUserQuizList";
+import TeacherViewQuizDetail from "../../../../component/education/course/TeacherViewQuizDetail";
 const useStyles = makeStyles((theme) => ({
   btn: {
     // width: 180,
@@ -94,6 +95,9 @@ export default function TeacherViewDetailClass() {
 
       <TabPanel value={selectedTab} index={4} dir={theme.direction}>
         <TeacherViewDetailClassExerciseSubmission classId={classId} />
+      </TabPanel>
+      <TabPanel value={selectedTab} index={5} dir={theme.direction}>
+        <TeacherViewLogUserQuizList classId={classId} />
       </TabPanel>
     </div>
   );
