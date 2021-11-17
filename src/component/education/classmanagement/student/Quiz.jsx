@@ -1,4 +1,4 @@
-import { Box, Checkbox, Typography } from "@material-ui/core";
+import { Box, Checkbox, Typography, Button } from "@material-ui/core";
 import { green } from "@material-ui/core/colors";
 import FormControlLabel from "@material-ui/core/FormControlLabel";
 import FormGroup from "@material-ui/core/FormGroup";
@@ -9,6 +9,7 @@ import { useSelector } from "react-redux";
 import { useHistory } from "react-router";
 import { request } from "../../../../api";
 import TestButton from "./TestButton";
+import CommentsOnQuiz from "./CommentsOnQuiz";
 
 const useStyles = makeStyles(() => ({
   testBtn: {
@@ -67,6 +68,7 @@ export default function Quizz({ quizz, index, classId }) {
   const history = useHistory();
 
   const [result, setResult] = useState({ submited: false, isCorrect: false });
+  const [openCommentBox, setOpenCommentBox] = useState(false);
   const [chkState, setChkState] = useState(() => {
     const isChecked = {};
 
@@ -110,6 +112,9 @@ export default function Quizz({ quizz, index, classId }) {
     }
   };
 
+  function handleClickCommentBtn() {
+    setOpenCommentBox(true);
+  }
   return (
     <div className={classes.wrapper}>
       <Box className={classes.quizzStatement}>
@@ -138,7 +143,17 @@ export default function Quizz({ quizz, index, classId }) {
             onClick={onClickTestBtn}
           />
         </div>
+        <div className={classes.testBtn}>
+          <Button variant="outlined" onClick={handleClickCommentBtn}>
+            Bình luận
+          </Button>
+        </div>
       </FormGroup>
+      <CommentsOnQuiz
+        questionId={quizz.questionId}
+        open={openCommentBox}
+        setOpen={setOpenCommentBox}
+      />
     </div>
   );
 }
