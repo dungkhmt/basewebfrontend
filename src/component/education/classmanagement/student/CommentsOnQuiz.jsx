@@ -6,6 +6,7 @@ import {
   TextField,
   MenuItem,
   Button,
+  Table,
 } from "@material-ui/core";
 import { request } from "../../../../api";
 import { toFormattedDateTime } from "../../../../utils/dateutils";
@@ -41,24 +42,20 @@ export default function CommentsOnQuiz(props) {
     getCommentList();
   }, []);
   return (
-    <Dialog open={open}>
-      <DialogTitle>Bình luận</DialogTitle>
-      <DialogContent>
-        <div
-          style={{
-            display: "flex",
-            justifyContent: "space-around",
-            minWidth: "500px",
-            border: "1px solid black",
-          }}
-        ></div>
-        {comments.map((item, index) => (
-          <li>
-            {item.fullNameOfCreator}({toFormattedDateTime(item.createdStamp)}
-            ):
-            {item.commentText}
-          </li>
-        ))}
+    <>
+      <div>
+        <Table>
+          {comments.map((item, index) => (
+            <tr>
+              <td>
+                {item.fullNameOfCreator}(
+                {toFormattedDateTime(item.createdStamp)}
+                ):
+                {item.commentText}
+              </td>
+            </tr>
+          ))}
+        </Table>
         <div
           style={{
             paddingTop: "30px",
@@ -74,15 +71,8 @@ export default function CommentsOnQuiz(props) {
           >
             POST
           </Button>
-          <Button
-            variant="contained"
-            color="success"
-            onClick={(e) => setOpen(false)}
-          >
-            Đóng
-          </Button>
         </div>
-      </DialogContent>
-    </Dialog>
+      </div>
+    </>
   );
 }

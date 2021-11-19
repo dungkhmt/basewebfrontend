@@ -16,7 +16,7 @@ import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useHistory } from "react-router";
 import { failed } from "../../action";
-import { authPost } from "../../api";
+import { authPost, request } from "../../api";
 
 const useStyles = makeStyles((theme) => ({
   paper: {
@@ -57,6 +57,25 @@ export default function ChangePassword() {
       newPassword: newPassword,
     };
     setIsRequesting(true);
+    request(
+      "post",
+      "/change-password",
+      (res) => {
+        console.log(res);
+        setIsRequesting(false);
+        if (res.status === 401) {
+          dispatch(failed());
+        } else if (res.status === 400) {
+          setCurrentPasswordFailed(true);
+        } else if (res.status === 200) {
+          history.push("/");
+          console.log("change password successully");
+        }
+      },
+      {},
+      data
+    );
+    /*
     authPost(dispatch, token, "/change-password", data).then(
       (res) => {
         console.log(res);
@@ -67,12 +86,14 @@ export default function ChangePassword() {
           setCurrentPasswordFailed(true);
         } else if (res.status === 200) {
           history.push("/");
+          console.log("change password successully");
         }
       },
       (error) => {
-        console.log(error);
+        console.log("Exception " + error);
       }
     );
+    */
   };
 
   const handleShowPassword = () => {

@@ -112,6 +112,13 @@ export default function TeacherViewQuizDetail({ quiz, index, courseId }) {
       { 401: () => {} }
     );
   }
+
+  function handleViewDetailQuizQuestion() {
+    history.push(
+      "/edu/teacher/course/quiz/view/detail/" + quiz.questionId + "/" + courseId
+    );
+  }
+
   return (
     <div className={classes.wrapper}>
       <Box className={classes.quizzStatement}>
@@ -150,6 +157,14 @@ export default function TeacherViewQuizDetail({ quiz, index, courseId }) {
         onClick={() => handleUpdateQuizQuestion()}
       >
         Cập nhật
+      </Button>
+      &nbsp;&nbsp;
+      <Button
+        variant="contained"
+        color="primary"
+        onClick={() => handleViewDetailQuizQuestion()}
+      >
+        Xem chi tiết
       </Button>
     </div>
   );
