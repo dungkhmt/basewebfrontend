@@ -14,6 +14,15 @@ export const tms = {
       child: [],
     },
     {
+      id: "MENU_TMS_OSMAP",
+      path: "/tracklocations/osmap",
+      isPublic: true,
+      icon: "StarBorder",
+      text: "Bản đồ OSM",
+      child: [],
+    },
+
+    {
       id: "MENU_TMS_LIST",
       path: "/tracklocations/list",
       isPublic: true,
