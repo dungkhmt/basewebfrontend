@@ -178,13 +178,6 @@ function CreateQuizOfCourse() {
   async function handleSubmit() {
     let statement = draftToHtml(convertToRaw(editorState.getCurrentContent()));
 
-    console.log("handle submit");
-    let body = {
-      quizCourseTopicId: quizCourseTopicId,
-      levelId: levelId,
-      questionContent: statement,
-    };
-
     const fetchedFileArray = [];
     for (const fetchedFile of fetchedImageArray) {
       const file = await dataUrlToFile(
@@ -194,7 +187,22 @@ function CreateQuizOfCourse() {
       fetchedFileArray.push(file);
     }
 
-    const newAttachmentFiles = [...attachmentFiles, ...fetchedFileArray];
+    const newAttachmentFiles = [...fetchedFileArray, ...attachmentFiles];
+
+    const fileId = newAttachmentFiles.map((file) => {
+      if (typeof file.name !== "undefined") {
+        return file.name;
+      }
+      return file.id;
+    });
+
+    console.log("handle submit");
+    let body = {
+      quizCourseTopicId: quizCourseTopicId,
+      levelId: levelId,
+      questionContent: statement,
+      fileId,
+    };
 
     let formData = new FormData();
     formData.append("QuizQuestionUpdateInputModel", JSON.stringify(body));
@@ -332,11 +340,11 @@ function CreateQuizOfCourse() {
               {fetchedImageArray.length !== 0 &&
                 fetchedImageArray.map((file) => (
                   <div key={file.id} className={classes.imageContainer}>
-                    <div
-                      className={classes.imageWrapper}
-                      onClick={() => handleDeleteImageAttachment(file.id)}
-                    >
-                      <HighlightOffIcon className={classes.buttonClearImage} />
+                    <div className={classes.imageWrapper}>
+                      <HighlightOffIcon
+                        className={classes.buttonClearImage}
+                        onClick={() => handleDeleteImageAttachment(file.id)}
+                      />
                       <img
                         src={`data:image/jpeg;base64,${file.url}`}
                         alt="quiz test"

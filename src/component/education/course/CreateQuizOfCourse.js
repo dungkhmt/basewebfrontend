@@ -132,6 +132,7 @@ function CreateQuizOfCourse() {
     getTopicList();
     console.log("Create chapter of course " + courseId);
   }, []);
+
   return (
     <MuiPickersUtilsProvider utils={DateFnsUtils}>
       <Card>

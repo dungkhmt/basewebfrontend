@@ -5,10 +5,11 @@ import { grey } from "@material-ui/core/colors";
 import { makeStyles } from "@material-ui/core/styles";
 //import { makeStyles } from "@material-ui/core/styles";
 import parse from "html-react-parser";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { useHistory } from "react-router";
 import { request } from "../../../api";
+import { randomImageName } from "../../../utils/FileUpload/covert";
 
 const useStyles = makeStyles(() => ({
   testBtn: {
@@ -53,6 +54,15 @@ const useStyles = makeStyles(() => ({
   btn: {
     textTransform: "none",
   },
+  imageContainer: {
+    marginTop: "12px",
+  },
+  imageWrapper: {
+    position: "relative",
+  },
+  imageQuiz: {
+    maxWidth: "100%",
+  },
 }));
 
 /**
@@ -79,6 +89,18 @@ export default function TeacherViewQuizDetail({ quiz, index, courseId }) {
   const classes = useStyles();
   const token = useSelector((state) => state.auth.token);
   const history = useHistory();
+
+  const [fileAttachments, setFileAttachments] = useState([]);
+
+  useEffect(() => {
+    if (quiz.attachment && quiz.attachment.length !== 0) {
+      const newFileURLArray = quiz.attachment.map((url) => ({
+        id: randomImageName(),
+        url,
+      }));
+      setFileAttachments(newFileURLArray);
+    }
+  }, [quiz]);
 
   //
   // const [result, setResult] = useState({ submited: false, isCorrect: false });
@@ -143,6 +165,18 @@ export default function TeacherViewQuizDetail({ quiz, index, courseId }) {
           />
           ))}
           </FormGroup>*/}
+      {fileAttachments.length !== 0 &&
+        fileAttachments.map((file) => (
+          <div key={file.id} className={classes.imageContainer}>
+            <div className={classes.imageWrapper}>
+              <img
+                src={`data:image/jpeg;base64,${file.url}`}
+                alt="quiz test"
+                className={classes.imageQuiz}
+              />
+            </div>
+          </div>
+        ))}
       <Button
         variant="contained"
         color="primary"
