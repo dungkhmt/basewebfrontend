@@ -48,10 +48,9 @@ export default function CommentsOnQuiz(props) {
           {comments.map((item, index) => (
             <tr>
               <td>
-                {item.fullNameOfCreator}(
+                {item.fullNameOfCreator}&nbsp;(
                 {toFormattedDateTime(item.createdStamp)}
-                ):
-                {item.commentText}
+                ): &nbsp;&nbsp; {item.commentText}
               </td>
             </tr>
           ))}

@@ -4,7 +4,7 @@ import FormControlLabel from "@material-ui/core/FormControlLabel";
 import FormGroup from "@material-ui/core/FormGroup";
 import { makeStyles, withStyles } from "@material-ui/core/styles";
 import parse from "html-react-parser";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useSelector } from "react-redux";
 import { useHistory } from "react-router";
 import { request } from "../../../../api";
@@ -70,6 +70,7 @@ export default function Quizz({ quizz, index, classId }) {
 
   const [result, setResult] = useState({ submited: false, isCorrect: false });
   const [openCommentBox, setOpenCommentBox] = useState(false);
+  const [numberComments, setNumberComments] = useState(0);
   const [chkState, setChkState] = useState(() => {
     const isChecked = {};
 
@@ -80,6 +81,19 @@ export default function Quizz({ quizz, index, classId }) {
     return isChecked;
   });
 
+  function getNumberComments() {
+    request(
+      "get",
+      "/get-number-comments-on-quiz/" + quizz.questionId,
+      (res) => {
+        console.log("getNumberComment, res = ", res);
+        setNumberComments(res.data);
+      }
+    );
+  }
+  useEffect(() => {
+    getNumberComments();
+  }, []);
   const handleChange = (event) => {
     setChkState({ ...chkState, [event.target.name]: event.target.checked });
   };
@@ -164,7 +178,7 @@ export default function Quizz({ quizz, index, classId }) {
       {!openCommentBox ? (
         <div className={classes.testBtn}>
           <Button variant="outlined" onClick={handleClickCommentBtn}>
-            Bình luận
+            ({numberComments}) Bình luận
           </Button>
         </div>
       ) : (

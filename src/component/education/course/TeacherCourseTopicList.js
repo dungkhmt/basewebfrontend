@@ -18,6 +18,9 @@ function TeacherCourseTopicList(props) {
   const columns = [
     { title: "Topic Id", field: "quizCourseTopicId" },
     { title: "Topic Name", field: "quizCourseTopicName" },
+    { title: "Topic Name", field: "quizCourseTopicName" },
+    { title: "#Published", field: "numberOfPublishedQuizs" },
+    { title: "#Private", field: "numberOfPrivateQuizs" },
   ];
 
   async function getTopicList() {
