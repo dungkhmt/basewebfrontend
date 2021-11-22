@@ -22,14 +22,12 @@ export default function ChatMain() {
 
     authPostMultiPart(dispatch, token, "/content/create", formData)
       .then((res) => {
-        console.log("result submit = ", res);
+        console.log("result upload = ", res);
 
-        //var f = document.getElementById("selected-upload-file");
-        //f.value = null;
-        //setSelectedFile(null);
+        setFileId(res.id);
       })
       .catch((e) => {
-        console.error(e);
+        console.error("EXCEPTION ", e);
       });
   }
 
@@ -48,7 +46,11 @@ export default function ChatMain() {
       <h1>This is a chat messenger</h1>
       <input type="file" onChange={handleChangeFile}></input>
       <button onClick={handleUpload}>Upload</button>
-      <input type="text" onChange={(e) => setFileId(e.target.value)}></input>
+      <input
+        type="text"
+        value={fileId}
+        onChange={(e) => setFileId(e.target.value)}
+      ></input>
       <button onClick={downloadFile}>Download</button>
     </div>
   );

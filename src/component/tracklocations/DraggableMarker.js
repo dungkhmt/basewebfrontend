@@ -12,7 +12,7 @@ function DraggableMarker(props) {
         const marker = markerRef.current;
         if (marker != null) {
           setPosition(marker.getLatLng());
-          // console.log(marker.getLatLng());
+          console.log("dragend, pos = ", marker.getLatLng());
         }
       },
     }),
