@@ -41,6 +41,15 @@ const useStyles = makeStyles(() => ({
       display: "inline",
     },
   },
+  imageContainer: {
+    marginTop: "12px",
+  },
+  imageWrapper: {
+    position: "relative",
+  },
+  imageQuiz: {
+    maxWidth: "100%",
+  },
 }));
 
 /**
@@ -140,6 +149,19 @@ export default function Quizz({ quizz, index, classId }) {
         <Typography component="span">{`Câu ${index + 1}.`}&nbsp;</Typography>
         {parse(quizz.statement)}
       </Box>
+      {quizz.attachment &&
+        quizz.attachment.length !== 0 &&
+        quizz.attachment.map((url, index) => (
+          <div key={index} className={classes.imageContainer}>
+            <div className={classes.imageWrapper}>
+              <img
+                src={`data:image/jpeg;base64,${url}`}
+                alt="quiz test"
+                className={classes.imageQuiz}
+              />
+            </div>
+          </div>
+        ))}
       <FormGroup row className={classes.answerWrapper}>
         {quizz.quizChoiceAnswerList.map((answer) => (
           <FormControlLabel

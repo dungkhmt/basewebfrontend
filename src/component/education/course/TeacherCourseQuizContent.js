@@ -9,6 +9,7 @@ import {
 } from "@material-ui/core/";
 import Button from "@material-ui/core/Button";
 import { makeStyles } from "@material-ui/core/styles";
+import HighlightOffIcon from "@material-ui/icons/HighlightOff";
 import { MuiPickersUtilsProvider } from "@material-ui/pickers";
 import { ContentState, convertToRaw, EditorState } from "draft-js";
 import draftToHtml from "draftjs-to-html";
@@ -20,6 +21,10 @@ import { useDispatch, useSelector } from "react-redux";
 import { useParams } from "react-router";
 import { useHistory } from "react-router-dom";
 import { authGet, authPostMultiPart } from "../../../api";
+import {
+  dataUrlToFile,
+  randomImageName,
+} from "../../../utils/FileUpload/covert";
 import AlertDialog from "../../common/AlertDialog";
 
 let reDirect = null;
@@ -37,6 +42,25 @@ const useStyles = makeStyles((theme) => ({
     minWidth: 120,
     maxWidth: 300,
   },
+  imageContainer: {
+    marginTop: "12px",
+  },
+  imageWrapper: {
+    position: "relative",
+  },
+  imageQuiz: {
+    maxWidth: "100%",
+  },
+  buttonClearImage: {
+    position: "absolute",
+    top: "12px",
+    right: "12px",
+    zIndex: 3,
+    color: "red",
+    width: 32,
+    height: 32,
+    cursor: "pointer",
+  },
 }));
 
 const editorStyle = {
@@ -53,6 +77,10 @@ function CreateQuizOfCourse() {
   const params = useParams();
   const classes = useStyles();
   const questionId = params.questionId;
+  const history = useHistory();
+  const dispatch = useDispatch();
+  const token = useSelector((state) => state.auth.token);
+
   const [quizCourseTopicId, setQuizCourseTopicId] = useState(null);
   const [levelId, setLevelId] = useState(null);
   const [courseId, setCourseId] = useState(null);
@@ -61,11 +89,9 @@ function CreateQuizOfCourse() {
   const [topicList, setTopicList] = useState([]);
 
   const [attachmentFiles, setAttachmentFiles] = useState([]);
+  const [fetchedImageArray, setFetchedImageArray] = useState([]);
+
   const [initState, setInitSate] = useState(false);
-  const handleAttachmentFiles = (files) => {
-    setAttachmentFiles(files);
-    //alert(JSON.stringify(files));
-  };
 
   const [alertMessage, setAlertMessage] = useState({
     title: "Vui lòng nhập đầy đủ thông tin cần thiết",
@@ -74,10 +100,13 @@ function CreateQuizOfCourse() {
   });
   const [alertSeverity, setAlertSeverty] = useState("info");
   const [openAlert, setOpenAlert] = useState(false);
-  const history = useHistory();
-  const dispatch = useDispatch();
-  const token = useSelector((state) => state.auth.token);
+
   const [editorState, setEditorState] = useState(EditorState.createEmpty());
+
+  const handleAttachmentFiles = (files) => {
+    setAttachmentFiles(files);
+    //alert(JSON.stringify(files));
+  };
 
   const onClickAlertBtn = () => {
     setOpenAlert(false);
@@ -113,6 +142,13 @@ function CreateQuizOfCourse() {
     )
       .then((res) => {
         if (res) {
+          if (res.attachment && res.attachment.length !== 0) {
+            const newFileURLArray = res.attachment.map((url) => ({
+              id: randomImageName(),
+              url,
+            }));
+            setFetchedImageArray(newFileURLArray);
+          }
           let quizQuestion = res;
           setQuizCourseTopicId(quizQuestion.quizCourseTopic.quizCourseTopicId);
           setLevelId(quizQuestion.levelId);
@@ -142,16 +178,35 @@ function CreateQuizOfCourse() {
   async function handleSubmit() {
     let statement = draftToHtml(convertToRaw(editorState.getCurrentContent()));
 
+    const fetchedFileArray = [];
+    for (const fetchedFile of fetchedImageArray) {
+      const file = await dataUrlToFile(
+        `data:image/jpeg;base64,${fetchedFile.url}`,
+        fetchedFile.id
+      );
+      fetchedFileArray.push(file);
+    }
+
+    const newAttachmentFiles = [...fetchedFileArray, ...attachmentFiles];
+
+    const fileId = newAttachmentFiles.map((file) => {
+      if (typeof file.name !== "undefined") {
+        return file.name;
+      }
+      return file.id;
+    });
+
     console.log("handle submit");
     let body = {
       quizCourseTopicId: quizCourseTopicId,
       levelId: levelId,
       questionContent: statement,
+      fileId,
     };
 
     let formData = new FormData();
     formData.append("QuizQuestionUpdateInputModel", JSON.stringify(body));
-    for (const file of attachmentFiles) {
+    for (const file of newAttachmentFiles) {
       formData.append("files", file);
     }
 
@@ -181,6 +236,12 @@ function CreateQuizOfCourse() {
     getQuizContent();
     // console.log('Create chapter of course ' + courseId);
   }, []);
+
+  const handleDeleteImageAttachment = async (fileId) => {
+    const newFileArray = fetchedImageArray.filter((file) => file.id !== fileId);
+    setFetchedImageArray(newFileArray);
+  };
+
   return (
     <MuiPickersUtilsProvider utils={DateFnsUtils}>
       {!initState ? (
@@ -276,6 +337,22 @@ function CreateQuizOfCourse() {
                 }}
                 onChange={(files) => handleAttachmentFiles(files)}
               ></DropzoneArea>
+              {fetchedImageArray.length !== 0 &&
+                fetchedImageArray.map((file) => (
+                  <div key={file.id} className={classes.imageContainer}>
+                    <div className={classes.imageWrapper}>
+                      <HighlightOffIcon
+                        className={classes.buttonClearImage}
+                        onClick={() => handleDeleteImageAttachment(file.id)}
+                      />
+                      <img
+                        src={`data:image/jpeg;base64,${file.url}`}
+                        alt="quiz test"
+                        className={classes.imageQuiz}
+                      />
+                    </div>
+                  </div>
+                ))}
             </form>
           </CardContent>
           <CardActions>
