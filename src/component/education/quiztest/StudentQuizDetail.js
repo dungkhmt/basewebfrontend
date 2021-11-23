@@ -189,6 +189,19 @@ export default function StudentQuizDetail() {
                             __html: element["statement"],
                           }}
                         />
+                        {element.attachment &&
+                          element.attachment.length !== 0 &&
+                          element.attachment.map((url, index) => (
+                            <div key={index} className={classes.imageContainer}>
+                              <div className={classes.imageWrapper}>
+                                <img
+                                  src={`data:image/jpeg;base64,${url}`}
+                                  alt="quiz test"
+                                  className={classes.imageQuiz}
+                                />
+                              </div>
+                            </div>
+                          ))}
                         {element["quizChoiceAnswerList"].map((answer, ind) => {
                           return (
                             <div key={ind} style={{ display: "flex" }}>

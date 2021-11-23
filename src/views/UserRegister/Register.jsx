@@ -529,7 +529,7 @@ export default function NewRegister() {
                       rules={{
                         validate: {
                           required: (roles) => {
-                            if (roles.length == 0) {
+                            if (roles.length === 0) {
                               return "Vui lòng chọn ít nhất một vai trò";
                             }
                             return true;
