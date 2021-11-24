@@ -17,6 +17,7 @@ const alignRightCellStyles = {
 const columns = [
   { title: "User", field: "userLoginId", ...cellStyles },
   { title: "Name", field: "fullName", ...cellStyles },
+  { title: "Affiliations", field: "affiliations", ...cellStyles },
   { title: "QuestionId", field: "questionId", ...cellStyles },
   { title: "Course", field: "courseName", ...cellStyles },
   { title: "Topic", field: "topicName", ...cellStyles },

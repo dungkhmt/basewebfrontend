@@ -9,6 +9,7 @@ function ViewLogUserDoPraticeQuizs() {
   const columns = [
     { title: "UserName", field: "userLoginId" },
     { title: "FullName", field: "fullName" },
+    { title: "Affiliations", field: "affiliations" },
     { title: "ClassCode", field: "classCode" },
     { title: "CourseId", field: "courseId" },
     { title: "CourseName", field: "courseName" },
@@ -33,6 +34,7 @@ function ViewLogUserDoPraticeQuizs() {
               "get",
               url,
               (res) => {
+                console.log("get log user do practice, res = ", res);
                 const data = res.data;
                 const content = data.content.map((c) => ({
                   ...c,
