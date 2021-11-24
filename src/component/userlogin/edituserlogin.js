@@ -67,6 +67,7 @@ function EditUser(props) {
   const [birthDate, setBirthDate] = useState(new Date());
 
   const [securityGroups, setSecurityGroups] = useState([]);
+  const [enabled, setEnabled] = useState(null);
 
   const handleBirthDateChange = (date) => {
     setBirthDate(date);
@@ -113,6 +114,9 @@ function EditUser(props) {
   const handleRoleChange = (event) => {
     setRoles(event.target.value);
   };
+  const handleEnabledChange = (e) => {
+    setEnabled(e.target.value);
+  };
   const handleSubmit = () => {
     const data = {
       lastName: lastName,
@@ -121,6 +125,7 @@ function EditUser(props) {
       birthDate: birthDate,
       partyCode: partyCode,
       roles: roles,
+      enabled: enabled,
     };
     setIsRequesting(true);
     authPut(dispatch, token, "/user/" + partyId, data)
@@ -145,6 +150,7 @@ function EditUser(props) {
   useEffect(() => {
     authGet(dispatch, token, "/users/" + partyId).then(
       (res) => {
+        console.log("getUserDetail for update, res = ", res);
         setFirstName(res.firstName);
         setMiddleName(res.middleName);
         setLastName(res.lastName);
@@ -152,6 +158,7 @@ function EditUser(props) {
         setPartyCode(res.partyCode);
         setUserName(res.userLoginId);
         setRoles(res.roles);
+        setEnabled(res.enabled);
       },
       (error) => {}
     );
@@ -233,6 +240,24 @@ function EditUser(props) {
                       {s.description}
                     </MenuItem>
                   ))}
+                </Select>
+              </FormControl>
+              <FormControl className={classes.formControl}>
+                <InputLabel id="role-label">Enabled</InputLabel>
+                <Select
+                  labelId="enabled"
+                  id="enabled"
+                  value={enabled}
+                  onChange={handleEnabledChange}
+                  input={<Input />}
+                  MenuProps={MenuProps}
+                >
+                  <MenuItem key={"Y"} value={"Y"}>
+                    {"Y"}
+                  </MenuItem>
+                  <MenuItem key={"N"} value={"N"}>
+                    {"N"}
+                  </MenuItem>
                 </Select>
               </FormControl>
             </div>

@@ -125,6 +125,7 @@ const useStyles = makeStyles(() => ({
 export default function NewRegister() {
   const classes = useStyles();
   const [roles, setRoles] = useState([]);
+  const [affiliations, setAffiliations] = useState([]);
   const [showPassword, setShowPassword] = useState(false);
   const [existedAccErr, setExistedAccErr] = useState(false);
   const [loading, setLoading] = React.useState(false);
@@ -143,10 +144,23 @@ export default function NewRegister() {
       lastName: "",
       email: "",
       roles: [],
+      affiliations: [],
     },
   });
 
   // Functions.
+  const getAffiliations = () => {
+    request(
+      // token,
+      // history,
+      "get",
+      "/public/get-registered-affiliations",
+      (res) => {
+        setAffiliations(res.data);
+      },
+      {}
+    );
+  };
   const getRoles = () => {
     request(
       // token,
@@ -217,6 +231,7 @@ export default function NewRegister() {
 
   useEffect(() => {
     getRoles();
+    getAffiliations();
   }, []);
 
   return (
@@ -531,6 +546,43 @@ export default function NewRegister() {
                           required: (roles) => {
                             if (roles.length === 0) {
                               return "Vui lòng chọn ít nhất một vai trò";
+                            }
+                            return true;
+                          },
+                        },
+                      }}
+                    />
+                  </ThemeProvider>
+                  <ThemeProvider theme={theme}>
+                    <Controller
+                      as={
+                        <TextField
+                          select
+                          label="Đơn vị*"
+                          error={!!errors.roles}
+                          helperText={errors.roles?.message}
+                          SelectProps={{
+                            multiple: true,
+                          }}
+                          className={classes.formField}
+                        >
+                          {affiliations.map((affiliation) => (
+                            <MenuItem
+                              key={affiliation.affiliationId}
+                              value={affiliation.affiliationId}
+                            >
+                              {affiliation.affiliationName}
+                            </MenuItem>
+                          ))}
+                        </TextField>
+                      }
+                      name="affiliations"
+                      control={control}
+                      rules={{
+                        validate: {
+                          required: (affiliations) => {
+                            if (affiliations.length === 0) {
+                              return "Vui lòng chọn đơn vị";
                             }
                             return true;
                           },

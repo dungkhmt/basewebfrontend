@@ -54,6 +54,7 @@ function TeacherCourseQuizChoiceAnswerDetail() {
   const classes = useStyles();
   const choiceAnswerId = params.choiceAnswerId;
   const [questionId, setQuestionId] = useState(null);
+  const [courseId, setCourseId] = useState(null);
   const [choiceAnswerContent, setChoiceAnswerContent] = useState(null);
   const [isCorrectAnswer, setIsCorrectAnswer] = useState(null);
   const [yesno, setYesno] = useState([]);
@@ -105,6 +106,7 @@ function TeacherCourseQuizChoiceAnswerDetail() {
           setEditorState(statement);
           setInitState(true);
           setQuestionId(res.quizQuestion.questionId);
+          setCourseId(res.quizQuestion.quizCourseTopic.eduCourse.id);
           //alert(JSON.stringify(res));
         } else {
           alert("Lỗi kết nối, thử tải lại trang");
@@ -137,7 +139,9 @@ function TeacherCourseQuizChoiceAnswerDetail() {
         } else {
           alert("Cập nhật không thành công");
         }
-        history.push("/edu/teacher/course/quiz/detail/" + questionId);
+        history.push(
+          "/edu/teacher/course/quiz/detail/" + questionId + "/" + courseId
+        );
       },
       (error) => {
         alert("Cập nhật không thành công");

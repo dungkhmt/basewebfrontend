@@ -22,6 +22,7 @@ import TeacherCourseDetail from "../component/education/course/TeacherCourseDeta
 import TeacherCourseList from "../component/education/course/TeacherCourseList";
 import TeacherCourseQuizChoiceAnswerDetail from "../component/education/course/TeacherCourseQuizChoiceAnswerDetail";
 import TeacherCourseQuizDetail from "../component/education/course/TeacherCourseQuizDetail";
+import TeacherCourseTopicDetail from "../component/education/course/TeacherCourseTopicDetail";
 import TeacherViewCourseQuizDetail from "../component/education/course/TeacherViewCourseQuizDetail";
 import CreateSemester from "../component/education/CreateSemester";
 import AddProblemToProgrammingContest from "../component/education/programmingcontest/AddProblemToProgrammingContest";
@@ -95,6 +96,12 @@ export default function EduRoute() {
           path={`${path}/teacher/course/quiz/detail/:questionId/:courseId`}
           exact
         />
+        <Route
+          component={TeacherCourseTopicDetail}
+          path={`${path}/teacher/course/topic/detail/:quizCourseTopicId/:courseId`}
+          exact
+        />
+
         <Route
           component={TeacherViewCourseQuizDetail}
           path={`${path}/teacher/course/quiz/view/detail/:questionId/:courseId`}

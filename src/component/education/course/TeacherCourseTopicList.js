@@ -4,7 +4,7 @@ import MaterialTable from "material-table";
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useParams } from "react-router";
-import { useHistory } from "react-router-dom";
+import { Link, useHistory } from "react-router-dom";
 import { authGet } from "../../../api";
 
 function TeacherCourseTopicList(props) {
@@ -16,7 +16,22 @@ function TeacherCourseTopicList(props) {
   const [topics, setTopics] = useState([]);
 
   const columns = [
-    { title: "Topic Id", field: "quizCourseTopicId" },
+    {
+      title: "Topic Id",
+      field: "quizCourseTopicId",
+      render: (rowData) => (
+        <Link
+          to={
+            "/edu/teacher/course/topic/detail/" +
+            rowData["quizCourseTopicId"] +
+            "/" +
+            courseId
+          }
+        >
+          {rowData["quizCourseTopicId"]}
+        </Link>
+      ),
+    },
     { title: "Topic Name", field: "quizCourseTopicName" },
     { title: "Topic Name", field: "quizCourseTopicName" },
     { title: "#Published", field: "numberOfPublishedQuizs" },

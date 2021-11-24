@@ -42,6 +42,7 @@ function UserDetail(props) {
   useEffect(() => {
     authGet(dispatch, token, "/users/" + partyId).then(
       (res) => {
+        console.log("get userdetail, res = ", res);
         setData(res);
         if (res._links !== undefined) {
           if (res._links.edit !== undefined) setCanEdit(true);
@@ -192,6 +193,17 @@ function UserDetail(props) {
                 id="userLoginId"
                 label="UserName"
                 value={data.userLoginId}
+                InputLabelProps={{
+                  shrink: true,
+                }}
+                InputProps={{
+                  readOnly: true,
+                }}
+              />
+              <TextField
+                id="Enabled"
+                label="Enabled"
+                value={data.enabled}
                 InputLabelProps={{
                   shrink: true,
                 }}
