@@ -1,20 +1,19 @@
+import { Grid } from "@material-ui/core";
+import Avatar from "@material-ui/core/Avatar";
+import Card from "@material-ui/core/Card";
+import CardContent from "@material-ui/core/CardContent";
+import CardHeader from "@material-ui/core/CardHeader";
+import { red } from "@material-ui/core/colors";
+import IconButton from "@material-ui/core/IconButton";
+import { makeStyles } from "@material-ui/core/styles";
+import TablePagination from "@material-ui/core/TablePagination";
+import Typography from "@material-ui/core/Typography";
+import MoreVertIcon from "@material-ui/icons/MoreVert";
 import "jspdf-autotable";
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 import { authGet } from "../../api";
-import { Grid } from "@material-ui/core";
-import { makeStyles } from "@material-ui/core/styles";
-import Card from "@material-ui/core/Card";
-import CardHeader from "@material-ui/core/CardHeader";
-import CardContent from "@material-ui/core/CardContent";
-import Avatar from "@material-ui/core/Avatar";
-import IconButton from "@material-ui/core/IconButton";
-import Typography from "@material-ui/core/Typography";
-import { red } from "@material-ui/core/colors";
-import MoreVertIcon from "@material-ui/icons/MoreVert";
-import { Container } from "@material-ui/core/Container";
-import TablePagination from "@material-ui/core/TablePagination";
 
 function arrayBufferToBase64(buffer) {
   let binary = "";
@@ -30,6 +29,15 @@ const useStyles = makeStyles((theme) => ({
   root: {
     maxWidth: 345,
     maxHeight: 345,
+  },
+  title: {
+    fontWeight: 600,
+    fontSize: "30px",
+    textAlign: "center",
+    marginBottom: "24px",
+  },
+  gridItem: {
+    marginBottom: "12px",
   },
   media: {
     height: 0,
@@ -47,6 +55,8 @@ const useStyles = makeStyles((theme) => ({
   },
   avatar: {
     backgroundColor: red[500],
+    width: "128px",
+    height: "128px",
   },
 }));
 
@@ -56,7 +66,7 @@ function ProductList(props) {
   const [productList, setProductList] = useState([]);
   const [page, setPage] = useState(0);
   // const [listPageSize, setListPageSize] = useState([4, 8, 12]);
-  const [pageSize, setPageSize] = useState(4);
+  const [pageSize, setPageSize] = useState(16);
   // const [listImg, setListImg] = useState([]);
   const classes = useStyles();
   // const [totalPage, setTotalPage] = useState(1);
@@ -69,8 +79,8 @@ function ProductList(props) {
       token,
       "/get-list-product-with-define-page?size=" + pageSize + "&page=" + page
     ).then((response) => {
-      setProductList(response.content);
-      setTotalElements(response["totalElements"]);
+      setProductList(response.products);
+      setTotalElements(response.totalElements);
 
       // if (res.totalElements % pageSize !== 0) {
       // setTotalPage(Math.floor(res.totalElements / pageSize));
@@ -109,14 +119,20 @@ function ProductList(props) {
 
   return (
     <div>
+      <h1 className={classes.title}>Tất cả sản phẩm</h1>
       <Grid container spacing={12}>
         {productList.map((p) => (
-          <Grid item xs={3}>
+          <Grid item xs={12} md={6} lg={4} className={classes.gridItem}>
             <Card className={classes.root}>
               <Link to={"/products/" + p.productId}>
                 <CardHeader
                   avatar={
-                    <Avatar aria-label="recipe" className={classes.avatar}>
+                    <Avatar
+                      aria-label="recipe"
+                      className={classes.avatar}
+                      src={p.avatar ? `data:image/jpeg;base64,${p.avatar}` : ""}
+                      alt="product avatar"
+                    >
                       {/*R*/}
                     </Avatar>
                   }
@@ -128,7 +144,7 @@ function ProductList(props) {
                   title={p.productName}
                   subheader={p.createdStamp}
                 />
-                <img src={p.avatar} width="100%" height="100%" />
+                {/* <img src={p.avatar} width="100%" height="100%" /> */}
               </Link>
               <CardContent>
                 <Typography>{p.weight + " " + p.uomDescription}</Typography>
