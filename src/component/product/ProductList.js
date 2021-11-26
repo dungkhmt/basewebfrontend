@@ -1,14 +1,13 @@
 import { Grid } from "@material-ui/core";
-import Avatar from "@material-ui/core/Avatar";
 import Card from "@material-ui/core/Card";
+import CardActionArea from "@material-ui/core/CardActionArea";
 import CardContent from "@material-ui/core/CardContent";
 import CardHeader from "@material-ui/core/CardHeader";
+import CardMedia from "@material-ui/core/CardMedia";
 import { red } from "@material-ui/core/colors";
-import IconButton from "@material-ui/core/IconButton";
 import { makeStyles } from "@material-ui/core/styles";
 import TablePagination from "@material-ui/core/TablePagination";
 import Typography from "@material-ui/core/Typography";
-import MoreVertIcon from "@material-ui/icons/MoreVert";
 import "jspdf-autotable";
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
@@ -27,8 +26,8 @@ function arrayBufferToBase64(buffer) {
 
 const useStyles = makeStyles((theme) => ({
   root: {
-    maxWidth: 345,
-    maxHeight: 345,
+    // maxWidth: 345,
+    // maxHeight: 345,
   },
   title: {
     fontWeight: 600,
@@ -59,6 +58,9 @@ const useStyles = makeStyles((theme) => ({
     height: "128px",
   },
 }));
+
+const sampleAvatar =
+  "https://images.unsplash.com/photo-1581235720704-06d3acfcb36f?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=580&q=80";
 
 function ProductList(props) {
   const token = useSelector((state) => state.auth.token);
@@ -120,27 +122,38 @@ function ProductList(props) {
   return (
     <div>
       <h1 className={classes.title}>Tất cả sản phẩm</h1>
-      <Grid container spacing={12}>
+      <Grid container spacing={4}>
         {productList.map((p) => (
-          <Grid item xs={12} md={6} lg={4} className={classes.gridItem}>
+          <Grid item xs={12} sm={6} md={4} className={classes.gridItem}>
             <Card className={classes.root}>
               <Link to={"/products/" + p.productId}>
+                <CardActionArea>
+                  <CardMedia
+                    className={classes.media}
+                    image={
+                      p.avatar
+                        ? `data:image/jpeg;base64,${p.avatar}`
+                        : sampleAvatar
+                    }
+                    title="Contemplative Reptile"
+                  />
+                </CardActionArea>
                 <CardHeader
-                  avatar={
-                    <Avatar
-                      aria-label="recipe"
-                      className={classes.avatar}
-                      src={p.avatar ? `data:image/jpeg;base64,${p.avatar}` : ""}
-                      alt="product avatar"
-                    >
-                      {/*R*/}
-                    </Avatar>
-                  }
-                  action={
-                    <IconButton aria-label="settings">
-                      <MoreVertIcon />
-                    </IconButton>
-                  }
+                  // avatar={
+                  //   <Avatar
+                  //     aria-label="recipe"
+                  //     className={classes.avatar}
+                  //     src={p.avatar ? `data:image/jpeg;base64,${p.avatar}` : ""}
+                  //     alt="product avatar"
+                  //   >
+                  //     {/*R*/}
+                  //   </Avatar>
+                  // }
+                  // action={
+                  //   <IconButton aria-label="settings">
+                  //     <MoreVertIcon />
+                  //   </IconButton>
+                  // }
                   title={p.productName}
                   subheader={p.createdStamp}
                 />
