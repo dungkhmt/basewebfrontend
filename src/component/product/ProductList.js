@@ -124,7 +124,14 @@ function ProductList(props) {
       <h1 className={classes.title}>Tất cả sản phẩm</h1>
       <Grid container spacing={4}>
         {productList.map((p) => (
-          <Grid item xs={12} sm={6} md={4} className={classes.gridItem}>
+          <Grid
+            item
+            xs={12}
+            sm={6}
+            md={4}
+            className={classes.gridItem}
+            key={p.productId}
+          >
             <Card className={classes.root}>
               <Link to={"/products/" + p.productId}>
                 <CardActionArea>

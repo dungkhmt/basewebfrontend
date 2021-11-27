@@ -10,7 +10,7 @@ import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useHistory } from "react-router";
 import { Link, useParams } from "react-router-dom";
-import { authGet, authGetImg } from "../../api";
+import { authGet } from "../../api";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -54,7 +54,7 @@ function ProductDetail(props) {
   const dispatch = useDispatch();
   const [data, setData] = useState({});
   const classes = useStyles();
-  const [img, setImg] = useState([]);
+  // const [img, setImg] = useState([]);
 
   const [priceList, setPriceList] = useState([]);
   const priceColumns = [
@@ -77,32 +77,32 @@ function ProductDetail(props) {
     );
   }, []);
 
-  useEffect(() => {
-    let alFetch = [];
-    if (typeof data.contentUrls !== "undefined") {
-      for (const url of data.contentUrls) {
-        alFetch.push(
-          authGetImg(dispatch, token, url)
-            .then(
-              (res) => {
-                return res.arrayBuffer();
-              },
-              (error) => {
-                // setData([]);
-              }
-            )
-            .then((data) => {
-              let base64Flag = "data:image/jpeg;base64,";
-              let imageStr = arrayBufferToBase64(data);
-              return base64Flag + imageStr;
-            })
-        );
-      }
-    }
-    Promise.all(alFetch).then((res) => {
-      setImg(res);
-    });
-  }, [data]);
+  // useEffect(() => {
+  //   let alFetch = [];
+  //   if (typeof data.contentUrls !== "undefined") {
+  //     for (const url of data.contentUrls) {
+  //       alFetch.push(
+  //         authGetImg(dispatch, token, url)
+  //           .then(
+  //             (res) => {
+  //               return res.arrayBuffer();
+  //             },
+  //             (error) => {
+  //               // setData([]);
+  //             }
+  //           )
+  //           .then((data) => {
+  //             let base64Flag = "data:image/jpeg;base64,";
+  //             let imageStr = arrayBufferToBase64(data);
+  //             return base64Flag + imageStr;
+  //           })
+  //       );
+  //     }
+  //   }
+  //   Promise.all(alFetch).then((res) => {
+  //     setImg(res);
+  //   });
+  // }, [data]);
 
   return (
     <>
@@ -123,7 +123,7 @@ function ProductDetail(props) {
                 <Table className={classes.table} aria-label="simple table">
                   <TableBody>
                     <TableRow key="productName">
-                      <TableCell align="center">
+                      <TableCell align="left">
                         <Box fontWeight="fontWeightBold" m={1} fontSize={20}>
                           Tên sản phẩm
                         </Box>
@@ -135,7 +135,7 @@ function ProductDetail(props) {
                       </TableCell>
                     </TableRow>
                     <TableRow key="uom">
-                      <TableCell align="center">
+                      <TableCell align="left">
                         <Box fontWeight="fontWeightBold" m={1} fontSize={20}>
                           Đơn vị
                         </Box>
@@ -147,7 +147,7 @@ function ProductDetail(props) {
                       </TableCell>
                     </TableRow>
                     <TableRow key="productType">
-                      <TableCell align="center">
+                      <TableCell align="left">
                         <Box fontWeight="fontWeightBold" m={1} fontSize={20}>
                           Loại sản phẩm
                         </Box>
@@ -184,7 +184,12 @@ function ProductDetail(props) {
         </Grid>
 
         <div className={classes.buttonWrapper}>
-          <Link to={"/product-group/set-product-primary-img/" + productId}>
+          <Link
+            to={{
+              pathname: "/product-group/set-product-primary-img/" + productId,
+              state: { data },
+            }}
+          >
             <Button
               variant="contained"
               color="primary"
@@ -199,24 +204,30 @@ function ProductDetail(props) {
             <Typography variant="h6" component="h1" align="left">
               Ảnh đại diện sản phẩm
             </Typography>
-            {img.map((i, index) => (
-              <Grid container spacing={4}>
-                <Grid item xs={12} md={6}>
-                  <img
-                    key={index}
-                    src={i}
-                    width="100%"
-                    height="100%"
-                    alt="product"
-                  />
-                </Grid>
-              </Grid>
-            ))}
+            <Grid container>
+              {data.avatar ? (
+                <img
+                  src={`data:image/jpeg;base64,${data.avatar}`}
+                  width="50%"
+                  height="50%"
+                  alt="product"
+                />
+              ) : (
+                <Typography variant="h6" component="h6">
+                  Sản phẩm chưa có ảnh hiển thị
+                </Typography>
+              )}
+            </Grid>
           </Paper>
         </Grid>
 
         <div className={classes.buttonWrapper}>
-          <Link to={"/product-group/product-add-img/" + productId}>
+          <Link
+            to={{
+              pathname: "/product-group/product-add-img/" + productId,
+              state: { data },
+            }}
+          >
             <Button
               variant="contained"
               color="primary"
@@ -231,19 +242,23 @@ function ProductDetail(props) {
             <Typography variant="h6" component="h1" align="left">
               Ảnh kèm theo mô tả sản phẩm
             </Typography>
-            {img.map((i, index) => (
-              <Grid container spacing={4}>
-                <Grid item xs={12} md={6}>
-                  <img
-                    key={index}
-                    src={i}
-                    width="100%"
-                    height="100%"
-                    alt="product"
-                  />
-                </Grid>
-              </Grid>
-            ))}
+            <Grid container spacing={4}>
+              {data.attachmentImages && data.attachmentImages.length > 0 ? (
+                data.attachmentImages.map((i, index) => (
+                  <Grid item xs={12} md={4} key={index}>
+                    <img
+                      src={`data:image/jpeg;base64,${i}`}
+                      width="90%"
+                      alt="product"
+                    />
+                  </Grid>
+                ))
+              ) : (
+                <Typography variant="body1" component="h6">
+                  Sản phẩm chưa có ảnh hiển thị
+                </Typography>
+              )}
+            </Grid>
           </Paper>
         </Grid>
 
