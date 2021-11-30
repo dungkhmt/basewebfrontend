@@ -161,6 +161,15 @@ export const axiosPost = (token, url, data, dispatch) => {
   });
 };
 
+export const axiosPatch = (token, url, data, dispatch) => {
+  return axios.patch(API_URL + url, data, {
+    headers: {
+      "content-type": "application/json",
+      "X-Auth-Token": token,
+    },
+  });
+};
+
 export const axiosGet = (token, url, dispatch) => {
   return axios.get(API_URL + url, {
     headers: {

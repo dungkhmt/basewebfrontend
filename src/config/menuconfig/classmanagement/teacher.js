@@ -40,7 +40,7 @@ export const eduTeachingManagement = {
     },
     {
       id: "",
-      path: "/edu/resource-links/list",
+      path: "/edu/teach/resource-links/list",
       isPublic: true,
       icon: null,
       text: "Link hữu ích",

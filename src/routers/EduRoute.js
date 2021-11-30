@@ -9,6 +9,11 @@ import ClassTeacherAssignmentPlanList from "../component/education/classteachera
 import AddNewCourse from "../component/education/course/AddNewCourse";
 import CourseDetail from "../component/education/course/CourseDetail";
 import CourseList from "../component/education/course/CourseList";
+import ResourceDomainList from "../component/education/resourcelink/ResourceDomainList";
+import ResourceList from "../component/education/resourcelink/ResourceList";
+import ResourceDomainCreate from "../component/education/resourcelink/ResourceDomainCreate";
+import ResourceCreate from "../component/education/resourcelink/ResourceCreate";
+import ResourceDomainEdit from "../component/education/resourcelink/ResourceDomainEdit";
 import CreateChapterMaterialOfCourse from "../component/education/course/CreateChapterMaterialOfCourse";
 import CreateChapterOfCourse from "../component/education/course/CreateChapterOfCourse";
 import CreateQuizChoiceAnswerOfCourse from "../component/education/course/CreateQuizChoiceAnswerOfCourse";
@@ -155,6 +160,12 @@ export default function EduRoute() {
         <Route component={ClassesList} path={`${path}/classes-list`} />
 
         <Route component={AssignmentList} path={`${path}/assignment`} />
+
+        <Route component={ResourceDomainList} path={`${path}/teach/resource-links/list`} />
+        <Route component={ResourceDomainCreate} path={`${path}/domain/create`} />
+        <Route component={ResourceCreate} path={`${path}/domains/:id/resource`} />
+        <Route component={ResourceDomainEdit} path={`${path}/domains/:id/edit`} />
+        <Route component={ResourceList} path={`${path}/domains/:id/resources`} />
 
         <Route
           component={ClassTeacherAssignmentPlanList}
