@@ -1,16 +1,16 @@
-import { Box, Grid, Paper, Table } from "@material-ui/core";
+import { Grid, Paper, Table, TextField } from "@material-ui/core";
 import Button from "@material-ui/core/Button";
 import { makeStyles } from "@material-ui/core/styles";
 import TableBody from "@material-ui/core/TableBody";
-import TableCell from "@material-ui/core/TableCell";
-import TableRow from "@material-ui/core/TableRow";
 import Typography from "@material-ui/core/Typography";
 import MaterialTable from "material-table";
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useHistory } from "react-router";
 import { Link, useParams } from "react-router-dom";
-import { authGet } from "../../api";
+import { toast } from "react-toastify";
+import { authGet, authPut } from "../../api";
+import TableRowProductInfo from "./TableRowProductInfo";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -22,9 +22,9 @@ const useStyles = makeStyles((theme) => ({
   paper: {
     padding: theme.spacing(2),
   },
-  gridContainer: {
-    marginBottom: "36px",
-  },
+  // gridContainer: {
+  //   margin: "18px 0px",
+  // },
   table: {
     // minWidth: "50%",
     // maxWidth: "80%",
@@ -34,7 +34,8 @@ const useStyles = makeStyles((theme) => ({
     textAlign: "right",
   },
   button: {
-    marginBottom: "6px",
+    marginTop: "6px",
+    marginBottom: "36px",
   },
 }));
 
@@ -47,6 +48,12 @@ function arrayBufferToBase64(buffer) {
   return window.btoa(binary);
 }
 
+const priceColumns = [
+  { title: "Từ ngày", field: "fromDate" },
+  { title: "Đến ngày", field: "thruDate" },
+  { title: "Giá", field: "price" },
+];
+
 function ProductDetail(props) {
   const history = useHistory();
   const { productId } = useParams();
@@ -55,18 +62,24 @@ function ProductDetail(props) {
   const [data, setData] = useState({});
   const classes = useStyles();
   // const [img, setImg] = useState([]);
+  const [shouldForceUpdate, setShouldForceUpdate] = useState(false);
 
   const [priceList, setPriceList] = useState([]);
-  const priceColumns = [
-    { title: "Từ ngày", field: "fromDate" },
-    { title: "Đến ngày", field: "thruDate" },
-    { title: "Giá", field: "price" },
-  ];
+  const [info, setInfo] = useState({
+    weight: 0,
+    description: "",
+  });
+  const { weight, description } = info;
 
   useEffect(() => {
     authGet(dispatch, token, "/product/" + productId).then(
       (res) => {
         setData(res);
+        setInfo((prev) => ({
+          ...prev,
+          weight: res.weight,
+          description: res.description,
+        }));
       },
       (error) => {
         setData([]);
@@ -75,7 +88,24 @@ function ProductDetail(props) {
     authGet(dispatch, token, "/get-product-price-history/" + productId).then(
       (r) => setPriceList(r)
     );
-  }, []);
+  }, [shouldForceUpdate]);
+
+  const handleSetProductInfoValue = (e) => {
+    setInfo((prevValue) => ({
+      ...prevValue,
+      [e.target.name]: e.target.value,
+    }));
+  };
+
+  const handleUpdateProductInfo = async () => {
+    try {
+      await authPut(dispatch, token, `/update-product/${productId}`, info);
+      toast.success("Update product successfully");
+      setShouldForceUpdate(!shouldForceUpdate);
+    } catch (error) {
+      console.error("failed to update product: ", error);
+    }
+  };
 
   // useEffect(() => {
   //   let alFetch = [];
@@ -112,7 +142,7 @@ function ProductDetail(props) {
         align="left"
         className={classes.title}
       >
-        Chi tiết sản phẩm có mã {data.productId}
+        Chi tiết sản phẩm mã {data.productId}
       </Typography>
 
       <Grid container spacing={3}>
@@ -122,83 +152,40 @@ function ProductDetail(props) {
               <Grid item xs={12}>
                 <Table className={classes.table} aria-label="simple table">
                   <TableBody>
-                    <TableRow key="productName">
-                      <TableCell align="left">
-                        <Box fontWeight="fontWeightBold" m={1} fontSize={20}>
-                          Tên sản phẩm
-                        </Box>
-                      </TableCell>
-                      <TableCell align="center">
-                        <Typography variant="body1" component="h4">
-                          {data === null ? "" : data["productName"]}
-                        </Typography>
-                      </TableCell>
-                    </TableRow>
-                    <TableRow key="uom">
-                      <TableCell align="left">
-                        <Box fontWeight="fontWeightBold" m={1} fontSize={20}>
-                          Đơn vị
-                        </Box>
-                      </TableCell>
-                      <TableCell align="center">
-                        <Typography variant="body1" component="h4">
-                          {data === null ? "" : data["uom"]}
-                        </Typography>
-                      </TableCell>
-                    </TableRow>
-                    <TableRow key="productType">
-                      <TableCell align="left">
-                        <Box fontWeight="fontWeightBold" m={1} fontSize={20}>
-                          Loại sản phẩm
-                        </Box>
-                      </TableCell>
-                      <TableCell align="center">
-                        <Typography variant="body1" component="h4">
-                          {data === null ? "" : data["type"]}
-                        </Typography>
-                      </TableCell>
-                    </TableRow>
+                    <TableRowProductInfo
+                      keyInfo="productName"
+                      data={data === null ? "" : data["productName"]}
+                      label="Tên"
+                    />
+                    <TableRowProductInfo
+                      keyInfo="productType"
+                      data={data === null ? "" : data["type"]}
+                      label="Thể loại"
+                    />
+                    <TableRowProductInfo
+                      keyInfo="amount"
+                      data={info.weight}
+                      label="Số lượng"
+                    />
+                    <TableRowProductInfo
+                      keyInfo="uom"
+                      data={data.uom === null ? "" : data["uom"]}
+                      label="Đơn vị"
+                    />
+                    <TableRowProductInfo
+                      keyInfo="description"
+                      data={
+                        info.description === "" ? "Chưa có" : info.description
+                      }
+                      label="Miêu tả"
+                    />
                   </TableBody>
                 </Table>
               </Grid>
-              {/* <Grid item xs={12}>
-                <Table className={classes.table} aria-label="simple table">
-                  <TableBody>
-                    <TableRow key="productType">
-                      <TableCell align="center">
-                        <Box fontWeight="fontWeightBold" m={1} fontSize={20}>
-                          Loại sản phẩm
-                        </Box>
-                      </TableCell>
-                      <TableCell align="center">
-                        <Typography variant="h6" component="h6">
-                          {data === null ? "" : data["type"]}
-                        </Typography>
-                      </TableCell>
-                    </TableRow>
-                  </TableBody>
-                </Table>
-              </Grid> */}
             </Grid>
           </Paper>
         </Grid>
 
-        <div className={classes.buttonWrapper}>
-          <Link
-            to={{
-              pathname: "/product-group/set-product-primary-img/" + productId,
-              state: { data },
-            }}
-          >
-            <Button
-              variant="contained"
-              color="primary"
-              className={classes.button}
-            >
-              Thay đổi ảnh đại diện sản phẩm
-            </Button>
-          </Link>
-        </div>
         <Grid item xs={12} className={classes.gridContainer}>
           <Paper className={classes.paper}>
             <Typography variant="h6" component="h1" align="left">
@@ -220,11 +207,10 @@ function ProductDetail(props) {
             </Grid>
           </Paper>
         </Grid>
-
         <div className={classes.buttonWrapper}>
           <Link
             to={{
-              pathname: "/product-group/product-add-img/" + productId,
+              pathname: "/product-group/set-product-primary-img/" + productId,
               state: { data },
             }}
           >
@@ -233,16 +219,24 @@ function ProductDetail(props) {
               color="primary"
               className={classes.button}
             >
-              Thêm ảnh mô tả cho sản phẩm
+              Thay đổi ảnh đại diện sản phẩm
             </Button>
           </Link>
         </div>
+
         <Grid item xs={12} className={classes.gridContainer}>
           <Paper className={classes.paper}>
             <Typography variant="h6" component="h1" align="left">
               Ảnh kèm theo mô tả sản phẩm
             </Typography>
-            <Grid container spacing={4}>
+            <Grid
+              container
+              spacing={
+                data.attachmentImages && data.attachmentImages.length > 0
+                  ? 4
+                  : 0
+              }
+            >
               {data.attachmentImages && data.attachmentImages.length > 0 ? (
                 data.attachmentImages.map((i, index) => (
                   <Grid item xs={12} md={4} key={index}>
@@ -261,8 +255,79 @@ function ProductDetail(props) {
             </Grid>
           </Paper>
         </Grid>
+        <div className={classes.buttonWrapper}>
+          <Link
+            to={{
+              pathname: "/product-group/product-add-img/" + productId,
+              state: { data },
+            }}
+          >
+            <Button
+              variant="contained"
+              color="primary"
+              className={classes.button}
+            >
+              Thêm ảnh mô tả cho sản phẩm
+            </Button>
+          </Link>
+        </div>
 
         <Grid item xs={12} className={classes.gridContainer}>
+          <Paper className={classes.paper}>
+            <Typography variant="h6" component="h1" align="left">
+              Cập nhật thông tin khác
+            </Typography>
+            <Grid container>
+              <Grid item xs={12}>
+                <Typography variant="h6" component="h3" align="left">
+                  Số lượng
+                </Typography>
+                <TextField
+                  type="number"
+                  name="weight"
+                  value={weight}
+                  onChange={handleSetProductInfoValue}
+                  helperText="Số lượng"
+                />
+              </Grid>
+            </Grid>
+            <Grid container>
+              <Grid item xs={12}>
+                <Typography variant="h6" component="h3" align="left">
+                  Mô tả sản phẩm
+                </Typography>
+                <TextField
+                  type="text"
+                  name="description"
+                  value={description}
+                  onChange={handleSetProductInfoValue}
+                  helperText="Mô tả"
+                  fullWidth
+                  multiline
+                />
+              </Grid>
+            </Grid>
+          </Paper>
+        </Grid>
+        <div className={classes.buttonWrapper}>
+          <Button
+            type="button"
+            variant="contained"
+            color="primary"
+            className={classes.button}
+            onClick={handleUpdateProductInfo}
+          >
+            Cập nhật
+          </Button>
+        </div>
+
+        <Grid item xs={12} className={classes.gridContainer}>
+          <MaterialTable
+            title={"Chi tiết giá"}
+            columns={priceColumns}
+            data={priceList}
+            options={{ search: false }}
+          />
           <div className={classes.buttonWrapper}>
             <Button
               color="primary"
@@ -275,12 +340,6 @@ function ProductDetail(props) {
               Thiết lập giá
             </Button>
           </div>
-          <MaterialTable
-            title={"Chi tiết giá"}
-            columns={priceColumns}
-            data={priceList}
-            options={{ search: false }}
-          />
         </Grid>
       </Grid>
     </>

@@ -162,12 +162,15 @@ function ProductList(props) {
                   //   </IconButton>
                   // }
                   title={p.productName}
-                  subheader={p.createdStamp}
+                  subheader={`Ngày thêm: ${p.createdStamp.slice(0, 10)}`}
                 />
                 {/* <img src={p.avatar} width="100%" height="100%" /> */}
               </Link>
               <CardContent>
-                <Typography>{p.weight + " " + p.uomDescription}</Typography>
+                <Typography variant="body1">{p.description}</Typography>
+                {p.weight && (
+                  <Typography>{p.weight + " " + p.uomDescription}</Typography>
+                )}
               </CardContent>
             </Card>
           </Grid>
