@@ -162,14 +162,17 @@ function TeacherCourseQuizList(props) {
 
   async function getQuestionList() {
     //let lst = await authGet(dispatch, token, '/get-all-quiz-questions');
-    await authGet(dispatch, token, "/get-quiz-of-course/" + courseId).then(
-      (res) => {
-        setfetchedQuizs(true);
-        if (res) {
-          setQuizs(res);
-        }
+    await authGet(
+      dispatch,
+      token,
+      //"/get-quiz-of-course/" + courseId).then(
+      "/get-quiz-of-course-sorted-created-time-desc/" + courseId
+    ).then((res) => {
+      setfetchedQuizs(true);
+      if (res) {
+        setQuizs(res);
       }
-    );
+    });
   }
 
   useEffect(() => {

@@ -22,6 +22,7 @@
     "@material-ui/pickers": "^3.2.9",
     "@material-ui/x-license": "^4.0.0-alpha.36",
     "@mdi/js": "^3.9.97",
+    "@mui/icons-material": "^5.2.0",
     "@mui/material": "^5.0.4",
     "@react-leaflet/core": "^1.1.0",
     "@uiw/react-codemirror": "^4.2.3",
