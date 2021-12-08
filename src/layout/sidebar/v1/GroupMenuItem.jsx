@@ -80,14 +80,8 @@ const useStyles = makeStyles((theme) => ({
 const activeRoute = (route) => {
   if (route === "/" || route === "") {
     // access http://localhost:3000/ or http://localhost:3000, location is always http://localhost:3000/
-    return window.location.href === `${process.env.REACT_APP_PUBLIC_URL}/`;
-  } else
-    return (
-      window.location.href.indexOf(
-        route,
-        process.env.REACT_APP_PUBLIC_URL.length
-      ) === process.env.REACT_APP_PUBLIC_URL.length
-    );
+    return window.location.pathname === `/`;
+  } else return window.location.pathname.indexOf(route) === 0;
 };
 
 function GroupMenuItem(props) {
