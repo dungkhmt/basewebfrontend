@@ -91,13 +91,19 @@ function SetPrimaryImg(props) {
             />
           </Grid>
         ) : (
-          <Typography variant="h6" component="h6">
-            Sản phẩm chưa có ảnh hiển thị
-          </Typography>
+          <Grid container>
+            <Typography
+              variant="body1"
+              component="h6"
+              style={{ marginTop: "12px", paddingLeft: "12px" }}
+            >
+              Sản phẩm chưa có ảnh hiển thị
+            </Typography>
+          </Grid>
         )}
       </Grid>
 
-      <Grid item xs={12} sm={6}>
+      <Grid item xs={12} sm={6} style={{ marginTop: "24px" }}>
         <Typography variant="h5" component="h2">
           Thay đổi ảnh hiển thị
         </Typography>

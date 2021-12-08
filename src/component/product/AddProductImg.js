@@ -209,14 +209,20 @@ function AddProductImg(props) {
               </Grid>
             ))
           ) : (
-            <Typography variant="body1" component="h6">
-              Sản phẩm chưa có ảnh hiển thị
-            </Typography>
+            <Grid container>
+              <Typography
+                variant="body1"
+                component="h6"
+                style={{ marginTop: "24px", paddingLeft: "12px" }}
+              >
+                Sản phẩm chưa có ảnh hiển thị
+              </Typography>
+            </Grid>
           )}
         </Grid>
       </Grid>
 
-      <Grid item xs={12}>
+      <Grid item xs={12} style={{ marginTop: "24px" }}>
         <Typography variant="h5" component="h2">
           Thêm ảnh cho sản phẩm {productId}
         </Typography>
