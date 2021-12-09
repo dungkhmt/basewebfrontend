@@ -103,6 +103,7 @@ function NotificationButton() {
     // if (open.get() === false && numUnRead.get() > 0) numUnRead.set(0);
   }, [open.get()]);
 
+  /*
   React.useEffect(() => {
     // When user open multiple tabs, only one tab will receive events at any point of time,
     // all other tabs will wait for "heartbeatTimeout" secs and reconnect to server,
@@ -233,14 +234,17 @@ function NotificationButton() {
       es.onerror = onError;
     }
 
-    setupEventSource();
+    //setupEventSource();
 
     return () => {
       es.close();
       es = null;
       console.info(new Date(), `SSE closed`);
     };
+    
+   
   }, []);
+*/
 
   return (
     <>
