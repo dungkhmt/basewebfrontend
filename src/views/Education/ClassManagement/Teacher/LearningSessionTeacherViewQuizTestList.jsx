@@ -1,59 +1,73 @@
 import React, { useState, useEffect } from "react";
 import { request } from "../../../../api";
-import { Button, Tooltip, Link } from "@material-ui/core/";
-import AddIcon from "@material-ui/icons/Add";
 import MaterialTable from "material-table";
-import { useHistory } from "react-router-dom";
-import TeacherCreateSessionForm from "./TeacherCreateSessionForm";
-import { Link as RouterLink } from "react-router-dom";
-export default function TeacherClassViewLearningSessionList(props) {
-  const classId = props.classId;
-  const [sessions, setSessions] = useState([]);
-  const history = useHistory();
+import { Button, Tooltip } from "@material-ui/core/";
+
+import AddIcon from "@material-ui/icons/Add";
+import { Link, useHistory } from "react-router-dom";
+import LearningSessionFormAddQuizTest from "./LearningSessionFormAddQuizTest";
+
+export default function LearningSessionTeacherViewQuizTestList(props) {
+  const sessionId = props.sessionId;
+  const [quizTests, setQuizTests] = useState([]);
   const [open, setOpen] = useState(false);
 
+  const headerProperties = {
+    headerStyle: {
+      fontSize: 14,
+      backgroundColor: "rgb(63, 81, 181)",
+      color: "white",
+    },
+  };
   const columns = [
     {
-      title: "Tên buổi học",
-      field: "sessionId",
+      title: "TestId",
+      field: "testId",
       render: (rowData) => (
         <Link
-          component={RouterLink}
-          to={`/edu/teacher/class/session/detail/${rowData["sessionId"]}`}
+          to={{
+            pathname: `/edu/class/quiztest/detail/${rowData.testId}`,
+          }}
+          style={{
+            textDecoration: "none",
+            whiteSpace: "pre-wrap" /* css-3 */,
+            whiteSpace: "-moz-pre-wrap" /* Mozilla, since 1999 */,
+            whiteSpace: "-pre-wrap" /* Opera 4-6 */,
+            whiteSpace: "-o-pre-wrap" /* Opera 7 */,
+            wordWrap: "break-word" /* Internet Explorer 5.5+ */,
+          }}
         >
-          {rowData["sessionName"]}
+          {rowData.testId}
         </Link>
       ),
     },
-    { title: "Mô tả", field: "description" },
-    { title: "Người tạo", field: "createdByUserLoginId" },
-    { title: "Trạng thái", field: "statusId" },
+    { title: "TestName", field: "testName" },
   ];
-  function getSessionsOfClass() {
+  function getQuizTestOfSession() {
     request(
       "get",
-      "/edu/class/get-sessions-of-class/" + classId,
+      "/edu/class/get-quiz-test-list-of-session/" + sessionId,
       (res) => {
         console.log(res);
-        setSessions(res.data);
+        setQuizTests(res.data);
       },
       { 401: () => {} }
     );
   }
 
-  function handleAddSession() {
+  function handleAddQuizTest() {
     setOpen(true);
   }
+
   useEffect(() => {
-    getSessionsOfClass();
+    getQuizTestOfSession();
   }, []);
   return (
     <div>
-      <h1>Danh sách buổi học {classId}</h1>
       <MaterialTable
-        title="Danh sách buổi học"
+        title="Danh sách quiz test"
         columns={columns}
-        data={sessions}
+        data={quizTests}
         //icons={tableIcons}
         localization={{
           header: {
@@ -88,7 +102,7 @@ export default function TeacherClassViewLearningSessionList(props) {
                   <Button
                     variant="contained"
                     color="primary"
-                    onClick={handleAddSession}
+                    onClick={handleAddQuizTest}
                   >
                     <AddIcon style={{ color: "white" }} fontSize="default" />
                     &nbsp;&nbsp;&nbsp;Thêm mới&nbsp;&nbsp;
@@ -100,10 +114,10 @@ export default function TeacherClassViewLearningSessionList(props) {
           },
         ]}
       />
-      <TeacherCreateSessionForm
+      <LearningSessionFormAddQuizTest
         open={open}
         setOpen={setOpen}
-        classId={classId}
+        sessionId={sessionId}
       />
     </div>
   );
