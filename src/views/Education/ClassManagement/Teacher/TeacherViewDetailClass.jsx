@@ -26,6 +26,8 @@ import TeacherViewDetailClassExerciseSubmission from "./TeacherViewDetailClassEx
 import TeacherViewDetailClassGeneralInfo from "./TeacherViewDetailClassGeneralInfo";
 import TeacherViewLogUserQuizList from "../../../../component/education/course/TeacherViewLogUserQuizList";
 import TeacherViewQuizDetail from "../../../../component/education/course/TeacherViewQuizDetail";
+import TeacherClassViewLearningSessionList from "./TeacherClassViewLearningSessionList";
+
 const useStyles = makeStyles((theme) => ({
   btn: {
     // width: 180,
@@ -53,6 +55,7 @@ const tabsLabel = [
   "Bài tập",
   "DS nộp bài tập",
   "Lịch sử học",
+  "Buổi học",
 ];
 
 export default function TeacherViewDetailClass() {
@@ -98,6 +101,9 @@ export default function TeacherViewDetailClass() {
       </TabPanel>
       <TabPanel value={selectedTab} index={5} dir={theme.direction}>
         <TeacherViewLogUserQuizList classId={classId} />
+      </TabPanel>
+      <TabPanel value={selectedTab} index={6} dir={theme.direction}>
+        <TeacherClassViewLearningSessionList classId={classId} />
       </TabPanel>
     </div>
   );
