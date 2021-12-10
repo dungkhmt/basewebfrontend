@@ -3,12 +3,9 @@ import { grey } from "@material-ui/core/colors";
 import { makeStyles } from "@material-ui/core/styles";
 import NotificationsIcon from "@material-ui/icons/Notifications";
 import clsx from "clsx";
-import { EventSourcePolyfill } from "event-source-polyfill";
 import randomColor from "randomcolor";
 import React from "react";
-import { store } from "../..";
 import { request } from "../../api";
-import { API_URL } from "../../config/config";
 import { useNotificationState } from "../../state/NotificationState";
 import NotificationMenu from "./NotificationMenu";
 
@@ -102,6 +99,10 @@ function NotificationButton() {
 
     // if (open.get() === false && numUnRead.get() > 0) numUnRead.set(0);
   }, [open.get()]);
+
+  React.useEffect(() => {
+    fetchNotification();
+  }, []);
 
   /*
   React.useEffect(() => {
