@@ -133,44 +133,47 @@ function ProductList(props) {
             key={p.productId}
           >
             <Card className={classes.root}>
-              <Link to={"/products/" + p.productId}>
-                <CardActionArea>
-                  <CardMedia
-                    className={classes.media}
-                    image={
-                      p.avatar
-                        ? `data:image/jpeg;base64,${p.avatar}`
-                        : sampleAvatar
-                    }
-                    title="Contemplative Reptile"
-                  />
-                </CardActionArea>
-                <CardHeader
-                  // avatar={
-                  //   <Avatar
-                  //     aria-label="recipe"
-                  //     className={classes.avatar}
-                  //     src={p.avatar ? `data:image/jpeg;base64,${p.avatar}` : ""}
-                  //     alt="product avatar"
-                  //   >
-                  //     {/*R*/}
-                  //   </Avatar>
-                  // }
-                  // action={
-                  //   <IconButton aria-label="settings">
-                  //     <MoreVertIcon />
-                  //   </IconButton>
-                  // }
-                  title={p.productName}
-                  subheader={`Ngày thêm: ${p.createdStamp.slice(0, 10)}`}
+              {/* <Link to={"/products/" + p.productId}> */}
+              <CardActionArea>
+                <CardMedia
+                  className={classes.media}
+                  image={
+                    p.avatar
+                      ? `data:image/jpeg;base64,${p.avatar}`
+                      : sampleAvatar
+                  }
+                  title="Contemplative Reptile"
                 />
-                {/* <img src={p.avatar} width="100%" height="100%" /> */}
-              </Link>
+              </CardActionArea>
+              <CardHeader
+                // avatar={
+                //   <Avatar
+                //     aria-label="recipe"
+                //     className={classes.avatar}
+                //     src={p.avatar ? `data:image/jpeg;base64,${p.avatar}` : ""}
+                //     alt="product avatar"
+                //   >
+                //     {/*R*/}
+                //   </Avatar>
+                // }
+                // action={
+                //   <IconButton aria-label="settings">
+                //     <MoreVertIcon />
+                //   </IconButton>
+                // }
+                title={p.productName}
+                subheader={`Ngày thêm: ${p.createdStamp.slice(0, 10)}`}
+              />
+              {/* <img src={p.avatar} width="100%" height="100%" /> */}
+              {/* </Link> */}
               <CardContent>
                 <Typography variant="body1">{p.description}</Typography>
                 {p.weight && (
                   <Typography>{p.weight + " " + p.uomDescription}</Typography>
                 )}
+                <Link to={"/products/" + p.productId}>Admin view</Link>
+                <br />
+                <Link to={"/products/user-view/" + p.productId}>User view</Link>
               </CardContent>
             </Card>
           </Grid>

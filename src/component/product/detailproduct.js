@@ -54,6 +54,13 @@ const priceColumns = [
   { title: "Giá", field: "price" },
 ];
 
+const saleColumns = [
+  { title: "Tên", field: "promoName" },
+  { title: "Từ ngày", field: "fromDate" },
+  { title: "Đến ngày", field: "thruDate" },
+  { title: "Phần trăm giảm", field: "promoPercentageDiscount" },
+];
+
 function ProductDetail(props) {
   const history = useHistory();
   const { productId } = useParams();
@@ -340,6 +347,33 @@ function ProductDetail(props) {
               Thiết lập giá
             </Button>
           </div>
+        </Grid>
+
+        <Grid item xs={12} className={classes.gridContainer}>
+          {data.productPromoModels && data.productPromoModels.length > 0 ? (
+            <>
+              <MaterialTable
+                title={"Chi tiết Sale"}
+                columns={saleColumns}
+                data={data.productPromoModels}
+                options={{ search: false }}
+              />
+              <div className={classes.buttonWrapper}>
+                <Button
+                  color="primary"
+                  variant="contained"
+                  onClick={() =>
+                    history.push(
+                      "/product-group/create-product-price/" + productId
+                    )
+                  }
+                  className={classes.button}
+                >
+                  Tạo chương trình Sale
+                </Button>
+              </div>
+            </>
+          ) : null}
         </Grid>
       </Grid>
     </>
