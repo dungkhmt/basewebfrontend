@@ -59,6 +59,7 @@ import TAssignmentDetail from "../views/Education/ClassManagement/Teacher/TAssig
 import TClassDetail from "../views/Education/ClassManagement/Teacher/TClassDetail";
 import TClassList from "../views/Education/ClassManagement/Teacher/TClassList";
 import TeacherViewDetailClass from "../views/Education/ClassManagement/Teacher/TeacherViewDetailClass";
+import TeacherViewLearningSessionDetail from "../views/Education/ClassManagement/Teacher/TeacherViewLearningSessionDetail";
 import NotFound from "../views/errors/NotFound";
 
 export default function EduRoute() {
@@ -139,6 +140,13 @@ export default function EduRoute() {
           path={`${path}/teacher/course/chapter/material/detail/:chapterMaterialId`}
           exact
         />
+
+        <Route
+          component={TeacherViewLearningSessionDetail}
+          path={`${path}/teacher/class/session/detail/:sessionId`}
+          exact
+        />
+
         <Route
           component={StudentCourseChapterMaterialDetail}
           path={`${path}/student/course/chapter/material/detail/:chapterMaterialId`}
@@ -161,11 +169,26 @@ export default function EduRoute() {
 
         <Route component={AssignmentList} path={`${path}/assignment`} />
 
-        <Route component={ResourceDomainList} path={`${path}/teach/resource-links/list`} />
-        <Route component={ResourceDomainCreate} path={`${path}/domain/create`} />
-        <Route component={ResourceCreate} path={`${path}/domains/:id/resource`} />
-        <Route component={ResourceDomainEdit} path={`${path}/domains/:id/edit`} />
-        <Route component={ResourceList} path={`${path}/domains/:id/resources`} />
+        <Route
+          component={ResourceDomainList}
+          path={`${path}/teach/resource-links/list`}
+        />
+        <Route
+          component={ResourceDomainCreate}
+          path={`${path}/domain/create`}
+        />
+        <Route
+          component={ResourceCreate}
+          path={`${path}/domains/:id/resource`}
+        />
+        <Route
+          component={ResourceDomainEdit}
+          path={`${path}/domains/:id/edit`}
+        />
+        <Route
+          component={ResourceList}
+          path={`${path}/domains/:id/resources`}
+        />
 
         <Route
           component={ClassTeacherAssignmentPlanList}
