@@ -30,6 +30,7 @@ if (
       token: localStorage.getItem("TOKEN"),
       isAuthenticated: true,
     },
+    cart: JSON.parse(localStorage.getItem("cart")) ?? [],
   };
 } else {
   startState = {
@@ -37,6 +38,7 @@ if (
       token: null,
       isAuthenticated: false,
     },
+    cart: JSON.parse(localStorage.getItem("cart")) ?? [],
   };
 }
 

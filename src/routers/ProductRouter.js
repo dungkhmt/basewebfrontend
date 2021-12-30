@@ -1,5 +1,6 @@
 import React from "react";
 import { Route, Switch, useRouteMatch } from "react-router";
+import Cart from "../component/product/Cart";
 import ProductDetail from "../component/product/detailproduct";
 import ProductCreate from "../component/product/ProductCreate";
 import ProductDetailUserView from "../component/product/ProductDetailUserView";
@@ -12,6 +13,7 @@ export default function ProductRoute() {
       <Switch>
         <Route component={ProductCreate} path={`${path}/create`} />
         <Route component={ProductList} path={`${path}/list`} />
+        <Route component={Cart} path={`${path}/cart`} />
         <Route
           component={ProductDetailUserView}
           path={`${path}/user-view/:productId`}

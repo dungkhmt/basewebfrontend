@@ -7,8 +7,10 @@ import { useDispatch, useSelector } from "react-redux";
 import { useHistory } from "react-router";
 import { useParams } from "react-router-dom";
 import Slider from "react-slick";
+import { toast } from "react-toastify";
 import "slick-carousel/slick/slick-theme.css";
 import "slick-carousel/slick/slick.css";
+import { UPDATE_PRODUCT } from "../../action/cart";
 import { authGet } from "../../api";
 import TableRowProductInfo from "./TableRowProductInfo";
 
@@ -176,7 +178,7 @@ function ProductDetailUserView(props) {
   });
   const [open, setOpen] = React.useState(false);
   const [allImagesToRender, setAllImagesToRender] = useState([]);
-  const { weight, description } = info;
+  const [quantity, setQuantity] = useState(0);
 
   useEffect(() => {
     authGet(dispatch, token, "/product/" + productId).then(
@@ -210,6 +212,33 @@ function ProductDetailUserView(props) {
 
   const handleClose = () => {
     setOpen(false);
+  };
+
+  const handleReduceQuantity = () => {
+    if (quantity === 0) {
+      return;
+    }
+    setQuantity((prev) => prev - 1);
+  };
+
+  const handleGainQuantity = () => {
+    if (quantity === data.weight) {
+      return;
+    }
+    setQuantity((prev) => prev + 1);
+  };
+
+  const handleAddProductToCart = () => {
+    dispatch({
+      type: UPDATE_PRODUCT,
+      payload: {
+        productId,
+        quantity,
+        price: 20000,
+        name: data.productName,
+      },
+    });
+    toast.success("Add product to cart successfully");
   };
 
   return (
@@ -276,17 +305,31 @@ function ProductDetailUserView(props) {
                 <div className={classes.productCountDiv}>
                   <span className={classes.productAmountTitle}>Số lượng</span>
                   <div className={classes.productCountWrapper}>
-                    <span className={classes.countButton}>-</span>
-                    <span className={classes.productCount}>1</span>
-                    <span className={classes.countButton}>+</span>
+                    <span
+                      className={classes.countButton}
+                      onClick={handleReduceQuantity}
+                    >
+                      -
+                    </span>
+                    <span className={classes.productCount}>{quantity}</span>
+                    <span
+                      className={classes.countButton}
+                      onClick={handleGainQuantity}
+                    >
+                      +
+                    </span>
                   </div>
                 </div>
                 <div className={classes.productAmount}>
                   Số lượng còn lại: {data.weight}
                 </div>
               </div>
-              <button type="button" className={classes.buyButton}>
-                Mua
+              <button
+                type="button"
+                className={classes.buyButton}
+                onClick={handleAddProductToCart}
+              >
+                Thêm vào giỏ hàng
               </button>
             </Grid>
           </Grid>

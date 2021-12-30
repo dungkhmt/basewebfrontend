@@ -5,7 +5,7 @@ import {
   Divider,
   ListItemAvatar,
   MenuItem,
-  Typography
+  Typography,
 } from "@material-ui/core";
 import ClickAwayListener from "@material-ui/core/ClickAwayListener";
 import { grey } from "@material-ui/core/colors";
@@ -130,7 +130,10 @@ export function AccountMenu(props) {
     history.push(`/userlogin/${user.partyId.get()}`);
   };
 
-  const handleLogout = () => dispatch(logout());
+  const handleLogout = () => {
+    localStorage.removeItem("cart");
+    dispatch(logout());
+  };
 
   const handleOpenFeedbackDialog = (event) => {
     handleClose(event);

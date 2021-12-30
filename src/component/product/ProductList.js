@@ -63,17 +63,15 @@ const sampleAvatar =
   "https://images.unsplash.com/photo-1581235720704-06d3acfcb36f?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=580&q=80";
 
 function ProductList(props) {
+  const classes = useStyles();
   const token = useSelector((state) => state.auth.token);
+  const cart = useSelector((state) => state.cart);
   const dispatch = useDispatch();
+
   const [productList, setProductList] = useState([]);
   const [page, setPage] = useState(0);
-  // const [listPageSize, setListPageSize] = useState([4, 8, 12]);
   const [pageSize, setPageSize] = useState(16);
-  // const [listImg, setListImg] = useState([]);
-  const classes = useStyles();
-  // const [totalPage, setTotalPage] = useState(1);
   const [totalElements, setTotalElements] = useState();
-  // const [change, setChange] = useState(false);
 
   useEffect(() => {
     authGet(
@@ -83,41 +81,8 @@ function ProductList(props) {
     ).then((response) => {
       setProductList(response.products);
       setTotalElements(response.totalElements);
-
-      // if (res.totalElements % pageSize !== 0) {
-      // setTotalPage(Math.floor(res.totalElements / pageSize));
-      // } else {
-      // setTotalPage(Math.floor(res.totalElements / pageSize - 1));
-      // }
     });
   }, [page, pageSize]);
-
-  // const handlePageSizeChange = event => {
-  //   if ("" + (event.target.value - pageSize) !== "0") {
-  //     setPageSize(event.target.value);
-  //     setPage(0);
-  //   }
-  // }
-  //
-  // const handleNavigateBeforeButton = () => {
-  //   if (page > 0) {
-  //     setPage(page - 1);
-  //   }
-  // }
-  //
-  // const handleNavigateNextButton = () => {
-  //   if (page < totalPage) {
-  //     setPage(page + 1);
-  //   }
-  // }
-  //
-  // const handleFirstPageButton = () => {
-  //   setPage(0);
-  // }
-  //
-  // const handleLastPageButton = () => {
-  //   setPage(totalPage);
-  // }
 
   return (
     <div>
@@ -133,7 +98,6 @@ function ProductList(props) {
             key={p.productId}
           >
             <Card className={classes.root}>
-              {/* <Link to={"/products/" + p.productId}> */}
               <CardActionArea>
                 <CardMedia
                   className={classes.media}
@@ -146,26 +110,9 @@ function ProductList(props) {
                 />
               </CardActionArea>
               <CardHeader
-                // avatar={
-                //   <Avatar
-                //     aria-label="recipe"
-                //     className={classes.avatar}
-                //     src={p.avatar ? `data:image/jpeg;base64,${p.avatar}` : ""}
-                //     alt="product avatar"
-                //   >
-                //     {/*R*/}
-                //   </Avatar>
-                // }
-                // action={
-                //   <IconButton aria-label="settings">
-                //     <MoreVertIcon />
-                //   </IconButton>
-                // }
                 title={p.productName}
                 subheader={`Ngày thêm: ${p.createdStamp.slice(0, 10)}`}
               />
-              {/* <img src={p.avatar} width="100%" height="100%" /> */}
-              {/* </Link> */}
               <CardContent>
                 <Typography variant="body1">{p.description}</Typography>
                 {p.weight && (
