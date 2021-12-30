@@ -7,6 +7,7 @@ import AddCircleIcon from "@material-ui/icons/AddCircle";
 import { Link, useHistory } from "react-router-dom";
 import { axiosGet, axiosPost } from "../../../api";
 import { tableIcons } from "../../../utils/iconutil";
+import { authGet } from "../../../api";
 import ModalCreate from "./ModalCreate";
 
 
@@ -24,8 +25,12 @@ function ResourceDomainList(props) {
   const [domainList, setDomainList] = useState([]);
   const [open,setOpen] = useState(false);
   // Functions
-  const getAllDomains = () => {
-    axiosGet(token, "/domains")
+  const getAllDomains = (query) => {
+    axiosGet(token, "/domains" +
+    "?size=" +
+    query.pageSize +
+    "&page=" +
+    query.page)
       .then((res) => {
         console.log("getAllDomains, domains ", res.data);
         setDomainList(res.data.Domains);
@@ -60,9 +65,9 @@ function ResourceDomainList(props) {
     });
   }
 
-  useEffect(() => {
-    getAllDomains();
-  }, []);
+  // useEffect(() => {
+  //   getAllDomains();
+  // }, []);
 
   return (
     <MuiThemeProvider>
@@ -71,9 +76,48 @@ function ResourceDomainList(props) {
             <MaterialTable
               title="Danh sách nguồn tham khảo"
               columns={columns}
-              data= {
-                domainList
-              }
+              data={(query) =>
+                new Promise((resolve, reject) => {
+                console.log(query);
+                let sortParam = "";
+                if (query.orderBy !== undefined) {
+                  sortParam =
+                    "&sort=" + query.orderBy.field + "," + query.orderDirection;
+                }
+                let filterParam = "";
+                if (query.filters.length > 0) {
+                  let filter = query.filters;
+                  filter.forEach((v) => {
+                    filterParam = v.column.field + "=" + v.value + "&";
+                  });
+                  filterParam =
+                    "&" + filterParam.substring(0, filterParam.length - 1);
+                }
+
+                authGet(
+                  dispatch,
+                  token,
+                  "/domains" +
+                    "?size=" +
+                    query.pageSize +
+                    "&page=" + query.page +
+                    sortParam +
+                    filterParam
+                ).then(
+                  (res) => {
+                    console.log(res)
+                    resolve({
+                      data: res.Domains,
+                      page: res.currentPagge,
+                      totalCount: res.totalItems,
+                    });
+                  },
+                  (error) => {
+                    console.log("error");
+                  }
+                );
+              })
+           }
               onRowClick = {(event,rowData) => {
                 console.log(rowData)
                 history.push({
@@ -96,7 +140,8 @@ function ResourceDomainList(props) {
                 },
               }}
               options={{
-                search: true,
+                filtering: true,
+                search: false,
                 actionsColumnIndex: -1,
               }}
               components={{

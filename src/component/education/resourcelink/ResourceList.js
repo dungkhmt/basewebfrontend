@@ -10,6 +10,7 @@ import { axiosGet, axiosPost } from "../../../api";
 import { tableIcons } from "../../../utils/iconutil";
 import {useLocation} from "react-router-dom";
 import { useParams } from "react-router-dom";
+import {authGet,authPost} from "../../../api"
 import ModalCreateResource from "./ModalCreateResource"
 function ResourceList(props) {
   const history = useHistory();
@@ -57,9 +58,9 @@ function ResourceList(props) {
   };
   
 
-  useEffect(() => {
-    getAllResources();
-  }, []);
+  // useEffect(() => {
+  //   getAllResources();
+  // }, []);
 
   return (
     <MuiThemeProvider>
@@ -68,7 +69,69 @@ function ResourceList(props) {
             <MaterialTable
               title="Danh sách link tham khao"
               columns={columns}
-              data={resourceList}
+              data={(query) =>
+                new Promise((resolve, reject) => {
+               console.log(query.search);
+                let sortParam = "";
+                if (query.orderBy !== undefined) {
+                  sortParam =
+                    "&sort=" + query.orderBy.field + "," + query.orderDirection;
+                }
+                let filterParam = "";
+                if (query.filters.length > 0) {
+                  console.log(query.filters.search)
+                  // let filter = query.filters;
+                  // filter.forEach((v) => {
+                  //   filterParam = v.column.field + "=" + v.value + "&";
+                  // });
+                  // filterParam =
+                  //   "&" + filterParam.substring(0, filterParam.length - 1);
+                }
+
+                if (query.search.length > 0) {
+                  authPost(
+                  dispatch,
+                  token,
+                  `/domains/${params.id}/resources`,
+                  {description:query.search}
+                ).then(
+                  (res) => {
+                   console.log(res)
+                    resolve({
+                      data: res,
+                    });
+                  },
+                  (error) => {
+                    console.log("error");
+                  }
+                );
+                }else {
+                  authGet(
+                  dispatch,
+                  token,
+                  `/domains/${params.id}/resources` +
+                    "?size=" +
+                    query.pageSize +
+                    "&page=" +
+                    query.page +
+                    sortParam 
+                ).then(
+                  (res) => {
+                   // console.log(res)
+                    resolve({
+                      data: res.content,
+                      page: res.number,
+                      totalCount: res.totalElements,
+                    });
+                  },
+                  (error) => {
+                    console.log("error");
+                  }
+                );
+                }
+                
+              })
+           }
               icons={tableIcons}
               localization={{
                 header: {
