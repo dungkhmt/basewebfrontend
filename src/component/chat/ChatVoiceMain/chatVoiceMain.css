@@ -1,0 +1,66 @@
+.voice-chat-main {
+  box-shadow: 0px 2px 1px -1px rgb(0 0 0 / 20%), 0px 1px 1px 0px rgb(0 0 0 / 14%), 0px 1px 3px 0px rgb(0 0 0 / 12%);
+  margin-top: 16px;
+  border-radius: 6px;
+  color: rgba(0, 0, 0, 0.87);
+  transition: box-shadow 300ms cubic-bezier(0.4, 0, 0.2, 1) 0ms;
+  background-color: #fff;
+}
+
+.title-meet {
+  color: rgba(0, 0, 0, 0.87);
+  margin: 4px 15px;
+  font-size: 1.5rem;
+  font-weight: 400;
+  line-height: 1.334;
+}
+
+.icon-meet {
+  width: 40px;
+  height: 40px;
+  display: flex;
+  font-size: 1.25rem;
+  align-items: center;
+  user-select: none;
+  border-radius: 50%;
+  justify-content: center;
+  color: #fafafa;
+  background: rgb(255, 87, 34);
+}
+
+.title-meet-row {
+  display: flex;
+  padding: 15px 15px;
+}
+
+.card-meet-row {
+  list-style-type: none;
+  display: grid;
+  grid-template-columns: max-content max-content auto;
+  font-size: 1.15rem;
+  margin: 0 30px;
+}
+
+.card-meet {
+  padding: 15px 25px 15px 25px;
+  border-bottom: 2px solid rgb(226, 226, 226);
+}
+
+.selected-card {
+  border-bottom: 2px solid #1976d2;
+  color: #1976d2;
+}
+
+.card-name {
+  cursor: pointer;
+}
+
+.card-name:hover {
+  color: #1976d2;
+}
+
+#button-meet-now {
+  position: absolute;
+  bottom: calc(20vh - 80px);
+  margin-left: 25px;
+}
