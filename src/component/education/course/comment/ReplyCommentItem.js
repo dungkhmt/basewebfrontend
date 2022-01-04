@@ -1,7 +1,6 @@
 import { makeStyles } from "@material-ui/core/styles";
 import {
   Avatar,
-  TextField,
   Button,
   Dialog,
   DialogTitle,
@@ -10,14 +9,10 @@ import {
   DialogActions,
   Menu,
   MenuItem,
-  IconButton,
   Input,
 } from '@material-ui/core';
-import MoreVertIcon from '@material-ui/icons/MoreVert';
 import { useState, useEffect } from "react";
-import { authPut, authDelete, authGet, authPost } from '../../../../api';
 import { useDispatch, useSelector } from "react-redux";
-import ReplyCommentItem from './ReplyCommentItem';
 const useStyles = makeStyles((theme) => ({
   root: {
     display: "flex",
@@ -47,30 +42,21 @@ const useStyles = makeStyles((theme) => ({
   }
 }));
 
-export default function CommentItem({
+export default function ReplyCommentItem({
   comment,
-  chapterMaterialId,
   deleteComment,
   editComment
 }){
-  const dispatch = useDispatch();
-	const token = useSelector((state) => state.auth.token);
   const [valueCommentMessage, setValueCommentMessage] = useState(comment.commentMessage)
-  const [replyCommentMessage, setReplyCommentMessage] = useState("");
   const [isEdittingComment, setIsEdittingComment] = useState(false)
-  const [isShowReplyInput, setIsShowReplyInput] = useState(false);
-  const [showReplyList, setShowReplyList] = useState(false);
-  const [listReplyComment, setListReplyComment] = useState([]);
-  const [flag, setFlag] = useState(false);
   const [anchorEl, setAnchorEl] = useState(null);
   const [openModal, setOpenModal] = useState(false);
   const open = Boolean(anchorEl);
   const classes = useStyles();
 
   useEffect(()=>{
-    setValueCommentMessage(comment.commentMessage);
-    onGetListReplyComment(comment.commentId);
-  }, [comment, flag])
+    setValueCommentMessage(comment.commentMessage)
+  }, [comment])
   const handleClickOpenModal = () => {
     setOpenModal(true);
   };
@@ -104,42 +90,6 @@ export default function CommentItem({
     editComment(comment.commentId, cmtContent);
     setIsEdittingComment(false);
   }
-
-  //post reply comment
-	const createReplyComment = async () => {
-    let body = {
-      commentMessage: replyCommentMessage,
-      eduCourseMaterialId: chapterMaterialId,
-      replyToCommentId: comment.commentId,
-    }
-
-    if(replyCommentMessage!==""){
-      let commentPost = await authPost(
-        dispatch,
-        token,
-        "/edu/class/comment",
-        body
-      );
-    }
-
-    // if flag change, rerender listcomment
-    setFlag(!flag)
-    setReplyCommentMessage("")
-  }
-
-  //get list reply of comment
-	const onGetListReplyComment = async (commentId) => {
-		if(showReplyList===false){
-			let res = await authGet(
-				dispatch,
-				token,
-				`/edu/class/reply-comment/${commentId}`
-			);
-			setListReplyComment(res);
-			console.log(listReplyComment)
-		}
-		setShowReplyList(!showReplyList)
-	}
 
   return(
     <div
@@ -201,20 +151,6 @@ export default function CommentItem({
         </div>
         <div>
           <Button
-            onClick={()=>setIsShowReplyInput(!isShowReplyInput)}
-            style={{color: '#bbb', fontSize: '10px'}}
-          >
-            Phản hồi
-          </Button>
-
-          <Button
-						onClick={()=>onGetListReplyComment(comment.commentId)}
-						style={{color: '#bbb', fontSize: '10px'}}
-					>
-						{showReplyList ? <span>&#x25B2; Ẩn phản hồi</span>:<span>&#x25BC; Xem các phản hổi</span>}
-					</Button>
-
-          <Button
             aria-label="more"
             id="long-button"
             aria-controls="long-menu"
@@ -226,35 +162,6 @@ export default function CommentItem({
             Khác
           </Button>
         </div>
-        <div className={classes.listComment}>
-          {showReplyList &&
-            <div>
-              {listReplyComment.length > 0 && listReplyComment.map(comment => (
-                <ReplyCommentItem
-                  comment={comment}
-                  editComment={editComment} 
-                  deleteComment={deleteComment}
-                  chapterMaterialId={chapterMaterialId}
-                  flag={flag}
-                  setFlag={setFlag}
-                />
-              ))}
-            </div>
-          }
-          {isShowReplyInput &&
-            <div>
-            <Input
-              value={replyCommentMessage}
-              onChange={(event)=>setReplyCommentMessage(event.target.value)}
-            />
-            <Button
-              onClick={createReplyComment}
-            >
-              Phản hồi
-            </Button>
-            </div>
-        }
-        </div>  
       </div>
       <Menu
         id="long-menu"

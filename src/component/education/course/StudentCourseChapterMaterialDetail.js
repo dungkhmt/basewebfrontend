@@ -3,7 +3,7 @@ import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useParams } from "react-router";
 import { Link, useHistory } from "react-router-dom";
-import { authGet, authPost } from "../../../api";
+import { authGet, authPost, authDelete, authPut } from "../../../api";
 import Player from "../../../utils/Player";
 import InputComment from "./comment/InputComment";
 import CommentItem from "./comment/CommentItem";
@@ -82,8 +82,19 @@ function StudentCourseChapterMaterialDetail() {
       })
     })
     setListComment(cmtOnVideo);
-    console.log(cmtOnVideo);
   }
+
+  async function getListMainCommentOnCourse(){
+    let res = await authGet(
+      dispatch,
+      token,
+      `/edu/class/main-comment/${chapterMaterialId}`
+    )
+
+    console.log(res);
+    setListComment(res);
+  }
+
   const commentOnCourse = async () => {
     let body = {
       commentMessage: comment.commentMessage,
@@ -102,27 +113,32 @@ function StudentCourseChapterMaterialDetail() {
 
     // if flag change, rerender listcomment
     setFlag(!flag)
-    //   console.log(commentPost);
-    //   if(commentPost.commentId){
-    //     if(!commentPost.replyToCommentId){
-    //       setListComment([
-    //         ...listComment,
-    //         commentPost
-    //       ])
-    //     } else {
-    //       let newArr = listComment;
+  }
 
-    //       newArr.map(cmt => {
-    //         if(cmt.commentId === commentPost.replyToCommentId){
-    //           cmt.listReplyComments.push(commentPost);
-    //         }
-    //       })
+  const deleteComment = async (cmtId) => {
+    let deletedCmt = await authDelete(
+      dispatch,
+      token,
+      `/edu/class/comment/${cmtId}`,
+      {}
+    );
 
-    //       setListComment(newArr);
-    //     }
-    //   }
-    //   console.log(listComment)
-    // }
+    setFlag(!flag)
+  }
+
+  const editComment = async (cmtId, commentMessage) => {
+    let body = {
+      commentMessage
+    }
+
+    let edittedComment = await authPut(
+      dispatch,
+      token,
+      `/edu/class/comment/${cmtId}`,
+      body
+    )
+
+    setFlag(!flag)
   }
 
   const getMessageFromInput = (message, replyToCommentId) => {
@@ -136,7 +152,8 @@ function StudentCourseChapterMaterialDetail() {
   useEffect(() => {
     getCourseChapterMaterialDetail();
     //setSourceId(chapterMaterial.sourceId);
-    getListCommentsEduCourseMaterial();
+    //getListCommentsEduCourseMaterial();
+    getListMainCommentOnCourse();
   }, [flag]);
 
   return (
@@ -160,8 +177,11 @@ function StudentCourseChapterMaterialDetail() {
         listComment.map(cmt => 
         <CommentItem
           comment={cmt}
+          chapterMaterialId={chapterMaterialId}
           getMessageFromInput={getMessageFromInput}
           commentOnCourse={commentOnCourse}
+          deleteComment={deleteComment}
+          editComment={editComment}
         />)
       }
     </Card>
