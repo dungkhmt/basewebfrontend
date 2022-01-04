@@ -1,0 +1,67 @@
+                <TextField
+                  id="mucDamBaoTuoi"
+                  label="Mức đảm bảo tưới"
+                  onChange={handleMucDamBaoTuoiChange}
+                  helperText="Mức đảm bảo tưới"
+                ></TextField>
+                <TextField
+                  id="dienTichTuoi"
+                  label="Diện tích tưới"
+                  onChange={handleDienTichTuoiChange}
+                  helperText="Diện tích tưới"
+                ></TextField>
+                <TextField
+                  id="mucNuocChet"
+                  label="Mực nước chết"
+                  onChange={handleMucNuocChetChange}
+                  helperText="Mực nước chết"
+                ></TextField>
+                <TextField
+                  id="mucNuocDangBinhThuong"
+                  label="Mực nước dâng bình thường"
+                  onChange={handleMucNuocDangBinhThuongChange}
+                  helperText="Mực nước dâng bình thường"
+                ></TextField>
+                <TextField
+                  id="mucNuocLuThietKe"
+                  label="Mực nước lũ thiết kế"
+                  onChange={handleMucNuocLuThietKeChange}
+                  helperText="Mực nước lũ thiết kế"
+                ></TextField>
+                <TextField
+                  id="mucNuocLuKiemTra"
+                  label="Mực nước lũ kiểm tra"
+                  onChange={handleMucNuocLuKiemTraChange}
+                  helperText="Mực nước lũ kiểm tra"
+                ></TextField>
+                <TextField
+                  id="dungTichToanBo"
+                  label="Dung tích toàn bộ"
+                  onChange={handleDungTichToanBoChange}
+                  helperText="Dung tích toàn bộ"
+                ></TextField>
+                <TextField
+                  id="dungTichHuuIch"
+                  label="Dung tích hữu ích"
+                  onChange={handleDungTichHuuIchChange}
+                  helperText="Dung tích hữu ích"
+                ></TextField>
+                <TextField
+                  id="dungTichChet"
+                  label="Dung tích chết"
+                  onChange={handleDungTichChetChange}
+                  helperText="Dung tích chết"
+                ></TextField>
+                <TextField
+                  id="luuLuongXaLuThietKe"
+                  label="Lưu lượng xả lũ thiết kế"
+                  onChange={handleLuuLuongXaLuThietKeChange}
+                  helperText="Lưu lượng xả lũ thiết kế"
+                ></TextField>
+                <TextField
+                  id="luuLuongXaLuKiemTra"
+                  label="Lưu lượng xả lũ kiểm tra"
+                  onChange={handleLuuLuongXaLuKiemTraChange}
+                  helperText="Lưu lượng xả lũ kiểm tra"
+                ></TextField>
+              
