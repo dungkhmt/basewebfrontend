@@ -1,0 +1,8 @@
+export const MESSAGE_TYPE = {
+    CHAT: "CHAT",
+    LEAVE: "LEAVE",
+    JOIN: "JOIN",
+    PRIVATE_CHAT: "PRIVATE_CHAT",
+    GROUP_CHAT: "GROUP_CHAT",
+    ERROR: "ERROR"
+}
