@@ -30,7 +30,6 @@ const cart = (state = initState, action) => {
       const index = state.findIndex(
         (item) => item.productId === action.payload.productId
       );
-      console.log("index", index);
       return [...state.slice(0, index), ...state.slice(index + 1)];
     }
 

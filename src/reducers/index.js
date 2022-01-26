@@ -3,6 +3,7 @@ import auth from "./auth";
 import cart from "./cart";
 import classReducer from "./classReducer";
 import error from "./error";
+import order from "./order";
 import screenSecurity from "./screen";
 
 export default combineReducers({
@@ -12,4 +13,5 @@ export default combineReducers({
   screenSecurity,
   class: classReducer,
   cart,
+  order,
 });

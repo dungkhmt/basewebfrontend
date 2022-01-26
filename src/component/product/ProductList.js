@@ -12,6 +12,7 @@ import "jspdf-autotable";
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
+import { SET_ORDER } from "../../action/order";
 import { authGet } from "../../api";
 
 function arrayBufferToBase64(buffer) {
@@ -65,7 +66,6 @@ const sampleAvatar =
 function ProductList(props) {
   const classes = useStyles();
   const token = useSelector((state) => state.auth.token);
-  const cart = useSelector((state) => state.cart);
   const dispatch = useDispatch();
 
   const [productList, setProductList] = useState([]);
@@ -74,14 +74,30 @@ function ProductList(props) {
   const [totalElements, setTotalElements] = useState();
 
   useEffect(() => {
-    authGet(
-      dispatch,
-      token,
-      "/get-list-product-with-define-page?size=" + pageSize + "&page=" + page
-    ).then((response) => {
-      setProductList(response.products);
-      setTotalElements(response.totalElements);
-    });
+    try {
+      authGet(
+        dispatch,
+        token,
+        "/get-list-product-with-define-page?size=" + pageSize + "&page=" + page
+      ).then((response) => {
+        setProductList(response.products);
+        setTotalElements(response.totalElements);
+      });
+    } catch (error) {
+      console.error("get list product:", error);
+    }
+
+    try {
+      authGet(dispatch, token, "/get-all-orders").then((response) => {
+        console.log("order", response);
+        dispatch({
+          type: SET_ORDER,
+          payload: response,
+        });
+      });
+    } catch (error) {
+      console.error("get list product:", error);
+    }
   }, [page, pageSize]);
 
   return (

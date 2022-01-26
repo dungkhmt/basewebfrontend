@@ -31,6 +31,7 @@ if (
       isAuthenticated: true,
     },
     cart: JSON.parse(localStorage.getItem("cart")) ?? [],
+    order: JSON.parse(localStorage.getItem("order")) ?? [],
   };
 } else {
   startState = {

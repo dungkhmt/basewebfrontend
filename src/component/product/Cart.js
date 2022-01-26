@@ -12,7 +12,10 @@ import DeleteIcon from "@material-ui/icons/Delete";
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
-import { REMOVE_PRODUCT, UPDATE_PRODUCT } from "../../action/cart";
+import { toast } from "react-toastify";
+import { BUY, REMOVE_PRODUCT, UPDATE_PRODUCT } from "../../action/cart";
+import { authPost } from "../../api";
+import { randomImageName } from "../../utils/FileUpload/covert.js";
 
 const useStyles = makeStyles((theme) => ({
   orderContainer: {
@@ -79,6 +82,7 @@ const Transition = React.forwardRef(function Transition(props, ref) {
 
 function Cart(props) {
   const classes = useStyles();
+  const token = useSelector((state) => state.auth.token);
   const cart = useSelector((state) => state.cart);
   const dispatch = useDispatch();
 
@@ -148,6 +152,21 @@ function Cart(props) {
 
   const handleBuy = async () => {
     // handle call buy product API here
+    const body = cart.map((item) => ({
+      orderId: randomImageName(),
+      productId: item.productId,
+      quantity: item.quantity,
+      storeId: "F0001", // fake storeId
+    }));
+    try {
+      await authPost(dispatch, token, "/create-order", body);
+      dispatch({
+        type: BUY,
+      });
+      toast.success("Create order successfully");
+    } catch (error) {
+      console.error("create order failed: ", error);
+    }
   };
 
   return (
@@ -236,7 +255,7 @@ function Cart(props) {
         </DialogTitle>
         <DialogActions>
           <Button onClick={handleDisagree} color="primary">
-            Thôi bạn ơi
+            Hủy
           </Button>
           <Button onClick={handleAgree} color="primary">
             Xóa luôn
