@@ -1,15 +1,15 @@
+import Button from "@material-ui/core/Button";
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useHistory, useParams } from "react-router-dom";
 import { authGet, authPost } from "../../api";
-import Button from "@material-ui/core/Button";
-import { textFieldNumberFormat } from "../../utils/FormUtils";
+import AlertDialog from "../../utils/AlertDialog";
 import {
   dateFromThru,
   getDateFromNowPlus,
   toFormattedDateTime,
 } from "../../utils/dateutils";
-import AlertDialog from "../../utils/AlertDialog";
+import { textFieldNumberFormat } from "../../utils/FormUtils";
 
 export default function ProductPriceCreate() {
   const dispatch = useDispatch();
@@ -44,7 +44,7 @@ export default function ProductPriceCreate() {
    */
 
   async function getProduct() {
-    let product = await authGet(dispatch, token, "/products/" + productId);
+    let product = await authGet(dispatch, token, "/product/" + productId);
     setProduct(product);
   }
 
@@ -59,12 +59,7 @@ export default function ProductPriceCreate() {
       thruDate: toFormattedDateTime(thruDate),
       price,
     };
-    let response = await authPost(
-      dispatch,
-      token,
-      "/set-product-price",
-      body
-    ).then((r) => r.json());
+    let response = await authPost(dispatch, token, "/set-product-price", body);
     if (response && response["productPriceId"]) {
       showAlert(
         "Thành công",

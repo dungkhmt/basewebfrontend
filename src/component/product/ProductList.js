@@ -1,20 +1,19 @@
+import { Grid } from "@material-ui/core";
+import Card from "@material-ui/core/Card";
+import CardActionArea from "@material-ui/core/CardActionArea";
+import CardContent from "@material-ui/core/CardContent";
+import CardHeader from "@material-ui/core/CardHeader";
+import CardMedia from "@material-ui/core/CardMedia";
+import { red } from "@material-ui/core/colors";
+import { makeStyles } from "@material-ui/core/styles";
+import TablePagination from "@material-ui/core/TablePagination";
+import Typography from "@material-ui/core/Typography";
 import "jspdf-autotable";
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
+import { SET_ORDER } from "../../action/order";
 import { authGet } from "../../api";
-import { Grid } from "@material-ui/core";
-import { makeStyles } from "@material-ui/core/styles";
-import Card from "@material-ui/core/Card";
-import CardHeader from "@material-ui/core/CardHeader";
-import CardContent from "@material-ui/core/CardContent";
-import Avatar from "@material-ui/core/Avatar";
-import IconButton from "@material-ui/core/IconButton";
-import Typography from "@material-ui/core/Typography";
-import { red } from "@material-ui/core/colors";
-import MoreVertIcon from "@material-ui/icons/MoreVert";
-import { Container } from "@material-ui/core/Container";
-import TablePagination from "@material-ui/core/TablePagination";
 
 function arrayBufferToBase64(buffer) {
   let binary = "";
@@ -28,8 +27,17 @@ function arrayBufferToBase64(buffer) {
 
 const useStyles = makeStyles((theme) => ({
   root: {
-    maxWidth: 345,
-    maxHeight: 345,
+    // maxWidth: 345,
+    // maxHeight: 345,
+  },
+  title: {
+    fontWeight: 600,
+    fontSize: "30px",
+    textAlign: "center",
+    marginBottom: "24px",
+  },
+  gridItem: {
+    marginBottom: "12px",
   },
   media: {
     height: 0,
@@ -47,91 +55,88 @@ const useStyles = makeStyles((theme) => ({
   },
   avatar: {
     backgroundColor: red[500],
+    width: "128px",
+    height: "128px",
   },
 }));
 
+const sampleAvatar =
+  "https://images.unsplash.com/photo-1581235720704-06d3acfcb36f?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=580&q=80";
+
 function ProductList(props) {
+  const classes = useStyles();
   const token = useSelector((state) => state.auth.token);
   const dispatch = useDispatch();
+
   const [productList, setProductList] = useState([]);
   const [page, setPage] = useState(0);
-  // const [listPageSize, setListPageSize] = useState([4, 8, 12]);
-  const [pageSize, setPageSize] = useState(4);
-  // const [listImg, setListImg] = useState([]);
-  const classes = useStyles();
-  // const [totalPage, setTotalPage] = useState(1);
+  const [pageSize, setPageSize] = useState(16);
   const [totalElements, setTotalElements] = useState();
-  // const [change, setChange] = useState(false);
 
   useEffect(() => {
-    authGet(
-      dispatch,
-      token,
-      "/get-list-product-with-define-page?size=" + pageSize + "&page=" + page
-    ).then((response) => {
-      setProductList(response.content);
-      setTotalElements(response["totalElements"]);
+    try {
+      authGet(
+        dispatch,
+        token,
+        "/get-list-product-with-define-page?size=" + pageSize + "&page=" + page
+      ).then((response) => {
+        setProductList(response.products);
+        setTotalElements(response.totalElements);
+      });
+    } catch (error) {
+      console.error("get list product:", error);
+    }
 
-      // if (res.totalElements % pageSize !== 0) {
-      // setTotalPage(Math.floor(res.totalElements / pageSize));
-      // } else {
-      // setTotalPage(Math.floor(res.totalElements / pageSize - 1));
-      // }
-    });
+    try {
+      authGet(dispatch, token, "/get-all-orders").then((response) => {
+        console.log("order", response);
+        dispatch({
+          type: SET_ORDER,
+          payload: response,
+        });
+      });
+    } catch (error) {
+      console.error("get list product:", error);
+    }
   }, [page, pageSize]);
-
-  // const handlePageSizeChange = event => {
-  //   if ("" + (event.target.value - pageSize) !== "0") {
-  //     setPageSize(event.target.value);
-  //     setPage(0);
-  //   }
-  // }
-  //
-  // const handleNavigateBeforeButton = () => {
-  //   if (page > 0) {
-  //     setPage(page - 1);
-  //   }
-  // }
-  //
-  // const handleNavigateNextButton = () => {
-  //   if (page < totalPage) {
-  //     setPage(page + 1);
-  //   }
-  // }
-  //
-  // const handleFirstPageButton = () => {
-  //   setPage(0);
-  // }
-  //
-  // const handleLastPageButton = () => {
-  //   setPage(totalPage);
-  // }
 
   return (
     <div>
-      <Grid container spacing={12}>
+      <h1 className={classes.title}>Tất cả sản phẩm</h1>
+      <Grid container spacing={4}>
         {productList.map((p) => (
-          <Grid item xs={3}>
+          <Grid
+            item
+            xs={12}
+            sm={6}
+            md={4}
+            className={classes.gridItem}
+            key={p.productId}
+          >
             <Card className={classes.root}>
-              <Link to={"/products/" + p.productId}>
-                <CardHeader
-                  avatar={
-                    <Avatar aria-label="recipe" className={classes.avatar}>
-                      {/*R*/}
-                    </Avatar>
+              <CardActionArea>
+                <CardMedia
+                  className={classes.media}
+                  image={
+                    p.avatar
+                      ? `data:image/jpeg;base64,${p.avatar}`
+                      : sampleAvatar
                   }
-                  action={
-                    <IconButton aria-label="settings">
-                      <MoreVertIcon />
-                    </IconButton>
-                  }
-                  title={p.productName}
-                  subheader={p.createdStamp}
+                  title="Contemplative Reptile"
                 />
-                <img src={p.avatar} width="100%" height="100%" />
-              </Link>
+              </CardActionArea>
+              <CardHeader
+                title={p.productName}
+                subheader={`Ngày thêm: ${p.createdStamp.slice(0, 10)}`}
+              />
               <CardContent>
-                <Typography>{p.weight + " " + p.uomDescription}</Typography>
+                <Typography variant="body1">{p.description}</Typography>
+                {p.weight && (
+                  <Typography>{p.weight + " " + p.uomDescription}</Typography>
+                )}
+                <Link to={"/products/" + p.productId}>Admin view</Link>
+                <br />
+                <Link to={"/products/user-view/" + p.productId}>User view</Link>
               </CardContent>
             </Card>
           </Grid>

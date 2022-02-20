@@ -1,8 +1,10 @@
 import { combineReducers } from "redux";
 import auth from "./auth";
-import error from "./error";
-import screenSecurity from "./screen";
+import cart from "./cart";
 import classReducer from "./classReducer";
+import error from "./error";
+import order from "./order";
+import screenSecurity from "./screen";
 
 export default combineReducers({
   auth,
@@ -10,4 +12,6 @@ export default combineReducers({
   error,
   screenSecurity,
   class: classReducer,
+  cart,
+  order,
 });

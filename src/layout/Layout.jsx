@@ -4,10 +4,13 @@ import { makeStyles } from "@material-ui/core/styles";
 import SvgIcon from "@material-ui/core/SvgIcon";
 import Toolbar from "@material-ui/core/Toolbar";
 import Typography from "@material-ui/core/Typography";
+import DescriptionIcon from "@material-ui/icons/Description";
 import { default as MenuIcon } from "@material-ui/icons/Menu";
+import ShoppingCartIcon from "@material-ui/icons/ShoppingCart";
 import clsx from "clsx";
 import React, { useState } from "react";
 import { useSelector } from "react-redux";
+import { Link, useLocation } from "react-router-dom";
 import { ReactComponent as Logo } from "../assets/icons/logo.svg";
 import bgImage from "../assets/img/sidebar-2.webp";
 import AccountButton from "./account/AccountButton";
@@ -45,6 +48,36 @@ const useStyles = makeStyles((theme) => ({
   },
   grow: {
     flexGrow: 1,
+  },
+  productLinkWrapper: {
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "space-between",
+  },
+  cart: {
+    position: "relative",
+    cursor: "pointer",
+    marginRight: "8px",
+  },
+  cartIcon: {
+    width: "44px",
+    height: "44px",
+  },
+  cartBadge: {
+    position: "absolute",
+    top: "-6px",
+    right: "-6px",
+    width: "28px",
+    height: "28px",
+    borderRadius: "50%",
+    backgroundColor: "red",
+    color: "white",
+    padding: "2px",
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+    fontSize: "15px",
+    fontWeight: "bold",
   },
   toolbar: {
     display: "flex",
@@ -99,6 +132,9 @@ function Layout(props) {
   const { children } = props;
   const classes = useStyles();
   const isAuthenticated = useSelector((state) => state.auth.isAuthenticated);
+  const cart = useSelector((state) => state.cart);
+  const order = useSelector((state) => state.order);
+  const location = useLocation();
 
   const [open, setOpen] = React.useState(true);
   const [image] = useState(bgImage);
@@ -120,7 +156,7 @@ function Layout(props) {
           </IconButton>
           {open ? (
             <Typography variant="h6" noWrap>
-              
+
               <IconButton
                 color="inherit"
                 aria-label="open drawer"
@@ -153,6 +189,23 @@ function Layout(props) {
 
           {/* use this div tag to push the icons to the right */}
           <div className={classes.grow}></div>
+          {location.pathname.startsWith("/products") ? (
+            <div className={classes.productLinkWrapper}>
+              <Link to="/products/cart">
+                <div className={classes.cart}>
+                  <ShoppingCartIcon className={classes.cartIcon} />
+                  <span className={classes.cartBadge}>{cart.length}</span>
+                </div>
+              </Link>
+              <Link to="/products/order">
+                <div className={classes.cart}>
+                  <DescriptionIcon className={classes.cartIcon} />
+                  <span className={classes.cartBadge}>{order.length}</span>
+                </div>
+              </Link>
+            </div>
+          ) : null}
+
           <div className={classes.sectionDesktop}>
             {isAuthenticated && (
               <>

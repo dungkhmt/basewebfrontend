@@ -4,12 +4,11 @@ import MenuItem from "@material-ui/core/MenuItem";
 import { makeStyles } from "@material-ui/core/styles";
 import TextField from "@material-ui/core/TextField";
 import Typography from "@material-ui/core/Typography";
+import { DropzoneArea } from "material-ui-dropzone";
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useHistory } from "react-router-dom";
-import { failed } from "../../action";
 import { authPost, authPostMultiPart } from "../../api";
-import StyledDropzone from "../common/StyleDropDzone";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -33,6 +32,8 @@ function ProductCreate(props) {
   const token = useSelector((state) => state.auth.token);
   const dispatch = useDispatch();
   const history = useHistory();
+  const classes = useStyles();
+
   const [productName, setProductName] = useState();
   const [uoms, setUoms] = useState([]);
   const [isRequesting, setIsRequesting] = useState(false);
@@ -40,8 +41,13 @@ function ProductCreate(props) {
   const [productTypes, setProductTypes] = useState([]);
   const [type, setType] = useState();
   const [productId, setProductId] = useState();
-  const [contentIds, setContentIds] = useState([]);
-  const classes = useStyles();
+  // const [contentIds, setContentIds] = useState([]);
+
+  const [attachmentFiles, setAttachmentFiles] = useState([]);
+
+  const handleAttachmentFiles = (files) => {
+    setAttachmentFiles(files);
+  };
 
   const handleProductIdChange = (event) => {
     setProductId(event.target.value);
@@ -58,111 +64,152 @@ function ProductCreate(props) {
   const handleQuantityUomIdChange = (event) => {
     setQuantityUomId(event.target.value);
   };
-  const uploadFile = async (files) => {
-    let contentIds = [];
-    for (const file of files) {
-      const data = new FormData();
-      data.append("file", file);
-      await authPostMultiPart(dispatch, token, "/content/", data)
-        .then(
-          (res) => {
-            console.log(res);
-            //setIsRequesting(false);
-            if (res.status === 401) {
-              dispatch(failed());
-              throw Error("Unauthorized");
-            } else if (res.status === 201) {
-              return res.text();
-            }
-          },
-          (error) => {
-            console.log(error);
-          }
-        )
-        .then((res) => {
-          contentIds.push(res);
-        });
-    }
-    setContentIds(contentIds);
-  };
-  const handleSubmit = (event) => {
+  // const uploadFile = async (files) => {
+  //   let contentIds = [];
+  //   for (const file of files) {
+  //     const data = new FormData();
+  //     data.append("file", file);
+  //     await authPostMultiPart(dispatch, token, "/content/", data)
+  //       .then(
+  //         (res) => {
+  //           console.log(res);
+  //           //setIsRequesting(false);
+  //           if (res.status === 401) {
+  //             dispatch(failed());
+  //             throw Error("Unauthorized");
+  //           } else if (res.status === 201) {
+  //             return res.text();
+  //           }
+  //         },
+  //         (error) => {
+  //           console.log(error);
+  //         }
+  //       )
+  //       .then((res) => {
+  //         contentIds.push(res);
+  //       });
+  //   }
+  //   setContentIds(contentIds);
+  // };
+  const handleSubmit = async (event) => {
+    const fileId = attachmentFiles.map((file) => file.name);
+
     const data = {
       productId: productId,
-      quantityUomId: quantityUomId,
-      type: type,
       productName: productName,
-      content: contentIds,
+      uomId: quantityUomId,
+      productType: type,
+      fileId, // images
     };
-    setIsRequesting(true);
-    authPost(dispatch, token, "/add-new-product-to-db", data)
-      .then(
-        (res) => {
-          console.log(res);
-          setIsRequesting(false);
-          if (res.status === 401) {
-            dispatch(failed());
-            throw Error("Unauthorized");
-          } else if (res.status === 409) {
-            alert("Id exits!!");
-          } else if (res.status === 201) {
-            return res.text();
-          }
-        },
-        (error) => {
-          console.log(error);
-        }
-      )
-      .then((res) => {
-        history.push("/products/" + res);
-      });
+
+    let formData = new FormData();
+    formData.append("CreateProductInputModel", JSON.stringify(data));
+    for (const file of attachmentFiles) {
+      formData.append("files", file);
+    }
+
+    // setIsRequesting(true);
+    try {
+      await authPostMultiPart(
+        dispatch,
+        token,
+        "/add-new-product-to-db",
+        formData
+      );
+    } catch (error) {
+      console.error("error create new product: ", error);
+    }
+    // .then(
+    //   (res) => {
+    //     console.log(res);
+    //     setIsRequesting(false);
+    //     if (res.status === 401) {
+    //       dispatch(failed());
+    //       throw Error("Unauthorized");
+    //     } else if (res.status === 409) {
+    //       alert("Id exits!!");
+    //     } else if (res.status === 201) {
+    //       return res.text();
+    //     }
+    //   },
+    //   (error) => {
+    //     console.log(error);
+    //   }
+    // )
+    // .then((res) => {
+    //   history.push("/products/" + res);
+    // });
+    history.push("/products/" + productId);
     event.preventDefault();
   };
 
-  useEffect(() => {
-    authPost(dispatch, token, "/get-list-uoms", { statusId: null })
-      .then(
-        (res) => {
-          console.log(res);
-          setIsRequesting(false);
-          if (res.status === 401) {
-            dispatch(failed());
-            throw Error("Unauthorized");
-          } else if (res.status === 200) {
-            return res.json();
-          }
-        },
-        (error) => {
-          console.log(error);
-        }
-      )
-      .then((res) => {
-        console.log("got uoms", res);
-        setUoms(res.uoms);
-        console.log(uoms);
-      });
-  }, []);
+  // useEffect(() => {
+  // authPost(dispatch, token, "/get-list-uoms", { statusId: null }).then(
+  //   (res) => {
+  //     console.log(res);
+  //     setIsRequesting(false);
+  //     if (res.status === 401) {
+  //       dispatch(failed());
+  //       throw Error("Unauthorized");
+  //     } else if (res.status === 200) {
+  //       setUoms(res.uoms);
+  //     }
+  //   },
+  //   (error) => {
+  //     console.log(error);
+  //   }
+  // );
+  // .then((res) => {
+  //   console.log("got uoms", res);
+  //   setUoms(res.uoms);
+  //   console.log(uoms);
+  // });
+  // }, []);
 
   useEffect(() => {
-    authPost(dispatch, token, "/get-list-product-type", { statusId: null })
-      .then(
-        (res) => {
-          console.log(res);
-          setIsRequesting(false);
-          if (res.status === 401) {
-            dispatch(failed());
-            throw Error("Unauthorized");
-          } else if (res.status === 200) {
-            return res.json();
-          }
-        },
-        (error) => {
-          console.log(error);
-        }
-      )
-      .then((res) => {
-        console.log("get product type", res);
-        setProductTypes(res.productTypes);
-      });
+    (async () => {
+      try {
+        const listProductTypeRes = await authPost(
+          dispatch,
+          token,
+          "/get-list-product-type",
+          { statusId: null }
+        );
+        setProductTypes(listProductTypeRes.productTypes);
+      } catch (error) {
+        console.error("get list product type error: ", error);
+      }
+      try {
+        const listUomsRes = await authPost(dispatch, token, "/get-list-uoms", {
+          statusId: null,
+        });
+        setUoms(listUomsRes.uoms);
+      } catch (error) {
+        console.error("get list uoms error: ", error);
+      }
+    })();
+    // authPost(dispatch, token, "/get-list-product-type", {
+    //   statusId: null,
+    // }).then(
+    //   (res) => {
+    //     console.log(res);
+    //     setIsRequesting(false);
+    //     if (res.status === 401) {
+    //       dispatch(failed());
+    //       throw Error("Unauthorized");
+    //     } else if (res.status === 200) {
+    //       console.log("res2", res);
+    //       setProductTypes(res.productTypes);
+    //     }
+    //   },
+    //   (error) => {
+    //     console.log(error);
+    //   }
+    // );
+    // .then((res) => {
+    //   console.log("get product type", res);
+    //   setProductTypes(res.productTypes);
+    // });
   }, []);
 
   return (
@@ -172,30 +219,30 @@ function ProductCreate(props) {
           <Grid item xs={12}>
             <Paper className={classes.paper}>
               <Typography variant="h5" component="h2">
-                Create Product
+                Tạo sản phẩm mới
               </Typography>
 
               <TextField
                 fullWidth
                 id="id"
-                label="Product Code"
+                label="Mã sản phẩm"
                 onChange={handleProductIdChange}
-                helperText="Push some characters identify yours product"
+                helperText="Nhập mã sản phẩm"
                 required
               ></TextField>
 
               <TextField
                 id="productName"
-                label="product name"
+                label="Tên sản phẩm"
                 onChange={handleProductNameChange}
-                helperText="product name"
+                helperText="Tên sản phẩm"
               ></TextField>
               <TextField
                 id="select-quantityUomId"
                 select
-                label="Select"
+                label="Lựa chọn"
                 onChange={handleQuantityUomIdChange}
-                helperText="Select-quantityUomId"
+                helperText="Chọn đơn vị đo sản phẩm"
               >
                 {uoms.map((uom) => (
                   <MenuItem key={uom.uomId} value={uom.uomId}>
@@ -206,9 +253,9 @@ function ProductCreate(props) {
               <TextField
                 id="select-type"
                 select
-                label="select"
+                label="Lựa chọn"
                 onChange={handleTypeChange}
-                helperText={"select-type"}
+                helperText={"chọn loại sản phẩm"}
               >
                 {productTypes.map((productType) => (
                   <MenuItem
@@ -224,10 +271,38 @@ function ProductCreate(props) {
           <Grid item xs={12}>
             <Paper className={classes.paper}>
               <Typography variant="h6" component="h2">
-                Upload Image
+                Tải ảnh đại diện cho sản phẩm (chỉ 1 ảnh)
               </Typography>
 
-              <StyledDropzone uploadFile={uploadFile} />
+              {/* <StyledDropzone uploadFile={uploadFile} /> */}
+              <DropzoneArea
+                dropzoneClass={classes.dropZone}
+                filesLimit={1} // only 1 image for avatar
+                showPreviews={true}
+                showPreviewsInDropzone={false}
+                useChipsForPreview
+                dropzoneText="Kéo và thả tệp vào đây hoặc nhấn để chọn tệp"
+                previewText="Xem trước:"
+                previewChipProps={{
+                  variant: "outlined",
+                  color: "primary",
+                  size: "medium",
+                }}
+                getFileAddedMessage={(fileName) =>
+                  `Tệp ${fileName} tải lên thành công`
+                }
+                getFileRemovedMessage={(fileName) =>
+                  `Tệp ${fileName} đã loại bỏ`
+                }
+                getFileLimitExceedMessage={(filesLimit) =>
+                  `Vượt quá số lượng tệp tối đa được cho phép. Chỉ được phép tải lên tối đa ${filesLimit} tệp.`
+                }
+                alertSnackbarProps={{
+                  anchorOrigin: { vertical: "bottom", horizontal: "right" },
+                  autoHideDuration: 1800,
+                }}
+                onChange={(files) => handleAttachmentFiles(files)}
+              ></DropzoneArea>
             </Paper>
           </Grid>
         </Grid>
