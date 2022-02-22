@@ -12,6 +12,7 @@ import {
 } from '@material-ui/core';
 import { useDispatch, useSelector } from "react-redux";
 import { useState } from "react";
+import { toFormattedDateTime } from "../../../../../utils/dateutils";
 
 const useStyles = makeStyles((theme) => ({
   commentItem: {
@@ -30,7 +31,7 @@ const useStyles = makeStyles((theme) => ({
 	},
 }));
 
-export default function ReplyCommentItem({comment, flag, setFlag}){
+export default function ReplyCommentItem({comment, flag, setFlag, currentUser}){
 	const dispatch = useDispatch();
 	const token = useSelector((state) => state.auth.token);
 	const [isEditting, setIsEditting] = useState(false)
@@ -118,7 +119,7 @@ export default function ReplyCommentItem({comment, flag, setFlag}){
 			<div className={classes.commentContent}>
 				<div>
 					<b>{comment.fullNameOfCreator}</b>&nbsp;
-					<span style={{marginLeft: '5px'}}>2021/12/22 22:05</span>
+					<span style={{marginLeft: '5px'}}>{toFormattedDateTime(comment.createdStamp)}</span>
 				</div>
 				<div>
 					{
@@ -138,20 +139,22 @@ export default function ReplyCommentItem({comment, flag, setFlag}){
 						)
 					}
 				</div>
-				<div>
-					<Button
-						className={classes.commentActionBtn}
-						onClick={()=>setIsEditting(!isEditting)}
-					>
-						Chỉnh sửa
-					</Button>
-					<Button
-						className={classes.commentActionBtn}
-						onClick={handleClickOpenModal}
-					>
-						Xoa
-					</Button>
-				</div>
+				{currentUser.user === comment.createdByUserLoginId &&
+					<div>
+						<Button
+							className={classes.commentActionBtn}
+							onClick={()=>setIsEditting(!isEditting)}
+						>
+							Chỉnh sửa
+						</Button>
+						<Button
+							className={classes.commentActionBtn}
+							onClick={handleClickOpenModal}
+						>
+							Xóa
+						</Button>
+					</div>
+				}
 			</div>
     	</div>
     </div>

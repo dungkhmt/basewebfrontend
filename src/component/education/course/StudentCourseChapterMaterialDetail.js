@@ -1,4 +1,4 @@
-import { Card, CardContent } from "@material-ui/core/";
+import { Card, CardContent, Avatar, TextField, Button } from "@material-ui/core/";
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useParams } from "react-router";
@@ -20,11 +20,32 @@ const useStyles = makeStyles((theme) => ({
     textAlign: 'center',
     fontSize: '16px',
     fontWeight: 'bold'
+  },
+
+  inputComment: {
+    display: "flex",
+    flexDirection: "row",
+    alignItems: 'center',
+  },
+  growItem: {
+    flexGrow: 1,
+    marginLeft: theme.spacing(1)
+  },
+  btnComment: {
+    background: '#1976d2',
+    color: 'white',
+    marginLeft: theme.spacing(1),
+    '&:hover': {
+      backgroundColor: '#ccc',
+      color: '#1976d2',
   }
+  },
 }));
 
 function StudentCourseChapterMaterialDetail() {
-  const [comment, setComment] = useState("");
+  const [comment, setComment] = useState({
+    commentMessage: "",
+  });
   const [flag, setFlag] = useState(false);
   const [listComment, setListComment] = useState([]);
   const params = useParams();
@@ -37,8 +58,8 @@ function StudentCourseChapterMaterialDetail() {
   const [sourceId, setSourceId] = useState(null);
   const [chapterId, setChapterId] = useState(null);
   const [chapterName, setChapterName] = useState(null);
+  const [currentUser, setCurrentUser] = useState({});
   const classes = useStyles();
-
 
   async function getCourseChapterMaterialDetail() {
     // let res = await authGet(
@@ -97,22 +118,26 @@ function StudentCourseChapterMaterialDetail() {
 
   const commentOnCourse = async () => {
     let body = {
-      commentMessage: comment.commentMessage,
+      commentMessage: comment.commentMessage.trim(),
       eduCourseMaterialId: chapterMaterialId,
       replyToCommentId: comment.replyToCommentId,
     }
 
-    if(comment.commentMessage!==""){
+    if(comment.commentMessage.trim().length!== 0){
       let commentPost = await authPost(
         dispatch,
         token,
         "/edu/class/comment",
         body
       );
+      setComment({
+        ...comment,
+        commentMessage: ""
+      })
+  
+      // if flag change, rerender listcomment
+      setFlag(!flag)
     }
-
-    // if flag change, rerender listcomment
-    setFlag(!flag)
   }
 
   const deleteComment = async (cmtId) => {
@@ -128,17 +153,19 @@ function StudentCourseChapterMaterialDetail() {
 
   const editComment = async (cmtId, commentMessage) => {
     let body = {
-      commentMessage
+      commentMessage: commentMessage.trim(),
     }
 
-    let edittedComment = await authPut(
-      dispatch,
-      token,
-      `/edu/class/comment/${cmtId}`,
-      body
-    )
-
-    setFlag(!flag)
+    if(commentMessage.trim().length !== 0){
+      let edittedComment = await authPut(
+        dispatch,
+        token,
+        `/edu/class/comment/${cmtId}`,
+        body
+      )
+  
+      setFlag(!flag)
+    }
   }
 
   const getMessageFromInput = (message, replyToCommentId) => {
@@ -149,11 +176,25 @@ function StudentCourseChapterMaterialDetail() {
     })
   }
 
+  // get data of current user login
+  const getCurrentUser = async () => {
+    let user = await authGet(
+      dispatch,
+      token,
+      `/my-account`
+    );
+
+    setCurrentUser({
+      ...user
+    })
+  }
+
   useEffect(() => {
     getCourseChapterMaterialDetail();
     //setSourceId(chapterMaterial.sourceId);
     //getListCommentsEduCourseMaterial();
     getListMainCommentOnCourse();
+    getCurrentUser();
   }, [flag]);
 
   return (
@@ -168,10 +209,26 @@ function StudentCourseChapterMaterialDetail() {
       </CardContent>
     </Card>
     <Card className={classes.root}>
-      <InputComment
-        getMessageFromInput={getMessageFromInput}
-        commentOnCourse={commentOnCourse}
-      />
+      <div className={classes.inputComment}>
+        <Avatar>
+          U
+        </Avatar>
+        <TextField
+          className={classes.growItem}
+          placeholder="Viết gì đó về video này"
+          value={comment.commentMessage}
+          onChange={(event)=>{setComment({
+            ...comment,
+            commentMessage: event.target.value
+          })}}
+        />
+        <Button
+          className={classes.btnComment}
+          onClick={commentOnCourse}
+        >
+          Bình luận
+        </Button>
+      </div>
       {listComment.length=== 0 &&<div className={classes.noComment}>Video này chưa có bình luận nào</div>}
       {listComment.length >= 0 &&
         listComment.map(cmt => 
@@ -182,6 +239,7 @@ function StudentCourseChapterMaterialDetail() {
           commentOnCourse={commentOnCourse}
           deleteComment={deleteComment}
           editComment={editComment}
+          currentUser={currentUser}
         />)
       }
     </Card>

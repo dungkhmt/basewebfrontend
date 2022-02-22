@@ -10,6 +10,7 @@ import {
   DialogActions,
   Input,
 } from '@material-ui/core';
+import { toFormattedDateTime } from "../../../../../utils/dateutils";
 import { useDispatch, useSelector } from "react-redux";
 import { useState, useEffect } from "react";
 import ReplyCommentItem from "./ReplyCommentItem";
@@ -34,7 +35,12 @@ const useStyles = makeStyles((theme) => ({
 	}
 }));
 
-export default function CommentItem({comment, commentFlag, setCommentFlag}){
+export default function CommentItem({
+	comment,
+	commentFlag,
+	setCommentFlag,
+	currentUser
+}){
 	const dispatch = useDispatch();
 	const token = useSelector((state) => state.auth.token);
 	const [isEditting, setIsEditting] = useState(false)
@@ -101,17 +107,18 @@ export default function CommentItem({comment, commentFlag, setCommentFlag}){
 	//edit comment
 	const editComment = async () => {
 		let body = {
-			commentText: commentTextEdit
+			commentText: commentTextEdit.trim()
 		}
 	
-		let edittedComment = await authPut(
-		  dispatch,
-		  token,
-		  `/edit-comment-on-quiz/${comment.commentId}`,
-		  body
-		)
-
-		setCommentFlag(!commentFlag);
+		if(commentTextEdit.trim().length !== 0){
+			let edittedComment = await authPut(
+			  dispatch,
+			  token,
+			  `/edit-comment-on-quiz/${comment.commentId}`,
+			  body
+			)
+			setCommentFlag(!commentFlag);
+		}
 	}
 
 	//delete comment
@@ -130,21 +137,21 @@ export default function CommentItem({comment, commentFlag, setCommentFlag}){
 	//post reply comment
 	const createComment = async () => {
 		let body = {
-			comment: replyCommentText,
+			comment: replyCommentText.trim(),
 			questionId: comment.questionId,
 			replyToCommentId: comment.commentId,
 		}
 	  
-		if(comment.commentMessage!==""){
+		if(replyCommentText.trim().length !== 0){
 			let commentPost = await authPost(
 			  dispatch,
 			  token,
 			  "/post-comment-on-quiz",
 			  body
 			);
+			setReplyCommentText("")
+			setFlag(!flag)
 		}
-		setReplyCommentText("")
-		setFlag(!flag)
 	}
 
   return (
@@ -177,7 +184,7 @@ export default function CommentItem({comment, commentFlag, setCommentFlag}){
 			<div className={classes.commentContent}>
 				<div>
 					<b>{comment.fullNameOfCreator}</b>&nbsp;
-					<span style={{marginLeft: '5px'}}>2021/12/22 22:05</span>
+					<span style={{marginLeft: '5px'}}>{toFormattedDateTime(comment.createdStamp)}</span>
 				</div>
 				<div>
 					{
@@ -210,18 +217,24 @@ export default function CommentItem({comment, commentFlag, setCommentFlag}){
 					>
 						{isShowReplyComment ? <span>&#x25B2; Ẩn phản hồi</span>:<span>&#x25BC; Xem các phản hổi</span>}
 					</Button>
-					<Button
-						className={classes.commentActionBtn}
-						onClick={()=>setIsEditting(!isEditting)}
-					>
-						Chỉnh sửa
-					</Button>
-					<Button
-						className={classes.commentActionBtn}
-						onClick={handleClickOpenModal}
-					>
-						Xóa
-					</Button>
+					{currentUser.user === comment.createdByUserLoginId &&
+					(
+						<span>
+							<Button
+								className={classes.commentActionBtn}
+								onClick={()=>setIsEditting(!isEditting)}
+							>
+								Chỉnh sửa
+							</Button>
+							<Button
+								className={classes.commentActionBtn}
+								onClick={handleClickOpenModal}
+							>
+								Xóa
+							</Button>
+						</span>
+					)
+					}
 				</div>
 			</div>
     	</div>
@@ -229,7 +242,12 @@ export default function CommentItem({comment, commentFlag, setCommentFlag}){
 			{isShowReplyComment &&
 				<div>
 					{listReplyComment.length > 0 && listReplyComment.map(comment => (
-						<ReplyCommentItem comment={comment} flag={flag} setFlag={setFlag}/>
+						<ReplyCommentItem
+							comment={comment}
+							flag={flag}
+							setFlag={setFlag}
+							currentUser={currentUser}
+						/>
 					))}
 				</div>
 			}

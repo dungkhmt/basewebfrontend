@@ -1,7 +1,6 @@
 import { makeStyles } from "@material-ui/core/styles";
 import {
   Avatar,
-  TextField,
   Button,
   Dialog,
   DialogTitle,
@@ -10,7 +9,6 @@ import {
   DialogActions,
   Menu,
   MenuItem,
-  IconButton,
   Input,
 } from '@material-ui/core';
 import MoreVertIcon from '@material-ui/icons/MoreVert';
@@ -18,6 +16,7 @@ import { useState, useEffect } from "react";
 import { authPut, authDelete, authGet, authPost } from '../../../../api';
 import { useDispatch, useSelector } from "react-redux";
 import ReplyCommentItem from './ReplyCommentItem';
+import { toFormattedDateTime } from "../../../../utils/dateutils";
 const useStyles = makeStyles((theme) => ({
   root: {
     display: "flex",
@@ -51,7 +50,8 @@ export default function CommentItem({
   comment,
   chapterMaterialId,
   deleteComment,
-  editComment
+  editComment,
+  currentUser
 }){
   const dispatch = useDispatch();
 	const token = useSelector((state) => state.auth.token);
@@ -108,12 +108,12 @@ export default function CommentItem({
   //post reply comment
 	const createReplyComment = async () => {
     let body = {
-      commentMessage: replyCommentMessage,
+      commentMessage: replyCommentMessage.trim(),
       eduCourseMaterialId: chapterMaterialId,
       replyToCommentId: comment.commentId,
     }
 
-    if(replyCommentMessage!==""){
+    if(replyCommentMessage.trim().length !== 0){
       let commentPost = await authPost(
         dispatch,
         token,
@@ -129,16 +129,12 @@ export default function CommentItem({
 
   //get list reply of comment
 	const onGetListReplyComment = async (commentId) => {
-		if(showReplyList===false){
 			let res = await authGet(
 				dispatch,
 				token,
 				`/edu/class/reply-comment/${commentId}`
 			);
 			setListReplyComment(res);
-			console.log(listReplyComment)
-		}
-		setShowReplyList(!showReplyList)
 	}
 
   return(
@@ -174,6 +170,8 @@ export default function CommentItem({
       </Avatar>
       <div>
         <b>{comment.fullNameOfCreator}</b>
+        &nbsp;
+        <span>{toFormattedDateTime(comment.createdStamp)}</span>
         <div
           className={classes.growItem}
         >
@@ -208,35 +206,42 @@ export default function CommentItem({
           </Button>
 
           <Button
-						onClick={()=>onGetListReplyComment(comment.commentId)}
+						onClick={()=>{
+              onGetListReplyComment(comment.commentId);
+              setShowReplyList(!showReplyList);
+            }}
 						style={{color: '#bbb', fontSize: '10px'}}
 					>
 						{showReplyList ? <span>&#x25B2; Ẩn phản hồi</span>:<span>&#x25BC; Xem các phản hổi</span>}
 					</Button>
 
-          <Button
-            aria-label="more"
-            id="long-button"
-            aria-controls="long-menu"
-            aria-expanded={open ? 'true' : undefined}
-            aria-haspopup="true"
-            onClick={(event)=>handleClick(event)}
-            style={{color: '#bbb', fontSize: '10px'}}
-          >
-            Khác
-          </Button>
+          {currentUser.user===comment.postedByUserLoginId &&
+            <Button
+              aria-label="more"
+              id="long-button"
+              aria-controls="long-menu"
+              aria-expanded={open ? 'true' : undefined}
+              aria-haspopup="true"
+              onClick={(event)=>handleClick(event)}
+              style={{color: '#bbb', fontSize: '10px'}}
+            >
+              Khác
+            </Button>
+          }
         </div>
         <div className={classes.listComment}>
           {showReplyList &&
             <div>
               {listReplyComment.length > 0 && listReplyComment.map(comment => (
                 <ReplyCommentItem
+                  key={comment.commentId}
                   comment={comment}
                   editComment={editComment} 
                   deleteComment={deleteComment}
                   chapterMaterialId={chapterMaterialId}
                   flag={flag}
                   setFlag={setFlag}
+                  currentUser={currentUser}
                 />
               ))}
             </div>

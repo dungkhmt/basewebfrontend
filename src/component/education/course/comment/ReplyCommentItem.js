@@ -12,6 +12,7 @@ import {
   Input,
 } from '@material-ui/core';
 import { useState, useEffect } from "react";
+import { toFormattedDateTime } from "../../../../utils/dateutils";
 import { useDispatch, useSelector } from "react-redux";
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -45,7 +46,8 @@ const useStyles = makeStyles((theme) => ({
 export default function ReplyCommentItem({
   comment,
   deleteComment,
-  editComment
+  editComment,
+  currentUser
 }){
   const [valueCommentMessage, setValueCommentMessage] = useState(comment.commentMessage)
   const [isEdittingComment, setIsEdittingComment] = useState(false)
@@ -124,6 +126,8 @@ export default function ReplyCommentItem({
       </Avatar>
       <div>
         <b>{comment.fullNameOfCreator}</b>
+        &nbsp;
+        <span>{toFormattedDateTime(comment.createdStamp)}</span>
         <div
           className={classes.growItem}
         >
@@ -150,17 +154,20 @@ export default function ReplyCommentItem({
         }
         </div>
         <div>
-          <Button
-            aria-label="more"
-            id="long-button"
-            aria-controls="long-menu"
-            aria-expanded={open ? 'true' : undefined}
-            aria-haspopup="true"
-            onClick={(event)=>handleClick(event)}
-            style={{color: '#bbb', fontSize: '10px'}}
-          >
-            Khác
-          </Button>
+          {
+            currentUser.user===comment.postedByUserLoginId &&
+            <Button
+              aria-label="more"
+              id="long-button"
+              aria-controls="long-menu"
+              aria-expanded={open ? 'true' : undefined}
+              aria-haspopup="true"
+              onClick={(event)=>handleClick(event)}
+              style={{color: '#bbb', fontSize: '10px'}}
+            >
+              Khác
+            </Button>
+          }
         </div>
       </div>
       <Menu
