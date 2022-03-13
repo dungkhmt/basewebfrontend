@@ -8,8 +8,11 @@ const CameraControl = (props) => {
       props.setCamera(!props.camera);
       if(!props.camera) {
         const srcCamera = await getUserMedia("camera");
+        if(props.mediaStream) {
+          props.mediaStream.getTracks().forEach(track => srcCamera.addTrack(track));
+        }
         props.stopVideo();
-        props.setMediaStream(mediaStream => mediaStream ? srcCamera.getTracks().forEach(track => mediaStream.addTrack(track)) : srcCamera);
+        props.setMediaStream(srcCamera);
       } else {
         props.stopVideo();
       }

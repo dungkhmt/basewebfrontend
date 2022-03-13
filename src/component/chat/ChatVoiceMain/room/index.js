@@ -86,8 +86,6 @@ const Room = () => {
                 const content = JSON.parse(message.content);
                 // if join, add this participant to list of participants
                 if (content.type === 'join') {
-                    console.log(peerId);
-                    console.log(content.peerId);
                     setListPartcipant(prevList => [...prevList, { name: content.name, id: content.id, peerId: content.peerId }]);
                     if (mediaStream) {
                         peer.call(content.peerId, mediaStream);

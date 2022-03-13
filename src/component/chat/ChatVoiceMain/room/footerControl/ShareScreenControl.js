@@ -8,7 +8,8 @@ const ShareScreenControl = (props) => {
       props.setCamera(false);
       const srcScreen = await getDisplayMedia();
       props.stopVideo();
-    props.setMediaStream(mediaStream => mediaStream ? srcScreen.getTracks().forEach(track => mediaStream.addTrack(track)) : srcScreen);
+      props.setMediaStream(mediaStream => mediaStream ?
+        srcScreen.getTracks().forEach(track => mediaStream.addTrack(track)) : srcScreen);
     } catch (e) {
       console.error(e);
     }

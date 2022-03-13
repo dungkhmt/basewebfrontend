@@ -9,11 +9,15 @@ const FooterControl = (props) => {
 
   const stopMedia = (type) => {
     if(props.mediaStream) {
-      props.setMediaStream(mediaStream => mediaStream.getTracks().forEach(track => {
-        if(track.kind === type) {
-          track.stop();
-        }
-      }));
+      props.setMediaStream(mediaStream => {
+        mediaStream.getTracks().forEach(track => {
+          if(track.kind === type) {
+            mediaStream.removeTrack(track);
+            track.stop();
+          }
+        });
+        return mediaStream; 
+      });
     }
   }
 

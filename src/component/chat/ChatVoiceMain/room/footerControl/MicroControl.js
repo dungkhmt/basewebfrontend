@@ -8,8 +8,10 @@ const MicroControl = (props) => {
       props.setMicro(!props.micro);
       if(!props.micro) {
         const srcMicro = await getUserMedia('micro');
-        console.log(props.mediaStream)
-        props.setMediaStream(mediaStream => mediaStream ? srcMicro.getTracks().forEach(track => mediaStream.addTrack(track)) : srcMicro);
+        if(props.mediaStream) {
+          props.mediaStream.getTracks().forEach(track => srcMicro.addTrack(track));
+        }
+        props.setMediaStream(srcMicro);
       } else {
         props.stopAudio();
       }
