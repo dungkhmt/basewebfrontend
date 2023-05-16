@@ -44,7 +44,7 @@
     "html-to-pdfmake": "^2.2.3",
     "ibm-gantt-chart": "^0.5.9",
     "interweave": "^12.9.0",
-    "jspdf": "^1.5.2",
+    "jspdf": "^2.3.1",
     "jspdf-autotable": "^3.2.15",
     "leaflet": "^1.7.1",
     "leaflet-routing-machine": "^3.2.12",
